@@ -3,6 +3,7 @@ from typing import Optional, Union
 import numpy as np
 import openseespy.opensees as ops
 import scipy.linalg as slin
+import scipy.sparse as sp
 import xarray as xr
 
 from ..utils import CONFIGS, get_random_color
@@ -22,14 +23,37 @@ def _get_dof_by_ntag(items, ntag):
 
 def _get_linear_buckling_data(kmat: xr.DataArray, kgeo: xr.DataArray, n_modes=1):
     """Compute linear buckling eigenvalues and vectors."""
-    # symmetric = _is_symmetric(kmat) and _is_symmetric(kgeo)
+    symmetric = _is_symmetric(kmat) and _is_symmetric(kgeo)
+    if symmetric:
+        # use sparse solver for large systems
+        kmat_sparse = sp.csr_matrix(np.array(kmat))
+        kgeo_sparse = sp.csr_matrix(np.array(kgeo))
+        k_request = n_modes * 2  # request more to account for possible complex pairs
+        eigvals, eigvecs = sp.linalg.eigsh(
+            A=kmat_sparse,
+            k=k_request,
+            M=kgeo_sparse,
+            sigma=1e-3,
+            which="LA",
+            return_eigenvectors=True,
+            maxiter=10000,
+            tol=1e-12,
+            mode="buckling",
+        )
+    else:
+        # use dense solver for non-symmetric systems, may be slower for large systems
+        eigvals, eigvecs = slin.eig(np.array(kmat), np.array(kgeo))
 
-    eigvals, eigvecs = slin.eig(np.array(kmat), np.array(kgeo))
+    # to real
     eigvals = np.real(eigvals)
     eigvecs = np.real(eigvecs)
-    mask = eigvals > 0
+
+    # filter positive eigenvalues
+    mask = eigvals > 1e-10  # use a small positive threshold to avoid numerical errors
     eigvals = eigvals[mask]
     eigvecs = eigvecs[:, mask]
+
+    # sort
     idx = np.argsort(eigvals)[:n_modes]
     eigvals = eigvals[idx]
     eigvecs = eigvecs[:, idx]
@@ -87,7 +111,8 @@ def save_linear_buckling_data(
 
     .. Note::
         * Currently you must use the matrix returned by :func:`opstool.pre.get_mck` to input `kmat` and `kgeo`.
-        * Currently `scipy.linalg.eig <https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.eig.html>`_ is called to solve the eigenvalue analysis, which can be slow for models with large degrees of freedom.
+        * Currently `scipy.sparse.linalg.eigsh <https://scipy.github.io/devdocs/reference/generated/scipy.sparse.linalg.eigsh.html#scipy.sparse.linalg.eigsh>`_ is used to solve the eigenvalue analysis for symmetric systems, which is more efficient for large models.
+        * Currently `scipy.linalg.eig <https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.eig.html>`_ is called to solve the eigenvalue analysis for non-symmetric systems, which can be slow for models with large degrees of freedom.
 
     Parameters
     ----------
