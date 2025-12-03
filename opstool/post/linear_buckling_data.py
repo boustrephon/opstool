@@ -174,6 +174,7 @@ def load_linear_buckling_data(odb_tag: Union[str, int]):
             model_info[key] = value[key]
         eigenvalues = dt["LinearBuckling/BucklingValues"]["BucklingValues"]
         eigenvectors = dt["LinearBuckling/BucklingVectors"]["BucklingVectors"]
+        dt.close()
     return eigenvalues, eigenvectors, model_info
 
 

@@ -661,12 +661,14 @@ def get_model_data(odb_tag: Optional[Union[int, str]] = None, data_type: str = "
         filename = f"{RESULTS_DIR}/" + f"{RESP_FILE_NAME}-{odb_tag}.{suffix}"
         with xr.open_datatree(filename, engine=engine, **kargs).load() as dt:
             data = ModelInfoStepData.read_data(dt, data_type)
+            dt.close()
     else:
         filename = f"{RESULTS_DIR}/" + f"{MODEL_FILE_NAME}-{odb_tag}.{suffix}"
         with xr.open_datatree(filename, engine=engine, **kargs).load() as dt:
             if data_type not in dt["ModelInfo"]:
                 raise ValueError(f"Data type {data_type} not found in model data.")  # noqa: TRY003
             data = dt["ModelInfo"][data_type][data_type]
+            dt.close()
     color = get_random_color()
     CONSOLE.print(f"{PKG_PREFIX} Loading {data_type} data from [bold {color}]{filename}[/] ...")
     return data

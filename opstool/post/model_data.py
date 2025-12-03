@@ -493,6 +493,7 @@ def load_model_data(
             if "Cells" in dt:
                 for key, value in dt["Cells"].items():
                     cells[key] = value[key]
+            dt.close()
         if model_info == {} and cells == {}:
             raise RuntimeError(f"{PKG_PREFIX} No model data in the file {filename}!")  # noqa: TRY003
     return model_info, cells

@@ -192,6 +192,7 @@ def load_eigen_data(
             raise ValueError("No model data found, please check your model!")  # noqa: TRY003
         model_props = dt["Eigen/ModalProps"]["ModalProps"]
         eigen_vectors = dt["Eigen/EigenVectors"]["EigenVectors"]
+        dt.close()
     return model_props, eigen_vectors, model_info
 
 
