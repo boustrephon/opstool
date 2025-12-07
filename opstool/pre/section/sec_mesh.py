@@ -2,6 +2,7 @@
 SecMesh: A module to mesh the cross-section with triangular fibers
 """
 
+from collections.abc import Iterable
 from typing import Optional, Union
 
 import matplotlib.pyplot as plt
@@ -740,8 +741,8 @@ class FiberSecMesh:
         self,
         points: list,
         dia: float,
-        gap: float = 0.1,
-        n: Optional[int] = None,
+        gap: Union[float, int, Iterable] = 0.1,
+        n: Optional[Union[int, Iterable]] = None,
         closure: bool = False,
         ops_mat_tag: Optional[int] = None,
         color: str = "black",
@@ -757,13 +758,19 @@ class FiberSecMesh:
             and every two corner points are divided by the arg `gap`.
         dia: float
             Rebar diameter.
-        gap: float, default=0.1
-            Rebar space.
-        n: int, default=None
-            The number of rebars, if not None,
-            update the Arg `gap` according to `n`.
-            This means that if you know the number of rebars,
-            you don't need to input `gap` or set `gap` to any number.
+        gap: Union[float, int, Iterable], default=0.1
+            Rebar spacing.
+            If a float or int is given, the spacing is constant along the line.
+            If a list, tuple or np.ndarray is given, the length must be equal to the number of line segments: (len(points)-1),
+            this means that each line segment can have different spacing.
+            Line segment: the distance between every two corner points in `points`.
+        n: Optional[Union[int, Iterable]], default=None
+            The number of rebars, update the Arg `gap` according to this parameter.
+            This means that if you know the number of rebars, you don't need to input `gap` or set `gap` to any number.
+            If a int is given, the total number of rebars along the line.
+            If a list, tuple or np.ndarray is given, the length must be equal to the number of line segments: (len(points)-1),
+            this means that each line segment can have different number of rebars.
+            Note that the number of rebars in each line segment includes the start and end rebar points in each segment.
         closure: bool, default=False
             If True, the rebar line is a closed loop.
         ops_mat_tag: int
@@ -782,8 +789,15 @@ class FiberSecMesh:
             points.append(points[0])
         rebar_lines = LineString(points)
         x, y = rebar_lines.xy
-        if n:
-            gap = rebar_lines.length / (n - 1)
+        if isinstance(n, Iterable):
+            if len(n) != len(points) - 1:
+                raise ValueError("The length of n must be equal to the number of line segments (len(points)-1)!")  # noqa: TRY003
+            gap = []
+            for i in range(len(x) - 1):
+                line_seg = LineString([(x[i], y[i]), (x[i + 1], y[i + 1])])
+                gap.append(line_seg.length / (n[i] - 1))
+        elif isinstance(n, int):
+            gap = rebar_lines.length / n if closure else rebar_lines.length / (n - 1)
         # mesh rebar points based on spacing
         rebar_xy = _lines_subdivide(x, y, gap)
         data = {"rebar_xy": rebar_xy, "color": color, "name": group_name, "dia": dia, "matTag": ops_mat_tag}
@@ -2115,13 +2129,23 @@ def _lines_subdivide(x, y, gap):
     """
     The polylines consisting of coordinates x and y are divided by the gap.
     """
+    if isinstance(gap, Iterable):
+        if len(gap) != len(x) - 1:
+            raise ValueError("The length of gap must be equal to len(x)-1!")  # noqa: TRY003
+        gaps = [float(val) for val in gap]
+    elif isinstance(gap, (int, float)):
+        gaps = [gap] * (len(x) - 1)
+    else:
+        raise TypeError("gap must be a float or an iterable of floats!")  # noqa: TRY003
+
     lengths, mesh_lengths = [0.0], [0.0]
     for i in range(len(x) - 1):
         x1, y1 = x[i], y[i]
         x2, y2 = x[i + 1], y[i + 1]
         length = np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-        if length > gap:
-            n = int(np.around(length / gap))
+        gap_ = gaps[i]
+        if length > gap_:
+            n = int(np.around(length / gap_))
             mesh_lengths.extend([length / n] * n)
         else:
             mesh_lengths.append(length)
