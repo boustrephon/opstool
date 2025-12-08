@@ -21,6 +21,10 @@ class ResponseBase(ABC):
         """Get responses data"""
 
     @abstractmethod
+    def update_data(self, *args):
+        """Update response data."""
+
+    @abstractmethod
     def get_track(self):
         """Get track tag."""
 
