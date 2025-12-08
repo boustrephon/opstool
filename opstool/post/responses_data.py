@@ -245,6 +245,20 @@ class CreateODB:
 
         self._set_resp()
 
+        self._RESPS = [
+            self._ModelInfo,
+            self._NodalResp,
+            self._FrameResp,
+            self._TrussResp,
+            self._LinkResp,
+            self._ShellResp,
+            self._FiberSecResp,
+            self._PlaneResp,
+            self._BrickResp,
+            self._ContactResp,
+            self._SensitivityResp,
+        ]
+
     def _set_resp(self):
         self._set_model_info()
         self._set_node_resp()
@@ -259,20 +273,7 @@ class CreateODB:
         self._set_sensitivity_resp()
 
     def _get_resp(self):
-        output = [
-            self._ModelInfo,
-            self._NodalResp,
-            self._FrameResp,
-            self._TrussResp,
-            self._LinkResp,
-            self._ShellResp,
-            self._FiberSecResp,
-            self._PlaneResp,
-            self._BrickResp,
-            self._ContactResp,
-            self._SensitivityResp,
-        ]
-        return output
+        return self._RESPS
 
     def _set_model_info(self):
         if self._ModelInfo is None:
@@ -471,6 +472,36 @@ class CreateODB:
             time = ops.getTime()
             color = get_random_color()
             CONSOLE.print(f"{PKG_PREFIX} The responses data at time [bold {color}]{time:.4f}[/] has been fetched!")
+
+    def combine_response_spectrum(
+        self,
+        method: str = "srss",
+        lambdas: Union[list, tuple, np.ndarray] = None,
+        damping: Union[float, list[float], tuple[float], np.ndarray] = 0.05,
+        scale: Union[list, tuple, np.ndarray, int, float] = 1.0,
+    ):
+        """Combine modal responses data, only for response spectrum analysis.
+
+        Parameters
+        ----------
+        method : {"srss", "cqc"}
+            Combination method.
+        lambdas : array-like, optional
+            Modal frequencies. Required for CQC.
+        damping : float or array-like
+            Modal damping ratios. Optional for CQC.
+        scale : array-like or None
+            Modal scaling factors. Optional for CQC.
+        """
+        from ._combine_response_spectrum import combine_response_spectrum
+
+        for resp in self._get_resp()[1:]:  # Skip ModelInfo
+            if resp is not None:
+                resp_dataset = resp.get_data()
+                rcombined = combine_response_spectrum(
+                    resp_dataset, method=method, lambdas=lambdas, damping=damping, scale=scale, time_dim="time"
+                )
+                resp.update_data(rcombined)
 
     def save_response(self, zlib: bool = False):
         """
