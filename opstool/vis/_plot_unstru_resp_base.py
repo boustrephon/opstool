@@ -104,7 +104,7 @@ class PlotUnstruResponseBase(PlotResponseBase):
 
         return da  # fallback: return raw data
 
-    def _get_resp_peak(self, idx="absMax"):
+    def _get_resp_peak(self, idx=None):
         if isinstance(idx, str):
             if idx.lower() == "absmax":
                 resp = [np.nanmax(np.abs(data)) for data in self.resp_step]
@@ -120,9 +120,13 @@ class PlotUnstruResponseBase(PlotResponseBase):
                 step = np.argmin(resp)
             else:
                 raise ValueError("Invalid argument, one of [absMax, absMin, Max, Min]")  # noqa: TRY003
-        else:
+        elif isinstance(idx, (int, float)):
             step = int(idx)
-        cmin, cmax = self._get_resp_clim()
+        else:
+            resp = [np.nanmax(np.abs(data)) for data in self.resp_step]  # absMax
+            step = np.argmax(resp)
+        resp = self.resp_step[step]
+        cmin, cmax = self._get_resp_clim() if idx is None else (np.nanmin(resp), np.nanmax(resp))
         return step, (cmin, cmax)
 
     def _get_resp_clim(self):

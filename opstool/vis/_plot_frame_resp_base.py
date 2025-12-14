@@ -164,7 +164,7 @@ class PlotFrameResponseBase(PlotResponseBase):
         self.resp_step = resps
         self.sec_locs = [loc / self.unit_factor for loc in sec_locs] if self.unit_factor else sec_locs
 
-    def _get_resp_scale_factor(self, idx="absMax"):
+    def _get_resp_scale_factor(self, idx=None):
         if isinstance(idx, str):
             if idx.lower() == "absmax":
                 resp = [np.nanmax(np.abs(data)) for data in self.resp_step]
@@ -180,12 +180,15 @@ class PlotFrameResponseBase(PlotResponseBase):
                 step = np.argmin(resp)
             else:
                 raise ValueError("Invalid argument, one of [absMax, absMin, Max, Min]")  # noqa: TRY003
-        else:
+        elif isinstance(idx, (int, float)):
             step = int(idx)
+        else:
+            resp = [np.nanmax(np.abs(data)) for data in self.resp_step]  # absmax
+            step = np.argmax(resp)
         resp = self.resp_step[step]
         maxv = np.nanmax(np.abs(resp))
         alpha_ = 0.0 if maxv == 0 else self.max_bound_size * self.pargs.scale_factor / maxv
-        cmin, cmax = self._get_resp_clim()
+        cmin, cmax = self._get_resp_clim() if idx is None else (np.nanmin(resp), np.nanmax(resp))
         return float(alpha_), step, (cmin, cmax)
 
     def _get_resp_clim(self):

@@ -59,7 +59,7 @@ class PlotTrussResponseBase(PlotResponseBase):
                 resps.append(da)
         self.resp_step = resps  # update
 
-    def _get_resp_peak(self, idx="absMax"):
+    def _get_resp_peak(self, idx=None):
         if isinstance(idx, str):
             if idx.lower() == "absmax":
                 resp = [np.nanmax(np.abs(data)) for data in self.resp_step]
@@ -75,12 +75,15 @@ class PlotTrussResponseBase(PlotResponseBase):
                 step = np.argmin(resp)
             else:
                 raise ValueError("Invalid argument, one of [absMax, absMin, Max, Min]")  # noqa: TRY003
-        else:
+        elif isinstance(idx, (int, float)):
             step = int(idx)
+        else:
+            resp = [np.nanmax(np.abs(data)) for data in self.resp_step]  # absMax
+            step = np.argmax(resp)
         resp = self.resp_step[step]
         maxv = np.amax(np.abs(resp))
         alpha_ = 0.0 if maxv == 0 else self.max_bound_size * self.pargs.scale_factor / maxv
-        cmin, cmax = self._get_truss_resp_clim()
+        cmin, cmax = self._get_truss_resp_clim() if idx is None else (np.nanmin(resp), np.nanmax(resp))
         return step, (cmin, cmax), float(alpha_)
 
     def _get_truss_resp_clim(self):

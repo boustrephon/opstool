@@ -38,7 +38,8 @@ class PlotNodalResponseBase(PlotResponseBase):
         else:
             self.component = list(component)
 
-    def _get_resp_clim_peak(self, idx="absMax"):
+    def _get_resp_clim_peak(self, idx=None):
+        # If idx is None, get clim for all steps, else for specified step
         resps = []
         for i in range(self.num_steps):
             da = self._get_resp_da(i, self.resp_type, self.component)
@@ -62,11 +63,17 @@ class PlotNodalResponseBase(PlotResponseBase):
                 step = np.argmin(resp)
             else:
                 raise ValueError("Invalid argument, one of [absMax, absMin, Max, Min]")  # noqa: TRY003
-        else:
+        elif isinstance(idx, (int, float)):
             step = int(idx)
-        max_resps = [np.nanmax(resp) for resp in resps_norm]
-        min_resps = [np.nanmin(resp) for resp in resps_norm]
-        cmin, cmax = np.nanmin(min_resps), np.nanmax(max_resps)
+        else:
+            resp = [np.nanmax(np.abs(data)) for data in resps]  # absmax
+            step = np.argmax(resp)
+        if idx is None:
+            max_resps = [np.nanmax(resp) for resp in resps_norm]
+            min_resps = [np.nanmin(resp) for resp in resps_norm]
+            cmin, cmax = np.nanmin(min_resps), np.nanmax(max_resps)
+        else:
+            cmin, cmax = np.nanmin(resps_norm[step]), np.nanmax(resps_norm[step])
         self.resps_norm = resps_norm
         self.clim = (cmin, cmax)
         return cmin, cmax, step
