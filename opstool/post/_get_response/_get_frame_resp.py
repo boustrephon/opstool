@@ -1,4 +1,6 @@
-from typing import Optional
+from __future__ import annotations
+
+from collections.abc import Iterable
 
 import numpy as np
 import openseespy.opensees as ops
@@ -9,6 +11,35 @@ from ._response_base import ResponseBase, _expand_to_uniform_array
 
 ELASTIC_BEAM_CLASSES = [3, 4, 5, 5001, 145, 146, 63, 631]
 
+SECTION_TYPE_MAP = {
+    "ElasticSection3d": ["P", "MZ", "MY", "T"],
+    "ElasticShearSection3d": ["P", "MZ", "VY", "MY", "VZ", "T"],
+    "ElasticTubeSection3d": ["P", "MZ", "MY", "T", "VY", "VZ"],
+    "FiberSection3d": ["P", "MZ", "MY", "T"],
+    "FiberSection3dThermal": ["P", "MZ", "MY", "T"],
+    "FiberSectionGJ": ["P", "MZ", "MY", "T"],
+    "FiberSectionGJThermal": ["P", "MZ", "MY", "T"],
+    "FiberSectionAsym3d": ["P", "MZ", "MY", "W", "T"],
+    "FiberSectionWarping3d": ["P", "MZ", "MY", "W", "B", "T"],
+    "NDFiberSection3d": ["P", "MZ", "MY", "VY", "VZ", "T"],
+    "SectionAggregator3d": ["P", "MZ", "MY", "T", "VY", "VZ"],
+    "TimoshenkoSection3d": ["P", "MZ", "MY", "VZ", "VY", "T"],
+    "ASDCoupledHinge3D": ["P", "MY", "MZ", "VY", "VZ", "T"],
+    # ---------------------------------------------
+    "ElasticSection2d": ["P", "MZ"],
+    "ElasticShearSection2d": ["P", "MZ", "VY"],
+    "ElasticWarpingShearSection2d": ["P", "MZ", "VY", "R", "Q"],
+    "FiberSection2d": ["P", "MZ"],
+    "FiberSection2dThermal": ["P", "MZ"],
+    "Isolator2spring": ["P", "VY", "MZ"],
+    "NDFiberSection2d": ["P", "MZ", "VY"],
+    "NDFiberSectionWarping2d": ["P", "MZ", "VY", "R", "Q"],
+    "SectionAggregator2d": ["P", "MZ", "VY"],
+    "ElasticBDShearSection2d": ["P", "MZ", "VY"],
+    "WSection2d": ["P", "MZ", "MY", "VY", "VZ", "T"],
+}
+SECTION_TYPE_DOF_MAP = {"P": 0, "MZ": 1, "VY": 2, "MY": 3, "VZ": 4, "T": 5, "R": None, "Q": None, "B": None}
+
 
 class FrameRespStepData(ResponseBase):
     def __init__(
@@ -16,8 +47,9 @@ class FrameRespStepData(ResponseBase):
         ele_tags=None,
         ele_load_data=None,
         elastic_frame_sec_points: int = 7,
+        section_response_dof: dict[str, Iterable[str]] | None = None,
         model_update: bool = False,
-        dtype: Optional[dict] = None,
+        dtype: dict | None = None,
     ):
         self.resp_names = [
             "localForces",
@@ -35,6 +67,9 @@ class FrameRespStepData(ResponseBase):
         self.ele_tags = ele_tags
         self.ele_load_data = ele_load_data
         self.times = []
+
+        if isinstance(section_response_dof, dict):
+            SECTION_TYPE_MAP.update(section_response_dof)
 
         self.elastic_frame_sec_points = elastic_frame_sec_points
         self.model_update = model_update
@@ -194,7 +229,7 @@ class FrameRespStepData(ResponseBase):
         return dt
 
     @staticmethod
-    def read_datatree(dt: xr.DataTree, unit_factors: Optional[dict] = None):
+    def read_datatree(dt: xr.DataTree, unit_factors: dict | None = None):
         resp_steps = dt["/FrameResponses"].to_dataset()
         if unit_factors is not None:
             resp_steps = FrameRespStepData._unit_transform(resp_steps, unit_factors)
@@ -229,9 +264,7 @@ class FrameRespStepData(ResponseBase):
         return resp_steps
 
     @staticmethod
-    def read_response(
-        dt: xr.DataTree, resp_type: Optional[str] = None, ele_tags=None, unit_factors: Optional[dict] = None
-    ):
+    def read_response(dt: xr.DataTree, resp_type: str | None = None, ele_tags=None, unit_factors: dict | None = None):
         ds = FrameRespStepData.read_datatree(dt, unit_factors=unit_factors)
         if resp_type is None:
             if ele_tags is None:
@@ -247,7 +280,7 @@ class FrameRespStepData(ResponseBase):
                 return ds[resp_type]
 
 
-def _get_beam_local_force(beam_tags, resp_types, dtype):
+def _get_beam_local_force(beam_tags: Iterable[int], resp_types: Iterable[str], dtype: dict):
     local_forces = []
     for eletag in beam_tags:
         eletag = int(eletag)
@@ -294,7 +327,7 @@ def _get_beam_local_force(beam_tags, resp_types, dtype):
     return np.array(local_forces, dtype=dtype["float"])
 
 
-def _get_beam_basic_resp(beam_tags, resp_types, dtype):
+def _get_beam_basic_resp(beam_tags: Iterable[int], resp_types: Iterable[str], dtype: dict):
     basic_resps = []
     for ele_tag in beam_tags:
         ele_tag = int(ele_tag)
@@ -326,7 +359,14 @@ def _get_beam_basic_resp(beam_tags, resp_types, dtype):
     return np.array(basic_resps, dtype=dtype["float"])
 
 
-def _get_beam_sec_resp(beam_tags, ele_load_data, local_forces, basic_disp, n_secs_elastic_beam, dtype):
+def _get_beam_sec_resp(
+    beam_tags: Iterable[int],
+    ele_load_data: xr.DataArray,
+    local_forces: Iterable,
+    basic_disp: Iterable,
+    n_secs_elastic_beam: int,
+    dtype: dict,
+):
     pattern_tags, load_eletags = _extract_pattern_info(ele_load_data)
     beam_secF, beam_secD, beam_locs = [], [], []
 
@@ -359,7 +399,7 @@ def _get_beam_sec_resp(beam_tags, ele_load_data, local_forces, basic_disp, n_sec
     return beam_secF, beam_secD, beam_sec_locs.astype(dtype["float"])
 
 
-def _extract_pattern_info(ele_load_data):
+def _extract_pattern_info(ele_load_data: xr.DataArray):
     pattern_tags, load_eletags = [], []
     if len(ele_load_data) > 0:
         petags = ele_load_data.coords["PatternEleTags"].values
@@ -370,7 +410,7 @@ def _extract_pattern_info(ele_load_data):
     return np.array(pattern_tags), np.array(load_eletags)
 
 
-def _get_section_locs(eletag, length):
+def _get_section_locs(eletag: int, length: float):
     sec_locs = ops.sectionLocation(eletag)
     if not sec_locs:
         num_secs = 0
@@ -390,13 +430,13 @@ def _get_section_locs(eletag, length):
     return sec_locs
 
 
-def _get_nonlinear_section_response(eletag, length):
+def _get_nonlinear_section_response(eletag: int, length: float):
     xlocs, sec_f, sec_d = [], [], []
     sec_locs = _get_section_locs(eletag, length)
     for i, loc in enumerate(sec_locs):
         xlocs.append(loc)
-        forces = _format_six_component(ops.sectionForce(eletag, i + 1))
-        defos = _format_six_component(ops.sectionDeformation(eletag, i + 1))
+        forces = _format_sec_resp(eletag, i + 1, "Force")
+        defos = _format_sec_resp(eletag, i + 1, "Deformation")
         sec_f.append(forces)
         sec_d.append(defos)
     if len(xlocs) == 0:
@@ -407,18 +447,36 @@ def _get_nonlinear_section_response(eletag, length):
     return xlocs, sec_f, sec_d
 
 
-def _format_six_component(vec):
-    if not vec:
-        return [0.0] * 6
-    if len(vec) == 2:
-        return [vec[0], vec[1], 0.0, 0.0, 0.0, 0.0]
-    if len(vec) == 3:
-        return [vec[0], vec[1], vec[2], 0.0, 0.0, 0.0]
-    if len(vec) == 4:
-        return [vec[0], vec[1], 0.0, vec[2], 0.0, vec[3]]
-    if len(vec) == 5:
-        return [vec[0], vec[1], vec[4], vec[2], 0.0, vec[3]]
-    return vec[:6]
+def _format_sec_resp(etag: int, secnum: int, resp_type: str):
+    if resp_type == "Force":
+        resp = ops.sectionForce(etag, secnum)
+    elif resp_type == "Deformation":
+        resp = ops.sectionDeformation(etag, secnum)
+    else:
+        resp = None
+
+    full_resp = [0.0] * 6
+
+    if not resp:
+        return full_resp
+
+    sec_tags = ops.sectionTag(etag)  # section tags along the element
+    if sec_tags and len(sec_tags) > 0:
+        sec_tag = sec_tags[secnum - 1]
+        sec_type = ops.classType("section", sec_tag)
+        if sec_type == "SectionAggregator" and "SectionAggregator" not in SECTION_TYPE_MAP:
+            sec_type = "ElasticSection3d" if len(resp) > 3 else "ElasticSection2d"
+        dof_names = SECTION_TYPE_MAP.get(sec_type)
+        if dof_names is not None:
+            dof_map = [SECTION_TYPE_DOF_MAP[name] for name in dof_names]
+            for val, dof in zip(resp, dof_map):
+                if dof is not None:
+                    full_resp[dof] = val
+            return full_resp
+    # Fallback based on length of resp
+    for i in range(min(len(resp), 6)):
+        full_resp[i] = resp[i]
+    return full_resp
 
 
 def _get_param_value(eletag, param_name):
