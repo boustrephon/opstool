@@ -138,6 +138,9 @@ class ModelInfoStepData(ResponseBase):
     def get_data(self):
         return self.model_info_steps
 
+    def update_data(self, data):
+        self.model_info_steps = data
+
     def get_track(self):
         return self.step_track
 
