@@ -18,7 +18,7 @@ class PlotUnstruResponseBase(PlotResponseBase):
             self.ele_type = "Plane"
             self.resp_type, self.component = _check_input_plane(self.resp_type, self.component)
         elif self.ele_type.lower() in ["brick", "solid"]:
-            self.ele_type = "Brick"
+            self.ele_type = "Solid"
             self.resp_type, self.component = _check_input_solid(self.resp_type, self.component)
         else:
             raise ValueError(f"Not supported element type {self.ele_type}! Valid options are: Shell, Plane, Brick.")  # noqa: TRY003
