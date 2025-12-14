@@ -177,6 +177,7 @@ def combine_response_spectrum(
     scale=None,
     time_dim="time",
     var_names=None,
+    exclude_vars=None,
 ):
     """
     Combine modal responses stored in an xarray Dataset/DataArray.
@@ -206,6 +207,9 @@ def combine_response_spectrum(
     var_names : list of str, optional
         For Dataset input: which variables to process.
         If None, all data variables that depend on `time_dim` are processed.
+    exclude_vars : list of str, optional
+        For Dataset input: which variables to exclude from processing.
+        Applied after `var_names`.
 
     Returns
     -------
@@ -235,6 +239,8 @@ def combine_response_spectrum(
     # Prepare list of variables to process
     if var_names is None:
         var_names = list(ds.data_vars)
+    if exclude_vars is not None:
+        var_names = [name for name in var_names if name not in exclude_vars]
 
     # Prepare modal parameters (shared across variables)
     lambdas_modal = _prepare_modal_params(lambdas, n_total, n_modes)
