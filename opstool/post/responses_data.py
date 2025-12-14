@@ -30,7 +30,7 @@ class _POST_ARGS_TYPES(TypedDict, total=False):
     elastic_frame_sec_points: int
     compute_mechanical_measures: bool
     project_gauss_to_nodes: Optional[str]
-    nd_material_type: Optional[str]
+    section_response_dof: Optional[dict]
     dtype: dict[str, np.dtype]
     # -------------------------------------------
     save_nodal_resp: bool
@@ -59,6 +59,7 @@ class _POST_ARGS_TYPES(TypedDict, total=False):
 
 _POST_ARGS = SimpleNamespace(
     elastic_frame_sec_points=7,
+    section_response_dof=None,
     compute_mechanical_measures="All",
     project_gauss_to_nodes="copy",
     dtype={"int": np.int32, "float": np.float32},
@@ -111,6 +112,17 @@ class CreateODB:
         * elastic_frame_sec_points: int, default: 7
             The number of elastic frame elements section points.
             A larger number may result in a larger file size.
+        * section_response_dof: Optional[dict], default: None
+            A dictionary to specify the section response type for different section types.
+            The keys are the section types, and the values are the response types.
+            For example, to specify the response type for "SectionAggregator", you can set:
+            ..  code-block:: python
+
+                {
+                    "SectionAggregator": ["P", "MZ", "MY", "T", "VY", "VZ"]  # means you use the section "P", "MZ", "MY", "T" and addtional "VY", "VZ" dof.
+                }
+            This is because for some section types, such as ``Aggregator``, the number and order of the degrees of freedom are specified by the user.
+            For other sections, the program can determine them automatically.
         * compute_mechanical_measures: Union[bool, str, dict], default: "All"
             Whether to compute mechanical measures for ``solid and planar elements``,
             including principal stresses, principal strains, von Mises stresses, etc.
@@ -307,6 +319,7 @@ class CreateODB:
                     frame_load_data,
                     elastic_frame_sec_points=_POST_ARGS.elastic_frame_sec_points,
                     model_update=self._model_update,
+                    section_response_dof=_POST_ARGS.section_response_dof,
                     dtype=_POST_ARGS.dtype,
                 )
             else:
@@ -498,8 +511,15 @@ class CreateODB:
         for resp in self._get_resp()[1:]:  # Skip ModelInfo
             if resp is not None:
                 resp_dataset = resp.get_data()
+                exclude_vars = ["ys", "zs", "areas", "matTags", "sectionLocs", "lambdas"]
                 rcombined = combine_response_spectrum(
-                    resp_dataset, method=method, lambdas=lambdas, damping=damping, scale=scale, time_dim="time"
+                    resp_dataset,
+                    method=method,
+                    lambdas=lambdas,
+                    damping=damping,
+                    scale=scale,
+                    time_dim="time",
+                    exclude_vars=exclude_vars,
                 )
                 resp.update_data(rcombined)
 
