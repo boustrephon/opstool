@@ -7,7 +7,7 @@ import pyvista as pv
 from ...post import load_eigen_data, load_linear_buckling_data
 from ...utils import CONFIGS, get_bounds
 from .plot_resp_base import PlotResponsePyvistaBase, slider_widget_args
-from .plot_utils import PLOT_ARGS, _plot_all_mesh_cmap
+from .plot_utils import PLOT_ARGS, _plot_all_mesh_cmap, _plot_lines_cmap
 from .vis_model import PlotModelBase
 
 PKG_NAME = CONFIGS.get_pkg_name()
@@ -15,7 +15,7 @@ SHAPE_MAP = CONFIGS.get_shape_map()
 
 
 class PlotEigenBase(PlotResponsePyvistaBase):
-    def __init__(self, model_info, modal_props, eigen_vectors):
+    def __init__(self, model_info, modal_props, eigen_vectors, interp_eigenvectors=None):
         self.nodal_data = model_info.get("NodalData", [])
         if len(self.nodal_data) > 0:
             self.nodal_tags = self.nodal_data.coords["nodeTags"]
@@ -36,8 +36,20 @@ class PlotEigenBase(PlotResponsePyvistaBase):
         self.ModelInfo = model_info
         self.ModalProps = modal_props
         self.EigenVectors = eigen_vectors
+        self.InterpEigenVectors = interp_eigenvectors
         self.plot_model_base = PlotModelBase(model_info, {})
         self.slider_widget_args = slider_widget_args
+
+        if self.InterpEigenVectors is None:
+            self.interplated_line_cells = []
+            self.interplated_line_points = []
+            self.interplated_eigen_vecs = []
+        else:
+            self.line_cells, self.line_tags = [], []
+            self.interplated_line_points = self.InterpEigenVectors["points"].to_numpy()
+            self.interplated_line_cells = self.InterpEigenVectors["cells"].to_numpy().astype(int)
+            self.interplated_eigen_vecs = self.InterpEigenVectors["eigenVectors"].to_numpy()
+
         pv.set_plot_theme(PLOT_ARGS.theme)
 
     def _get_eigen_points(self, step, alpha):
@@ -48,6 +60,12 @@ class PlotEigenBase(PlotResponsePyvistaBase):
         eigen_points = self.points + eigen_vec * alpha_
         scalars = np.sqrt(np.sum(eigen_vec**2, axis=1))
         return eigen_points, scalars, alpha_
+
+    def _get_eigen_points_interp(self, step, alpha_):
+        eigen_vec = self.interplated_eigen_vecs[..., :3][step]
+        eigen_points = self.interplated_line_points + eigen_vec * alpha_
+        scalars = np.sqrt(np.sum(eigen_vec**2, axis=1))
+        return eigen_points, scalars
 
     def _get_bc_points(self, step, scale: float):
         fixed_node_data = self.ModelInfo["FixedNodalData"]
@@ -146,6 +164,19 @@ class PlotEigenBase(PlotResponsePyvistaBase):
             show_origin=show_origin,
             pos_origin=self.points,
         )
+        if self.InterpEigenVectors is not None:
+            eigen_points_interp, scalars_interp = self._get_eigen_points_interp(step, alpha_)
+            _plot_lines_cmap(
+                plotter=plotter,
+                pos=eigen_points_interp,
+                cells=self.interplated_line_cells,
+                scalars=scalars_interp,
+                cmap=self.pargs.cmap,
+                width=self.pargs.line_width,
+                render_lines_as_tubes=self.pargs.render_lines_as_tubes,
+                clim=None,
+                show_scalar_bar=False,
+            )
         if not subplots:
             txt = self._make_eigen_txt(step)
             plotter.add_text(
@@ -244,8 +275,8 @@ class PlotEigenBase(PlotResponsePyvistaBase):
 
 
 class PlotBucklingBase(PlotEigenBase):
-    def __init__(self, model_info, eigen_values, eigen_vectors):
-        super().__init__(model_info, eigen_values, eigen_vectors)
+    def __init__(self, model_info, eigen_values, eigen_vectors, interp_eigenvectors=None):
+        super().__init__(model_info, eigen_values, eigen_vectors, interp_eigenvectors=interp_eigenvectors)
 
     def _make_eigen_txt(self, step):
         fi = self.ModalProps.isel(modeTags=step)
@@ -331,10 +362,10 @@ def plot_eigen(
     if mode.lower() == "eigen":
         resave = odb_tag is None
         odb_tag = "Auto" if odb_tag is None else odb_tag
-        modalProps, eigenvectors, MODEL_INFO = load_eigen_data(
+        modalProps, eigenvectors, interp_eigenvectors, MODEL_INFO = load_eigen_data(
             odb_tag=odb_tag, mode_tag=mode_tags[-1], solver=solver, resave=resave
         )
-        plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors)
+        plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors, interp_eigenvectors=interp_eigenvectors)
     elif mode.lower() == "buckling":
         modalProps, eigenvectors, MODEL_INFO = load_linear_buckling_data(odb_tag=odb_tag)
         plotbase = PlotBucklingBase(MODEL_INFO, modalProps, eigenvectors)
@@ -446,10 +477,10 @@ def plot_eigen_animation(
     """
     if mode.lower() == "eigen":
         resave = odb_tag is None
-        modalProps, eigenvectors, MODEL_INFO = load_eigen_data(
+        modalProps, eigenvectors, interp_eigenvectors, MODEL_INFO = load_eigen_data(
             odb_tag=odb_tag, mode_tag=mode_tag, solver=solver, resave=resave
         )
-        plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors)
+        plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors, interp_eigenvectors=interp_eigenvectors)
     elif mode.lower() == "buckling":
         modalProps, eigenvectors, MODEL_INFO = load_linear_buckling_data(odb_tag=odb_tag)
         plotbase = PlotBucklingBase(MODEL_INFO, modalProps, eigenvectors)
@@ -462,8 +493,8 @@ def plot_eigen_animation(
         off_screen=off_screen,
     )
     plotbase.plot_anim(
-        plotter,
-        mode_tag,
+        plotter=plotter,
+        mode_tag=mode_tag,
         n_cycle=n_cycle,
         framerate=framerate,
         savefig=savefig,
