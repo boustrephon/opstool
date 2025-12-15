@@ -131,7 +131,7 @@ class PlotEigenBase(PlotResponsePyvistaBase):
         show_origin=False,
         show_bc: bool = True,
         bc_scale: float = 1.0,
-        show_mp_constraint: bool = True,
+        show_mp_constraint: bool = False,
         cpos="iso",
     ):
         if idxi is not None and idxj is not None:
@@ -298,7 +298,7 @@ def plot_eigen(
     cpos: str = "iso",
     show_bc: bool = True,
     bc_scale: float = 1.0,
-    show_mp_constraint: bool = True,
+    show_mp_constraint: bool = False,
     solver: str = "-genBandArpack",
     mode: str = "eigen",
 ) -> pv.Plotter:
@@ -333,7 +333,7 @@ def plot_eigen(
         Whether to display boundary supports.
     bc_scale: float, default: 1.0
         Scale the size of boundary support display.
-    show_mp_constraint: bool, default: True
+    show_mp_constraint: bool, default: False
         Whether to show multipoint (MP) constraint.
     solver : str, optional,
         OpenSees' eigenvalue analysis solver, by default "-genBandArpack".
