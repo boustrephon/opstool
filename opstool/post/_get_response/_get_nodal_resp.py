@@ -81,7 +81,12 @@ class NodalRespStepData(ResponseBase):
         self.step_track += 1
 
     def get_data(self):
+        if self.resp_steps is None:
+            self._to_xarray()
         return self.resp_steps
+
+    def update_data(self, data):
+        self.resp_steps = data
 
     def get_track(self):
         return self.step_track
@@ -107,8 +112,8 @@ class NodalRespStepData(ResponseBase):
             )
 
     def add_to_datatree(self, dt: xr.DataTree):
-        self._to_xarray()
-        dt["/NodalResponses"] = self.resp_steps
+        resp_steps = self.get_data()
+        dt["/NodalResponses"] = resp_steps
         return dt
 
     @staticmethod

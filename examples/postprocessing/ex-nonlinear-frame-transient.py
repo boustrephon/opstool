@@ -225,8 +225,12 @@ for i in [5, 6, 7, 8, 10, 11, 12, 13, 15, 16, 17, 18]:
     ops.load(i, 0.0, 0.0, -p, 0.0, 0.0, 0.0)
 
 # %%
-fig = opstool.vis.pyvista.plot_model(show_nodal_loads=True)
-fig.show()
+fig = opsvis.plot_model(show_nodal_loads=True)
+fig
+
+# %%
+fig = opsvis.plot_eigen(mode_tags=[1, 4], subplots=False)
+fig
 
 # %%
 # Dynamic Loads

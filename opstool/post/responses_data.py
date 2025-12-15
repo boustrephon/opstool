@@ -30,7 +30,7 @@ class _POST_ARGS_TYPES(TypedDict, total=False):
     elastic_frame_sec_points: int
     compute_mechanical_measures: bool
     project_gauss_to_nodes: Optional[str]
-    nd_material_type: Optional[str]
+    section_response_dof: Optional[dict]
     dtype: dict[str, np.dtype]
     # -------------------------------------------
     save_nodal_resp: bool
@@ -59,6 +59,7 @@ class _POST_ARGS_TYPES(TypedDict, total=False):
 
 _POST_ARGS = SimpleNamespace(
     elastic_frame_sec_points=7,
+    section_response_dof=None,
     compute_mechanical_measures="All",
     project_gauss_to_nodes="copy",
     dtype={"int": np.int32, "float": np.float32},
@@ -111,6 +112,17 @@ class CreateODB:
         * elastic_frame_sec_points: int, default: 7
             The number of elastic frame elements section points.
             A larger number may result in a larger file size.
+        * section_response_dof: Optional[dict], default: None
+            A dictionary to specify the section response type for different section types.
+            The keys are the section types, and the values are the response types.
+            For example, to specify the response type for "SectionAggregator", you can set:
+            ..  code-block:: python
+
+                {
+                    "SectionAggregator": ["P", "MZ", "MY", "T", "VY", "VZ"]  # means you use the section "P", "MZ", "MY", "T" and addtional "VY", "VZ" dof.
+                }
+            This is because for some section types, such as ``Aggregator``, the number and order of the degrees of freedom are specified by the user.
+            For other sections, the program can determine them automatically.
         * compute_mechanical_measures: Union[bool, str, dict], default: "All"
             Whether to compute mechanical measures for ``solid and planar elements``,
             including principal stresses, principal strains, von Mises stresses, etc.
@@ -245,6 +257,20 @@ class CreateODB:
 
         self._set_resp()
 
+        self._RESPS = [
+            self._ModelInfo,
+            self._NodalResp,
+            self._FrameResp,
+            self._TrussResp,
+            self._LinkResp,
+            self._ShellResp,
+            self._FiberSecResp,
+            self._PlaneResp,
+            self._BrickResp,
+            self._ContactResp,
+            self._SensitivityResp,
+        ]
+
     def _set_resp(self):
         self._set_model_info()
         self._set_node_resp()
@@ -259,20 +285,7 @@ class CreateODB:
         self._set_sensitivity_resp()
 
     def _get_resp(self):
-        output = [
-            self._ModelInfo,
-            self._NodalResp,
-            self._FrameResp,
-            self._TrussResp,
-            self._LinkResp,
-            self._ShellResp,
-            self._FiberSecResp,
-            self._PlaneResp,
-            self._BrickResp,
-            self._ContactResp,
-            self._SensitivityResp,
-        ]
-        return output
+        return self._RESPS
 
     def _set_model_info(self):
         if self._ModelInfo is None:
@@ -306,6 +319,7 @@ class CreateODB:
                     frame_load_data,
                     elastic_frame_sec_points=_POST_ARGS.elastic_frame_sec_points,
                     model_update=self._model_update,
+                    section_response_dof=_POST_ARGS.section_response_dof,
                     dtype=_POST_ARGS.dtype,
                 )
             else:
@@ -471,6 +485,43 @@ class CreateODB:
             time = ops.getTime()
             color = get_random_color()
             CONSOLE.print(f"{PKG_PREFIX} The responses data at time [bold {color}]{time:.4f}[/] has been fetched!")
+
+    def combine_response_spectrum(
+        self,
+        method: str = "srss",
+        lambdas: Union[list, tuple, np.ndarray] = None,
+        damping: Union[float, list[float], tuple[float], np.ndarray] = 0.05,
+        scale: Union[list, tuple, np.ndarray, int, float] = 1.0,
+    ):
+        """Combine modal responses data, only for response spectrum analysis.
+
+        Parameters
+        ----------
+        method : {"srss", "cqc"}
+            Combination method.
+        lambdas : array-like, optional
+            Modal frequencies. Required for CQC.
+        damping : float or array-like
+            Modal damping ratios. Optional for CQC.
+        scale : array-like or None
+            Modal scaling factors. Optional for CQC.
+        """
+        from ._combine_response_spectrum import combine_response_spectrum
+
+        for resp in self._get_resp()[1:]:  # Skip ModelInfo
+            if resp is not None:
+                resp_dataset = resp.get_data()
+                exclude_vars = ["ys", "zs", "areas", "matTags", "sectionLocs", "lambdas"]
+                rcombined = combine_response_spectrum(
+                    resp_dataset,
+                    method=method,
+                    lambdas=lambdas,
+                    damping=damping,
+                    scale=scale,
+                    time_dim="time",
+                    exclude_vars=exclude_vars,
+                )
+                resp.update_data(rcombined)
 
     def save_response(self, zlib: bool = False):
         """
@@ -661,12 +712,14 @@ def get_model_data(odb_tag: Optional[Union[int, str]] = None, data_type: str = "
         filename = f"{RESULTS_DIR}/" + f"{RESP_FILE_NAME}-{odb_tag}.{suffix}"
         with xr.open_datatree(filename, engine=engine, **kargs).load() as dt:
             data = ModelInfoStepData.read_data(dt, data_type)
+            dt.close()
     else:
         filename = f"{RESULTS_DIR}/" + f"{MODEL_FILE_NAME}-{odb_tag}.{suffix}"
         with xr.open_datatree(filename, engine=engine, **kargs).load() as dt:
             if data_type not in dt["ModelInfo"]:
                 raise ValueError(f"Data type {data_type} not found in model data.")  # noqa: TRY003
             data = dt["ModelInfo"][data_type][data_type]
+            dt.close()
     color = get_random_color()
     CONSOLE.print(f"{PKG_PREFIX} Loading {data_type} data from [bold {color}]{filename}[/] ...")
     return data

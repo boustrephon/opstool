@@ -15,7 +15,7 @@ SHAPE_MAP = CONFIGS.get_shape_map()
 
 
 class PlotEigenBase(PlotResponsePlotlyBase):
-    def __init__(self, model_info, modal_props, eigen_vectors):
+    def __init__(self, model_info, modal_props, eigen_vectors, interp_eigenvectors=None):
         self.nodal_data = model_info.get("NodalData", [])
         if len(self.nodal_data) > 0:
             self.nodal_tags = self.nodal_data.coords["nodeTags"]
@@ -35,7 +35,18 @@ class PlotEigenBase(PlotResponsePlotlyBase):
         self.ModelInfo = model_info
         self.ModalProps = modal_props
         self.EigenVectors = eigen_vectors
+        self.InterpEigenVectors = interp_eigenvectors
         self.plot_model_base = PlotModelBase(model_info, {})
+
+        if self.InterpEigenVectors is None:
+            self.interplated_line_cells = []
+            self.interplated_line_points = []
+            self.interplated_eigen_vecs = []
+        else:
+            self.line_cells, self.line_tags = [], []
+            self.interplated_line_points = self.InterpEigenVectors["points"].to_numpy()
+            self.interplated_line_cells = self.InterpEigenVectors["cells"].to_numpy().astype(int)
+            self.interplated_eigen_vecs = self.InterpEigenVectors["eigenVectors"].to_numpy()
 
         # plotly
         self.pargs = PLOT_ARGS
@@ -54,6 +65,12 @@ class PlotEigenBase(PlotResponsePlotlyBase):
         eigen_points = self.points + eigen_vec * alpha_
         scalars = np.sqrt(np.sum(eigen_vec**2, axis=1))
         return eigen_points, scalars, alpha_
+
+    def _get_eigen_points_interp(self, step, alpha_):
+        eigen_vec = self.interplated_eigen_vecs[..., :3][step]
+        eigen_points = self.interplated_line_points + eigen_vec * alpha_
+        scalars = np.sqrt(np.sum(eigen_vec**2, axis=1))
+        return eigen_points, scalars
 
     def _get_bc_points(self, step, scale: float):
         fixed_node_data = self.ModelInfo["FixedNodalData"]
@@ -166,9 +183,19 @@ class PlotEigenBase(PlotResponsePlotlyBase):
                 edge_points=face_line_points,
                 edge_scalars=face_line_scalars,
             )
-        if len(self.line_data) > 0:
-            line_points, line_mid_points, line_scalars = self._get_plotly_line_data(
-                eigen_points, self.line_cells, scalars
+        if self.InterpEigenVectors is None and len(self.line_data) > 0:
+            line_points, _, line_scalars = self._get_plotly_line_data(eigen_points, self.line_cells, scalars)
+            _plot_lines_cmap(
+                plotter,
+                line_points,
+                scalars=line_scalars,
+                coloraxis=coloraxis,
+                width=self.pargs.line_width,
+            )
+        elif self.InterpEigenVectors is not None and len(self.interplated_line_cells) > 0:
+            eigen_points_interp, scalars_interp = self._get_eigen_points_interp(step, alpha_)
+            line_points, _, line_scalars = self._get_plotly_line_data(
+                eigen_points_interp, self.interplated_line_cells, scalars_interp
             )
             _plot_lines_cmap(
                 plotter,
@@ -333,8 +360,8 @@ class PlotEigenBase(PlotResponsePlotlyBase):
 
 
 class PlotBucklingBase(PlotEigenBase):
-    def __init__(self, model_info, eigen_values, eigen_vectors):
-        super().__init__(model_info, eigen_values, eigen_vectors)
+    def __init__(self, model_info, eigen_values, eigen_vectors, interp_eigenvectors=None):
+        super().__init__(model_info, eigen_values, eigen_vectors, interp_eigenvectors=interp_eigenvectors)
 
     def _make_eigen_txt(self, step):
         mode = self._set_txt_props(f"{step + 1}", color="#8eab12")
@@ -357,7 +384,7 @@ def plot_eigen(
     style: str = "surface",
     show_bc: bool = True,
     bc_scale: float = 1.0,
-    show_mp_constraint: bool = True,
+    show_mp_constraint: bool = False,
     solver: str = "-genBandArpack",
     mode: str = "eigen",
 ) -> go.Figure:
@@ -387,7 +414,7 @@ def plot_eigen(
         Whether to display boundary supports.
     bc_scale: float, default: 1.0
         Scale the size of boundary support display.
-    show_mp_constraint: bool, default: True
+    show_mp_constraint: bool, default: False
         Whether to show multipoint (MP) constraint.
     solver : str, optional,
        OpenSees' eigenvalue analysis solver, by default "-genBandArpack".
@@ -410,10 +437,10 @@ def plot_eigen(
     if mode.lower() == "eigen":
         resave = odb_tag is None
         odb_tag = "Auto" if odb_tag is None else odb_tag
-        modalProps, eigenvectors, MODEL_INFO = load_eigen_data(
+        modalProps, eigenvectors, interp_eigenvectors, MODEL_INFO = load_eigen_data(
             odb_tag=odb_tag, mode_tag=mode_tags[-1], solver=solver, resave=resave
         )
-        plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors)
+        plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors, interp_eigenvectors=interp_eigenvectors)
     elif mode.lower() == "buckling":
         modalProps, eigenvectors, MODEL_INFO = load_linear_buckling_data(odb_tag=odb_tag)
         plotbase = PlotBucklingBase(MODEL_INFO, modalProps, eigenvectors)
@@ -459,7 +486,7 @@ def plot_eigen_animation(
     style: str = "surface",
     show_bc: bool = True,
     bc_scale: float = 1.0,
-    show_mp_constraint: bool = True,
+    show_mp_constraint: bool = False,
     mode: str = "eigen",
 ) -> go.Figure:
     """Modal animation visualization.
@@ -491,7 +518,7 @@ def plot_eigen_animation(
         Whether to display boundary supports.
     bc_scale: float, default: 1.0
         Scale the size of boundary support display.
-    show_mp_constraint: bool, default: True
+    show_mp_constraint: bool, default: False
         Whether to show multipoint (MP) constraint.
     mode: str, default: eigen
         The type of modal analysis, can be "eigen" or "buckling".
@@ -508,10 +535,10 @@ def plot_eigen_animation(
     """
     if mode.lower() == "eigen":
         resave = odb_tag is None
-        modalProps, eigenvectors, MODEL_INFO = load_eigen_data(
+        modalProps, eigenvectors, interp_eigenvectors, MODEL_INFO = load_eigen_data(
             odb_tag=odb_tag, mode_tag=mode_tag, solver=solver, resave=resave
         )
-        plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors)
+        plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors, interp_eigenvectors=interp_eigenvectors)
     elif mode.lower() == "buckling":
         modalProps, eigenvectors, MODEL_INFO = load_linear_buckling_data(odb_tag=odb_tag)
         plotbase = PlotBucklingBase(MODEL_INFO, modalProps, eigenvectors)
@@ -557,10 +584,10 @@ def plot_eigen_table(
     resave = odb_tag is None
     if isinstance(mode_tags, int):
         mode_tags = [1, mode_tags]
-    modalProps, eigenvectors, MODEL_INFO = load_eigen_data(
+    modalProps, eigenvectors, interp_eigenvectors, MODEL_INFO = load_eigen_data(
         odb_tag=odb_tag, mode_tag=mode_tags[-1], solver=solver, resave=resave
     )
     modei, modej = int(mode_tags[0]), int(mode_tags[1])
-    plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors)
+    plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors, interp_eigenvectors=interp_eigenvectors)
     fig = plotbase.plot_props_table(modei, modej)
     return fig

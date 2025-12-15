@@ -1,0 +1,51 @@
+# %%
+import time
+
+import openseespy.opensees as ops
+
+# %%
+from utils.deep_foundation_p_y import run_lateral_spreading_model
+
+import opstool as opst
+
+model_info = run_lateral_spreading_model(
+    D=0.6,  # pile diameter (m)
+    z=10.0,  # depth to center of liquefied layer (m)
+    T=2.0,  # thickness of liquefied layer (m)
+    phi_deg=36.0,  # friction angle (degrees)
+    gamma=17.0,  # unit weight (kN/m^3)
+    pileE=3.0e7,  # pile Young's modulus (kN/m^2)
+    pileNu=0.30,  # pile Poisson's ratio (-)
+    n_node=80,  # number of pile nodes (you can adjust)
+    H=40.0,  # analysis depth / embedded length (m) – adjust as needed
+)
+
+# %%
+print(model_info)
+
+# %%
+opst.vis.pyvista.plot_model().show()
+
+# %%
+
+# ---------------------------------------------------------------
+# 11. Run static analysis
+# ---------------------------------------------------------------
+ops.integrator("LoadControl", 0.05)
+ops.numberer("RCM")
+ops.system("BandGeneral")
+ops.constraints("Transformation")
+ops.test("NormDispIncr", 1e-6, 20, 1)
+ops.algorithm("Newton")
+ops.analysis("Static")
+
+startT = time.time()
+ok = ops.analyze(200)
+endT = time.time()
+
+print(f"Analysis finished with return code: {ok}")
+print(f"Analysis execution time: {endT - startT:.3f} seconds")
+
+# Clean up OpenSees model
+ops.wipe()
+# %%

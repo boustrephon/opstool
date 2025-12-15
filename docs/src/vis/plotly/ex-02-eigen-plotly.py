@@ -23,7 +23,7 @@ import opstool.vis.plotly as opsvis
 # Here, we use a built-in example from ``opstool``, which is an example of a deck arch bridge model primarily composed of frame elements and shell elements.
 
 # %%
-opst.load_ops_examples("ArchBridge2")
+opst.load_ops_examples("ArchBridge")
 # or your model code here
 
 # %%

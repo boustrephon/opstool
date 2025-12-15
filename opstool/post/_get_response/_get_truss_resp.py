@@ -72,14 +72,19 @@ class TrussRespStepData(ResponseBase):
             )
 
     def get_data(self):
+        if self.resp_steps is None:
+            self._to_xarray()
         return self.resp_steps
+
+    def update_data(self, data):
+        self.resp_steps = data
 
     def get_track(self):
         return self.step_track
 
     def add_to_datatree(self, dt: xr.DataTree):
-        self._to_xarray()
-        dt["/TrussResponses"] = self.resp_steps
+        resp_steps = self.get_data()
+        dt["/TrussResponses"] = resp_steps
         return dt
 
     @staticmethod

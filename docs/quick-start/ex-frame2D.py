@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
 import openseespy.opensees as ops
+from matplotlib.colors import ListedColormap
 
 import opstool as opst
 import opstool.vis.pyvista as opsvis
@@ -141,8 +142,9 @@ opst.post.save_eigen_data(odb_tag="eigen", mode_tag=6, solver="-fullGenLapack")
 
 # %%
 # odb_tag = "eigen" is used to indentify the output database for eigenvalue analysis.
-opsvis.set_plot_props(cmap="jet", line_width=4, point_size=5, font_size=12)
-plotter = opsvis.plot_eigen(mode_tags=[1, 6], odb_tag="eigen", subplots=True, bc_scale=3)
+cmap = ListedColormap(["blue"])
+opsvis.set_plot_props(cmap=cmap, line_width=4, point_size=5, font_size=12)
+plotter = opsvis.plot_eigen(mode_tags=[1, 6], odb_tag="eigen", subplots=True, bc_scale=3, show_mp_constraint=False)
 plotter.show()  # for auto
 
 # %%

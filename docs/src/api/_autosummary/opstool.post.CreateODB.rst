@@ -16,6 +16,7 @@
    .. autosummary::
       :nosignatures:
    
+      ~CreateODB.combine_response_spectrum
       ~CreateODB.fetch_response_step
       ~CreateODB.reset
       ~CreateODB.save_eigen_data

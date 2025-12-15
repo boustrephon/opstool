@@ -88,6 +88,7 @@ ops.uniaxialMaterial("Elastic", 1, E_list[0])
     )
     for e in range(nel)
 ]
+print(f"Number of Nodes: {nn}, Number of Elements: {nel}")
 
 # %%
 # Draw model
@@ -97,6 +98,7 @@ fig = opsvis.plot_model()
 fig
 # fig.show(renderer="browser")
 
+
 # %%
 # Eigenvalue Analysis
 # --------------------
@@ -105,6 +107,10 @@ opst.post.save_eigen_data(odb_tag="eigen", mode_tag=6)
 fig = opsvis.plot_eigen(odb_tag="eigen", mode_tags=6, subplots=True)
 fig
 # fig.show()
+
+# %%
+fig = opst.vis.pyvista.plot_eigen(odb_tag="eigen", mode_tags=6, subplots=True)
+fig.show()
 
 # %%
 model_props, eigen_vectors = opst.post.get_eigen_data(odb_tag="eigen")
