@@ -92,9 +92,9 @@ DOI: [https://doi.org/10.1016/j.softx.2025.102126](https://www.sciencedirect.com
 
 ## Why Choose opstool?
 
-- **Efficiency**: Streamlines complex workflows, reducing time spent on repetitive tasks.
-- **Flexibility**: Provides nearly identical interfaces for different visualization engines.
-- **Accessibility**: Makes advanced structural analysis tools like OpenSeesPy more approachable to users of all levels.
+* **Efficiency**: Streamlines complex workflows, reducing time spent on repetitive tasks.
+* **Flexibility**: Provides nearly identical interfaces for different visualization engines.
+* **Accessibility**: Makes advanced structural analysis tools like OpenSeesPy more approachable to users of all levels.
 
 ``opstool`` is actively evolving, with continuous additions of new features planned for the future.
 With ``opstool``, you can focus on what matters most:
