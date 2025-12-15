@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**00:20.659** total execution time for 38 files **from all galleries**:
+**01:51.709** total execution time for 39 files **from all galleries**:
 
 .. container::
 
@@ -32,14 +32,8 @@ Computation times
    * - Example
      - Time
      - Mem (MB)
-   * - :ref:`sphx_glr_auto_examples_examples_preprocessing_ex-read-gmsh-3.py` (``..\examples\preprocessing\ex-read-gmsh-3.py``)
-     - 00:16.564
-     - 0.0
-   * - :ref:`sphx_glr_auto_examples_examples_preprocessing_ex-read-gmsh-2.py` (``..\examples\preprocessing\ex-read-gmsh-2.py``)
-     - 00:04.096
-     - 0.0
    * - :ref:`sphx_glr_auto_examples_quick-start_ex-frame2D.py` (``quick-start\ex-frame2D.py``)
-     - 00:00.000
+     - 01:51.709
      - 0.0
    * - :ref:`sphx_glr_auto_examples_quick-start_ex-quick-plot-model.py` (``quick-start\ex-quick-plot-model.py``)
      - 00:00.000
@@ -92,6 +86,9 @@ Computation times
    * - :ref:`sphx_glr_auto_examples_vis-guide_pyvista_ex-08-brick-resp-pyvista.py` (``src\vis\pyvista\ex-08-brick-resp-pyvista.py``)
      - 00:00.000
      - 0.0
+   * - :ref:`sphx_glr_auto_examples_examples_postprocessing_ex-2DFrame-Pushover.py` (``..\examples\postprocessing\ex-2DFrame-Pushover.py``)
+     - 00:00.000
+     - 0.0
    * - :ref:`sphx_glr_auto_examples_examples_postprocessing_ex-PressureDependMultiYield-6.py` (``..\examples\postprocessing\ex-PressureDependMultiYield-6.py``)
      - 00:00.000
      - 0.0
@@ -123,6 +120,12 @@ Computation times
      - 00:00.000
      - 0.0
    * - :ref:`sphx_glr_auto_examples_examples_preprocessing_ex-read-gmsh-1.py` (``..\examples\preprocessing\ex-read-gmsh-1.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_examples_preprocessing_ex-read-gmsh-2.py` (``..\examples\preprocessing\ex-read-gmsh-2.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_examples_preprocessing_ex-read-gmsh-3.py` (``..\examples\preprocessing\ex-read-gmsh-3.py``)
      - 00:00.000
      - 0.0
    * - :ref:`sphx_glr_auto_examples_examples_preprocessing_ex-read-gmsh-4.py` (``..\examples\preprocessing\ex-read-gmsh-4.py``)
