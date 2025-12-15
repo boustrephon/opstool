@@ -34,7 +34,7 @@ pip install opstool
 
 ![image.png](https://s2.loli.net/2025/07/12/WIkihvDXMKBcwJF.png)
 
-* The first line of code will create an environment called ``opensees`` and install Python 3.12 and libraries such as numpy, scipy, pandas, xarray, notebook, matplotlib, etc. 
+* The first line of code will create an environment called ``opensees`` and install Python 3.12 and libraries such as numpy, scipy, pandas, xarray, notebook, matplotlib, etc.
 * Please use ``conda activate opensees`` to activate the environment, and then you can install various third-party packages in the environment, such as ``pip install openseespy`` and ``pip install opstool``.
 * You can also install the packages from [anaconda / packages](https://anaconda.org/anaconda/repo), such as ``conda install conda-forge::scikit-learn``.
 
@@ -97,9 +97,9 @@ DOI: [https://doi.org/10.1016/j.softx.2025.102126](https://www.sciencedirect.com
 - **Accessibility**: Makes advanced structural analysis tools like OpenSeesPy more approachable to users of all levels.
 
 ``opstool`` is actively evolving, with continuous additions of new features planned for the future.
-With ``opstool``, you can focus on what matters most: 
-understanding and solving your structural engineering challenges. 
-Whether you are building models, visualizing results, or interpreting data, 
+With ``opstool``, you can focus on what matters most:
+understanding and solving your structural engineering challenges.
+Whether you are building models, visualizing results, or interpreting data,
 ``opstool`` is your go-to solution for OpenSeesPy workflows.
 
 > [!NOTE]  
