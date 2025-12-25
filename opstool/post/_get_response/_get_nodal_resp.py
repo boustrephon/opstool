@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 import numpy as np
 import openseespy.opensees as ops
@@ -6,10 +6,15 @@ import xarray as xr
 
 from ._response_base import ResponseBase
 
+RESP_NAME = "NodalResponses"
+
 
 class NodalRespStepData(ResponseBase):
-    def __init__(self, node_tags=None, model_update: bool = False, dtype: Optional[dict] = None):
-        self.resp_names = [
+    def __init__(self, node_tags, **kwargs):
+        super().__init__(**kwargs)
+
+        self.resp_name = RESP_NAME
+        self.resp_types = [
             "disp",
             "vel",
             "accel",
@@ -18,17 +23,8 @@ class NodalRespStepData(ResponseBase):
             "rayleighForces",
             "pressure",
         ]
-        self.node_tags = node_tags if node_tags is not None else ops.getNodeTags()
-        self.resp_steps = None
-        self.resp_steps_list = []  # for model update
-        self.resp_steps_dict = {}  # for non-update
-        self.times = []
-        self.step_track = 0
 
-        self.model_update = model_update
-        self.dtype = {"int": np.int32, "float": np.float32}
-        if isinstance(dtype, dict):
-            self.dtype.update(dtype)
+        self.node_tags = node_tags if node_tags is not None else ops.getNodeTags()
 
         self.attrs = {
             "UX": "Displacement in X direction",
@@ -39,28 +35,17 @@ class NodalRespStepData(ResponseBase):
             "RZ": "Rotation about Z axis",
         }
 
-        self.initialize()
+        self.add_resp_data_one_step(node_tags=node_tags)
 
-    def initialize(self):
-        self.resp_steps = None
-        self.resp_steps_list = []
-        for name in self.resp_names:
-            self.resp_steps_dict[name] = []
-        self.add_data_one_step(self.node_tags)
-        self.times = [0.0]
-        self.step_track = 0
-
-    def reset(self):
-        self.initialize()
-
-    def add_data_one_step(self, node_tags):
+    def add_resp_data_one_step(self, node_tags):
         # node_tags = ops.getNodeTags()
         disp, vel, accel, pressure = _get_nodal_resp(node_tags, dtype=self.dtype)
         reacts, reacts_inertia, rayleigh_forces = _get_nodal_react(node_tags, dtype=self.dtype)
+
         if self.model_update:
             datas = [disp, vel, accel, reacts, reacts_inertia, rayleigh_forces]
             data_vars = {}
-            for name, data_ in zip(self.resp_names, datas):
+            for name, data_ in zip(self.resp_types, datas):
                 data_vars[name] = (["nodeTags", "DOFs"], data_)
             data_vars["pressure"] = (["nodeTags"], pressure)
             # can have different dimensions and coordinates
@@ -72,36 +57,26 @@ class NodalRespStepData(ResponseBase):
                 },
                 attrs=self.attrs,
             )
-            self.resp_steps_list.append(ds)
-        else:  # non-update
+            self.resp_step_data_list.append(ds)
+        else:
             datas = [disp, vel, accel, reacts, reacts_inertia, rayleigh_forces, pressure]
-            for name, data_ in zip(self.resp_names, datas):
-                self.resp_steps_dict[name].append(data_)
-        self.times.append(ops.getTime())
-        self.step_track += 1
+            for name, data_ in zip(self.resp_types, datas):
+                self.resp_step_data_dict[name].append(data_)
 
-    def get_data(self):
-        if self.resp_steps is None:
-            self._to_xarray()
-        return self.resp_steps
+        self.move_one_step(time_value=ops.getTime())
 
-    def update_data(self, data):
-        self.resp_steps = data
+    def add_resp_data_to_dataset(self):
 
-    def get_track(self):
-        return self.step_track
-
-    def _to_xarray(self):
         self.times = np.array(self.times, dtype=self.dtype["float"])
         if self.model_update:
-            self.resp_steps = xr.concat(self.resp_steps_list, dim="time", join="outer")
-            self.resp_steps.coords["time"] = self.times
+            self.resp_step_data = xr.concat(self.resp_step_data_list, dim="time", join="outer")
+            self.resp_step_data.coords["time"] = self.times
         else:
             data_vars = {}
-            for name in self.resp_names[:-1]:
-                data_vars[name] = (["time", "nodeTags", "DOFs"], self.resp_steps_dict[name])
-            data_vars["pressure"] = (["time", "nodeTags"], self.resp_steps_dict["pressure"])
-            self.resp_steps = xr.Dataset(
+            for name in self.resp_types[:-1]:
+                data_vars[name] = (["time", "nodeTags", "DOFs"], self.resp_step_data_dict[name])
+            data_vars["pressure"] = (["time", "nodeTags"], self.resp_step_data_dict["pressure"])
+            self.resp_step_data = xr.Dataset(
                 data_vars=data_vars,
                 coords={
                     "time": self.times,
@@ -111,63 +86,83 @@ class NodalRespStepData(ResponseBase):
                 attrs=self.attrs,
             )
 
-    def add_to_datatree(self, dt: xr.DataTree):
-        resp_steps = self.get_data()
-        dt["/NodalResponses"] = resp_steps
-        return dt
-
-    @staticmethod
-    def read_datatree(dt: xr.DataTree, unit_factors: Optional[dict] = None):
-        # (eleTag, steps, resp_type)
-        resp_steps = dt["/NodalResponses"].to_dataset()
-        if unit_factors is not None:
-            resp_steps = NodalRespStepData._unit_transform(resp_steps, unit_factors)
-        return resp_steps
-
-    @staticmethod
-    def _unit_transform(resp_steps, unit_factors):
-        disp_factor = unit_factors["disp"]
-        vel_factor = unit_factors["vel"]
-        accel_factor = unit_factors["accel"]
-        angular_vel_fact = unit_factors["angular_vel"]
-        angular_accel_fact = unit_factors["angular_accel"]
-        force_factor = unit_factors["force"]
-        moment_factor = unit_factors["moment"]
-        stress_factor = unit_factors["stress"]
-
-        resp_steps["disp"].loc[{"DOFs": ["UX", "UY", "UZ"]}] *= disp_factor
-        resp_steps["vel"].loc[{"DOFs": ["UX", "UY", "UZ"]}] *= vel_factor
-        resp_steps["vel"].loc[{"DOFs": ["RX", "RY", "RZ"]}] *= angular_vel_fact
-        resp_steps["accel"].loc[{"DOFs": ["UX", "UY", "UZ"]}] *= accel_factor
-        resp_steps["accel"].loc[{"DOFs": ["RX", "RY", "RZ"]}] *= angular_accel_fact
-
-        resp_steps["reaction"].loc[{"DOFs": ["UX", "UY", "UZ"]}] *= force_factor
-        resp_steps["reaction"].loc[{"DOFs": ["RX", "RY", "RZ"]}] *= moment_factor
-        resp_steps["reactionIncInertia"].loc[{"DOFs": ["UX", "UY", "UZ"]}] *= force_factor
-        resp_steps["reactionIncInertia"].loc[{"DOFs": ["RX", "RY", "RZ"]}] *= moment_factor
-        resp_steps["rayleighForces"].loc[{"DOFs": ["UX", "UY", "UZ"]}] *= force_factor
-        resp_steps["rayleighForces"].loc[{"DOFs": ["RX", "RY", "RZ"]}] *= moment_factor
-        resp_steps["pressure"] *= stress_factor
-
-        return resp_steps
-
     @staticmethod
     def read_response(
-        dt: xr.DataTree, resp_type: Optional[str] = None, node_tags=None, unit_factors: Optional[dict] = None
-    ):
-        ds = NodalRespStepData.read_datatree(dt, unit_factors=unit_factors)
+        dt: xr.DataTree | list[xr.DataTree],
+        resp_type: str | None = None,
+        node_tags=None,
+        unit_factors: dict | None = None,
+    ) -> xr.Dataset | xr.DataArray:
+        # ---- normalize dt to list ----
+        dts = dt if isinstance(dt, (list, tuple)) else [dt]
+        if not dts:
+            return []
+
+        # ---- collect response datasets under /RESP_NAME ----
+        dss = []
+        for t in dts:
+            if RESP_NAME not in t:
+                continue
+            node = t[f"/{RESP_NAME}"]
+            if node.ds is not None:
+                dss.append(node.ds)
+
+        if not dss:
+            return []
+
+        # ---- concat along time if multiple parts ----
+        resp_steps = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer")
+
+        # ---- unit transform ----
+        resp_steps = _unit_transform(resp_steps, unit_factors)
+
+        # ---- selection logic (unchanged semantics) ----
         if resp_type is None:
-            if node_tags is None:
-                return ds
-            else:
-                return ds.sel(nodeTags=node_tags)
-        else:
-            if resp_type not in list(ds.keys()):
-                raise ValueError(f"resp_type {resp_type} not found in {list(ds.keys())}")  # noqa: TRY003
-            if node_tags is not None:
-                return ds[resp_type].sel(nodeTags=node_tags)
-            else:
-                return ds[resp_type]
+            return resp_steps if node_tags is None else resp_steps.sel(nodeTags=node_tags)
+
+        if resp_type not in resp_steps.data_vars:
+            raise ValueError(f"resp_type {resp_type} not found in {list(resp_steps.data_vars.keys())}")  # noqa: TRY003
+
+        da = resp_steps[resp_type]
+        return da if node_tags is None else da.sel(nodeTags=node_tags)
+
+
+def _unit_transform(resp_steps: xr.Dataset, unit_factors: dict[str, float] | None) -> xr.Dataset:
+    if not unit_factors:
+        return resp_steps
+
+    d = resp_steps
+    dofs = d.get("DOFs", d.coords.get("DOFs", None))
+    if dofs is None:
+        raise KeyError("DOFs coordinate not found")  # noqa: TRY003
+
+    trans = ["UX", "UY", "UZ"]
+    rot = ["RX", "RY", "RZ"]
+
+    def scale(var: str, factor: float, sel: list[str] | None = None) -> xr.DataArray:
+        da = d[var]
+        if sel is None:
+            return da * factor
+        m = dofs.isin(sel)
+        return da.where(~m, da * factor)
+
+    return d.assign(
+        disp=scale("disp", unit_factors["disp"], trans),
+        vel=scale("vel", unit_factors["vel"], trans).where(~dofs.isin(rot), d["vel"] * unit_factors["angular_vel"]),
+        accel=scale("accel", unit_factors["accel"], trans).where(
+            ~dofs.isin(rot), d["accel"] * unit_factors["angular_accel"]
+        ),
+        reaction=scale("reaction", unit_factors["force"], trans).where(
+            ~dofs.isin(rot), d["reaction"] * unit_factors["moment"]
+        ),
+        reactionIncInertia=scale("reactionIncInertia", unit_factors["force"], trans).where(
+            ~dofs.isin(rot), d["reactionIncInertia"] * unit_factors["moment"]
+        ),
+        rayleighForces=scale("rayleighForces", unit_factors["force"], trans).where(
+            ~dofs.isin(rot), d["rayleighForces"] * unit_factors["moment"]
+        ),
+        pressure=d["pressure"] * unit_factors["stress"],
+    )
 
 
 def handle_1d(disp, vel, accel):

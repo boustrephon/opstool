@@ -1,23 +1,22 @@
+from __future__ import annotations
+
 from collections import defaultdict
-from typing import Optional
 
 import numpy as np
 import openseespy.opensees as ops
 import xarray as xr
 
 from ...utils import get_shell_gp2node_func, suppress_ops_print
-from ._response_base import ResponseBase, _expand_to_uniform_array
+from ._response_base import ResponseBase, expand_to_uniform_array
+
+RESP_NAME = "ShellResponses"
 
 
 class ShellRespStepData(ResponseBase):
-    def __init__(
-        self,
-        ele_tags=None,
-        model_update: bool = False,
-        compute_nodal_resp: Optional[str] = None,
-        dtype: Optional[dict] = None,
-    ):
-        self.resp_names = [
+    def __init__(self, ele_tags, compute_nodal_resp: str | None = None, **kargs):
+        super().__init__(**kargs)
+        self.resp_name = RESP_NAME
+        self.resp_types = [
             "sectionForces",
             "sectionDeformations",
             "Stresses",
@@ -27,20 +26,10 @@ class ShellRespStepData(ResponseBase):
             "StressesAtNodes",
             "StrainsAtNodes",
         ]
-        self.resp_steps = None
-        self.resp_steps_list = []  # for model update
-        self.resp_steps_dict = {}  # for non-update
-        self.step_track = 0
         self.ele_tags = ele_tags
-        self.times = []
 
-        self.node_tags = None
         self.compute_nodal_resp = compute_nodal_resp
         self.nodal_resp_method = compute_nodal_resp
-        self.model_update = model_update
-        self.dtype = {"int": np.int32, "float": np.float32}
-        if isinstance(dtype, dict):
-            self.dtype.update(dtype)
 
         self.attrs = {
             "FXX,FYY,FXY": "Membrane (in-plane) forces or deformations.",
@@ -49,26 +38,14 @@ class ShellRespStepData(ResponseBase):
             "sigma11, sigma22": "Normal stress (strain) along local x, y",
             "sigma12, sigma23, sigma13": "Shear stress (strain).",
         }
-        self.GaussPoints = None
         self.secDOFs = ["FXX", "FYY", "FXY", "MXX", "MYY", "MXY", "VXZ", "VYZ"]
-        self.fiberPoints = None
         self.stressDOFs = ["sigma11", "sigma22", "sigma12", "sigma23", "sigma13"]
+        self.GaussPoints = None
+        self.fiberPoints = None
 
-        self.initialize()
+        self.add_resp_data_one_step(ele_tags)
 
-    def initialize(self):
-        self.resp_steps = None
-        self.resp_steps_list = []
-        for name in self.resp_names:
-            self.resp_steps_dict[name] = []
-        self.add_data_one_step(self.ele_tags)
-        self.times = [0.0]
-        self.step_track = 0
-
-    def reset(self):
-        self.initialize()
-
-    def add_data_one_step(self, ele_tags):
+    def add_resp_data_one_step(self, ele_tags):
         sec_forces, sec_defos, stresses, strains = _get_shell_resp_one_step(ele_tags, dtype=self.dtype)
 
         if self.compute_nodal_resp:
@@ -106,45 +83,44 @@ class ShellRespStepData(ResponseBase):
                     data_vars["StrainsAtNodes"] = (["nodeTags", "fiberPoints", "stressDOFs"], node_strains_avg)
                 coords["nodeTags"] = node_tags
             ds = xr.Dataset(data_vars=data_vars, coords=coords, attrs=self.attrs)
-            self.resp_steps_list.append(ds)
+            self.resp_step_data_list.append(ds)
         else:
-            self.resp_steps_dict["sectionForces"].append(sec_forces)
-            self.resp_steps_dict["sectionDeformations"].append(sec_defos)
-            self.resp_steps_dict["Stresses"].append(stresses)
-            self.resp_steps_dict["Strains"].append(strains)
+            self.resp_step_data_dict["sectionForces"].append(sec_forces)
+            self.resp_step_data_dict["sectionDeformations"].append(sec_defos)
+            self.resp_step_data_dict["Stresses"].append(stresses)
+            self.resp_step_data_dict["Strains"].append(strains)
             if self.compute_nodal_resp:
-                self.resp_steps_dict["sectionForcesAtNodes"].append(node_sec_forces_avg)
-                self.resp_steps_dict["sectionDeformationsAtNodes"].append(node_sec_defo_avg)
+                self.resp_step_data_dict["sectionForcesAtNodes"].append(node_sec_forces_avg)
+                self.resp_step_data_dict["sectionDeformationsAtNodes"].append(node_sec_defo_avg)
                 if len(node_stresses_avg) > 0:
-                    self.resp_steps_dict["StressesAtNodes"].append(node_stresses_avg)
+                    self.resp_step_data_dict["StressesAtNodes"].append(node_stresses_avg)
                 if len(node_strains_avg) > 0:
-                    self.resp_steps_dict["StrainsAtNodes"].append(node_strains_avg)
+                    self.resp_step_data_dict["StrainsAtNodes"].append(node_strains_avg)
+        self.move_one_step(time_value=ops.getTime())
 
-        self.times.append(ops.getTime())
-        self.step_track += 1
+    def add_resp_data_to_dataset(self):
 
-    def _to_xarray(self):
         self.times = np.array(self.times, dtype=self.dtype["float"])
         if self.model_update:
-            self.resp_steps = xr.concat(self.resp_steps_list, dim="time", join="outer")
-            self.resp_steps.coords["time"] = self.times
+            self.resp_step_data = xr.concat(self.resp_step_data_list, dim="time", join="outer")
+            self.resp_step_data.coords["time"] = self.times
         else:
             data_vars = {}
             data_vars["sectionForces"] = (
                 ["time", "eleTags", "GaussPoints", "secDOFs"],
-                self.resp_steps_dict["sectionForces"],
+                self.resp_step_data_dict["sectionForces"],
             )
             data_vars["sectionDeformations"] = (
                 ["time", "eleTags", "GaussPoints", "secDOFs"],
-                self.resp_steps_dict["sectionDeformations"],
+                self.resp_step_data_dict["sectionDeformations"],
             )
             data_vars["Stresses"] = (
                 ["time", "eleTags", "GaussPoints", "fiberPoints", "stressDOFs"],
-                self.resp_steps_dict["Stresses"],
+                self.resp_step_data_dict["Stresses"],
             )
             data_vars["Strains"] = (
                 ["time", "eleTags", "GaussPoints", "fiberPoints", "stressDOFs"],
-                self.resp_steps_dict["Strains"],
+                self.resp_step_data_dict["Strains"],
             )
             coords = {
                 "time": self.times,
@@ -157,85 +133,99 @@ class ShellRespStepData(ResponseBase):
             if self.compute_nodal_resp:
                 data_vars["sectionForcesAtNodes"] = (
                     ["time", "nodeTags", "secDOFs"],
-                    self.resp_steps_dict["sectionForcesAtNodes"],
+                    self.resp_step_data_dict["sectionForcesAtNodes"],
                 )
                 data_vars["sectionDeformationsAtNodes"] = (
                     ["time", "nodeTags", "secDOFs"],
-                    self.resp_steps_dict["sectionDeformationsAtNodes"],
+                    self.resp_step_data_dict["sectionDeformationsAtNodes"],
                 )
-                if len(self.resp_steps_dict["StressesAtNodes"]) > 0:
+                if len(self.resp_step_data_dict["StressesAtNodes"]) > 0:
                     data_vars["StressesAtNodes"] = (
                         ["time", "nodeTags", "fiberPoints", "stressDOFs"],
-                        self.resp_steps_dict["StressesAtNodes"],
+                        self.resp_step_data_dict["StressesAtNodes"],
                     )
-                if len(self.resp_steps_dict["StrainsAtNodes"]) > 0:
+                if len(self.resp_step_data_dict["StrainsAtNodes"]) > 0:
                     data_vars["StrainsAtNodes"] = (
                         ["time", "nodeTags", "fiberPoints", "stressDOFs"],
-                        self.resp_steps_dict["StrainsAtNodes"],
+                        self.resp_step_data_dict["StrainsAtNodes"],
                     )
                 coords["nodeTags"] = self.node_tags
-            self.resp_steps = xr.Dataset(data_vars=data_vars, coords=coords, attrs=self.attrs)
-
-    def get_data(self):
-        if self.resp_steps is None:
-            self._to_xarray()
-        return self.resp_steps
-
-    def update_data(self, data):
-        self.resp_steps = data
-
-    def get_track(self):
-        return self.step_track
-
-    def add_to_datatree(self, dt: xr.DataTree):
-        resp_steps = self.get_data()
-        dt["/ShellResponses"] = resp_steps
-        return dt
-
-    @staticmethod
-    def read_datatree(dt: xr.DataTree, unit_factors: Optional[dict] = None):
-        resp_steps = dt["/ShellResponses"].to_dataset()
-        if unit_factors is not None:
-            resp_steps = ShellRespStepData._unit_transform(resp_steps, unit_factors)
-        return resp_steps
-
-    @staticmethod
-    def _unit_transform(resp_steps, unit_factors):
-        force_per_length_factor = unit_factors["force_per_length"]
-        moment_per_length_factor = unit_factors["moment_per_length"]
-        stress_factor = unit_factors["stress"]
-
-        resp_steps["sectionForces"].loc[{"secDOFs": ["FXX", "FYY", "FXY", "VXZ", "VYZ"]}] *= force_per_length_factor
-        resp_steps["sectionForces"].loc[{"secDOFs": ["MXX", "MYY", "MXY"]}] *= moment_per_length_factor
-        resp_steps["Stresses"] *= stress_factor
-
-        if "sectionForcesAtNodes" in resp_steps.data_vars:
-            resp_steps["sectionForcesAtNodes"].loc[{"secDOFs": ["FXX", "FYY", "FXY", "VXZ", "VYZ"]}] *= (
-                force_per_length_factor
-            )
-            resp_steps["sectionForcesAtNodes"].loc[{"secDOFs": ["MXX", "MYY", "MXY"]}] *= moment_per_length_factor
-        if "StressesAtNodes" in resp_steps.data_vars:
-            resp_steps["StressesAtNodes"] *= stress_factor
-
-        return resp_steps
+            self.resp_step_data = xr.Dataset(data_vars=data_vars, coords=coords, attrs=self.attrs)
 
     @staticmethod
     def read_response(
-        dt: xr.DataTree, resp_type: Optional[str] = None, ele_tags=None, unit_factors: Optional[dict] = None
+        dt: xr.DataTree | list[xr.DataTree],
+        resp_type: str | None = None,
+        ele_tags=None,
+        unit_factors: dict | None = None,
     ):
-        ds = ShellRespStepData.read_datatree(dt, unit_factors=unit_factors)
+        dts = dt if isinstance(dt, (list, tuple)) else [dt]
+        if not dts:
+            return []
+
+        # collect datasets under /RESP_NAME (skip missing)
+        dss = []
+        for t in dts:
+            if RESP_NAME not in t:
+                continue
+            node = t[f"/{RESP_NAME}"]
+            if node.ds is not None:
+                dss.append(node.ds)
+
+        if not dss:
+            return []
+
+        ds = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer")
+        ds = _unit_transform(ds, unit_factors=unit_factors)
+
         if resp_type is None:
-            if ele_tags is None:
-                return ds
-            else:
-                return ds.sel(eleTags=ele_tags)
-        else:
-            if resp_type not in list(ds.keys()):
-                raise ValueError(f"resp_type {resp_type} not found in {list(ds.keys())}")  # noqa: TRY003
-            if ele_tags is not None:
-                return ds[resp_type].sel(eleTags=ele_tags)
-            else:
-                return ds[resp_type]
+            return ds if ele_tags is None else ds.sel(eleTags=ele_tags)
+
+        if resp_type not in ds.data_vars:
+            raise ValueError(f"resp_type {resp_type} not found in {list(ds.data_vars.keys())}")  # noqa: TRY003
+
+        da = ds[resp_type]
+        return da if ele_tags is None else da.sel(eleTags=ele_tags)
+
+
+def _unit_transform(resp_steps: xr.Dataset, unit_factors: dict) -> xr.Dataset:
+    if not unit_factors:
+        return resp_steps
+
+    fpl = unit_factors["force_per_length"]
+    mpl = unit_factors["moment_per_length"]
+    sf = unit_factors["stress"]
+
+    def scale_by_label(da: xr.DataArray, dim: str, labels: list[str], factor: float) -> xr.DataArray:
+        c = da.coords.get(dim)
+        if c is None:
+            return da
+        m = c.isin(labels)
+        return da.where(~m, da * factor)
+
+    def maybe_scale(ds: xr.Dataset, name: str, fn):
+        return ds.assign({name: fn(ds[name])}) if name in ds.data_vars else ds
+
+    # -------------------------
+    # sectionForces
+    # -------------------------
+    def _scale_section_forces(da: xr.DataArray) -> xr.DataArray:
+        da = scale_by_label(da, "secDOFs", ["FXX", "FYY", "FXY", "VXZ", "VYZ"], fpl)
+        da = scale_by_label(da, "secDOFs", ["MXX", "MYY", "MXY"], mpl)
+        return da
+
+    resp_steps = resp_steps.assign(
+        sectionForces=_scale_section_forces(resp_steps["sectionForces"]),
+        Stresses=resp_steps["Stresses"] * sf,
+    )
+
+    # -------------------------
+    # optional vars
+    # -------------------------
+    resp_steps = maybe_scale(resp_steps, "sectionForcesAtNodes", _scale_section_forces)
+    resp_steps = maybe_scale(resp_steps, "StressesAtNodes", lambda da: da * sf)
+
+    return resp_steps
 
 
 def _get_shell_resp_one_step(ele_tags, dtype):
@@ -264,10 +254,10 @@ def _get_shell_resp_one_step(ele_tags, dtype):
         sec_strain = np.reshape(sec_strain, (num_sec, -1, 5))
         stresses.append(_reorder_by_ele_type(etag, sec_stress))
         strains.append(_reorder_by_ele_type(etag, sec_strain))
-    sec_forces = _expand_to_uniform_array(sec_forces, dtype=dtype["float"])
-    sec_defos = _expand_to_uniform_array(sec_defos, dtype=dtype["float"])
-    stresses = _expand_to_uniform_array(stresses, dtype=dtype["float"])
-    strains = _expand_to_uniform_array(strains, dtype=dtype["float"])
+    sec_forces = expand_to_uniform_array(sec_forces, dtype=dtype["float"])
+    sec_defos = expand_to_uniform_array(sec_defos, dtype=dtype["float"])
+    stresses = expand_to_uniform_array(stresses, dtype=dtype["float"])
+    strains = expand_to_uniform_array(strains, dtype=dtype["float"])
     return sec_forces, sec_defos, stresses, strains
 
 

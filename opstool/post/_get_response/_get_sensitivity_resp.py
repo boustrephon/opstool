@@ -1,15 +1,19 @@
+from __future__ import annotations
+
 import numpy as np
 import openseespy.opensees as ops
 import xarray as xr
 
 from ._response_base import ResponseBase
 
+RESP_NAME = "SensitivityResponses"
+
 
 class SensitivityRespStepData(ResponseBase):
-    def __init__(
-        self, node_tags=None, ele_tags=None, sens_para_tags=None, model_update: bool = False, dtype: dict = None
-    ):
-        self.resp_names = [
+    def __init__(self, node_tags=None, ele_tags=None, sens_para_tags=None, **kwargs):
+        super().__init__(**kwargs)
+        self.resp_name = RESP_NAME
+        self.resp_types = [
             "disp",
             "vel",
             "accel",
@@ -18,18 +22,8 @@ class SensitivityRespStepData(ResponseBase):
             # "sensSectionForce",
         ]
         self.node_tags = node_tags if node_tags is not None else ops.getNodeTags()
-        self.ele_tags = ele_tags if ele_tags is not None else []
+        self.ele_tags = ele_tags if ele_tags is not None else []  # for future use
         self.sens_para_tags = sens_para_tags if sens_para_tags is not None else ops.getParamTags()
-        self.resp_steps = None
-        self.resp_steps_list = []  # for model update
-        self.resp_steps_dict = {}  # for non-update
-        self.times = []
-        self.step_track = 0
-
-        self.model_update = model_update
-        self.dtype = {"int": np.int32, "float": np.float32}
-        if isinstance(dtype, dict):
-            self.dtype.update(dtype)
 
         self.attrs = {
             "UX": "Displacement in X direction",
@@ -42,25 +36,12 @@ class SensitivityRespStepData(ResponseBase):
         self.DOFs = ["UX", "UY", "UZ", "RX", "RY", "RZ"]
         self.patternTags = None
 
-        self.initialize()
+        self.add_resp_data_one_step(node_tags=self.node_tags, sens_para_tags=self.sens_para_tags)
 
-    def initialize(self):
-        self.resp_steps = None
-        self.resp_steps_list = []
-        for name in self.resp_names:
-            self.resp_steps_dict[name] = []
-        self.add_data_one_step(self.node_tags, self.sens_para_tags)
-        self.times = [0.0]
-        self.step_track = 0
+    def add_resp_data_one_step(self, node_tags, sens_para_tags):
+        node_tags = node_tags if node_tags is not None else ops.getNodeTags()
+        sens_para_tags = sens_para_tags if sens_para_tags is not None else ops.getParamTags()
 
-    def reset(self):
-        self.initialize()
-
-    def add_data_one_step(self, node_tags, sens_para_tags):
-        if node_tags is None:
-            node_tags = self.node_tags
-        if sens_para_tags is None:
-            sens_para_tags = self.sens_para_tags
         disp, vel, accel, pressure = _get_nodal_sens_resp(node_tags, sens_para_tags, dtype=self.dtype)
         lambdas_ = _get_sens_lambda(sens_para_tags, dtype=self.dtype)
 
@@ -85,38 +66,27 @@ class SensitivityRespStepData(ResponseBase):
                 },
                 attrs=self.attrs,
             )
-            self.resp_steps_list.append(ds)
+            self.resp_step_data_list.append(ds)
         else:
             datas = [disp, vel, accel, pressure, lambdas_]
-            for name, data_ in zip(self.resp_names, datas):
-                self.resp_steps_dict[name].append(data_)
+            for name, data_ in zip(self.resp_types, datas):
+                self.resp_step_data_dict[name].append(data_)
 
-        self.times.append(ops.getTime())
-        self.step_track += 1
+        self.move_one_step(time_value=ops.getTime())
 
-    def get_data(self):
-        if self.resp_steps is None:
-            self._to_xarray()
-        return self.resp_steps
+    def add_resp_data_to_dataset(self):
 
-    def update_data(self, data):
-        self.resp_steps = data
-
-    def get_track(self):
-        return self.step_track
-
-    def _to_xarray(self):
         self.times = np.array(self.times, dtype=self.dtype["float"])
         if self.model_update:
-            self.resp_steps = xr.concat(self.resp_steps_list, dim="time", join="outer")
-            self.resp_steps.coords["time"] = self.times
+            self.resp_step_data = xr.concat(self.resp_step_data_list, dim="time", join="outer")
+            self.resp_step_data.coords["time"] = self.times
         else:
             data_vars = {}
             for name in ["disp", "vel", "accel"]:
-                data_vars[name] = (["time", "paraTags", "nodeTags", "DOFs"], self.resp_steps_dict[name])
-            data_vars["pressure"] = (["time", "paraTags", "nodeTags"], self.resp_steps_dict["pressure"])
-            data_vars["lambdas"] = (["time", "paraTags", "patternTags"], self.resp_steps_dict["lambdas"])
-            self.resp_steps = xr.Dataset(
+                data_vars[name] = (["time", "paraTags", "nodeTags", "DOFs"], self.resp_step_data_dict[name])
+            data_vars["pressure"] = (["time", "paraTags", "nodeTags"], self.resp_step_data_dict["pressure"])
+            data_vars["lambdas"] = (["time", "paraTags", "patternTags"], self.resp_step_data_dict["lambdas"])
+            self.resp_step_data = xr.Dataset(
                 data_vars=data_vars,
                 coords={
                     "paraTags": self.sens_para_tags,
@@ -127,28 +97,29 @@ class SensitivityRespStepData(ResponseBase):
                 attrs=self.attrs,
             )
 
-    def add_to_datatree(self, dt: xr.DataTree):
-        resp_steps = self.get_data()
-        dt["/SensitivityResponses"] = resp_steps
-        return dt
-
     @staticmethod
-    def read_datatree(dt: xr.DataTree):
-        # (eleTag, steps, resp_type)
-        resp_steps = dt["/SensitivityResponses"].to_dataset()
-        return resp_steps
+    def read_response(dt: xr.DataTree | list[xr.DataTree], resp_type: str | None = None):
+        dts = dt if isinstance(dt, (list, tuple)) else [dt]
+        if not dts:
+            return []
 
-    @staticmethod
-    def read_response(dt: xr.DataTree, resp_type: str = None):
-        ds = SensitivityRespStepData.read_datatree(dt)
+        dss = []
+        for t in dts:
+            if RESP_NAME in t and t[f"/{RESP_NAME}"].ds is not None:
+                dss.append(t[f"/{RESP_NAME}"].ds)
+
+        if not dss:
+            return []
+
+        ds = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer")
+
         if resp_type is None:
             return ds
-        else:
-            if resp_type not in list(ds.keys()):
-                raise ValueError(  # noqa: TRY003
-                    f"resp_type {resp_type} not found in {list(ds.keys())}"
-                )
-            return ds[resp_type]
+
+        if resp_type not in ds.data_vars:
+            raise ValueError(f"resp_type {resp_type} not found in {list(ds.data_vars.keys())}")  # noqa: TRY003
+
+        return ds[resp_type]
 
 
 def _get_nodal_sens_resp(node_tags, sens_para_tags, dtype):
