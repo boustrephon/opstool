@@ -740,7 +740,7 @@ def loadODB(
         "Contact",
         "Sensitivity",
     ] = "Nodal",
-    lazy_load: bool = False,
+    lazy_load: bool = True,
     verbose: bool = True,
 ):
     """Load saved response data.
