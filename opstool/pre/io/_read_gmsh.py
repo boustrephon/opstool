@@ -1,6 +1,7 @@
+from __future__ import annotations
+
 import re
 from collections import defaultdict
-from typing import Union, Optional
 
 import gmsh
 import numpy as np
@@ -24,11 +25,11 @@ class Gmsh2OPS:
         self.ndm = ndm
         self.ndf = ndf
 
-        self.gmsh_entities = defaultdict(dict)
-        self.gmsh_dim_entity_tags = None
-        self.gmsh_nodes = defaultdict(dict)
-        self.gmsh_eles = defaultdict(dict)
+        self.gmsh_entities = defaultdict(lambda: {})
+        self.gmsh_nodes = defaultdict(lambda: {})
+        self.gmsh_eles = defaultdict(lambda: {})
         self.gmsh_physical_groups = defaultdict(list)
+        self.gmsh_dim_entity_tags = None
         # key: name, value:[(dim, entity_tag)]
         self.all_node_tags, self.all_ele_tags = [], []
         self.out_file = None
@@ -186,10 +187,40 @@ class Gmsh2OPS:
             f"MinEleTag {min(self.all_ele_tags)}.\n"
         )
 
+    def set_node_element_tags_offset(self, node_offset: int | None = None, ele_offset: int | None = None):
+        """
+        Set node and element tags offset.
+
+        Parameters
+        -----------
+        start_node_tag: int, default=None
+            The starting node tag. If None, no offset will be applied.
+            If not None, the new node tag = old node tag + node_offset.
+        start_ele_tag: int, default=None
+            The starting element tag. If None, no offset will be applied.
+            If not None, the new element tag = old element tag + ele_offset.
+        """
+        if node_offset is not None:
+            new_gmsh_nodes = defaultdict(lambda: {})
+            for key, nodes in self.gmsh_nodes.items():
+                for tag, coords in nodes.items():
+                    new_gmsh_nodes[key][tag + node_offset] = coords
+            self.gmsh_nodes = new_gmsh_nodes
+            self.all_node_tags = [tag + node_offset for tag in self.all_node_tags]
+        if ele_offset is not None:
+            new_gmsh_eles = defaultdict(lambda: {})
+            for key, eles in self.gmsh_eles.items():
+                for tag, ntags in eles.items():
+                    if node_offset is not None:
+                        ntags = [nt + node_offset for nt in ntags]
+                    new_gmsh_eles[key][tag + ele_offset] = ntags
+            self.gmsh_eles = new_gmsh_eles
+            self.all_ele_tags = [tag + ele_offset for tag in self.all_ele_tags]
+
     def get_node_tags(
         self,
-        dim_entity_tags: Union[list, tuple, None] = None,
-        physical_group_names: Union[list, tuple, str, None] = None,
+        dim_entity_tags: list | tuple | None = None,
+        physical_group_names: list | tuple | str | None = None,
     ) -> list:
         """Return node tags in Gmsh, which will also be the same as in OpenSeesPy.
 
@@ -230,8 +261,8 @@ class Gmsh2OPS:
 
     def create_node_cmds(
         self,
-        dim_entity_tags: Union[list, tuple, None] = None,
-        physical_group_names: Union[list, tuple, str, None] = None,
+        dim_entity_tags: list | tuple | None = None,
+        physical_group_names: list | tuple | str | None = None,
     ) -> list:
         """
         Create ``OpenSeesPy`` nodes at runtime.
@@ -273,8 +304,8 @@ class Gmsh2OPS:
 
     def write_node_file(
         self,
-        dim_entity_tags: Union[list, tuple, None] = None,
-        physical_group_names: Union[list, tuple, str, None] = None,
+        dim_entity_tags: list | tuple | None = None,
+        physical_group_names: list | tuple | str | None = None,
     ):
         """
         Write a node commands file, Tcl or Python.
@@ -318,8 +349,8 @@ class Gmsh2OPS:
 
     def get_element_tags(
         self,
-        dim_entity_tags: Union[list, tuple, None] = None,
-        physical_group_names: Union[list, tuple, str, None] = None,
+        dim_entity_tags: list | tuple | None = None,
+        physical_group_names: list | tuple | str | None = None,
     ) -> list:
         """Return element tags in Gmsh, which will also be the same as in OpenSeesPy.
 
@@ -365,9 +396,9 @@ class Gmsh2OPS:
     def create_element_cmds(
         self,
         ops_ele_type: str,
-        ops_ele_args: Optional[list] = None,
-        dim_entity_tags: Union[list, tuple, None] = None,
-        physical_group_names: Union[list, tuple, str, None] = None,
+        ops_ele_args: list | None = None,
+        dim_entity_tags: list | tuple | None = None,
+        physical_group_names: list | tuple | str | None = None,
     ) -> list:
         """Create ``OpenSeesPy`` elements at runtime.
 
@@ -421,9 +452,9 @@ class Gmsh2OPS:
     def write_element_file(
         self,
         ops_ele_type: str,
-        ops_ele_args: Optional[list] = None,
-        dim_entity_tags: Union[list, tuple, None] = None,
-        physical_group_names: Union[list, tuple, str, None] = None,
+        ops_ele_args: list | None = None,
+        dim_entity_tags: list | tuple | None = None,
+        physical_group_names: list | tuple | str | None = None,
     ):
         """Write elements a command file, ``Tcl`` or ``Python``.
 
@@ -479,8 +510,8 @@ class Gmsh2OPS:
     def create_fix_cmds(
         self,
         dofs: list,
-        dim_entity_tags: Union[list, tuple, None] = None,
-        physical_group_names: Union[list, tuple, str, None] = None,
+        dim_entity_tags: list | tuple | None = None,
+        physical_group_names: list | tuple | str | None = None,
     ) -> list:
         """
         Create fix constraints for OpenSeesPy at runtime.
@@ -527,8 +558,8 @@ class Gmsh2OPS:
     def write_fix_file(
         self,
         dofs: list,
-        dim_entity_tags: Union[list, tuple, None] = None,
-        physical_group_names: Union[list, tuple, str, None] = None,
+        dim_entity_tags: list | tuple | None = None,
+        physical_group_names: list | tuple | str | None = None,
     ):
         """
         Write node fix commands file, Tcl or Python.
@@ -575,7 +606,7 @@ class Gmsh2OPS:
                             outf.write(f"ops.fix({tag}, {content})\n")
                         fixed_tags.append(tag)
 
-    def get_dim_entity_tags(self, dim: Optional[int] = None) -> list:
+    def get_dim_entity_tags(self, dim: int | None = None) -> list:
         """
         Get dim_entity_tags from GMSH.
 
@@ -610,8 +641,8 @@ class Gmsh2OPS:
 
     def get_boundary_dim_tags(
         self,
-        dim_entity_tags: Union[list, tuple, None] = None,
-        physical_group_names: Union[list, tuple, str, None] = None,
+        dim_entity_tags: list | tuple | None = None,
+        physical_group_names: list | tuple | str | None = None,
         include_self: bool = False,
     ) -> list:
         """
