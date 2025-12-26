@@ -26,7 +26,7 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePlotlyBase):
         self.title = {"text": title, "font": {"size": self.pargs.title_font_size}}
 
     def _make_title(self, step, add_title=False):
-        max_norm, min_norm = np.nanmax(self.resps_norm[step]), np.nanmin(self.resps_norm[step])
+        max_norm, min_norm = np.nanmax(self._get_step_norm(step)), np.nanmin(self._get_step_norm(step))
         title = "Nodal Responses"
         if self.resp_type == "disp":
             resp_type = "Displacement"
@@ -81,7 +81,7 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePlotlyBase):
         node_defo_coords = np.array(self._get_defo_coord_da(step, alpha))
         node_resp = np.array(self._get_resp_da(step, self.resp_type, self.component))
         if self.resps_norm is not None:
-            scalars = self.resps_norm[step]
+            scalars = self._get_step_norm(step)
         else:
             scalars = node_resp if node_resp.ndim == 1 else np.linalg.norm(node_resp, axis=1)
 

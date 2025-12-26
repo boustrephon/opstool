@@ -1,4 +1,5 @@
 import numpy as np
+import xarray as xr
 
 from ._plot_resp_base import PlotResponseBase
 
@@ -40,43 +41,41 @@ class PlotNodalResponseBase(PlotResponseBase):
 
     def _get_resp_clim_peak(self, idx=None):
         # If idx is None, get clim for all steps, else for specified step
-        resps = []
-        for i in range(self.num_steps):
-            da = self._get_resp_da(i, self.resp_type, self.component)
-            resps.append(da)
+        resps = [self._get_resp_da(i, self.resp_type, self.component) for i in range(self.num_steps)]
+
         if self.ModelUpdate:
-            resps_norm = resps if resps[0].ndim == 1 else [np.linalg.norm(resp, axis=1) for resp in resps]
+            resps_norm = [_resp_mag(r) for r in resps]  # list per step
         else:
-            resps_norm = resps if resps[0].ndim == 1 else np.linalg.norm(resps, axis=2)
-        if isinstance(idx, str):
-            if idx.lower() == "absmax":
-                resp = [np.nanmax(np.abs(data)) for data in resps]
-                step = np.argmax(resp)
-            elif idx.lower() == "max":
-                resp = [np.max(data) for data in resps]
-                step = np.argmax(resp)
-            elif idx.lower() == "absmin":
-                resp = [np.nanmin(np.abs(data)) for data in resps]
-                step = np.argmin(resp)
-            elif idx.lower() == "min":
-                resp = [np.nanmin(data) for data in resps]
-                step = np.argmin(resp)
-            else:
-                raise ValueError("Invalid argument, one of [absMax, absMin, Max, Min]")  # noqa: TRY003
-        elif isinstance(idx, (int, float)):
-            step = int(idx)
-        else:
-            resp = [np.nanmax(np.abs(data)) for data in resps]  # absmax
-            step = np.argmax(resp)
-        if idx is None:
-            max_resps = [np.nanmax(resp) for resp in resps_norm]
-            min_resps = [np.nanmin(resp) for resp in resps_norm]
-            cmin, cmax = np.nanmin(min_resps), np.nanmax(max_resps)
-        else:
-            cmin, cmax = np.nanmin(resps_norm[step]), np.nanmax(resps_norm[step])
+            resps_da = xr.concat(resps, dim="time", join="exact")  # fast path
+            resps_norm = resps_da if resps_da.ndim == 2 else _resp_mag(resps_da)
+            resps_norm = resps_norm
+
+        # 3) pick step (compute only tiny score array/scalars)
+        step = _pick_step(idx, resps, self.ModelUpdate)
+
+        # 4) clim (compute only two scalars)
+        cmin, cmax = _clim_from_norm(resps_norm, step, idx)
+
         self.resps_norm = resps_norm
         self.clim = (cmin, cmax)
         return cmin, cmax, step
+
+    def _get_step_norm(self, step):
+        if self.resps_norm is None:
+            raise RuntimeError("resps_norm is not computed yet. Call _get_resp_clim_peak first.")  # noqa: TRY003
+        if self.ModelUpdate:
+            return self.resps_norm[step].data
+        else:
+            return self.resps_norm.isel(time=step).data
+
+    def _get_mesh_data(self, step, alpha):
+        node_defo_coords = np.array(self._get_defo_coord_da(step, alpha))
+        if self.resps_norm is not None:
+            scalars = self._get_step_norm(step)
+        else:
+            node_resp = np.array(self._get_resp_da(step, self.resp_type, self.component))
+            scalars = node_resp if node_resp.ndim == 1 else np.linalg.norm(node_resp, axis=-1)
+        return node_defo_coords, scalars
 
     def _make_title(self, *args, **kwargs):
         pass
@@ -95,3 +94,76 @@ class PlotNodalResponseBase(PlotResponseBase):
 
     def plot_anim(self, *args, **kwargs):
         pass
+
+
+def _resp_mag(da: xr.DataArray) -> xr.DataArray:
+    """Magnitude for coloring: keep 1D as-is; otherwise sqrt(sum(x^2)) along the last dim."""
+    if da.ndim <= 1:
+        return da
+    comp_dim = da.dims[-1]
+    return (da * da).sum(dim=comp_dim, skipna=True) ** 0.5
+
+
+def _pick_step(idx, resps: list[xr.DataArray], model_update: bool) -> int:
+    """Pick step index from idx spec; compute only tiny arrays/scalars."""
+    if isinstance(idx, (int, float)):
+        return int(idx)
+
+    mode = idx.lower() if isinstance(idx, str) else "absmax"
+    if mode not in ("absmax", "max", "absmin", "min"):
+        raise ValueError("Invalid idx, one of [absMax, absMin, Max, Min]")  # noqa: TRY003
+
+    want_max = mode in ("absmax", "max")
+    want_abs = mode in ("absmax", "absmin")
+
+    def _to_numpy(a):
+        data = a.data if isinstance(a, xr.DataArray) else a
+        return data.compute() if hasattr(data, "compute") else np.asarray(data)
+
+    if not model_update:
+        # concat once; reduce over all non-time dims -> (time,)
+        da = xr.concat(resps, dim="time", join="exact")
+        if want_abs:
+            da = np.abs(da)
+
+        non_time_dims = [d for d in da.dims if d != "time"]
+        scores = da.max(dim=non_time_dims, skipna=True) if want_max else da.min(dim=non_time_dims, skipna=True)
+
+        s = _to_numpy(scores)
+        return int(np.nanargmax(s) if want_max else np.nanargmin(s))
+
+    # ragged tags: scalar reduction per step
+    vals = []
+    for r in resps:
+        base = np.abs(r) if want_abs else r
+        sc = base.max(skipna=True) if want_max else base.min(skipna=True)
+        vals.append(float(_to_numpy(sc).item()))
+
+    return int(np.nanargmax(vals) if want_max else np.nanargmin(vals))
+
+
+def _clim_from_norm(
+    resps_norm: xr.DataArray | list[xr.DataArray],
+    step: int,
+    idx,
+) -> tuple[float, float]:
+    """Compute (cmin,cmax). If idx is None -> global across all steps; else only selected step."""
+    if isinstance(resps_norm, list):
+        if idx is None:
+            mins = [r.min(skipna=True) for r in resps_norm]
+            maxs = [r.max(skipna=True) for r in resps_norm]
+            cmin_da = xr.concat(mins, dim="time").min(skipna=True)
+            cmax_da = xr.concat(maxs, dim="time").max(skipna=True)
+        else:
+            r = resps_norm[step]
+            cmin_da, cmax_da = r.min(skipna=True), r.max(skipna=True)
+    else:
+        if idx is None:
+            cmin_da, cmax_da = resps_norm.min(skipna=True), resps_norm.max(skipna=True)
+        else:
+            r = resps_norm.isel(time=step)
+            cmin_da, cmax_da = r.min(skipna=True), r.max(skipna=True)
+
+    cmin = float(cmin_da.data.compute()) if hasattr(cmin_da.data, "compute") else float(cmin_da.values)
+    cmax = float(cmax_da.data.compute()) if hasattr(cmax_da.data, "compute") else float(cmax_da.values)
+    return cmin, cmax

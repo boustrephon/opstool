@@ -37,8 +37,7 @@ class PlotResponseBase:
         self.unit_factor = 1.0
         self.clim = (0, 1)  # color limits
 
-        self.defo_scale_factor = None
-        self.defo_coords = None  # deformed coordinates
+        self.defo_scale_factor = None  # deformation scale factor
 
         self.PKG_NAME = self.pkg_name = CONFIGS.get_pkg_name()
 
@@ -50,16 +49,19 @@ class PlotResponseBase:
             self.unit_factor = factor
 
     def _get_model_da(self, key, idx):
-        if key in self.ModelInfoSteps:
-            dims = self.ModelInfoSteps[key].dims
-            if self.ModelUpdate:
-                da = self.ModelInfoSteps[key].isel(time=idx)
-                da = da.dropna(dim=dims[1], how="any")  # drop nodes/eles that do not exist in this step
-            else:
-                da = self.ModelInfoSteps[key].isel(time=0)
-            # tags = da.coords[dims[1]].values
-            return da.copy()
-        return xr.DataArray([], name=key)
+        da = self.ModelInfoSteps.get(key)
+        if da is None:
+            return xr.DataArray([], name=key)
+
+        t = idx if self.ModelUpdate else 0
+        da = da.isel(time=t)
+
+        # drop nodes/eles that do not exist in this step (2nd dim is tag dim)
+        tag_dim = da.dims[1] if len(da.dims) > 1 else None
+        if tag_dim:
+            da = da.dropna(dim=tag_dim, how="any")
+
+        return da
 
     def _get_node_da(self, idx):
         nodal_data = self._get_model_da("NodalData", idx)
@@ -67,7 +69,7 @@ class PlotResponseBase:
             unused_node_tags = nodal_data.attrs["unusedNodeTags"]
             if len(unused_node_tags) > 0:
                 nodal_data = nodal_data.where(~nodal_data.coords["nodeTags"].isin(unused_node_tags), drop=True)
-        return nodal_data
+        return nodal_data.sel(coords=["x", "y", "z"])
 
     def _get_line_da(self, idx):
         return self._get_model_da("AllLineElesData", idx)
@@ -82,72 +84,72 @@ class PlotResponseBase:
         return self._get_model_da("MPConstraintData", idx)
 
     def _get_resp_da(self, time_idx, resp_type, component=None):
-        dims = self.RespSteps[resp_type].dims
-        da = self.RespSteps[resp_type].isel(time=time_idx).copy()
+        da = self.RespSteps[resp_type].isel(time=time_idx)
+
+        # drop nodes/eles that do not exist in this step
         if self.ModelUpdate:
-            da = da.dropna(dim=dims[1], how="all")
-        if da.ndim == 1 or component is None:
+            tag_dim = next((d for d in da.dims if d != "time"), None)
+            if tag_dim is not None:
+                da = da.dropna(dim=tag_dim, how="all")
+
+        # no component selection
+        if component is None or da.ndim == 1:
             return da * self.unit_factor
-        elif da.ndim == 2:
-            return da.loc[:, component] * self.unit_factor
-        elif da.ndim == 3:
-            return da.loc[:, :, component] * self.unit_factor
-        return None
+
+        # component dimension: assume last dim
+        comp_dim = da.dims[-1]
+
+        # choose sel vs isel deterministically
+        da = da.isel({comp_dim: component}) if isinstance(component, (int, slice)) else da.sel({comp_dim: component})
+
+        return da * self.unit_factor
 
     def _get_disp_da(self, idx):
         if self.nodal_resp_steps is None:
             data = self._get_resp_da(idx, "disp", ["UX", "UY", "UZ"])
+            data = data / self.unit_factor  # come back to original unit
         else:
-            data = self.nodal_resp_steps["disp"].isel(time=idx).copy()
+            data = self.nodal_resp_steps["disp"].isel(time=idx)
             if self.ModelUpdate:
                 data = data.dropna(dim="nodeTags", how="all")
             data = data.sel(DOFs=["UX", "UY", "UZ"])
-        return data / self.unit_factor  # come back to original unit
+        return data
 
     def _set_defo_scale_factor(self, alpha=1.0):
         if self.defo_scale_factor is not None:
             return
 
-        defos, poss = [], []
-        for i in range(self.num_steps):
-            defo = self._get_disp_da(i)
-            pos = self._get_node_da(i)
-            pos.coords["time"] = defo.coords["time"]
-            defos.append(defo)
-            poss.append(pos)
+        data = self.RespSteps["disp"] if self.nodal_resp_steps is None else self.nodal_resp_steps["disp"]
+        comp_dim = data.dims[-1]
+        defos_da = data.sel({comp_dim: ["UX", "UY", "UZ"]})
 
+        # ---- compute alpha_ ----
         if isinstance(alpha, str) or alpha is True:
-            if self.ModelUpdate:
-                scalars = [np.linalg.norm(resp, axis=-1) for resp in defos]
-                scalars = [np.nanmax(scalar) for scalar in scalars]
-            else:
-                scalars = np.linalg.norm(defos, axis=-1)
-            maxv = np.nanmax(scalars)
-            alpha_ = 0.0 if maxv == 0 else self.max_bound_size * self.pargs.scale_factor / maxv
-            alpha_ = alpha_
+            comp_dim = defos_da.dims[-1]
+
+            # magnitude = sqrt(sum(x^2)) over comp_dim
+            mag = (defos_da * defos_da).sum(dim=comp_dim, skipna=True) ** 0.5
+
+            # scalar max
+            maxv = float(mag.max(skipna=True).item())
+            alpha_ = 0.0 if maxv == 0.0 else (self.max_bound_size * self.pargs.scale_factor / maxv)
+
         elif alpha is False or alpha is None:
             alpha_ = 1.0
-        elif isinstance(alpha, (int, float)):
-            alpha_ = alpha
-        self.defo_scale_factor = alpha_
-
-        if self.ModelUpdate:
-            defo_coords = [alpha_ * np.array(defo) + np.array(pos) for defo, pos in zip(defos, poss)]
-            defo_coords = [
-                xr.DataArray(coords, dims=pos.dims, coords=pos.coords) for coords, pos in zip(defo_coords, poss)
-            ]
         else:
-            poss_da = xr.concat(poss, dim="time")
-            defo_coords = alpha_ * np.array(defos) + np.array(poss)
-            defo_coords = xr.DataArray(defo_coords, dims=poss_da.dims, coords=poss_da.coords)
-        self.defo_coords = defo_coords
+            alpha_ = float(alpha)
+
+        self.defo_scale_factor = alpha_
 
     def _get_defo_coord_da(self, step, alpha):
         if not isinstance(alpha, bool) and alpha == 0.0:
             original_coords_da = self._get_node_da(step)
             return original_coords_da
         self._set_defo_scale_factor(alpha=alpha)
-        node_deform_coords = self.defo_coords[step] if self.ModelUpdate else self.defo_coords.isel(time=step)
+        defo = self._get_disp_da(step)
+        pos_origin = self._get_node_da(step)
+        coords = self.defo_scale_factor * np.array(defo) + np.array(pos_origin)
+        node_deform_coords = xr.DataArray(coords, dims=pos_origin.dims, coords=pos_origin.coords)
         return node_deform_coords
 
     @staticmethod

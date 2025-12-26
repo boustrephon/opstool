@@ -54,22 +54,13 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
         text = "\n".join(padded_lines)
         return text + "\n"
 
-    def _get_mesh_data(self, step, alpha):
-        node_defo_coords = np.array(self._get_defo_coord_da(step, alpha))
-        if self.resps_norm is not None:
-            scalars = self.resps_norm[step]
-        else:
-            node_resp = np.array(self._get_resp_da(step, self.resp_type, self.component))
-            scalars = node_resp if node_resp.ndim == 1 else np.linalg.norm(node_resp, axis=1)
-        return node_defo_coords, scalars
-
     def get_dataset(self, step, defo_scale=1.0):
         cmin, cmax, step = self._get_resp_clim_peak(idx=step)
         if self.resps_norm is not None:
-            scalars = self.resps_norm[step]
+            scalars = self._get_step_norm(step)
         else:
             node_resp = np.array(self._get_resp_da(step, self.resp_type, self.component))
-            scalars = node_resp if node_resp.ndim == 1 else np.linalg.norm(node_resp, axis=1)
+            scalars = node_resp if node_resp.ndim == 1 else np.linalg.norm(node_resp, axis=-1)
         # ----------------------------------
         pos = np.array(self._get_defo_coord_da(step, defo_scale))
         line_cells, _ = self._get_line_cells(self._get_line_da(step))
