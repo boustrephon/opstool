@@ -170,6 +170,35 @@ class ResponseBase(ABC):
 
     # -----------------------------------------------------------------------------------
     # Utility methods
+    @staticmethod
+    def _select_node_tags(ds: xr.Dataset, node_tags=None) -> xr.Dataset:
+        if node_tags is None or "nodeTags" not in ds.dims:
+            return ds
+        # slice -> sel (label-based)
+        if isinstance(node_tags, slice):
+            return ds.sel(nodeTags=node_tags)
+        # integer index array -> isel (fast)
+        if isinstance(node_tags, (list, tuple, np.ndarray)) and len(node_tags) > 0:
+            arr = np.asarray(node_tags)
+            if np.issubdtype(arr.dtype, np.integer):
+                return ds.isel(nodeTags=arr)
+        # otherwise treat as labels
+        return ds.sel(nodeTags=node_tags)
+
+    @staticmethod
+    def _select_ele_tags(ds: xr.Dataset, ele_tags=None) -> xr.Dataset:
+        if ele_tags is None or "eleTags" not in ds.dims:
+            return ds
+        # slice -> sel (label-based)
+        if isinstance(ele_tags, slice):
+            return ds.sel(eleTags=ele_tags)
+        # integer index array -> isel (fast)
+        if isinstance(ele_tags, (list, tuple, np.ndarray)) and len(ele_tags) > 0:
+            arr = np.asarray(ele_tags)
+            if np.issubdtype(arr.dtype, np.integer):
+                return ds.isel(eleTags=arr)
+        # otherwise treat as labels
+        return ds.sel(eleTags=ele_tags)
 
 
 def expand_to_uniform_array(array_list, dtype=None):

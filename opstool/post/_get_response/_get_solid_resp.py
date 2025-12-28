@@ -212,60 +212,74 @@ class BrickRespStepData(ResponseBase):
         resp_type: str | None = None,
         ele_tags=None,
         unit_factors: dict | None = None,
+        lazy: bool = True,
     ):
         dts = dt if isinstance(dt, (list, tuple)) else [dt]
         if not dts:
-            return []
+            return xr.Dataset()
 
-        # collect datasets under /RESP_NAME (skip missing)
-        dss = []
+        dss: list[xr.Dataset] = []
         for t in dts:
             if RESP_NAME not in t:
                 continue
-            node = t[f"/{RESP_NAME}"]
-            if node.ds is not None:
-                dss.append(node.ds)
+            ds = t[f"/{RESP_NAME}"].ds
+            if ds is None:
+                continue
+
+            # 1) preselect variable(s)
+            if resp_type is not None:
+                if resp_type not in ds.data_vars:
+                    continue
+                ds = ds[[resp_type]]
+
+            # 2) early nodeTags selection
+            ds = BrickRespStepData._select_ele_tags(ds, ele_tags=ele_tags)
+
+            # 3) if not lazy, load per-part to avoid lazy-concat instability
+            if not lazy:
+                ds = ds.load()
+
+            dss.append(ds)
 
         if not dss:
-            return []
+            return xr.Dataset()
 
-        ds = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer")
-        ds = _unit_transform(ds, unit_factors=unit_factors)
+        resp_steps = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer", fill_value=np.nan)
 
-        if resp_type is None:
-            return ds if ele_tags is None else ds.sel(eleTags=ele_tags)
+        resp_steps = _unit_transform(resp_steps, unit_factors)
 
-        if resp_type not in ds.data_vars:
-            raise ValueError(f"resp_type {resp_type} not found in {list(ds.data_vars.keys())}")  # noqa: TRY003
-
-        da = ds[resp_type]
-        return da if ele_tags is None else da.sel(eleTags=ele_tags)
+        if resp_type is not None and resp_type in resp_steps:
+            return resp_steps[resp_type]
+        return resp_steps
 
 
 def _unit_transform(resp_steps: xr.Dataset, unit_factors: dict | None) -> xr.Dataset:
-    if not unit_factors or "Stresses" not in resp_steps:
+    if not unit_factors:
         return resp_steps
+    stress_factor = unit_factors["stress"]
 
-    sf = unit_factors["stress"]
-    keys = ["sigma11", "sigma22", "sigma33", "sigma12", "sigma23", "sigma13"]
+    updates: dict[str, xr.DataArray] = {}
+    stress_keys = ["sigma11", "sigma22", "sigma33", "sigma12", "sigma23", "sigma13"]
 
-    updates = {}
+    # ---- Stresses: selective scaling if stressDOFs exists ----
+    if "Stresses" in resp_steps.data_vars:
+        da = resp_steps["Stresses"]
+        c = da.coords.get("stressDOFs", None)
 
-    # scale selected stressDOFs (lazy/eager safe)
-    da = resp_steps["Stresses"]
-    c = da.coords.get("stressDOFs")
-    if c is not None:
-        m = c.isin(keys)
-        updates["Stresses"] = da.where(~m, da * sf)
-    else:
-        updates["Stresses"] = da * sf  # no coord -> scale all
+        if c is not None:
+            m = c.isin(stress_keys)
+            updates["Stresses"] = da.where(~m, da * stress_factor)
+        else:
+            updates["Stresses"] = da * stress_factor  # no coord -> scale all
 
-    if "StressMeasures" in resp_steps:
-        updates["StressMeasures"] = resp_steps["StressMeasures"] * sf
-    if "StressMeasuresAtNodes" in resp_steps:
-        updates["StressMeasuresAtNodes"] = resp_steps["StressMeasuresAtNodes"] * sf
+    # ---- Optional stress-derived measures ----
+    if "StressMeasures" in resp_steps.data_vars:
+        updates["StressMeasures"] = resp_steps["StressMeasures"] * stress_factor
 
-    return resp_steps.assign(**updates)
+    if "StressMeasuresAtNodes" in resp_steps.data_vars:
+        updates["StressMeasuresAtNodes"] = resp_steps["StressMeasuresAtNodes"] * stress_factor
+
+    return resp_steps if not updates else resp_steps.assign(**updates)
 
 
 gp2node_type = {4: "tet", 10: "tet", 8: "brick", 20: "brick", 27: "brick"}
@@ -548,7 +562,7 @@ def _assemble_stress_tensor(stress_array):
         (..., 3, 3), with NaNs filled as 0.0.
     """
     a = np.asarray(stress_array)
-    if a.ndim < 2 or a.shape[-1] != 6:
+    if a.ndim < 2 or a.shape[-1] < 6:
         raise ValueError(f"Expected shape (..., 6), got {a.shape}")  # noqa: TRY003
 
     # unpack

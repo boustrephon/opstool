@@ -73,34 +73,45 @@ class LinkRespStepData(ResponseBase):
         resp_type: str | None = None,
         ele_tags=None,
         unit_factors: dict | None = None,
+        lazy: bool = True,
     ):
         dts = dt if isinstance(dt, (list, tuple)) else [dt]
         if not dts:
-            return []
+            return xr.Dataset()
 
-        # collect datasets under /RESP_NAME (skip missing)
-        dss = []
+        dss: list[xr.Dataset] = []
         for t in dts:
             if RESP_NAME not in t:
                 continue
-            node = t[f"/{RESP_NAME}"]
-            if node.ds is not None:
-                dss.append(node.ds)
+            ds = t[f"/{RESP_NAME}"].ds
+            if ds is None:
+                continue
+
+            # 1) preselect variable(s)
+            if resp_type is not None:
+                if resp_type not in ds.data_vars:
+                    continue
+                ds = ds[[resp_type]]
+
+            # 2) early nodeTags selection
+            ds = LinkRespStepData._select_ele_tags(ds, ele_tags=ele_tags)
+
+            # 3) if not lazy, load per-part to avoid lazy-concat instability
+            if not lazy:
+                ds = ds.load()
+
+            dss.append(ds)
 
         if not dss:
-            return []
+            return xr.Dataset()
 
-        ds = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer")
-        ds = _unit_transform(ds, unit_factors=unit_factors)
+        resp_steps = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer", fill_value=np.nan)
 
-        if resp_type is None:
-            return ds if ele_tags is None else ds.sel(eleTags=ele_tags)
+        resp_steps = _unit_transform(resp_steps, unit_factors)
 
-        if resp_type not in ds.data_vars:
-            raise ValueError(f"resp_type {resp_type} not found in {list(ds.data_vars.keys())}")  # noqa: TRY003
-
-        da = ds[resp_type]
-        return da if ele_tags is None else da.sel(eleTags=ele_tags)
+        if resp_type is not None and resp_type in resp_steps:
+            return resp_steps[resp_type]
+        return resp_steps
 
 
 def _unit_transform(resp_steps, unit_factors):

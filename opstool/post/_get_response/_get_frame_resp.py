@@ -199,46 +199,64 @@ class FrameRespStepData(ResponseBase):
         resp_type: str | None = None,
         ele_tags=None,
         unit_factors: dict | None = None,
+        lazy: bool = True,
     ) -> xr.Dataset | xr.DataArray:
         dts = dt if isinstance(dt, (list, tuple)) else [dt]
         if not dts:
-            return []
+            return xr.Dataset()
 
-        # collect datasets under /RESP_NAME (skip missing)
-        dss = []
+        dss: list[xr.Dataset] = []
         for t in dts:
             if RESP_NAME not in t:
                 continue
-            node = t[f"/{RESP_NAME}"]
-            if node.ds is not None:
-                dss.append(node.ds)
+            ds = t[f"/{RESP_NAME}"].ds
+            if ds is None:
+                continue
+
+            # 1) preselect variable(s)
+            if resp_type is not None:
+                if resp_type not in ds.data_vars:
+                    continue
+                ds = ds[[resp_type]]
+
+            # 2) early nodeTags selection
+            ds = FrameRespStepData._select_ele_tags(ds, ele_tags=ele_tags)
+
+            # 3) if not lazy, load per-part to avoid lazy-concat instability
+            if not lazy:
+                ds = ds.load()
+
+            dss.append(ds)
 
         if not dss:
-            return []
+            return xr.Dataset()
 
-        ds = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer")
-        ds = _unit_transform(ds, unit_factors=unit_factors)
+        resp_steps = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer", fill_value=np.nan)
 
-        if resp_type is None:
-            return ds if ele_tags is None else ds.sel(eleTags=ele_tags)
+        resp_steps = _unit_transform(resp_steps, unit_factors)
 
-        if resp_type not in ds.data_vars:
-            raise ValueError(f"resp_type {resp_type} not found in {list(ds.data_vars.keys())}")  # noqa: TRY003
-
-        da = ds[resp_type]
-        return da if ele_tags is None else da.sel(eleTags=ele_tags)
+        if resp_type is not None and resp_type in resp_steps:
+            return resp_steps[resp_type]
+        return resp_steps
 
 
 def _unit_transform(ds: xr.Dataset, unit_factors: dict) -> xr.Dataset:
     if not unit_factors:
         return ds
 
-    ff, mf, cf, df = (unit_factors[k] for k in ("force", "moment", "curvature", "disp"))
+    # ---- take factors, default = 1.0 ----
+    ff = float(unit_factors.get("force", 1.0))
+    mf = float(unit_factors.get("moment", 1.0))
+    cf = float(unit_factors.get("curvature", 1.0))
+    df = float(unit_factors.get("disp", 1.0))
 
     rules = {
         "localForces": (
             "localDofs",
-            [(["FX1", "FY1", "FZ1", "FX2", "FY2", "FZ2"], ff), (["MX1", "MY1", "MZ1", "MX2", "MY2", "MZ2"], mf)],
+            [
+                (["FX1", "FY1", "FZ1", "FX2", "FY2", "FZ2"], ff),
+                (["MX1", "MY1", "MZ1", "MX2", "MY2", "MZ2"], mf),
+            ],
         ),
         "basicForces": ("basicDofs", [(["N"], ff), (["MZ1", "MZ2", "MY1", "MY2", "T"], mf)]),
         "basicDeformations": ("basicDofs", [(["N"], df)]),
@@ -249,16 +267,19 @@ def _unit_transform(ds: xr.Dataset, unit_factors: dict) -> xr.Dataset:
     }
 
     def apply(da: xr.DataArray, dim: str, groups: list[tuple[list[str], float]]) -> xr.DataArray:
-        c = da.coords.get(dim)
+        c = da.coords.get(dim, None)
         if c is None:
             return da
         out = da
         for keys, fac in groups:
+            if fac == 1.0:
+                continue  # no-op, avoid useless graph nodes
             m = c.isin(keys)
             out = out.where(~m, out * fac)
         return out
 
-    updates = {v: apply(ds[v], dim, groups) for v, (dim, groups) in rules.items() if v in ds}
+    updates = {v: apply(ds[v], dim, groups) for v, (dim, groups) in rules.items() if v in ds.data_vars}
+
     return ds.assign(**updates) if updates else ds
 
 

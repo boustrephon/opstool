@@ -158,72 +158,83 @@ class ShellRespStepData(ResponseBase):
         resp_type: str | None = None,
         ele_tags=None,
         unit_factors: dict | None = None,
+        lazy: bool = True,
     ):
         dts = dt if isinstance(dt, (list, tuple)) else [dt]
         if not dts:
-            return []
+            return xr.Dataset()
 
-        # collect datasets under /RESP_NAME (skip missing)
-        dss = []
+        dss: list[xr.Dataset] = []
         for t in dts:
             if RESP_NAME not in t:
                 continue
-            node = t[f"/{RESP_NAME}"]
-            if node.ds is not None:
-                dss.append(node.ds)
+            ds = t[f"/{RESP_NAME}"].ds
+            if ds is None:
+                continue
+
+            # 1) preselect variable(s)
+            if resp_type is not None:
+                if resp_type not in ds.data_vars:
+                    continue
+                ds = ds[[resp_type]]
+
+            # 2) early nodeTags selection
+            ds = ShellRespStepData._select_ele_tags(ds, ele_tags=ele_tags)
+
+            # 3) if not lazy, load per-part to avoid lazy-concat instability
+            if not lazy:
+                ds = ds.load()
+
+            dss.append(ds)
 
         if not dss:
-            return []
+            return xr.Dataset()
 
-        ds = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer")
-        ds = _unit_transform(ds, unit_factors=unit_factors)
+        resp_steps = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer", fill_value=np.nan)
 
-        if resp_type is None:
-            return ds if ele_tags is None else ds.sel(eleTags=ele_tags)
+        resp_steps = _unit_transform(resp_steps, unit_factors)
 
-        if resp_type not in ds.data_vars:
-            raise ValueError(f"resp_type {resp_type} not found in {list(ds.data_vars.keys())}")  # noqa: TRY003
-
-        da = ds[resp_type]
-        return da if ele_tags is None else da.sel(eleTags=ele_tags)
+        if resp_type is not None and resp_type in resp_steps:
+            return resp_steps[resp_type]
+        return resp_steps
 
 
 def _unit_transform(resp_steps: xr.Dataset, unit_factors: dict) -> xr.Dataset:
     if not unit_factors:
         return resp_steps
 
-    fpl = unit_factors["force_per_length"]
-    mpl = unit_factors["moment_per_length"]
-    sf = unit_factors["stress"]
+    fpl = float(unit_factors.get("force_per_length", 1.0))
+    mpl = float(unit_factors.get("moment_per_length", 1.0))
+    sf = float(unit_factors.get("stress", 1.0))
 
     def scale_by_label(da: xr.DataArray, dim: str, labels: list[str], factor: float) -> xr.DataArray:
-        c = da.coords.get(dim)
+        c = da.coords.get(dim, None)
         if c is None:
-            return da
+            return da  # no coord -> skip (stay lazy-safe)
         m = c.isin(labels)
         return da.where(~m, da * factor)
 
-    def maybe_scale(ds: xr.Dataset, name: str, fn):
-        return ds.assign({name: fn(ds[name])}) if name in ds.data_vars else ds
+    def maybe_update(ds: xr.Dataset, name: str, fn) -> xr.Dataset:
+        if name not in ds.data_vars:
+            return ds
+        return ds.assign({name: fn(ds[name])})
 
     # -------------------------
-    # sectionForces
+    # sectionForces (+AtNodes)
     # -------------------------
     def _scale_section_forces(da: xr.DataArray) -> xr.DataArray:
         da = scale_by_label(da, "secDOFs", ["FXX", "FYY", "FXY", "VXZ", "VYZ"], fpl)
         da = scale_by_label(da, "secDOFs", ["MXX", "MYY", "MXY"], mpl)
         return da
 
-    resp_steps = resp_steps.assign(
-        sectionForces=_scale_section_forces(resp_steps["sectionForces"]),
-        Stresses=resp_steps["Stresses"] * sf,
-    )
+    resp_steps = maybe_update(resp_steps, "sectionForces", _scale_section_forces)
+    resp_steps = maybe_update(resp_steps, "sectionForcesAtNodes", _scale_section_forces)
 
     # -------------------------
-    # optional vars
+    # stresses (+AtNodes)
     # -------------------------
-    resp_steps = maybe_scale(resp_steps, "sectionForcesAtNodes", _scale_section_forces)
-    resp_steps = maybe_scale(resp_steps, "StressesAtNodes", lambda da: da * sf)
+    resp_steps = maybe_update(resp_steps, "Stresses", lambda da: da * sf)
+    resp_steps = maybe_update(resp_steps, "StressesAtNodes", lambda da: da * sf)
 
     return resp_steps
 
@@ -250,6 +261,10 @@ def _get_shell_resp_one_step(ele_tags, dtype):
                 sec_strain.extend(strain)
         if len(sec_stress) == 0:  # elastic section response
             sec_stress, sec_strain = _get_elastic_section_stress(etag, sec_forces[-1])
+        if len(sec_stress) == 0:  # still no stress/strain
+            sec_stress = np.full((len(sec_forces[-1]), 1, 5), 0.0)
+        if len(sec_strain) == 0:
+            sec_strain = np.full((len(sec_forces[-1]), 1, 5), 0.0)
         sec_stress = np.reshape(sec_stress, (num_sec, -1, 5))
         sec_strain = np.reshape(sec_strain, (num_sec, -1, 5))
         stresses.append(_reorder_by_ele_type(etag, sec_stress))
@@ -313,8 +328,8 @@ def _get_elastic_section_stress(eletag, sec_forces):
         h = _get_param_value(eletag, "h")
         # Ep_mod = _get_param_value(eletag, "Ep_mod")
         # rho = _get_param_value(eletag, "rho")
+    sigmas, epses = [], []
     if E > 0 and nu >= 0 and h > 0:
-        sigmas, epses = [], []
         G = 0.5 * E / (1.0 + nu)
         xs = np.linspace(-h / 2, h / 2, 5)
         w = 12 / (h * h * h)
@@ -335,9 +350,6 @@ def _get_elastic_section_stress(eletag, sec_forces):
             epses.append(eps)
         sigmas = np.array(sigmas)
         epses = np.array(epses)
-    else:
-        sigmas = np.full((len(sec_forces), 1, 5), np.nan)
-        epses = np.full((len(sec_forces), 1, 5), np.nan)
     return sigmas, epses
 
 

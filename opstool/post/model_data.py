@@ -253,12 +253,10 @@ class GetFEMData(FEMData):
         if len(self.shell_cells) > 0:
             cell_types = np.reshape(self.shell_cells_type, (-1, 1))
             data = np.hstack([self.shell_cells, cell_types])
+            names = ["numNodes"] + [f"node{i + 1}" for i in range(data.shape[1] - 2)] + ["cellType"]
             shell = xr.DataArray(
                 data,
-                coords={
-                    # "cells": ["numNodes"] + [f"node{i+1}" for i in range(num-1)],
-                    "eleTags": self.shell_tags
-                },
+                coords={"cells": names, "eleTags": self.shell_tags},
                 dims=["eleTags", "cells"],
             )
             shell.name = "ShellData"
@@ -270,9 +268,10 @@ class GetFEMData(FEMData):
         if len(self.plane_cells) > 0:
             cell_types = np.reshape(self.plane_cells_type, (-1, 1))
             data = np.hstack([self.plane_cells, cell_types])
+            names = ["numNodes"] + [f"node{i + 1}" for i in range(data.shape[1] - 2)] + ["cellType"]
             plane = xr.DataArray(
                 data,
-                coords={"eleTags": self.plane_tags},
+                coords={"cells": names, "eleTags": self.plane_tags},
                 dims=["eleTags", "cells"],
             )
             plane.name = "PlaneData"
@@ -284,7 +283,8 @@ class GetFEMData(FEMData):
         if len(self.brick_cells) > 0:
             cell_types = np.reshape(self.brick_cells_type, (-1, 1))
             data = np.hstack([self.brick_cells, cell_types])
-            brick = xr.DataArray(data, coords={"eleTags": self.brick_tags}, dims=["eleTags", "cells"])
+            names = ["numNodes"] + [f"node{i + 1}" for i in range(data.shape[1] - 2)] + ["cellType"]
+            brick = xr.DataArray(data, coords={"cells": names, "eleTags": self.brick_tags}, dims=["eleTags", "cells"])
             brick.name = "BrickData"
         else:
             brick = None

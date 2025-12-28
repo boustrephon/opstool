@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 import openseespy.opensees as ops
 import xarray as xr
 
@@ -25,16 +26,26 @@ class ModelInfoStepData(ResponseBase):
         self.model_info_steps = {}
 
         # initial step
-        model_info, _ = GetFEMData().get_model_info()
+        model_info = self._get_model_info()
         for key, value in model_info.items():
             self.model_info_steps[key] = [value]
 
         self._set_current_tags(model_info)
         self.move_one_step(time_value=ops.getTime())
 
+    def _get_model_info(self):
+        model_info, _ = GetFEMData().get_model_info()
+        nodal_data = model_info.get("NodalData")
+        if nodal_data is not None and len(nodal_data) > 0:
+            unused_node_tags = nodal_data.attrs["unusedNodeTags"]
+            if len(unused_node_tags) > 0:
+                nodal_data = nodal_data.where(~nodal_data.coords["nodeTags"].isin(unused_node_tags), drop=True)
+                model_info["NodalData"] = nodal_data
+        return model_info
+
     def add_resp_data_one_step(self):
         if self.model_update:
-            model_info, _ = GetFEMData().get_model_info()
+            model_info = self._get_model_info()
             for key, value in model_info.items():
                 if key in self.model_info_steps:
                     self.model_info_steps[key].append(value)
@@ -55,12 +66,8 @@ class ModelInfoStepData(ResponseBase):
 
     def _set_currnet_node_tags(self, model_info: dict):
         da = model_info.get("NodalData")
-        if da is not None:
+        if da is not None and len(da) > 0:
             node_tags = list(da.coords["nodeTags"].data)
-            unused_node_tags = da.attrs["unusedNodeTags"]
-            for tag in unused_node_tags:
-                if tag in node_tags:
-                    node_tags.remove(tag)
             self.current_node_tags = [int(tag) for tag in node_tags]
 
     def _set_current_truss_tags(self, model_info: dict):
@@ -145,7 +152,7 @@ class ModelInfoStepData(ResponseBase):
                 new_data = data[0].expand_dims(dim="time")
                 new_data.coords["time"] = [self.times[0]]
             else:
-                new_data = xr.concat(data, dim="time", join="outer")
+                new_data = xr.concat(data, dim="time", join="outer", fill_value=np.nan)
                 new_data.coords["time"] = self.times
             model_info_steps[key] = new_data
             # if all data is void, this code will not work
@@ -164,7 +171,10 @@ class ModelInfoStepData(ResponseBase):
 
     @staticmethod
     def read_response(
-        dt: xr.DataTree | list[xr.DataTree], data_type: str | None = None, unit_factors: dict | None = None
+        dt: xr.DataTree | list[xr.DataTree],
+        data_type: str | None = None,
+        unit_factors: dict | None = None,
+        lazy: bool = True,
     ):
         dts = dt if isinstance(dt, (list, tuple)) else [dt]
         if not dts:
@@ -191,7 +201,10 @@ class ModelInfoStepData(ResponseBase):
                     continue
                 if data_type is not None and child.name != data_type:
                     continue
-                buckets.setdefault(child.name, []).append(child.ds)
+                if lazy:
+                    buckets.setdefault(child.name, []).append(child.ds)
+                else:
+                    buckets.setdefault(child.name, []).append(child.ds.load())
 
         if not buckets:
             model_info = {}
@@ -200,16 +213,18 @@ class ModelInfoStepData(ResponseBase):
         # ---- concat/merge per child ----
         model_info = {}
         for name, dss in buckets.items():
-            ds = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer")
+            ds = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer", fill_value=np.nan)
             model_info[name] = ds[name] if name in ds.data_vars else ds
 
         if unit_factors:
             model_info = _unit_transform(model_info, unit_factors)
 
+        model_info["ModelUpdate"] = model_update
+
         return model_info, model_update
 
     @staticmethod
-    def read_data(dt: xr.DataTree | list[xr.DataTree], data_type: str):
+    def read_data(dt: xr.DataTree | list[xr.DataTree], data_type: str | None = None, lazy: bool = True):
         """Read data from the data tree
 
         Parameters:
@@ -219,13 +234,13 @@ class ModelInfoStepData(ResponseBase):
         data_type: str
             The data type to read.
         """
-        model_info, model_update = ModelInfoStepData.read_response(dt, data_type=data_type)
-        if data_type in model_info:
+        model_info, model_update = ModelInfoStepData.read_response(dt, data_type=data_type, lazy=lazy)
+        if data_type is not None and data_type in model_info:
             data = model_info[data_type]
             if model_update:
                 return data
             return data.isel(time=0)
-        return []
+        return model_info
 
 
 def _unit_transform(model_info, unit_factors):

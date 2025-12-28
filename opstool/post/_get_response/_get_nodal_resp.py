@@ -69,7 +69,7 @@ class NodalRespStepData(ResponseBase):
 
         self.times = np.array(self.times, dtype=self.dtype["float"])
         if self.model_update:
-            self.resp_step_data = xr.concat(self.resp_step_data_list, dim="time", join="outer")
+            self.resp_step_data = xr.concat(self.resp_step_data_list, dim="time", join="outer", fill_value=np.nan)
             self.resp_step_data.coords["time"] = self.times
         else:
             data_vars = {}
@@ -92,39 +92,45 @@ class NodalRespStepData(ResponseBase):
         resp_type: str | None = None,
         node_tags=None,
         unit_factors: dict | None = None,
+        lazy: bool = True,
     ) -> xr.Dataset | xr.DataArray:
-        # ---- normalize dt to list ----
         dts = dt if isinstance(dt, (list, tuple)) else [dt]
         if not dts:
-            return []
+            return xr.Dataset()
 
-        # ---- collect response datasets under /RESP_NAME ----
-        dss = []
+        dss: list[xr.Dataset] = []
         for t in dts:
             if RESP_NAME not in t:
                 continue
-            node = t[f"/{RESP_NAME}"]
-            if node.ds is not None:
-                dss.append(node.ds)
+            ds = t[f"/{RESP_NAME}"].ds
+            if ds is None:
+                continue
+
+            # 1) preselect variable(s)
+            if resp_type is not None:
+                if resp_type not in ds.data_vars:
+                    continue
+                ds = ds[[resp_type]]
+
+            # 2) early nodeTags selection
+            ds = NodalRespStepData._select_node_tags(ds, node_tags=node_tags)
+
+            # 3) if not lazy, load per-part to avoid lazy-concat instability
+            if not lazy:
+                ds = ds.load()
+
+            dss.append(ds)
 
         if not dss:
-            return []
+            return xr.Dataset()
 
-        # ---- concat along time if multiple parts ----
-        resp_steps = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer")
+        resp_steps = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer", fill_value=np.nan)
 
-        # ---- unit transform ----
         resp_steps = _unit_transform(resp_steps, unit_factors)
 
-        # ---- selection logic (unchanged semantics) ----
-        if resp_type is None:
-            return resp_steps if node_tags is None else resp_steps.sel(nodeTags=node_tags)
-
-        if resp_type not in resp_steps.data_vars:
-            raise ValueError(f"resp_type {resp_type} not found in {list(resp_steps.data_vars.keys())}")  # noqa: TRY003
-
-        da = resp_steps[resp_type]
-        return da if node_tags is None else da.sel(nodeTags=node_tags)
+        if resp_type is not None and resp_type in resp_steps:
+            return resp_steps[resp_type]
+        return resp_steps
 
 
 def _unit_transform(resp_steps: xr.Dataset, unit_factors: dict[str, float] | None) -> xr.Dataset:
@@ -132,37 +138,48 @@ def _unit_transform(resp_steps: xr.Dataset, unit_factors: dict[str, float] | Non
         return resp_steps
 
     d = resp_steps
-    dofs = d.get("DOFs", d.coords.get("DOFs", None))
+    dofs = d.get("DOFs") or d.coords.get("DOFs")
     if dofs is None:
         raise KeyError("DOFs coordinate not found")  # noqa: TRY003
 
     trans = ["UX", "UY", "UZ"]
     rot = ["RX", "RY", "RZ"]
 
-    def scale(var: str, factor: float, sel: list[str] | None = None) -> xr.DataArray:
-        da = d[var]
-        if sel is None:
-            return da * factor
-        m = dofs.isin(sel)
-        return da.where(~m, da * factor)
+    m_trans = dofs.isin(trans)
+    m_rot = dofs.isin(rot)
 
-    return d.assign(
-        disp=scale("disp", unit_factors["disp"], trans),
-        vel=scale("vel", unit_factors["vel"], trans).where(~dofs.isin(rot), d["vel"] * unit_factors["angular_vel"]),
-        accel=scale("accel", unit_factors["accel"], trans).where(
-            ~dofs.isin(rot), d["accel"] * unit_factors["angular_accel"]
-        ),
-        reaction=scale("reaction", unit_factors["force"], trans).where(
-            ~dofs.isin(rot), d["reaction"] * unit_factors["moment"]
-        ),
-        reactionIncInertia=scale("reactionIncInertia", unit_factors["force"], trans).where(
-            ~dofs.isin(rot), d["reactionIncInertia"] * unit_factors["moment"]
-        ),
-        rayleighForces=scale("rayleighForces", unit_factors["force"], trans).where(
-            ~dofs.isin(rot), d["rayleighForces"] * unit_factors["moment"]
-        ),
-        pressure=d["pressure"] * unit_factors["stress"],
-    )
+    def _scale_trans(var: str, factor: float) -> xr.DataArray:
+        da = d[var]
+        return da.where(~m_trans, da * factor)
+
+    def _scale_force_moment(var: str) -> xr.DataArray:
+        da = d[var]
+        return da.where(~m_trans, da * unit_factors["force"]).where(~m_rot, da * unit_factors["moment"])
+
+    def _scale_vel_acc(var: str, ang_key: str) -> xr.DataArray:
+        da = d[var]
+        da = da.where(~m_trans, da * unit_factors[var])  # linear part
+        return da.where(~m_rot, d[var] * unit_factors[ang_key])  # angular part
+
+    updates = {}
+
+    if "disp" in d:
+        updates["disp"] = _scale_trans("disp", unit_factors["disp"])
+
+    if "vel" in d:
+        updates["vel"] = _scale_vel_acc("vel", "angular_vel")
+
+    if "accel" in d:
+        updates["accel"] = _scale_vel_acc("accel", "angular_accel")
+
+    for v in ("reaction", "reactionIncInertia", "rayleighForces"):
+        if v in d:
+            updates[v] = _scale_force_moment(v)
+
+    if "pressure" in d:
+        updates["pressure"] = d["pressure"] * unit_factors["stress"]
+
+    return d.assign(**updates) if updates else d
 
 
 def handle_1d(disp, vel, accel):

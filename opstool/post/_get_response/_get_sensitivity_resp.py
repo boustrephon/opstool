@@ -98,28 +98,39 @@ class SensitivityRespStepData(ResponseBase):
             )
 
     @staticmethod
-    def read_response(dt: xr.DataTree | list[xr.DataTree], resp_type: str | None = None):
+    def read_response(dt: xr.DataTree | list[xr.DataTree], resp_type: str | None = None, lazy: bool = True):
         dts = dt if isinstance(dt, (list, tuple)) else [dt]
         if not dts:
-            return []
+            return xr.Dataset()
 
-        dss = []
+        dss: list[xr.Dataset] = []
         for t in dts:
-            if RESP_NAME in t and t[f"/{RESP_NAME}"].ds is not None:
-                dss.append(t[f"/{RESP_NAME}"].ds)
+            if RESP_NAME not in t:
+                continue
+            ds = t[f"/{RESP_NAME}"].ds
+            if ds is None:
+                continue
+
+            # 1) preselect variable(s)
+            if resp_type is not None:
+                if resp_type not in ds.data_vars:
+                    continue
+                ds = ds[[resp_type]]
+
+            # 3) if not lazy, load per-part to avoid lazy-concat instability
+            if not lazy:
+                ds = ds.load()
+
+            dss.append(ds)
 
         if not dss:
-            return []
+            return xr.Dataset()
 
-        ds = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer")
+        resp_steps = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer", fill_value=np.nan)
 
-        if resp_type is None:
-            return ds
-
-        if resp_type not in ds.data_vars:
-            raise ValueError(f"resp_type {resp_type} not found in {list(ds.data_vars.keys())}")  # noqa: TRY003
-
-        return ds[resp_type]
+        if resp_type is not None and resp_type in resp_steps:
+            return resp_steps[resp_type]
+        return resp_steps
 
 
 def _get_nodal_sens_resp(node_tags, sens_para_tags, dtype):

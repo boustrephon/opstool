@@ -242,76 +242,127 @@ class FiberSecRespStepData(ResponseBase):
         resp_type: str | None = None,
         ele_tags=None,
         unit_factors: dict | None = None,
+        lazy: bool = True,
     ) -> xr.Dataset | xr.DataArray:
         dts = dt if isinstance(dt, (list, tuple)) else [dt]
         if not dts:
-            return []
+            return xr.Dataset()
 
-        # collect only the datasets under /RESP_NAME
-        dss = []
+        def _is_special_only(ds: xr.Dataset) -> bool:
+            dvs = set(ds.data_vars)
+            return bool(dvs) and dvs.issubset({"ys", "zs", "areas", "matTags"})
+
+        dss: list[xr.Dataset] = []
         for t in dts:
-            if RESP_NAME in t and t[f"/{RESP_NAME}"].ds is not None:
-                dss.append(t[f"/{RESP_NAME}"].ds)
+            if RESP_NAME not in t:
+                continue
+            node = t[f"/{RESP_NAME}"]
+            ds = node.ds
+            if ds is None:
+                continue
+
+            # preselect variable(s)
+            if resp_type is not None:
+                if resp_type not in ds.data_vars:
+                    continue
+                ds = ds[[resp_type]]
+
+            # early eleTags selection
+            ds = FiberSecRespStepData._select_ele_tags(ds, ele_tags=ele_tags)
+
+            # avoid lazy-concat instability if requested
+            if not lazy:
+                ds = ds.load()
+
+            dss.append(ds)
 
         if not dss:
-            return []
+            return xr.Dataset()
 
-        # merge rule:
-        # - if all datasets are "special-only" (ys,zs,areas,matTags) -> concat along eleTags
-        # - otherwise -> concat along time
-        # note: not every dt has special vars; those parts simply won't be treated as "special-only".
-        def _is_special_only(ds: xr.Dataset) -> bool:
-            return bool(ds.data_vars) and set(ds.data_vars).issubset({"ys", "zs", "areas", "matTags"})
+        # choose concat dim
+        concat_dim = "eleTags" if (len(dss) > 1 and all(_is_special_only(_ds) for _ds in dss)) else "time"
 
-        if len(dss) == 1:
-            ds = dss[0]
-        else:
-            all_special_only = all(_is_special_only(_ds) for _ds in dss)
-            if all_special_only:
-                ds = xr.concat(dss, dim="eleTags", join="outer")
-            else:
-                ds = xr.concat(dss, dim="time", join="outer")
+        ds = dss[0] if len(dss) == 1 else xr.concat(dss, dim=concat_dim, join="outer", fill_value=np.nan)
 
-        ds = _unit_transform(ds, unit_factors=unit_factors)
+        resp_steps = _unit_transform(ds, unit_factors=unit_factors)
 
-        if resp_type is None:
-            return ds if ele_tags is None else ds.sel(eleTags=ele_tags)
-
-        if resp_type not in ds.data_vars:
-            raise ValueError(f"resp_type {resp_type} not found in {list(ds.data_vars.keys())}")  # noqa: TRY003
-
-        da = ds[resp_type]
-        return da if ele_tags is None else da.sel(eleTags=ele_tags)
+        if resp_type is not None and resp_type in resp_steps:
+            return resp_steps[resp_type]
+        return resp_steps
 
 
-def _unit_transform(ds: xr.Dataset, unit_factors: dict) -> xr.Dataset:
+def _unit_transform(ds: xr.Dataset, unit_factors: dict | None) -> xr.Dataset:
     if not unit_factors:
         return ds
 
-    ff, mf, cf, df, sf = (unit_factors[k] for k in ("force", "moment", "curvature", "disp", "stress"))
+    # factors: default = 1.0 (no scaling)
+    ff = float(unit_factors.get("force", 1.0))
+    mf = float(unit_factors.get("moment", 1.0))
+    cf = float(unit_factors.get("curvature", 1.0))
+    df = float(unit_factors.get("disp", 1.0))
+    sf = float(unit_factors.get("stress", 1.0))
 
-    def scale_dofs(da: xr.DataArray, keys: list[str], fac: float) -> xr.DataArray:
-        c = da.coords.get("DOFs")
+    def scale_by_labels(
+        da: xr.DataArray,
+        dim: str,
+        labels: list[str],
+        fac: float,
+    ) -> xr.DataArray:
+        if fac == 1.0:
+            return da
+        c = da.coords.get(dim, None)
         if c is None:
             return da
-        m = c.isin(keys)
+        m = c.isin(labels)  # missing labels are simply False -> safe
         return da.where(~m, da * fac)
 
-    updates = {
-        "Stresses": ds["Stresses"] * sf,
-        "ys": ds["ys"] * df,
-        "zs": ds["zs"] * df,
-        "areas": ds["areas"] * (df**2),
-    }
+    def maybe_update(out: dict, name: str, da: xr.DataArray):
+        out[name] = da
 
-    sf_da = ds["secForce"]
-    sf_da = scale_dofs(sf_da, ["P"], ff)
-    sf_da = scale_dofs(sf_da, ["Mz", "My", "T"], mf)
-    updates["secForce"] = sf_da
+    updates: dict[str, xr.DataArray] = {}
 
-    updates["secDefo"] = scale_dofs(ds["secDefo"], ["Mz", "My", "T"], cf)
+    # ---- simple vars (existence-safe) ----
+    if "Stresses" in ds.data_vars and sf != 1.0:
+        maybe_update(updates, "Stresses", ds["Stresses"] * sf)
 
-    return ds.assign(**updates)
+    if "ys" in ds.data_vars and df != 1.0:
+        maybe_update(updates, "ys", ds["ys"] * df)
+
+    if "zs" in ds.data_vars and df != 1.0:
+        maybe_update(updates, "zs", ds["zs"] * df)
+
+    if "areas" in ds.data_vars and df != 1.0:
+        maybe_update(updates, "areas", ds["areas"] * (df**2))
+
+    # ---- secForce / secDefo (existence + coord-dim safe) ----
+    # choose coord dim name: prefer "DOFs", else try common alternatives
+    def pick_dim(da: xr.DataArray, preferred: str = "DOFs") -> str | None:
+        if preferred in da.coords:
+            return preferred
+        for cand in ("secDOFs", "secDofs", "dofs", "components"):
+            if cand in da.coords:
+                return cand
+        return None
+
+    if "secForce" in ds.data_vars:
+        da = ds["secForce"]
+        dim = pick_dim(da)
+        if dim is not None:
+            da = scale_by_labels(da, dim, ["P"], ff)
+            da = scale_by_labels(da, dim, ["Mz", "My", "T"], mf)
+        # if no coord dim, leave unchanged (can't selectively scale)
+        if da is not ds["secForce"]:
+            maybe_update(updates, "secForce", da)
+
+    if "secDefo" in ds.data_vars:
+        da = ds["secDefo"]
+        dim = pick_dim(da)
+        if dim is not None:
+            da2 = scale_by_labels(da, dim, ["Mz", "My", "T"], cf)
+            if da2 is not da:
+                maybe_update(updates, "secDefo", da2)
+
+    return ds.assign(**updates) if updates else ds
 
 
 def _get_fiber_sec_resp(ele_secs: dict, dtype: dict):
