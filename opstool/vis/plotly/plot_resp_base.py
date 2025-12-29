@@ -185,7 +185,7 @@ class PlotResponsePlotlyBase(PlotResponseBase):
             scene = self._get_plotly_dim_scene(mode="3d", show_outline=show_outline)
         self.FIGURE.update_layout(
             template=self.pargs.theme,
-            autosize=True,
+            autosize=False,
             showlegend=False,
             scene=scene,
             width=self.pargs.window_size[0],
@@ -196,12 +196,23 @@ class PlotResponsePlotlyBase(PlotResponseBase):
 
         return self.FIGURE
 
-    def _get_plotly_dim_scene(self, mode="3d", show_outline=True):
-        if show_outline:
-            off_axis = {"showgrid": True, "zeroline": True, "visible": True}
-        else:
-            off_axis = {"showgrid": False, "zeroline": False, "visible": False}
+    def _get_plotly_dim_scene(self, mode="3d", show_outline=True, pad_ratio=1.0):
+        # ------------------------------------------------------------------------
         max_range = np.ptp(self.points, axis=0).max()  # ptp: max - mi
+        mins = self.points.min(axis=0)
+        maxs = self.points.max(axis=0)
+
+        pad = (maxs - mins) * pad_ratio  # 10% padding
+        lower = mins - pad
+        upper = maxs + pad
+
+        xmin, ymin, zmin = lower
+        xmax, ymax, zmax = upper
+        # --------------------------------------------------------------
+        if show_outline:
+            off_axis = {"showgrid": True, "zeroline": True, "visible": True, "autorange": False}
+        else:
+            off_axis = {"showgrid": False, "zeroline": False, "visible": False, "autorange": False}
         if mode.lower() == "3d":
             eye = {
                 "x": -max_range * 2,
@@ -212,26 +223,28 @@ class PlotResponsePlotlyBase(PlotResponseBase):
                 # "aspectratio": {"x": 1, "y": 1, "z": 1},
                 "aspectmode": "data",
                 "camera": {"eye": eye, "projection": {"type": "orthographic"}},
-                "xaxis": off_axis,
-                "yaxis": off_axis,
-                "zaxis": off_axis,
+                "xaxis": {**off_axis, "range": [xmin, xmax]},
+                "yaxis": {**off_axis, "range": [ymin, ymax]},
+                "zaxis": {**off_axis, "range": [zmin, zmax]},
             }
         elif mode.lower() == "2d":
             if show_outline:
-                xaxis = {"showbackground": False}
-                yaxis = {"showbackground": False}
+                xaxis = {"showbackground": False, "autorange": False, "range": [xmin, xmax]}
+                yaxis = {"showbackground": False, "autorange": False, "range": [ymin, ymax]}
                 zaxis = {
                     "showbackground": True,
                     "showticklabels": False,
                     "showgrid": True,
+                    "autorange": False,
+                    "range": [zmin, zmax],
                     "title": "",
                     "ticks": "",
                     "visible": True,
                 }
             else:
-                xaxis = off_axis
-                yaxis = off_axis
-                zaxis = off_axis
+                xaxis = {**off_axis, "range": [xmin, xmax]}
+                yaxis = {**off_axis, "range": [ymin, ymax]}
+                zaxis = {**off_axis, "range": [zmin, zmax]}
             eye = {
                 "x": 0,
                 "y": -0.1,
