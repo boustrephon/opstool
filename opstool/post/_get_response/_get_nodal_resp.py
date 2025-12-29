@@ -20,7 +20,7 @@ class NodalRespStepData(ResponseBase):
 
         self.node_tags = node_tags if node_tags is not None else ops.getNodeTags()
 
-        if isinstance(interpolate_beam, int):
+        if isinstance(interpolate_beam, int) and not isinstance(interpolate_beam, bool):
             self.interpolate_beam = True
             self.npts_per_ele = interpolate_beam
         else:
@@ -88,7 +88,8 @@ class NodalRespStepData(ResponseBase):
             )
             if self.interpolate_beam:
                 interp_ds = self._interpolate_beam_disp(model_info=model_info, disp_vectors=disp, node_tags=node_tags)
-                ds = xr.merge([ds, interp_ds], compat="override")
+                if interp_ds is not None:
+                    ds = xr.merge([ds, interp_ds], compat="override")
             self.resp_step_data_list.append(ds)
         else:
             datas = [disp, vel, accel, reacts, reacts_inertia, rayleigh_forces, pressure]
@@ -103,6 +104,8 @@ class NodalRespStepData(ResponseBase):
         points, response, cells = _interpolator_nodal_disp(
             model_info=model_info, disp_vectors=disp_vectors, npts_per_ele=self.npts_per_ele, node_tags=node_tags
         )
+        if len(points) == 0 and len(response) == 0 and len(cells) == 0:
+            return None
         coords = {
             "interpolate_pointID": np.linspace(0, 1, points.shape[0]),
             "interpolate_coords": ["x", "y", "z"],
@@ -397,7 +400,7 @@ def _interpolator_nodal_disp(
     axs, ays, azs, cells = [], [], [], []
     beam_data = model_info.get("BeamData", [])
     if len(beam_data) == 0:
-        return xr.Dataset()
+        return [], [], []
     link_data = model_info.get("LinkData", [])
     for data in [beam_data, link_data]:
         if len(data) > 0:
