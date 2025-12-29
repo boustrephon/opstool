@@ -132,6 +132,8 @@ class CreateODB:
     save_every: Optional[int], default: None
         Save response data at a fixed interval of analysis steps.
 
+        Added since version 1.0.25.
+
         .. Note::
             If set to an integer value, response data will be written to disk every save_every steps.
             This is particularly useful for large models with many analysis steps, as it allows responses to be flushed periodically into multiple ODB files, significantly reducing peak memory usage.
@@ -147,11 +149,12 @@ class CreateODB:
     zlib: bool, default: False
         Whether to compress the response data file.
         Only works when odb_format is set to "nc" in `opstool.post.set_odb_format()`.
+        Added since version 1.0.25.
     kwargs: Other post-processing parameters, optional:
         * elastic_frame_sec_points: int, default: 7
             The number of elastic frame elements section points.
             A larger number may result in a larger file size.
-        * interpolate_beam_disp: Union[bool, int], default: False
+        * interpolate_beam_disp: Union[bool, int], default: False, added since version 1.0.25
             Whether to interpolate beam displacements for nodal response of beam elements.
             If True, shape functions will be used to interpolate the displacements of beam elements for a smoother visualization.
             If an integer n is provided, it specifies the number of interpolation points along each beam element.
@@ -859,7 +862,7 @@ def get_model_data(
         If True, the data will be read from the response data file.
         This is useful when the model data is updated in an analysis process.
 
-    lazy_load: bool, default: False
+    lazy_load: bool, default: False, added since version 1.0.25.
         Whether to lazy load the data.
         If True, the data will be loaded on demand, which can save memory for large datasets.
         If False, the data will be fully loaded into memory.
@@ -956,7 +959,7 @@ def get_nodal_responses(
             If some nodes are deleted during the analysis,
             their response data will be filled with `numpy.nan`.
 
-    lazy_load: bool, default: False
+    lazy_load: bool, default: False, added since version 1.0.25.
         Whether to lazy load the data.
         If True, the data will be loaded on demand, which can save memory for large datasets.
         If False, the data will be fully loaded into memory.
@@ -1068,7 +1071,7 @@ def get_element_responses(
             If some elements are deleted during the analysis,
             their response data will be filled with `numpy.nan`.
 
-    lazy_load: bool, default: False
+    lazy_load: bool, default: False, added since version 1.0.25.
         Whether to lazy load the data.
         If True, the data will be loaded on demand, which can save memory for large datasets.
         If False, the data will be fully loaded into memory.
@@ -1145,7 +1148,7 @@ def get_sensitivity_responses(
 
     print_info: bool, default: True
         Whether to print information.
-    lazy_load: bool, default: False
+    lazy_load: bool, default: False, added since version 1.0.25.
         Whether to lazy load the data.
         If True, the data will be loaded on demand, which can save memory for large datasets.
         If False, the data will be fully loaded into memory.

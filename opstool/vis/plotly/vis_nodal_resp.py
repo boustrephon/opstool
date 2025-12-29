@@ -344,7 +344,7 @@ def plot_nodal_responses(
         If set to a float or int, it will scale the deformed shape by that factor.
     show_defo: bool, default: True
         Whether to display the deformed shape.
-    interpolate_beam_disp: bool, default: False
+    interpolate_beam_disp: bool, default: False, added since version 1.0.25.
         Whether to interpolate beam displacements.
         Shape functions will be used to interpolate the displacements of beam elements for a smoother visualization.
         If you have a large number of beam elements, enabling this option may slow down the plotting process, and it is recommended to disable it.
@@ -389,7 +389,7 @@ def plot_nodal_responses(
         Defaults to 'surface'. Note that 'wireframe' only shows a wireframe of the outer geometry.
     show_max_min: bool, default: False
         Whether to show the maximum and minimum response value annotations in the plot.
-    lazy_load: bool, default: False
+    lazy_load: bool, default: False, added since version 1.0.25.
         Whether to lazily load the response data.
         If True, the response data will be loaded on demand when needed for plotting.
         This can save memory when dealing with large datasets.
@@ -468,7 +468,7 @@ def plot_nodal_responses_animation(
         If set to a float or int, it will scale the deformed shape by that factor.
     show_defo: bool, default: True
         Whether to display the deformed shape.
-    interpolate_beam_disp: bool, default: False
+    interpolate_beam_disp: bool, default: False, added since version 1.0.25.
         Whether to interpolate beam displacements.
         Shape functions will be used to interpolate the displacements of beam elements for a smoother visualization.
         If you have a large number of beam elements, enabling this option may slow down the plotting process, and it is recommended to disable it.
@@ -506,7 +506,7 @@ def plot_nodal_responses_animation(
         Defaults to 'surface'. Note that 'wireframe' only shows a wireframe of the outer geometry.
     show_max_min: bool, default: False
         Whether to show the maximum and minimum response value annotations in the plot.
-    lazy_load: bool, default: False
+    lazy_load: bool, default: False, added since version 1.0.25.
         Whether to lazily load the response data.
         If True, the response data will be loaded on demand when needed for plotting.
         This can save memory when dealing with large datasets.
