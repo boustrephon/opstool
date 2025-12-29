@@ -107,7 +107,7 @@ class PlotResponsePyvistaBase(PlotResponseBase):
     def _plot_all_mesh(self, plotter, color="gray", step=0):
         if self.ModelUpdate or step == 0:
             pos = self._get_node_da(step).to_numpy()
-            line_cells, _ = self._get_line_cells(self._get_line_da(step))
+            line_cells, _ = self._get_line_cells(self._get_line_da(step, enforce=True))
             _, unstru_cell_types, unstru_cells = self._get_unstru_cells(self._get_unstru_da(step))
 
             _plot_all_mesh(
