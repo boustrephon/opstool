@@ -16,6 +16,8 @@ class PlotResponseBase:
         self.ModelUpdate = False
         self.RespSteps = None
         self.nodal_disp_steps = None
+        self.interp_beam_disp_on = False
+        self.interp_beam_disp_steps = None
         # ------------------------------------------------------------
         self.pargs = None
         self.resp_step = None  # response data
@@ -31,6 +33,7 @@ class PlotResponseBase:
         self.PKG_NAME = self.pkg_name = CONFIGS.get_pkg_name()
 
         self.set_model_info_step_data()
+        self.check_interp_beam_disp()
 
         self._print_loading_info()
 
@@ -95,8 +98,11 @@ class PlotResponseBase:
         nodal_data = self._get_model_da("NodalData", idx)
         return nodal_data.sel(coords=["x", "y", "z"])
 
-    def _get_line_da(self, idx):
-        return self._get_model_da("AllLineElesData", idx)
+    def _get_line_da(self, idx, enforce=False):
+        if enforce or not self.interp_beam_disp_on:
+            return self._get_model_da("AllLineElesData", idx)
+        else:
+            return xr.DataArray([], name="AllLineElesData")
 
     def _get_unstru_da(self, idx):
         return self._get_model_da("UnstructuralData", idx)
@@ -177,6 +183,46 @@ class PlotResponseBase:
         coords = self.defo_scale_factor * np.asanyarray(defo) + np.asanyarray(pos_origin)
         node_deform_coords = xr.DataArray(coords, dims=pos_origin.dims, coords=pos_origin.coords)
         return node_deform_coords
+
+    def check_interp_beam_disp(self):
+        if self.interp_beam_disp_on:
+            interp_beam_disp_steps = get_nodal_responses(
+                self.odb_tag, resp_type="interpolate_disp", lazy_load=self.lazy_load, print_info=False
+            )
+            if len(interp_beam_disp_steps) == 0:
+                self.interp_beam_disp_on = False
+
+    def set_interp_beam_on(self, on: bool):
+        self.interp_beam_disp_on = on
+
+    def set_interp_beam_disp_step_data(self):
+        if self.interp_beam_disp_on and self.interp_beam_disp_steps is None:
+            self.interp_beam_disp_steps = get_nodal_responses(
+                self.odb_tag, resp_type="interpolate_disp", lazy_load=self.lazy_load, print_info=False
+            )
+            self.interp_beam_points = get_nodal_responses(
+                self.odb_tag, resp_type="interpolate_points", lazy_load=self.lazy_load, print_info=False
+            )
+            self.interp_beam_cells = get_nodal_responses(
+                self.odb_tag, resp_type="interpolate_cells", lazy_load=self.lazy_load, print_info=False
+            )
+
+    def get_interp_beam_data(self, idx, alpha):
+        self.set_interp_beam_disp_step_data()
+        points_data = self.interp_beam_points.isel(time=idx)
+        cells_data = self.interp_beam_cells.isel(time=idx)
+        disp_data = self.interp_beam_disp_steps.isel(time=idx)
+        if self.ModelUpdate:
+            points_data = points_data.dropna(dim="interpolate_pointID", how="all")
+            disp_data = disp_data.dropna(dim="interpolate_pointID", how="all")
+            cells_data = cells_data.dropna(dim="interpolate_lineID", how="all")
+        points_origin = np.array(points_data)
+        cells_data = np.array(cells_data)
+        disp_data = np.array(disp_data)
+        scalars = np.sqrt(np.sum(disp_data**2, axis=1))
+        self._set_defo_scale_factor(alpha=alpha)
+        points_defo = points_origin + self.defo_scale_factor * disp_data
+        return points_origin, points_defo, cells_data, scalars
 
     @staticmethod
     def _get_line_cells(line_data):

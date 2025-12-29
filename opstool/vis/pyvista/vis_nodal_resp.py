@@ -6,7 +6,7 @@ import pyvista as pv
 
 from .._plot_nodal_resp_base import PlotNodalResponseBase
 from .plot_resp_base import PlotResponsePyvistaBase
-from .plot_utils import PLOT_ARGS, _plot_all_mesh_cmap, _plot_lines_cmap, _update_point_label_actor
+from .plot_utils import PLOT_ARGS, _plot_all_mesh_cmap, _plot_lines, _plot_lines_cmap, _update_point_label_actor
 
 
 class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
@@ -148,6 +148,15 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
                 clim=None,
                 show_scalar_bar=False,
             )
+            if show_origin:
+                _plot_lines(
+                    plotter=plotter,
+                    pos=points_origin_interp,
+                    cells=cells_interp,
+                    color="gray",
+                    width=self.pargs.mesh_edge_width,
+                    render_lines_as_tubes=self.pargs.render_lines_as_tubes,
+                )
         else:
             line_interp_grid = None
 
@@ -416,6 +425,7 @@ def plot_nodal_responses(
     slides: bool = False,
     step: Union[int, str] = "absMax",
     show_defo: bool = True,
+    interpolate_beam_disp: bool = False,
     defo_scale: Union[float, int, bool] = 1.0,
     resp_type: str = "disp",
     resp_dof: Union[list, tuple, str] = ("UX", "UY", "UZ"),
@@ -451,6 +461,11 @@ def plot_nodal_responses(
         If set to a float or int, it will scale the deformed shape by that factor.
     show_defo: bool, default: True
         Whether to display the deformed shape.
+    interpolate_beam_disp: bool, default: False
+        Whether to interpolate beam displacements.
+        Shape functions will be used to interpolate the displacements of beam elements for a smoother visualization.
+        If you have a large number of beam elements, enabling this option may slow down the plotting process, and it is recommended to disable it.
+        If True, You need to ensure that the data has been saved in ``CreateODB`` with ``interpolate_beam_disp=True`` for this option to take effect.
     resp_type: str, default: disp
         Type of response to be visualized.
         Optional: "disp", "vel", "accel", "reaction", "reactionIncInertia", "rayleighForces", "pressure".
@@ -519,6 +534,7 @@ def plot_nodal_responses(
     plotbase = PlotNodalResponse(odb_tag=odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
+    plotbase.set_interp_beam_on(interpolate_beam_disp)
     if slides:
         plotbase.plot_slide(
             plotter,
@@ -560,6 +576,7 @@ def plot_nodal_responses_animation(
     off_screen: bool = True,
     defo_scale: Union[float, int, bool] = 1.0,
     show_defo: bool = True,
+    interpolate_beam_disp: bool = False,
     resp_type: str = "disp",
     resp_dof: Union[list, tuple, str] = ("UX", "UY", "UZ"),
     unit_symbol: Optional[str] = None,
@@ -592,6 +609,11 @@ def plot_nodal_responses_animation(
         If set to False, the deformed shape will not be scaled (original deformation).
         If set to True or "auto", the deformed shape will be scaled by the default scale (i.e., 1/20 of the maximum model dimensions).
         If set to a float or int, it will scale the deformed shape by that factor.
+    interpolate_beam_disp: bool, default: False
+        Whether to interpolate beam displacements.
+        Shape functions will be used to interpolate the displacements of beam elements for a smoother visualization.
+        If you have a large number of beam elements, enabling this option may slow down the plotting process, and it is recommended to disable it.
+        If True, You need to ensure that the data has been saved in ``CreateODB`` with ``interpolate_beam_disp=True`` for this option to take effect.
     show_defo: bool, default: True
         Whether to display the deformed shape.
     resp_type: str, default: disp
@@ -656,6 +678,7 @@ def plot_nodal_responses_animation(
     plotbase = PlotNodalResponse(odb_tag=odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
+    plotbase.set_interp_beam_on(interpolate_beam_disp)
     plotbase.plot_anim(
         plotter,
         alpha=defo_scale,

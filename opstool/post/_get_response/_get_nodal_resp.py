@@ -87,7 +87,7 @@ class NodalRespStepData(ResponseBase):
                 attrs=self.attrs,
             )
             if self.interpolate_beam:
-                interp_ds = self._interpolate_beam_disp(model_info=model_info, disp_vectors=disp)
+                interp_ds = self._interpolate_beam_disp(model_info=model_info, disp_vectors=disp, node_tags=node_tags)
                 ds = xr.merge([ds, interp_ds], compat="override")
             self.resp_step_data_list.append(ds)
         else:
@@ -95,13 +95,13 @@ class NodalRespStepData(ResponseBase):
             for name, data_ in zip(self.resp_types, datas):
                 self.resp_step_data_dict[name].append(data_)
             if self.interpolate_beam:
-                self._interpolate_beam_disp(model_info=model_info, disp_vectors=disp)
+                self._interpolate_beam_disp(model_info=model_info, disp_vectors=disp, node_tags=node_tags)
 
         self.move_one_step(time_value=ops.getTime())
 
-    def _interpolate_beam_disp(self, model_info, disp_vectors):
+    def _interpolate_beam_disp(self, model_info, disp_vectors, node_tags):
         points, response, cells = _interpolator_nodal_disp(
-            model_info=model_info, disp_vectors=disp_vectors, npts_per_ele=self.npts_per_ele
+            model_info=model_info, disp_vectors=disp_vectors, npts_per_ele=self.npts_per_ele, node_tags=node_tags
         )
         coords = {
             "interpolate_pointID": np.linspace(0, 1, points.shape[0]),
@@ -384,10 +384,16 @@ def _get_nodal_react(node_tags, dtype: dict):
 
 
 def _interpolator_nodal_disp(
-    model_info: dict | None = None, disp_vectors: np.ndarray | None = None, npts_per_ele: int = 6
+    model_info: dict | None = None,
+    node_tags: list[int] | None = None,
+    disp_vectors: np.ndarray | None = None,
+    npts_per_ele: int = 6,
 ) -> xr.Dataset:
     # -------------------------------------------------
-    node_coord = model_info["NodalData"].values
+    if node_tags is not None:
+        node_coord = model_info["NodalData"].sel(nodeTags=node_tags).values
+    else:
+        node_coord = model_info["NodalData"].values
     axs, ays, azs, cells = [], [], [], []
     beam_data = model_info.get("BeamData", [])
     if len(beam_data) == 0:

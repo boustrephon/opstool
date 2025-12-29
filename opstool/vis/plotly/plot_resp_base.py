@@ -76,7 +76,7 @@ class PlotResponsePlotlyBase(PlotResponseBase):
 
     def _plot_all_mesh(self, plotter, color="#738595", step=0):
         pos = self._get_node_da(step).to_numpy()
-        line_cells, _ = self._get_line_cells(self._get_line_da(step))
+        line_cells, _ = self._get_line_cells(self._get_line_da(step, enforce=True))
         _, unstru_cell_types, unstru_cells = self._get_unstru_cells(self._get_unstru_da(step))
         output = self._get_plotly_unstru_data(pos, unstru_cell_types, unstru_cells, scalars=None)
         face_line_points = output[1]

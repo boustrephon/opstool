@@ -117,6 +117,13 @@ class CreateODB:
         * elastic_frame_sec_points: int, default: 7
             The number of elastic frame elements section points.
             A larger number may result in a larger file size.
+        * interpolate_beam_disp: Union[bool, int], default: False
+            Whether to interpolate beam displacements for nodal response of beam elements.
+            If True, shape functions will be used to interpolate the displacements of beam elements for a smoother visualization.
+            If an integer n is provided, it specifies the number of interpolation points along each beam element.
+            If you have a large number of beam elements, enabling this option may slow down the plotting process, and it is recommended to disable it.
+            Interpolation will not have a significant effect when applied to sufficiently subdivided beam elements; instead,
+            it will increase the data size and slow down the speed.
         * section_response_dof: Optional[dict], default: None
             A dictionary to specify the section response type for different section types.
             The keys are the section types, and the values are the response types.
@@ -369,7 +376,7 @@ class CreateODB:
         _save_nodal_resp = self._POST_ARGS.save_nodal_resp
         _node_tags = self._POST_ARGS.node_tags
         node_tags = _node_tags if _node_tags is not None else self._ModelInfo.get_current_node_tags()
-        model_info = self._ModelInfo.get_current_model_info()
+        model_info = self._ModelInfo.get_current_model_info() if self._POST_ARGS.interpolate_beam_disp else None
         if node_tags is not None:
             node_tags = [int(tag) for tag in np.atleast_1d(node_tags)]  # Ensure tags are integers
         if len(node_tags) > 0 and _save_nodal_resp:

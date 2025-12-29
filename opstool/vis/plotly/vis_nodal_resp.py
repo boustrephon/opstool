@@ -127,6 +127,20 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePlotlyBase):
                 clim=clim,
                 width=self.pargs.line_width,
             )
+        if self.interp_beam_disp_on:
+            points_origin_interp, points_defo_interp, cells_interp, scalars_interp = self.get_interp_beam_data(
+                step, alpha
+            )
+            line_points_interp, _, line_scalars_interp = self._get_plotly_line_data(
+                points_defo_interp, cells_interp, scalars_interp
+            )
+            _plot_lines_cmap(
+                plotter,
+                line_points_interp,
+                scalars=line_scalars_interp,
+                coloraxis=coloraxis,
+                width=self.pargs.line_width,
+            )
         _plot_points_cmap(
             plotter,
             node_defo_coords,
@@ -296,6 +310,7 @@ def plot_nodal_responses(
     step: Union[int, str] = "absMax",
     defo_scale: Union[float, int, bool] = 1.0,
     show_defo: bool = True,
+    interpolate_beam_disp: bool = False,
     resp_type: str = "disp",
     resp_dof: Union[list, tuple, str] = ("UX", "UY", "UZ"),
     unit_symbol: Optional[str] = None,
@@ -329,6 +344,12 @@ def plot_nodal_responses(
         If set to a float or int, it will scale the deformed shape by that factor.
     show_defo: bool, default: True
         Whether to display the deformed shape.
+    interpolate_beam_disp: bool, default: False
+        Whether to interpolate beam displacements.
+        Shape functions will be used to interpolate the displacements of beam elements for a smoother visualization.
+        If you have a large number of beam elements, enabling this option may slow down the plotting process, and it is recommended to disable it.
+        If True, You need to ensure that the data has been saved in ``CreateODB`` with ``interpolate_beam_disp=True`` for this option to take effect.
+
     resp_type: str, default: disp
         Type of response to be visualized.
         Optional: "disp", "vel", "accel", "reaction", "reactionIncInertia", "rayleighForces", "pressure".
@@ -385,6 +406,7 @@ def plot_nodal_responses(
     plotbase = PlotNodalResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
+    plotbase.set_interp_beam_on(interpolate_beam_disp)
     if slides:
         plotbase.plot_slide(
             alpha=defo_scale,
@@ -416,6 +438,7 @@ def plot_nodal_responses_animation(
     framerate: Optional[int] = None,
     defo_scale: Union[float, int, bool] = 1.0,
     show_defo: bool = True,
+    interpolate_beam_disp: bool = False,
     resp_type: str = "disp",
     resp_dof: Union[list, tuple, str] = ("UX", "UY", "UZ"),
     unit_symbol: Optional[str] = None,
@@ -445,6 +468,11 @@ def plot_nodal_responses_animation(
         If set to a float or int, it will scale the deformed shape by that factor.
     show_defo: bool, default: True
         Whether to display the deformed shape.
+    interpolate_beam_disp: bool, default: False
+        Whether to interpolate beam displacements.
+        Shape functions will be used to interpolate the displacements of beam elements for a smoother visualization.
+        If you have a large number of beam elements, enabling this option may slow down the plotting process, and it is recommended to disable it.
+        If True, You need to ensure that the data has been saved in ``CreateODB`` with ``interpolate_beam_disp=True`` for this option to take effect.
     resp_type: str, default: disp
         Type of response to be visualized.
         Optional: "disp", "vel", "accel", "reaction", "reactionIncInertia", "rayleighForces", "pressure".
@@ -495,6 +523,7 @@ def plot_nodal_responses_animation(
     plotbase = PlotNodalResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
+    plotbase.set_interp_beam_on(interpolate_beam_disp)
     plotbase.plot_anim(
         alpha=defo_scale,
         show_defo=show_defo,
