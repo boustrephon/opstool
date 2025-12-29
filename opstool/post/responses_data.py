@@ -5,11 +5,10 @@ from types import SimpleNamespace
 from typing import Literal, TypedDict
 
 import numpy as np
-import openseespy.opensees as ops
 import xarray as xr
 from typing_extensions import Unpack
 
-from ..utils import CONFIGS, get_random_color
+from ..utils import CONFIGS, get_opensees_module, get_random_color
 from ._get_response import (
     BrickRespStepData,
     ContactRespStepData,
@@ -28,9 +27,12 @@ from ._unit_postprocess import get_post_unit_multiplier, get_post_unit_symbol
 from .eigen_data import save_eigen_data
 from .model_data import save_model_data
 
+ops = get_opensees_module()
+
 
 class _POST_ARGS_TYPES(TypedDict, total=False):
     elastic_frame_sec_points: int
+    interpolate_beam_disp: bool | int = False
     compute_mechanical_measures: bool
     project_gauss_to_nodes: str | None
     section_response_dof: dict[str, list[str]] | None
@@ -238,6 +240,7 @@ class CreateODB:
 
     _POST_ARGS = SimpleNamespace(
         elastic_frame_sec_points=7,
+        interpolate_beam_disp=False,
         section_response_dof=None,
         compute_mechanical_measures="All",
         project_gauss_to_nodes="copy",
@@ -366,13 +369,19 @@ class CreateODB:
         _save_nodal_resp = self._POST_ARGS.save_nodal_resp
         _node_tags = self._POST_ARGS.node_tags
         node_tags = _node_tags if _node_tags is not None else self._ModelInfo.get_current_node_tags()
+        model_info = self._ModelInfo.get_current_model_info()
         if node_tags is not None:
             node_tags = [int(tag) for tag in np.atleast_1d(node_tags)]  # Ensure tags are integers
         if len(node_tags) > 0 and _save_nodal_resp:
             if self._NodalResp is None:
-                self._NodalResp = NodalRespStepData(node_tags, **self.resp_kargs)
+                self._NodalResp = NodalRespStepData(
+                    node_tags,
+                    interpolate_beam=self._POST_ARGS.interpolate_beam_disp,
+                    model_info=model_info,
+                    **self.resp_kargs,
+                )
             else:
-                self._NodalResp.add_resp_data_one_step(node_tags)
+                self._NodalResp.add_resp_data_one_step(node_tags, model_info=model_info)
 
     def _set_frame_resp(self):
         _save_frame_resp = self._POST_ARGS.save_frame_resp
@@ -1101,7 +1110,7 @@ def get_sensitivity_responses(
     RESP_FILE_NAME = CONFIGS.get_resp_filename()
 
     store_path = f"{RESULTS_DIR}\\" + f"{RESP_FILE_NAME}-{odb_tag}.odb"
-    dts = _load_parts_as_datatree(store_path, lazy=lazy_load)
+    dts = _load_parts_as_datatree(store_path)
 
     resp = SensitivityRespStepData.read_response(dts, resp_type=resp_type, lazy=lazy_load)
 

@@ -15,6 +15,7 @@ class ModelInfoStepData(ResponseBase):
         self.kargs = kargs
         super().__init__(**kargs)
 
+        self.current_model_info = None
         self.current_node_tags = None
         self.current_truss_tags = None
         self.current_frame_tags = None
@@ -56,6 +57,7 @@ class ModelInfoStepData(ResponseBase):
             self.move_one_step(time_value=ops.getTime())
 
     def _set_current_tags(self, model_info: dict):
+        self._set_current_model_info(model_info)
         self._set_currnet_node_tags(model_info)
         self._set_current_truss_tags(model_info)
         self._set_current_frame_tags(model_info)
@@ -65,6 +67,9 @@ class ModelInfoStepData(ResponseBase):
         self._set_current_brick_tags(model_info)
         self._set_current_contact_tags(model_info)
         self._set_current_frame_load_data(model_info)
+
+    def _set_current_model_info(self, model_info: dict):
+        self.current_model_info = model_info
 
     def _set_currnet_node_tags(self, model_info: dict):
         da = model_info.get("NodalData")
@@ -111,6 +116,9 @@ class ModelInfoStepData(ResponseBase):
         da = model_info.get("FrameLoadData")
         if da is not None and len(da) > 0:
             self.current_frame_load_data = da
+
+    def get_current_model_info(self):
+        return self.current_model_info if self.current_model_info is not None else {}
 
     def get_current_node_tags(self):
         return self.current_node_tags if self.current_node_tags is not None else []

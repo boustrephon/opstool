@@ -6,7 +6,7 @@ import pyvista as pv
 
 from .._plot_nodal_resp_base import PlotNodalResponseBase
 from .plot_resp_base import PlotResponsePyvistaBase
-from .plot_utils import PLOT_ARGS, _plot_all_mesh_cmap, _update_point_label_actor
+from .plot_utils import PLOT_ARGS, _plot_all_mesh_cmap, _plot_lines_cmap, _update_point_label_actor
 
 
 class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
@@ -133,6 +133,24 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
             # title_prop.SetJustificationToRight()
             title_prop.BoldOn()
 
+        if self.interp_beam_disp_on:
+            points_origin_interp, points_defo_interp, cells_interp, scalars_interp = self.get_interp_beam_data(
+                step, alpha
+            )
+            line_interp_grid = _plot_lines_cmap(
+                plotter=plotter,
+                pos=points_defo_interp,
+                cells=cells_interp,
+                scalars=scalars_interp,
+                cmap=self.pargs.cmap,
+                width=self.pargs.line_width,
+                render_lines_as_tubes=self.pargs.render_lines_as_tubes,
+                clim=None,
+                show_scalar_bar=False,
+            )
+        else:
+            line_interp_grid = None
+
         # Max Min Labels
         if show_max_min:
             idxs = [np.argmax(scalars), np.argmin(scalars)]
@@ -156,7 +174,7 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
         if show_mp_constraint:
             mp_grid = self._plot_mp_constraint(plotter, step, defo_scale=alpha)
         self._update_plotter(plotter, cpos=cpos)
-        return point_grid, line_grid, solid_grid, scalar_bar, bc_grid, mp_grid, max_min_label_grid
+        return point_grid, line_grid, solid_grid, scalar_bar, bc_grid, mp_grid, max_min_label_grid, line_interp_grid
 
     def _update_mesh(
         self,
@@ -168,6 +186,7 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
         bc_grid=None,
         mp_grid=None,
         max_min_label_grid=None,
+        line_interp_grid=None,
         alpha=1.0,
         bc_scale: float = 1.0,
         plotter=None,
@@ -209,6 +228,10 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
                 shape_opacity=100.0,
                 always_visible=True,
             )
+        if line_interp_grid:
+            _, points_defo, _, scalars = self.get_interp_beam_data(step, alpha)
+            line_interp_grid["scalars"] = scalars
+            line_interp_grid.points = points_defo
 
     def plot_slide(
         self,
@@ -244,19 +267,21 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
                 show_max_min=show_max_min,
             )
         else:
-            point_grid, line_grid, solid_grid, cbar, bc_grid, mp_grid, max_min_label_grid = self._create_mesh(
-                plotter,
-                self.num_steps - 1,
-                alpha=alpha_,
-                clim=clim,
-                show_bc=show_bc,
-                bc_scale=bc_scale,
-                show_mp_constraint=show_mp_constraint,
-                style=style,
-                show_outline=show_outline,
-                show_origin=show_origin,
-                cpos=cpos,
-                show_max_min=show_max_min,
+            point_grid, line_grid, solid_grid, cbar, bc_grid, mp_grid, max_min_label_grid, line_interp_grid = (
+                self._create_mesh(
+                    plotter,
+                    self.num_steps - 1,
+                    alpha=alpha_,
+                    clim=clim,
+                    show_bc=show_bc,
+                    bc_scale=bc_scale,
+                    show_mp_constraint=show_mp_constraint,
+                    style=style,
+                    show_outline=show_outline,
+                    show_origin=show_origin,
+                    cpos=cpos,
+                    show_max_min=show_max_min,
+                )
             )
             func = partial(
                 self._update_mesh,
@@ -269,6 +294,7 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
                 alpha=alpha_,
                 bc_scale=bc_scale,
                 max_min_label_grid=max_min_label_grid,
+                line_interp_grid=line_interp_grid,
                 plotter=plotter,
                 **kargs,
             )
@@ -351,18 +377,20 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
                 )
                 plotter.write_frame()
         else:
-            point_grid, line_grid, solid_grid, scalar_bar, bc_grid, mp_grid, max_min_label_grid = self._create_mesh(
-                plotter,
-                self.num_steps - 1,
-                alpha=alpha_,
-                show_bc=show_bc,
-                bc_scale=bc_scale,
-                show_mp_constraint=show_mp_constraint,
-                style=style,
-                show_outline=show_outline,
-                show_origin=show_origin,
-                cpos=cpos,
-                show_max_min=show_max_min,
+            point_grid, line_grid, solid_grid, scalar_bar, bc_grid, mp_grid, max_min_label_grid, line_interp_grid = (
+                self._create_mesh(
+                    plotter,
+                    self.num_steps - 1,
+                    alpha=alpha_,
+                    show_bc=show_bc,
+                    bc_scale=bc_scale,
+                    show_mp_constraint=show_mp_constraint,
+                    style=style,
+                    show_outline=show_outline,
+                    show_origin=show_origin,
+                    cpos=cpos,
+                    show_max_min=show_max_min,
+                )
             )
             plotter.write_frame()
             for step in range(self.num_steps):
@@ -377,6 +405,7 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
                     alpha=alpha_,
                     bc_scale=bc_scale,
                     max_min_label_grid=max_min_label_grid,
+                    line_interp_grid=line_interp_grid,
                     plotter=plotter,
                 )
                 plotter.write_frame()
