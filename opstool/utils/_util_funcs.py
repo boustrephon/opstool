@@ -19,6 +19,13 @@ PKG_PREFIX = CONFIGS.get_pkg_prefix()
 RESULTS_DIR = CONFIGS.get_output_dir()
 
 
+def _reset_configs_for_doc(gallery_conf, fname):
+    from ..vis import plotly, pyvista
+
+    plotly.reset_plot_props()
+    pyvista.reset_plot_props()
+
+
 def set_opensees_module(module: ModuleType | str):
     CONFIGS.set_ops_module(module)
 

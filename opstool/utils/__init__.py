@@ -1,6 +1,7 @@
 from ._load_ops_examples import load_ops_examples, run_model
 from ._util_funcs import (
     _check_odb_path,
+    _reset_configs_for_doc,
     add_ops_hints_file,
     check_file_type,
     get_bounds,
@@ -34,6 +35,7 @@ __all__ = [
     "OPS_ELE_TAGS",
     "OPS_ELE_TYPES",
     "_check_odb_path",
+    "_reset_configs_for_doc",
     "add_ops_hints_file",
     # -----------------------
     "check_file_type",
