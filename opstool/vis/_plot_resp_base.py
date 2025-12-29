@@ -3,30 +3,19 @@ from typing import Optional
 import numpy as np
 import xarray as xr
 
-from ..utils import CONFIGS, get_bounds
+from ..post import get_model_data, get_nodal_responses
+from ..utils import CONFIGS, get_bounds, get_random_color
 
 
 class PlotResponseBase:
-    def __init__(
-        self,
-        model_info_steps: dict[str, xr.DataArray],
-        resp_step: xr.Dataset,
-        model_update: bool,
-        nodal_resp_steps: Optional[xr.Dataset] = None,
-    ):
-        self.ModelInfoSteps = model_info_steps
-        self.RespSteps = resp_step
-        self.ModelUpdate = model_update
-        self.nodal_resp_steps = nodal_resp_steps
-        self.time = self.RespSteps.coords["time"].values
-        self.num_steps = len(self.time)
+    def __init__(self, odb_tag, lazy_load=True):
+        self.odb_tag = odb_tag
+        self.lazy_load = lazy_load
 
-        self.points_origin = self._get_node_da(0).to_numpy()
-        self.points = self.points_origin.copy()
-        self.bounds, self.min_bound_size, self.max_bound_size = get_bounds(self.points)
-        model_dims = self._get_node_da(0).attrs["ndims"]
-        # # show z-axis in 3d view
-        self.show_zaxis = not np.max(model_dims) <= 2
+        self.ModelInfoSteps = None
+        self.ModelUpdate = False
+        self.RespSteps = None
+        self.nodal_disp_steps = None
         # ------------------------------------------------------------
         self.pargs = None
         self.resp_step = None  # response data
@@ -40,6 +29,43 @@ class PlotResponseBase:
         self.defo_scale_factor = None  # deformation scale factor
 
         self.PKG_NAME = self.pkg_name = CONFIGS.get_pkg_name()
+
+        self.set_model_info_step_data()
+
+        self._print_loading_info()
+
+    def _print_loading_info(self):
+        # Print loading info
+        RESULTS_DIR = CONFIGS.get_output_dir()
+        CONSOLE = CONFIGS.get_console()
+        PKG_PREFIX = CONFIGS.get_pkg_prefix()
+        RESP_FILE_NAME = CONFIGS.get_resp_filename()
+        store_path = f"{RESULTS_DIR}\\" + f"{RESP_FILE_NAME}-{self.odb_tag}.odb"
+        color = get_random_color()
+        CONSOLE.print(f"{PKG_PREFIX} Loading responses data from [bold {color}]{store_path}[/] ...")
+
+    def set_model_info_step_data(self):
+        self.ModelInfoSteps = get_model_data(
+            self.odb_tag, data_type=None, from_responses=True, lazy_load=self.lazy_load, print_info=False
+        )
+        self.ModelUpdate = self.ModelInfoSteps.get("ModelUpdate", False)
+        self.points_origin = self._get_node_da(0).to_numpy()
+        self.points = self.points_origin.copy()
+        self.bounds, self.min_bound_size, self.max_bound_size = get_bounds(self.points)
+        model_dims = self._get_node_da(0).attrs["ndims"]
+        # # show z-axis in 3d view
+        self.show_zaxis = not np.max(model_dims) <= 2
+
+    def set_resp_step_data(self, resp_steps):
+        self.RespSteps = resp_steps
+        self.time = self.RespSteps.coords["time"].values
+        self.num_steps = len(self.time)
+
+    def set_nodal_disp_step_data(self):
+        if self.nodal_disp_steps is None:
+            self.nodal_disp_steps = get_nodal_responses(
+                self.odb_tag, resp_type="disp", lazy_load=self.lazy_load, print_info=False
+            )
 
     def set_unit(self, symbol: Optional[str] = None, factor: Optional[float] = None):
         # unit
@@ -57,18 +83,16 @@ class PlotResponseBase:
         da = da.isel(time=t)
 
         # drop nodes/eles that do not exist in this step (2nd dim is tag dim)
-        tag_dim = da.dims[1] if len(da.dims) > 1 else None
-        if tag_dim:
-            da = da.dropna(dim=tag_dim, how="any")
+        if self.ModelUpdate:
+            if "nodeTags" in da.dims:
+                da = da.dropna(dim="nodeTags", how="all")
+            if "eleTags" in da.dims:
+                da = da.dropna(dim="eleTags", how="all")
 
         return da
 
     def _get_node_da(self, idx):
         nodal_data = self._get_model_da("NodalData", idx)
-        if len(nodal_data) > 0:
-            unused_node_tags = nodal_data.attrs["unusedNodeTags"]
-            if len(unused_node_tags) > 0:
-                nodal_data = nodal_data.where(~nodal_data.coords["nodeTags"].isin(unused_node_tags), drop=True)
         return nodal_data.sel(coords=["x", "y", "z"])
 
     def _get_line_da(self, idx):
@@ -83,14 +107,15 @@ class PlotResponseBase:
     def _get_mp_constraint_da(self, idx):
         return self._get_model_da("MPConstraintData", idx)
 
-    def _get_resp_da(self, time_idx, resp_type, component=None):
-        da = self.RespSteps[resp_type].isel(time=time_idx)
+    def _get_resp_da(self, time_idx, component=None):
+        da = self.RespSteps.isel(time=time_idx)
 
         # drop nodes/eles that do not exist in this step
         if self.ModelUpdate:
-            tag_dim = next((d for d in da.dims if d != "time"), None)
-            if tag_dim is not None:
-                da = da.dropna(dim=tag_dim, how="all")
+            if "nodeTags" in da.dims:
+                da = da.dropna(dim="nodeTags", how="all")
+            if "eleTags" in da.dims:
+                da = da.dropna(dim="eleTags", how="all")
 
         # no component selection
         if component is None or da.ndim == 1:
@@ -105,23 +130,24 @@ class PlotResponseBase:
         return da * self.unit_factor
 
     def _get_disp_da(self, idx):
-        if self.nodal_resp_steps is None:
-            data = self._get_resp_da(idx, "disp", ["UX", "UY", "UZ"])
-            data = data / self.unit_factor  # come back to original unit
-        else:
-            data = self.nodal_resp_steps["disp"].isel(time=idx)
-            if self.ModelUpdate:
-                data = data.dropna(dim="nodeTags", how="all")
-            data = data.sel(DOFs=["UX", "UY", "UZ"])
+        self.set_nodal_disp_step_data()
+        data = self.nodal_disp_steps.isel(time=idx).sel(DOFs=["UX", "UY", "UZ"])
+        # if self.nodal_resp_steps is None:
+        #     data = self._get_resp_da(idx, "disp", ["UX", "UY", "UZ"])
+        #     data = data / self.unit_factor  # come back to original unit
+        # else:
+        #     data = self.nodal_disp_steps["disp"].isel(time=idx).sel(DOFs=["UX", "UY", "UZ"])
+        if self.ModelUpdate:
+            data = data.dropna(dim="nodeTags", how="all")
         return data
 
     def _set_defo_scale_factor(self, alpha=1.0):
         if self.defo_scale_factor is not None:
             return
 
-        data = self.RespSteps["disp"] if self.nodal_resp_steps is None else self.nodal_resp_steps["disp"]
-        comp_dim = data.dims[-1]
-        defos_da = data.sel({comp_dim: ["UX", "UY", "UZ"]})
+        self.set_nodal_disp_step_data()
+
+        defos_da = self.nodal_disp_steps.sel(DOFs=["UX", "UY", "UZ"])
 
         # ---- compute alpha_ ----
         if isinstance(alpha, str) or alpha is True:
@@ -148,7 +174,7 @@ class PlotResponseBase:
         self._set_defo_scale_factor(alpha=alpha)
         defo = self._get_disp_da(step)
         pos_origin = self._get_node_da(step)
-        coords = self.defo_scale_factor * np.array(defo) + np.array(pos_origin)
+        coords = self.defo_scale_factor * np.asanyarray(defo) + np.asanyarray(pos_origin)
         node_deform_coords = xr.DataArray(coords, dims=pos_origin.dims, coords=pos_origin.coords)
         return node_deform_coords
 
@@ -165,8 +191,8 @@ class PlotResponseBase:
     def _get_unstru_cells(unstru_data):
         if len(unstru_data) > 0:
             unstru_tags = unstru_data.coords["eleTags"]
-            unstru_cell_types = np.array(unstru_data[:, -1], dtype=int)
             unstru_cells = unstru_data.to_numpy()
+            unstru_cell_types = np.array(unstru_cells[:, -1], dtype=int)
             if not np.any(np.isnan(unstru_cells)):
                 unstru_cells_new = unstru_cells[:, :-1].astype(int)
             else:

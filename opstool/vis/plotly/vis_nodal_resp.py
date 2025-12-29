@@ -3,20 +3,14 @@ from typing import Optional, Union
 import numpy as np
 import plotly.graph_objs as go
 
-from ...post import loadODB
 from .._plot_nodal_resp_base import PlotNodalResponseBase
 from .plot_resp_base import PlotResponsePlotlyBase
 from .plot_utils import _plot_lines_cmap, _plot_points_cmap, _plot_unstru_cmap
 
 
 class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePlotlyBase):
-    def __init__(
-        self,
-        model_info_steps,
-        node_resp_steps,
-        model_update,
-    ):
-        super().__init__(model_info_steps, node_resp_steps, model_update)
+    def __init__(self, odb_tag: Union[int, str], lazy_load=True):
+        super().__init__(odb_tag, lazy_load=lazy_load)
         self.FIGURE = go.Figure()
 
         self.resps_norm = None
@@ -79,7 +73,7 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePlotlyBase):
         line_cells, _ = self._get_line_cells(self._get_line_da(step))
         _, unstru_cell_types, unstru_cells = self._get_unstru_cells(self._get_unstru_da(step))
         node_defo_coords = np.array(self._get_defo_coord_da(step, alpha))
-        node_resp = np.array(self._get_resp_da(step, self.resp_type, self.component))
+        node_resp = np.array(self._get_resp_da(step, self.component))
         if self.resps_norm is not None:
             scalars = self._get_step_norm(step)
         else:
@@ -313,6 +307,7 @@ def plot_nodal_responses(
     style: str = "surface",
     show_outline: bool = False,
     show_max_min: bool = False,
+    lazy_load: bool = False,
 ) -> go.Figure:
     """Visualizing Node Responses.
 
@@ -373,6 +368,12 @@ def plot_nodal_responses(
         Defaults to 'surface'. Note that 'wireframe' only shows a wireframe of the outer geometry.
     show_max_min: bool, default: False
         Whether to show the maximum and minimum response value annotations in the plot.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -381,8 +382,7 @@ def plot_nodal_responses(
         You can also use `fig.write_html("path/to/file.html")` to save as an HTML file, see
         `Interactive HTML Export in Python <https://plotly.com/python/interactive-html-export/>`_
     """
-    model_info_steps, model_update, node_resp_steps = loadODB(odb_tag, resp_type="Nodal")
-    plotbase = PlotNodalResponse(model_info_steps, node_resp_steps, model_update)
+    plotbase = PlotNodalResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
     if slides:
@@ -427,6 +427,7 @@ def plot_nodal_responses_animation(
     style: str = "surface",
     show_outline: bool = False,
     show_max_min: bool = False,
+    lazy_load: bool = False,
 ) -> go.Figure:
     """Visualize node response animation.
 
@@ -477,6 +478,12 @@ def plot_nodal_responses_animation(
         Defaults to 'surface'. Note that 'wireframe' only shows a wireframe of the outer geometry.
     show_max_min: bool, default: False
         Whether to show the maximum and minimum response value annotations in the plot.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -485,8 +492,7 @@ def plot_nodal_responses_animation(
         You can also use `fig.write_html("path/to/file.html")` to save as an HTML file, see
         `Interactive HTML Export in Python <https://plotly.com/python/interactive-html-export/>`_
     """
-    model_info_steps, model_update, node_resp_steps = loadODB(odb_tag, resp_type="Nodal")
-    plotbase = PlotNodalResponse(model_info_steps, node_resp_steps, model_update)
+    plotbase = PlotNodalResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
     plotbase.plot_anim(

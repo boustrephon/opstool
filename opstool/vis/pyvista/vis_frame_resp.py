@@ -4,7 +4,6 @@ from typing import Optional, Union
 import numpy as np
 import pyvista as pv
 
-from ...post import loadODB
 from .._plot_frame_resp_base import PlotFrameResponseBase
 from .plot_resp_base import PlotResponsePyvistaBase
 from .plot_utils import (
@@ -17,8 +16,8 @@ from .plot_utils import (
 
 
 class PlotFrameResponse(PlotFrameResponseBase, PlotResponsePyvistaBase):
-    def __init__(self, model_info_steps, beam_resp_step, model_update, nodal_resp_steps=None):
-        super().__init__(model_info_steps, beam_resp_step, model_update, nodal_resp_steps=nodal_resp_steps)
+    def __init__(self, odb_tag: Union[int, str], lazy_load: bool = False):
+        super().__init__(odb_tag, lazy_load=lazy_load)
 
     @staticmethod
     def _set_segment_mesh(pos_bot, pos_top, force, resp_points: list, resp_cells: list, scalars: list):
@@ -570,6 +569,7 @@ def plot_frame_responses(
     show_outline: bool = False,
     cpos: str = "iso",
     show_model: bool = True,
+    lazy_load: bool = False,
 ) -> pv.Plotter:
     """Plot the responses of the frame element.
 
@@ -650,6 +650,12 @@ def plot_frame_responses(
         Whether to display the outline of the model.
     show_model: bool, default: True
         Whether to plot the all model or not.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -664,13 +670,12 @@ def plot_frame_responses(
     `Plotter.export_html <https://docs.pyvista.org/api/plotting/_autosummary/pyvista.plotter.export_html#pyvista.Plotter.export_html>`_.
     to export this plotter as an interactive scene to an HTML file.
     """
-    model_info_steps, model_update, beam_resp_steps = loadODB(odb_tag, resp_type="Frame")
     plotter = pv.Plotter(
         notebook=PLOT_ARGS.notebook,
         line_smoothing=PLOT_ARGS.line_smoothing,
         off_screen=PLOT_ARGS.off_screen,
     )
-    plotbase = PlotFrameResponse(model_info_steps, beam_resp_steps, model_update)
+    plotbase = PlotFrameResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     if slides:
         plotbase.plot_slide(
@@ -738,6 +743,7 @@ def plot_frame_responses_animation(
     show_outline: bool = False,
     cpos: str = "iso",
     show_model: bool = True,
+    lazy_load: bool = False,
 ) -> pv.Plotter:
     """Animate the responses of frame elements.
 
@@ -818,6 +824,12 @@ def plot_frame_responses_animation(
         Whether to show multipoint (MP) constraint.
     show_outline: bool, default: False
         Whether to display the outline of the model.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -832,13 +844,12 @@ def plot_frame_responses_animation(
     `Plotter.export_html <https://docs.pyvista.org/api/plotting/_autosummary/pyvista.plotter.export_html#pyvista.Plotter.export_html>`_.
     to export this plotter as an interactive scene to an HTML file.
     """
-    model_info_steps, model_update, beam_resp_steps = loadODB(odb_tag, resp_type="Frame")
     plotter = pv.Plotter(
         notebook=PLOT_ARGS.notebook,
         line_smoothing=PLOT_ARGS.line_smoothing,
         off_screen=off_screen,
     )
-    plotbase = PlotFrameResponse(model_info_steps, beam_resp_steps, model_update)
+    plotbase = PlotFrameResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.plot_anim(
         plotter,

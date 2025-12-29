@@ -4,7 +4,6 @@ from typing import Optional, Union
 import numpy as np
 import pyvista as pv
 
-from ...post import loadODB
 from ...utils import gram_schmidt
 from .._plot_truss_resp_base import PlotTrussResponseBase
 from .plot_resp_base import PlotResponsePyvistaBase
@@ -18,8 +17,8 @@ from .plot_utils import (
 
 
 class PlotTrussResponse(PlotTrussResponseBase, PlotResponsePyvistaBase):
-    def __init__(self, model_info_steps, truss_resp_step, model_update):
-        super().__init__(model_info_steps, truss_resp_step, model_update)
+    def __init__(self, odb_tag: Union[int, str], lazy_load: bool = False):
+        super().__init__(odb_tag, lazy_load=lazy_load)
 
     def _make_title(self, scalars, step, time):
         if len(scalars) == 0:
@@ -461,6 +460,7 @@ def plot_truss_responses(
     show_outline: bool = False,
     cpos: str = "iso",
     show_model: bool = True,
+    lazy_load: bool = False,
 ) -> pv.Plotter:
     """Visualizing Truss Response.
 
@@ -516,6 +516,12 @@ def plot_truss_responses(
         Whether to show multipoint (MP) constraint.
     show_outline: bool, default: False
         Whether to display the outline of the model.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -530,11 +536,10 @@ def plot_truss_responses(
     `Plotter.export_html <https://docs.pyvista.org/api/plotting/_autosummary/pyvista.plotter.export_html#pyvista.Plotter.export_html>`_.
     to export this plotter as an interactive scene to an HTML file.
     """
-    model_info_steps, model_update, truss_resp_step = loadODB(odb_tag, resp_type="Truss")
     plotter = pv.Plotter(
         notebook=PLOT_ARGS.notebook, line_smoothing=PLOT_ARGS.line_smoothing, off_screen=PLOT_ARGS.off_screen
     )
-    plotbase = PlotTrussResponse(model_info_steps, truss_resp_step, model_update)
+    plotbase = PlotTrussResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.refactor_resp_step(resp_type=resp_type, ele_tags=ele_tags)
     if slides:
@@ -598,6 +603,7 @@ def plot_truss_responses_animation(
     bc_scale: float = 1.0,
     show_mp_constraint: bool = False,
     show_outline: bool = False,
+    lazy_load: bool = False,
 ) -> pv.Plotter:
     """Truss response animation.
 
@@ -653,6 +659,12 @@ def plot_truss_responses_animation(
         Whether to show multipoint (MP) constraint.
     show_outline: bool, default: False
         Whether to display the outline of the model.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -667,9 +679,8 @@ def plot_truss_responses_animation(
     `Plotter.export_html <https://docs.pyvista.org/api/plotting/_autosummary/pyvista.plotter.export_html#pyvista.Plotter.export_html>`_.
     to export this plotter as an interactive scene to an HTML file.
     """
-    model_info_steps, model_update, truss_resp_step = loadODB(odb_tag, resp_type="Truss")
     plotter = pv.Plotter(notebook=PLOT_ARGS.notebook, line_smoothing=PLOT_ARGS.line_smoothing, off_screen=off_screen)
-    plotbase = PlotTrussResponse(model_info_steps, truss_resp_step, model_update)
+    plotbase = PlotTrussResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.refactor_resp_step(resp_type=resp_type, ele_tags=ele_tags)
     plotbase.plot_anim(

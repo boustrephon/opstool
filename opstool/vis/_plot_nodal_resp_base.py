@@ -1,17 +1,13 @@
 import numpy as np
 import xarray as xr
 
+from ..post import get_nodal_responses
 from ._plot_resp_base import PlotResponseBase
 
 
 class PlotNodalResponseBase(PlotResponseBase):
-    def __init__(
-        self,
-        model_info_steps,
-        node_resp_steps,
-        model_update,
-    ):
-        super().__init__(model_info_steps, node_resp_steps, model_update)
+    def __init__(self, odb_tag, lazy_load=True):
+        super().__init__(odb_tag, lazy_load=lazy_load)
         self.resps_norm = None
 
     def set_comp_resp_type(self, resp_type, component):
@@ -39,9 +35,14 @@ class PlotNodalResponseBase(PlotResponseBase):
         else:
             self.component = list(component)
 
+        resp_data = get_nodal_responses(
+            self.odb_tag, resp_type=self.resp_type, lazy_load=self.lazy_load, print_info=False
+        )
+        self.set_resp_step_data(resp_data)
+
     def _get_resp_clim_peak(self, idx=None):
         # If idx is None, get clim for all steps, else for specified step
-        resps = [self._get_resp_da(i, self.resp_type, self.component) for i in range(self.num_steps)]
+        resps = [self._get_resp_da(i, self.component) for i in range(self.num_steps)]
 
         if self.ModelUpdate:
             resps_norm = [_resp_mag(r) for r in resps]  # list per step
@@ -64,16 +65,16 @@ class PlotNodalResponseBase(PlotResponseBase):
         if self.resps_norm is None:
             raise RuntimeError("resps_norm is not computed yet. Call _get_resp_clim_peak first.")  # noqa: TRY003
         if self.ModelUpdate:
-            return self.resps_norm[step].data
+            return np.asanyarray(self.resps_norm[step])
         else:
-            return self.resps_norm.isel(time=step).data
+            return np.asanyarray(self.resps_norm.isel(time=step))
 
     def _get_mesh_data(self, step, alpha):
         node_defo_coords = np.array(self._get_defo_coord_da(step, alpha))
         if self.resps_norm is not None:
             scalars = self._get_step_norm(step)
         else:
-            node_resp = np.array(self._get_resp_da(step, self.resp_type, self.component))
+            node_resp = np.array(self._get_resp_da(step, self.component))
             scalars = node_resp if node_resp.ndim == 1 else np.linalg.norm(node_resp, axis=-1)
         return node_defo_coords, scalars
 

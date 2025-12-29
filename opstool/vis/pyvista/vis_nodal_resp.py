@@ -4,15 +4,14 @@ from typing import Optional, Union
 import numpy as np
 import pyvista as pv
 
-from ...post import loadODB
 from .._plot_nodal_resp_base import PlotNodalResponseBase
 from .plot_resp_base import PlotResponsePyvistaBase
 from .plot_utils import PLOT_ARGS, _plot_all_mesh_cmap, _update_point_label_actor
 
 
 class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
-    def __init__(self, model_info_steps, node_resp_steps, model_update):
-        super().__init__(model_info_steps, node_resp_steps, model_update)
+    def __init__(self, odb_tag, lazy_load=True):
+        super().__init__(odb_tag, lazy_load=lazy_load)
 
     def _make_title(self, step, time):
         max_norm, min_norm = np.nanmax(self.resps_norm[step]), np.nanmin(self.resps_norm[step])
@@ -401,6 +400,7 @@ def plot_nodal_responses(
     show_undeformed: bool = False,
     style: str = "surface",
     show_outline: bool = False,
+    lazy_load: bool = False,
 ) -> pv.Plotter:
     """Visualizing Node Responses.
 
@@ -461,6 +461,12 @@ def plot_nodal_responses(
         Visualization mesh style of surfaces and solids.
         One of the following: style='surface', style='wireframe', style='points', style='points_gaussian'.
         Defaults to 'surface'. Note that 'wireframe' only shows a wireframe of the outer geometry.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -475,14 +481,13 @@ def plot_nodal_responses(
     `Plotter.export_html <https://docs.pyvista.org/api/plotting/_autosummary/pyvista.plotter.export_html#pyvista.Plotter.export_html>`_.
     to export this plotter as an interactive scene to an HTML file.
     """
-    model_info_steps, model_update, node_resp_steps = loadODB(odb_tag, resp_type="Nodal")
     plotter = pv.Plotter(
         notebook=PLOT_ARGS.notebook,
         line_smoothing=PLOT_ARGS.line_smoothing,
         polygon_smoothing=PLOT_ARGS.polygon_smoothing,
         off_screen=PLOT_ARGS.off_screen,
     )
-    plotbase = PlotNodalResponse(model_info_steps, node_resp_steps, model_update)
+    plotbase = PlotNodalResponse(odb_tag=odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
     if slides:
@@ -538,6 +543,7 @@ def plot_nodal_responses_animation(
     show_undeformed: bool = False,
     style: str = "surface",
     show_outline: bool = False,
+    lazy_load: bool = False,
 ) -> pv.Plotter:
     """Visualize node response animation.
 
@@ -592,6 +598,12 @@ def plot_nodal_responses_animation(
         Visualization mesh style of surfaces and solids.
         One of the following: style='surface', style='wireframe', style='points', style='points_gaussian'.
         Defaults to 'surface'. Note that 'wireframe' only shows a wireframe of the outer geometry.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -606,14 +618,13 @@ def plot_nodal_responses_animation(
     `Plotter.export_html <https://docs.pyvista.org/api/plotting/_autosummary/pyvista.plotter.export_html#pyvista.Plotter.export_html>`_.
     to export this plotter as an interactive scene to an HTML file.
     """
-    model_info_steps, model_update, node_resp_steps = loadODB(odb_tag, resp_type="Nodal")
     plotter = pv.Plotter(
         notebook=PLOT_ARGS.notebook,
         line_smoothing=PLOT_ARGS.line_smoothing,
         polygon_smoothing=PLOT_ARGS.polygon_smoothing,
         off_screen=off_screen,
     )
-    plotbase = PlotNodalResponse(model_info_steps, node_resp_steps, model_update)
+    plotbase = PlotNodalResponse(odb_tag=odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
     plotbase.plot_anim(
@@ -645,6 +656,7 @@ def get_nodal_responses_dataset(
     resp_type: str = "disp",
     resp_dof: Union[list, tuple, str] = ("UX", "UY", "UZ"),
     defo_scale: Union[float, int, bool] = 1.0,
+    lazy_load: bool = False,
 ) -> pv.UnstructuredGrid:
     """Get nodal responses dataset.
     Scalars are stored in the ``resp_type`` field of the dataset.
@@ -679,14 +691,19 @@ def get_nodal_responses_dataset(
         If set to False, the deformed shape will not be scaled (original deformation).
         If set to True or "auto", the deformed shape will be scaled by the default scale (i.e., 1/20 of the maximum model dimensions).
         If set to a float or int, it will scale the deformed shape by that factor.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
     unstru_grid: `pyvista.UnstructuredGrid <https://docs.pyvista.org/api/core/_autosummary/pyvista.unstructuredgrid#pyvista.UnstructuredGrid>`_.
         Unstructured grid with unstructured cells and response scalars.
     """
-    model_info_steps, model_update, node_resp_steps = loadODB(odb_tag, resp_type="Nodal")
-    plotbase = PlotNodalResponse(model_info_steps, node_resp_steps, model_update)
+    plotbase = PlotNodalResponse(odb_tag=odb_tag, lazy_load=lazy_load)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
     unstru_grid = plotbase.get_dataset(step, defo_scale=defo_scale)
     return unstru_grid

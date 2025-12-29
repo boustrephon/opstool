@@ -1,11 +1,12 @@
 import numpy as np
 
+from ..post import get_element_responses
 from ._plot_resp_base import PlotResponseBase
 
 
 class PlotUnstruResponseBase(PlotResponseBase):
-    def __init__(self, model_info_steps, resp_step, model_update, nodal_resp_steps=None):
-        super().__init__(model_info_steps, resp_step, model_update, nodal_resp_steps)
+    def __init__(self, odb_tag, lazy_load=True):
+        super().__init__(odb_tag, lazy_load=lazy_load)
         self.ele_type = "Shell"
 
     def _check_input(self):
@@ -41,6 +42,12 @@ class PlotUnstruResponseBase(PlotResponseBase):
 
         self._check_input()
 
+        # set response data
+        resp_data = get_element_responses(
+            self.odb_tag, ele_type=self.ele_type, resp_type=self.resp_type, lazy_load=self.lazy_load, print_info=False
+        )
+        self.set_resp_step_data(resp_data)
+
     def _make_unstru_info(self, ele_tags, step):
         pos = self._get_node_da(step)
         unstru_data = self._get_unstru_da(step)
@@ -57,7 +64,7 @@ class PlotUnstruResponseBase(PlotResponseBase):
         resps = []
 
         for i in range(self.num_steps):
-            da = self._get_resp_da(i, self.resp_type, self.component)
+            da = self._get_resp_da(i, self.component)
 
             if self.ModelUpdate or ele_tags is not None:
                 tags, pos, _, _ = self._make_unstru_info(ele_tags, i)

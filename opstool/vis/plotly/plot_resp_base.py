@@ -1,8 +1,5 @@
-from typing import Optional
-
 import numpy as np
 import plotly.graph_objs as go
-import xarray as xr
 
 from .._plot_resp_base import PlotResponseBase
 from .plot_utils import (
@@ -15,14 +12,8 @@ from .plot_utils import (
 
 
 class PlotResponsePlotlyBase(PlotResponseBase):
-    def __init__(
-        self,
-        model_info_steps: dict[str, xr.DataArray],
-        resp_step: xr.Dataset,
-        model_update: bool,
-        nodal_resp_steps: Optional[xr.Dataset] = None,
-    ):
-        super().__init__(model_info_steps, resp_step, model_update, nodal_resp_steps)
+    def __init__(self, odb_tag, lazy_load: bool = True):
+        super().__init__(odb_tag, lazy_load=lazy_load)
 
         # ----------------------------------------
         self.pargs = PLOT_ARGS
