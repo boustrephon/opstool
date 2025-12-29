@@ -5,7 +5,10 @@ from collections import defaultdict
 
 import gmsh
 import numpy as np
-import openseespy.opensees as ops
+
+from ...utils import get_opensees_module
+
+ops = get_opensees_module()
 
 OPS_GMSH_ELE_TYPE = [1, 2, 3, 4, 5, 9, 10, 11, 12, 16, 17]
 

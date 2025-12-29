@@ -1,6 +1,8 @@
 # This file is created by opstool.tcl2py(), author:: Yexiang Yan
 
-import openseespy.opensees as ops
+from .._util_funcs import get_opensees_module
+
+ops = get_opensees_module()
 
 
 def TrussBridge():
@@ -152,7 +154,6 @@ def TrussBridge():
     ops.element("trussSection", 75, 24, 25, 1)
     ops.element("trussSection", 76, 25, 28, 1)
 
-
     # Load
     # ops.timeSeries("Linear", 1)
     # ops.pattern("Plain", 1, 1)
@@ -166,7 +167,6 @@ def TrussBridge():
     # ops.load(18, 0.0, 0.0, -15000.0)
     # ops.load(19, 0.0, 0.0, -15000.0)
     # ops.load(20, 0.0, 0.0, -15000.0)
-
 
     # print("analysis")
     # ops.constraints("Plain")

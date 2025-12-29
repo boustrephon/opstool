@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import numpy as np
-import openseespy.opensees as ops
 import xarray as xr
 
+from ...utils import get_opensees_module
 from ..model_data import GetFEMData
 from ._response_base import ResponseBase
+
+ops = get_opensees_module()
 
 
 class ModelInfoStepData(ResponseBase):

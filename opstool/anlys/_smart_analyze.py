@@ -3,12 +3,13 @@ from contextlib import contextmanager
 from typing import Optional, TypedDict, Union
 
 import numpy as np
-import openseespy.opensees as ops
 from rich import print as rprint
 from tqdm import tqdm
 from typing_extensions import Literal, Unpack
 
-from ..utils import get_random_color, on_notebook
+from ..utils import get_opensees_module, get_random_color, on_notebook
+
+ops = get_opensees_module()
 
 LOG_FILE = ".SmartAnalyze-OpenSees.log"
 ON_NOTEBOOK = on_notebook()

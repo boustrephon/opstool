@@ -4,12 +4,13 @@ import os
 from typing import Literal
 
 import numpy as np
-import openseespy.opensees as ops
 import xarray as xr
 
-from ..utils import CONFIGS, get_random_color
+from ..utils import CONFIGS, get_opensees_module, get_random_color
 from ._post_utils import Beam3DDispInterpolator, generate_chunk_encoding_for_datatree
 from .model_data import GetFEMData
+
+ops = get_opensees_module()
 
 
 def _get_modal_properties(mode_tag: int = 1, solver: str = "-genBandArpack"):

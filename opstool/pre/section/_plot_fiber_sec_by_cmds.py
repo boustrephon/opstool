@@ -6,10 +6,11 @@ from typing import ClassVar, Optional, Union
 import matplotlib.patches as mpathes
 import matplotlib.pyplot as plt
 import numpy as np
-import openseespy.opensees as ops
 from matplotlib.collections import LineCollection
 
-from ...utils import get_cycle_color
+from ...utils import get_cycle_color, get_opensees_module
+
+ops = get_opensees_module()
 
 COLORS = get_cycle_color()
 

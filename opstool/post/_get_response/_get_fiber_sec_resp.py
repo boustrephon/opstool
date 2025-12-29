@@ -4,12 +4,14 @@ import warnings
 from typing import ClassVar
 
 import numpy as np
-import openseespy.opensees as ops
 import xarray as xr
 
 from opstool.utils import OPS_ELE_TAGS
 
+from ...utils import get_opensees_module
 from ._response_base import ResponseBase, expand_to_uniform_array
+
+ops = get_opensees_module()
 
 RESP_NAME = "FiberSectionResponses"
 

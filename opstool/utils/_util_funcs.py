@@ -1,9 +1,11 @@
+import importlib
 import os
 import shutil
 import sys
 from contextlib import contextmanager
 from itertools import cycle
 from pathlib import Path
+from types import ModuleType
 from typing import Union
 
 import numpy as np
@@ -15,6 +17,14 @@ PKG_PREFIX = CONFIGS.get_pkg_prefix()
 
 
 RESULTS_DIR = CONFIGS.get_output_dir()
+
+
+def set_opensees_module(module: ModuleType | str):
+    CONFIGS.set_ops_module(module)
+
+
+def get_opensees_module() -> ModuleType:
+    return CONFIGS.get_ops_module()
 
 
 def _check_odb_path():
@@ -101,16 +111,13 @@ def add_ops_hints_file():
     """
     src_file = Path(__file__).resolve().parent / "opensees.pyi"
     if sys.platform.startswith("linux"):
-        import openseespylinux.opensees as ops
-
+        ops = importlib.import_module("openseespylinux.opensees")
         tar_file = Path(ops.__file__).resolve().parent / "opensees.pyi"
     elif sys.platform.startswith("win"):
-        import openseespywin.opensees as ops
-
+        ops = importlib.import_module("openseespywin.opensees")
         tar_file = Path(ops.__file__).resolve().parent / "opensees.pyi"
     elif sys.platform.startswith("darwin"):
-        import openseespymac.opensees as ops
-
+        ops = importlib.import_module("openseespymac.opensees")
         tar_file = Path(ops.__file__).resolve().parent / "opensees.pyi"
     else:
         raise RuntimeError(sys.platform + " is not supported yet")

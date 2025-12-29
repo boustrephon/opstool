@@ -3,7 +3,10 @@
 # Units: Kgf, mm, C
 
 from collections import namedtuple
-import openseespy.opensees as ops
+
+from .._util_funcs import get_opensees_module
+
+ops = get_opensees_module()
 
 
 def CableStayedBridge():
@@ -11,17 +14,17 @@ def CableStayedBridge():
     # i.e. all components of the model, all components of the analysis and all recorders.
     ops.wipe()
     # Set the default model dimensions and number of dofs.
-    ops.model('basic', '-ndm', 3, '-ndf', 6)
+    ops.model("basic", "-ndm", 3, "-ndf", 6)
 
     # Construct a coordinate-transformation object.
     # For vertical elements.
-    ops.geomTransf('Linear', 1, -1, 0, 0)
-    ops.geomTransf('PDelta', 3, -1, 0, 0)
-    ops.geomTransf('Corotational', 5, -1, 0, 0)
+    ops.geomTransf("Linear", 1, -1, 0, 0)
+    ops.geomTransf("PDelta", 3, -1, 0, 0)
+    ops.geomTransf("Corotational", 5, -1, 0, 0)
     # For other elements except vertical one.
-    ops.geomTransf('Linear', 2, 0, 0, 1)
-    ops.geomTransf('PDelta', 4, 0, 0, 1)
-    ops.geomTransf('Corotational', 6, 0, 0, 1)
+    ops.geomTransf("Linear", 2, 0, 0, 1)
+    ops.geomTransf("PDelta", 4, 0, 0, 1)
+    ops.geomTransf("Corotational", 6, 0, 0, 1)
     # Specify the tag of transformation, which can be changed according to requirements
     transf_Ver = 1
     transf_Other = 2
@@ -29,31 +32,79 @@ def CableStayedBridge():
     # Mechanical properties of material
     MatProp_df = dict()
     # UnitMass-Mass Density; E-Elastic Modulus; G-Shear Modulus; v-Poisson's ratio; rho-Thermal expansion coefficient
-    MatProp = namedtuple('MatProp', ('UnitMass', 'E', 'G', 'v', 'rho'))
-    MatProp_df["4000Psi"] = MatProp._make(
-        (2.45014307299924e-10, 2534.56354148831, 1056.0681422868, 0.2, 9.89999952793124e-06))
-    MatProp_df["A416Gr270"] = MatProp._make(
-        (8.0038007068661e-10, 20037.4843449687, 0.0, 0.0, 1.16999994421006e-05))
-    MatProp_df["A615Gr60"] = MatProp._make(
-        (8.0038007068661e-10, 20389.0191580383, 0.0, 0.0, 1.16999994421006e-05))
-    MatProp_df["A709Gr50"] = MatProp._make(
-        (8.0038007068661e-10, 20389.0191580383, 7841.93044539935, 0.3, 1.16999994421006e-05))
-    MatProp_df["Deck_beam_RC"] = MatProp._make(
-        (2.45014307299924e-10, 2833.72824486, 1180.720102025, 0.2, 9.89999952793124e-06))
-    MatProp_df["Deck_Girder_RC"] = MatProp._make(
-        (2.45014307299924e-10, 2833.72824486, 1180.720102025, 0.2, 9.89999952793124e-06))
-    MatProp_df["Deck_Slab_RC"] = MatProp._make(
-        (2.45014307299924e-10, 2833.72824486, 1180.720102025, 0.2, 9.89999952793124e-06))
-    MatProp_df["Pier_RC"] = MatProp._make(
-        (2.45014307299924e-10, 2833.72824486, 1180.720102025, 0.2, 9.89999952793124e-06))
-    MatProp_df["Piles"] = MatProp._make(
-        (2.45014307299924e-10, 2833.72824486, 1180.720102025, 0.2, 9.89999952793124e-06))
-    MatProp_df["Pipe_Cap"] = MatProp._make(
-        (2.45014307299924e-10, 2833.72824486, 1180.720102025, 0.2, 9.89999952793124e-06))
-    MatProp_df["Piper_Footing"] = MatProp._make(
-        (2.45014307299924e-10, 2833.72824486, 1180.720102025, 0.2, 9.89999952793124e-06))
-    MatProp_df["Pylon_RC"] = MatProp._make(
-        (2.45014307299924e-10, 2833.72824486, 1180.720102025, 0.2, 9.89999952793124e-06))
+    MatProp = namedtuple("MatProp", ("UnitMass", "E", "G", "v", "rho"))
+    MatProp_df["4000Psi"] = MatProp._make((
+        2.45014307299924e-10,
+        2534.56354148831,
+        1056.0681422868,
+        0.2,
+        9.89999952793124e-06,
+    ))
+    MatProp_df["A416Gr270"] = MatProp._make((8.0038007068661e-10, 20037.4843449687, 0.0, 0.0, 1.16999994421006e-05))
+    MatProp_df["A615Gr60"] = MatProp._make((8.0038007068661e-10, 20389.0191580383, 0.0, 0.0, 1.16999994421006e-05))
+    MatProp_df["A709Gr50"] = MatProp._make((
+        8.0038007068661e-10,
+        20389.0191580383,
+        7841.93044539935,
+        0.3,
+        1.16999994421006e-05,
+    ))
+    MatProp_df["Deck_beam_RC"] = MatProp._make((
+        2.45014307299924e-10,
+        2833.72824486,
+        1180.720102025,
+        0.2,
+        9.89999952793124e-06,
+    ))
+    MatProp_df["Deck_Girder_RC"] = MatProp._make((
+        2.45014307299924e-10,
+        2833.72824486,
+        1180.720102025,
+        0.2,
+        9.89999952793124e-06,
+    ))
+    MatProp_df["Deck_Slab_RC"] = MatProp._make((
+        2.45014307299924e-10,
+        2833.72824486,
+        1180.720102025,
+        0.2,
+        9.89999952793124e-06,
+    ))
+    MatProp_df["Pier_RC"] = MatProp._make((
+        2.45014307299924e-10,
+        2833.72824486,
+        1180.720102025,
+        0.2,
+        9.89999952793124e-06,
+    ))
+    MatProp_df["Piles"] = MatProp._make((
+        2.45014307299924e-10,
+        2833.72824486,
+        1180.720102025,
+        0.2,
+        9.89999952793124e-06,
+    ))
+    MatProp_df["Pipe_Cap"] = MatProp._make((
+        2.45014307299924e-10,
+        2833.72824486,
+        1180.720102025,
+        0.2,
+        9.89999952793124e-06,
+    ))
+    MatProp_df["Piper_Footing"] = MatProp._make((
+        2.45014307299924e-10,
+        2833.72824486,
+        1180.720102025,
+        0.2,
+        9.89999952793124e-06,
+    ))
+    MatProp_df["Pylon_RC"] = MatProp._make((
+        2.45014307299924e-10,
+        2833.72824486,
+        1180.720102025,
+        0.2,
+        9.89999952793124e-06,
+    ))
 
     # Create OpenSees node.
     ops.node(1, *[150000.0, -8025.0, -20000.0])
@@ -3131,3184 +3182,11719 @@ def CableStayedBridge():
 
     # Mechanical properties DataFrame of sec
     FrameSecProp_df = dict()
-    FrameSecProp = namedtuple(
-        'FrameSecProp', ('matName', 'A', 'J', 'I33', 'I22', 'AS2', 'AS3'))
-    FrameSecProp_df["Cable"] = FrameSecProp._make(
-        ['A709Gr50', 31415.9265358979, 157079632.67949, 78539816.3397449, 78539816.3397449, 28274.3338823081, 28274.3338823081])
-    FrameSecProp_df["Cap1"] = FrameSecProp._make(
-        ['4000Psi', 36180225.0, 184352055914630.0, 109084056754219.0, 109084056754219.0, 30150187.5, 30150187.5])
-    FrameSecProp_df["Cross_Beam"] = FrameSecProp._make(
-        ['4000Psi', 11254687.5, 15003467524080.9, 5629688476562.5, 19791873550415.0, 9378906.25, 9378906.25])
-    FrameSecProp_df["FootingL1"] = FrameSecProp._make(
-        ['4000Psi', 2777777.77777778, 1086676954732.51, 643004115226.338, 643004115226.338, 2314814.81481482, 2314814.81481482])
-    FrameSecProp_df["Left_Leg"] = FrameSecProp._make(
-        ['4000Psi', 15187500.0, 31136727769374.8, 14416259765625.0, 25628906250000.0, 12656250.0, 12656250.0])
-    FrameSecProp_df["PierL1"] = FrameSecProp._make(
-        ['4000Psi', 8000000.0, 7324166666666.67, 10666666666666.7, 2666666666666.67, 6666666.66666667, 6666666.66666667])
-    FrameSecProp_df["Piles"] = FrameSecProp._make(
-        ['4000Psi', 2250000.0, 712968750000.0, 421875000000.0, 421875000000.0, 1875000.0, 1875000.0])
-    FrameSecProp_df["Upper_Pylon"] = FrameSecProp._make(
-        ['4000Psi', 20250000.0, 57750468750000.0, 34171875000000.0, 34171875000000.0, 16875000.0, 16875000.0])
+    FrameSecProp = namedtuple("FrameSecProp", ("matName", "A", "J", "I33", "I22", "AS2", "AS3"))
+    FrameSecProp_df["Cable"] = FrameSecProp._make([
+        "A709Gr50",
+        31415.9265358979,
+        157079632.67949,
+        78539816.3397449,
+        78539816.3397449,
+        28274.3338823081,
+        28274.3338823081,
+    ])
+    FrameSecProp_df["Cap1"] = FrameSecProp._make([
+        "4000Psi",
+        36180225.0,
+        184352055914630.0,
+        109084056754219.0,
+        109084056754219.0,
+        30150187.5,
+        30150187.5,
+    ])
+    FrameSecProp_df["Cross_Beam"] = FrameSecProp._make([
+        "4000Psi",
+        11254687.5,
+        15003467524080.9,
+        5629688476562.5,
+        19791873550415.0,
+        9378906.25,
+        9378906.25,
+    ])
+    FrameSecProp_df["FootingL1"] = FrameSecProp._make([
+        "4000Psi",
+        2777777.77777778,
+        1086676954732.51,
+        643004115226.338,
+        643004115226.338,
+        2314814.81481482,
+        2314814.81481482,
+    ])
+    FrameSecProp_df["Left_Leg"] = FrameSecProp._make([
+        "4000Psi",
+        15187500.0,
+        31136727769374.8,
+        14416259765625.0,
+        25628906250000.0,
+        12656250.0,
+        12656250.0,
+    ])
+    FrameSecProp_df["PierL1"] = FrameSecProp._make([
+        "4000Psi",
+        8000000.0,
+        7324166666666.67,
+        10666666666666.7,
+        2666666666666.67,
+        6666666.66666667,
+        6666666.66666667,
+    ])
+    FrameSecProp_df["Piles"] = FrameSecProp._make([
+        "4000Psi",
+        2250000.0,
+        712968750000.0,
+        421875000000.0,
+        421875000000.0,
+        1875000.0,
+        1875000.0,
+    ])
+    FrameSecProp_df["Upper_Pylon"] = FrameSecProp._make([
+        "4000Psi",
+        20250000.0,
+        57750468750000.0,
+        34171875000000.0,
+        34171875000000.0,
+        16875000.0,
+        16875000.0,
+    ])
 
     # Create OpenSees elements.
     # element('elasticBeamColumn', eleTag, *eleNodes, Area, E_mod, G_mod, Jxx, Iy, Iz, transfTag, <'-mass', mass>, <'-cMass'>)
-    ops.element('elasticBeamColumn', 1, *[13, 14], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 2, *[14, 15], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 3, *[15, 16], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 4, *[16, 17], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 5, *[17, 18], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 6, *[19, 20], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 7, *[20, 21], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 8, *[21, 22], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 9, *[22, 23], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 10, *[23, 24], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 11, *[25, 26], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 12, *[26, 27], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 13, *[27, 28], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 14, *[28, 29], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 15, *[29, 30], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 16, *[31, 32], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 17, *[32, 33], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 18, *[33, 34], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 19, *[34, 35], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 20, *[35, 36], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 21, *[37, 38], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 22, *[38, 39], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 23, *[39, 40], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 24, *[40, 41], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 25, *[41, 42], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 26, *[43, 44], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 27, *[44, 45], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 28, *[45, 46], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 29, *[46, 47], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 30, *[47, 48], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 31, *[49, 50], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 32, *[50, 51], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 33, *[51, 52], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 34, *[52, 53], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 35, *[53, 54], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 36, *[55, 56], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 37, *[56, 57], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 38, *[57, 58], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 39, *[58, 59], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 40, *[59, 60], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 41, *[61, 62], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 42, *[62, 63], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 43, *[63, 64], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 44, *[64, 65], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 45, *[65, 66], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 46, *[67, 68], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 47, *[68, 69], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 48, *[69, 70], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 49, *[70, 71], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 50, *[71, 72], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 51, *[73, 74], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 52, *[74, 75], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 53, *[75, 76], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 54, *[76, 77], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 55, *[77, 78], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 56, *[79, 80], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 57, *[80, 81], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 58, *[81, 82], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 59, *[82, 83], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 60, *[83, 84], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 61, *[85, 86], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 62, *[86, 87], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 63, *[87, 88], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 64, *[88, 89], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 65, *[89, 90], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 66, *[91, 92], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 67, *[92, 93], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 68, *[93, 94], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 69, *[94, 95], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 70, *[95, 96], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 71, *[97, 98], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 72, *[98, 99], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 73, *[99, 100], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 74, *[100, 101], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 75, *[101, 102], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 76, *[103, 104], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 77, *[104, 105], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 78, *[105, 106], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 79, *[106, 107], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 80, *[107, 108], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 81, *[109, 110], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 82, *[110, 111], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 83, *[111, 112], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 84, *[112, 113], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 85, *[113, 114], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 86, *[115, 116], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 87, *[116, 117], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 88, *[117, 118], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 89, *[118, 119], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 90, *[119, 120], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 91, *[121, 122], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 92, *[122, 123], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 93, *[123, 124], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 94, *[124, 125], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 95, *[125, 126], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 96, *[127, 128], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 97, *[128, 129], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 98, *[129, 130], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 99, *[130, 131], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 100, *[131, 132], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 101, *[1, 134], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 102, *[134, 135], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 103, *[135, 136], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 104, *[136, 137], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 105, *[137, 138], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 106, *[139, 140], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 107, *[140, 141], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 108, *[141, 142], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 109, *[142, 143], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 110, *[143, 144], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 111, *[145, 146], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 112, *[146, 147], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 113, *[147, 148], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 114, *[148, 149], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 115, *[149, 150], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 116, *[151, 152], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 117, *[152, 153], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 118, *[153, 154], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 119, *[154, 155], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 120, *[155, 156], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 121, *[4, 158], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 122, *[158, 159], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 123, *[159, 160], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 124, *[160, 161], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 125, *[161, 162], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 126, *[163, 164], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 127, *[164, 165], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 128, *[165, 166], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 129, *[166, 167], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 130, *[167, 168], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 131, *[169, 170], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 132, *[170, 171], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 133, *[171, 172], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 134, *[172, 173], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 135, *[173, 174], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 136, *[175, 176], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 137, *[176, 177], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 138, *[177, 178], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 139, *[178, 179], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 140, *[179, 180], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 141, *[181, 182], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 142, *[182, 183], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 143, *[183, 184], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 144, *[184, 185], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 145, *[185, 186], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 146, *[187, 188], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 147, *[188, 189], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 148, *[189, 190], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 149, *[190, 191], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 150, *[191, 192], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 151, *[193, 194], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 152, *[194, 195], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 153, *[195, 196], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 154, *[196, 197], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 155, *[197, 198], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 156, *[199, 200], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 157, *[200, 201], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 158, *[201, 202], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 159, *[202, 203], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 160, *[203, 204], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 161, *[205, 206], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 162, *[206, 207], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 163, *[207, 208], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 164, *[208, 209], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 165, *[209, 210], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 166, *[211, 212], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 167, *[212, 213], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 168, *[213, 214], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 169, *[214, 215], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 170, *[215, 216], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 171, *[217, 218], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 172, *[218, 219], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 173, *[219, 220], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 174, *[220, 221], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 175, *[221, 222], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 176, *[223, 224], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 177, *[224, 225], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 178, *[225, 226], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 179, *[226, 227], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 180, *[227, 228], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 181, *[229, 230], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 182, *[230, 231], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 183, *[231, 232], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 184, *[232, 233], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 185, *[233, 234], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 186, *[235, 236], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 187, *[236, 237], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 188, *[237, 238], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 189, *[238, 239], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 190, *[239, 240], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 191, *[241, 242], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 192, *[242, 243], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 193, *[243, 244], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 194, *[244, 245], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 195, *[245, 246], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 196, *[247, 248], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 197, *[248, 249], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 198, *[249, 250], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 199, *[250, 251], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 200, *[251, 252], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 201, *[253, 254], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 202, *[254, 255], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 203, *[255, 256], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 204, *[256, 257], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 205, *[257, 258], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 206, *[259, 260], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 207, *[260, 261], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 208, *[261, 262], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 209, *[262, 263], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 210, *[263, 264], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 211, *[265, 266], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 212, *[266, 267], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 213, *[267, 268], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 214, *[268, 269], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 215, *[269, 270], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 216, *[271, 272], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 217, *[272, 273], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 218, *[273, 274], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 219, *[274, 275], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 220, *[275, 276], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 221, *[277, 278], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 222, *[278, 279], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 223, *[279, 280], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 224, *[280, 281], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 225, *[281, 282], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 226, *[121, 169], FrameSecProp_df['Cap1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Cap1'].J, FrameSecProp_df['Cap1'].I33, FrameSecProp_df['Cap1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 227, *[37, 253], FrameSecProp_df['Cap1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cap1'].J, FrameSecProp_df['Cap1'].I33, FrameSecProp_df['Cap1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 228, *[283, 284], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 229, *[284, 285], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 230, *[285, 286], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 231, *[286, 287], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 232, *[287, 288], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 233, *[289, 290], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 234, *[290, 291], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 235, *[291, 292], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 236, *[292, 293], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 237, *[293, 294], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 238, *[295, 296], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 239, *[296, 297], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 240, *[297, 298], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 241, *[298, 299], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 242, *[299, 300], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 243, *[301, 302], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 244, *[302, 303], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 245, *[303, 304], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 246, *[304, 305], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 247, *[305, 306], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 248, *[307, 308], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 249, *[308, 309], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 250, *[309, 310], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 251, *[310, 311], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 252, *[311, 312], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 253, *[313, 314], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 254, *[314, 315], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 255, *[315, 316], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 256, *[316, 317], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 257, *[317, 318], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 258, *[319, 320], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 259, *[320, 321], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 260, *[321, 322], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 261, *[322, 323], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 262, *[323, 324], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 263, *[325, 326], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 264, *[326, 327], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 265, *[327, 328], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 266, *[328, 329], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 267, *[329, 330], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 268, *[331, 332], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 269, *[332, 333], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 270, *[333, 334], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 271, *[334, 335], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 272, *[335, 336], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 273, *[337, 338], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 274, *[338, 339], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 275, *[339, 340], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 276, *[340, 341], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 277, *[341, 342], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 278, *[343, 344], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 279, *[344, 345], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 280, *[345, 346], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 281, *[346, 347], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 282, *[347, 348], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 283, *[349, 350], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 284, *[350, 351], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 285, *[351, 352], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 286, *[352, 353], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 287, *[353, 354], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 288, *[355, 356], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 289, *[356, 357], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 290, *[357, 358], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 291, *[358, 359], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 292, *[359, 360], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 293, *[361, 362], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 294, *[362, 363], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 295, *[363, 364], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 296, *[364, 365], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 297, *[365, 366], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 298, *[367, 368], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 299, *[368, 369], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 300, *[369, 370], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 301, *[370, 371], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 302, *[371, 372], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 303, *[373, 374], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 304, *[374, 375], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 305, *[375, 376], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 306, *[376, 377], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 307, *[377, 378], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 308, *[379, 380], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 309, *[380, 381], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 310, *[381, 382], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 311, *[382, 383], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 312, *[383, 384], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 313, *[385, 386], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 314, *[386, 387], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 315, *[387, 388], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 316, *[388, 389], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 317, *[389, 390], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 318, *[391, 392], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 319, *[392, 393], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 320, *[393, 394], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 321, *[394, 395], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 322, *[395, 396], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 323, *[397, 398], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 324, *[398, 399], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 325, *[399, 400], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 326, *[400, 401], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 327, *[401, 402], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 328, *[7, 404], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 329, *[404, 405], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 330, *[405, 406], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 331, *[406, 407], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 332, *[407, 408], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 333, *[409, 410], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 334, *[410, 411], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 335, *[411, 412], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 336, *[412, 413], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 337, *[413, 414], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 338, *[415, 416], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 339, *[416, 417], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 340, *[417, 418], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 341, *[418, 419], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 342, *[419, 420], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 343, *[421, 422], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 344, *[422, 423], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 345, *[423, 424], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 346, *[424, 425], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 347, *[425, 426], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 348, *[10, 428], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 349, *[428, 429], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 350, *[429, 430], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 351, *[430, 431], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 352, *[431, 432], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 353, *[433, 434], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 354, *[434, 435], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 355, *[435, 436], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 356, *[436, 437], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 357, *[437, 438], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 358, *[439, 440], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 359, *[440, 441], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 360, *[441, 442], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 361, *[442, 443], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 362, *[443, 444], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 363, *[445, 446], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 364, *[446, 447], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 365, *[447, 448], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 366, *[448, 449], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 367, *[449, 450], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 368, *[451, 452], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 369, *[452, 453], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 370, *[453, 454], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 371, *[454, 455], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 372, *[455, 456], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 373, *[457, 458], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 374, *[458, 459], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 375, *[459, 460], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 376, *[460, 461], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 377, *[461, 462], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 378, *[463, 464], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 379, *[464, 465], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 380, *[465, 466], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 381, *[466, 467], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 382, *[467, 468], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 383, *[469, 470], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 384, *[470, 471], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 385, *[471, 472], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 386, *[472, 473], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 387, *[473, 474], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 388, *[475, 476], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 389, *[476, 477], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 390, *[477, 478], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 391, *[478, 479], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 392, *[479, 480], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 393, *[481, 482], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 394, *[482, 483], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 395, *[483, 484], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 396, *[484, 485], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 397, *[485, 486], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 398, *[487, 488], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 399, *[488, 489], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 400, *[489, 490], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 401, *[490, 491], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 402, *[491, 492], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 403, *[493, 494], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 404, *[494, 495], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 405, *[495, 496], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 406, *[496, 497], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 407, *[497, 498], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 408, *[499, 500], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 409, *[500, 501], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 410, *[501, 502], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 411, *[502, 503], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 412, *[503, 504], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 413, *[505, 506], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 414, *[506, 507], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 415, *[507, 508], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 416, *[508, 509], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 417, *[509, 510], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 418, *[511, 512], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 419, *[512, 513], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 420, *[513, 514], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 421, *[514, 515], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 422, *[515, 516], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 423, *[517, 518], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 424, *[518, 519], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 425, *[519, 520], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 426, *[520, 521], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 427, *[521, 522], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 428, *[523, 524], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 429, *[524, 525], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 430, *[525, 526], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 431, *[526, 527], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 432, *[527, 528], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 433, *[529, 530], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 434, *[530, 531], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 435, *[531, 532], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 436, *[532, 533], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 437, *[533, 534], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 438, *[535, 536], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 439, *[536, 537], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 440, *[537, 538], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 441, *[538, 539], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 442, *[539, 540], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 443, *[541, 542], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 444, *[542, 543], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 445, *[543, 544], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 446, *[544, 545], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 447, *[545, 546], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 448, *[547, 548], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 449, *[548, 549], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 450, *[549, 550], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 451, *[550, 551], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 452, *[551, 552], FrameSecProp_df['Piles'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Piles'].J, FrameSecProp_df['Piles'].I33, FrameSecProp_df['Piles'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 453, *[391, 439], FrameSecProp_df['Cap1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Cap1'].J, FrameSecProp_df['Cap1'].I33, FrameSecProp_df['Cap1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 454, *[307, 523], FrameSecProp_df['Cap1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['Cap1'].J, FrameSecProp_df['Cap1'].I33, FrameSecProp_df['Cap1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 455, *[555, 554], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 456, *[554, 556], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 457, *[559, 558], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 458, *[558, 560], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 459, *[563, 562], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 460, *[562, 564], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 461, *[567, 566], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 462, *[566, 568], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 463, *[571, 570], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 464, *[570, 572], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 465, *[575, 574], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 466, *[574, 576], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 467, *[579, 578], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 468, *[578, 580], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 469, *[583, 582], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 470, *[582, 584], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 471, *[587, 586], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 472, *[586, 588], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 473, *[591, 590], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 474, *[590, 592], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 475, *[593, 594], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 476, *[595, 596], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 477, *[597, 598], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 478, *[599, 600], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 479, *[601, 602], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 480, *[603, 604], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 481, *[605, 606], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 482, *[607, 608], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 483, *[609, 610], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 484, *[611, 612], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 485, *[613, 614], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 486, *[615, 616], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 487, *[617, 618], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 488, *[619, 620], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 489, *[621, 622], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 490, *[623, 624], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 491, *[625, 626], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 492, *[627, 628], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 493, *[629, 630], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 494, *[631, 632], FrameSecProp_df['FootingL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['FootingL1'].J, FrameSecProp_df['FootingL1'].I33, FrameSecProp_df['FootingL1'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 495, *[633, 634], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 496, *[635, 636], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 497, *[637, 638], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 498, *[639, 640], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 499, *[641, 642], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 500, *[643, 644], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 501, *[645, 646], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 502, *[647, 648], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 503, *[649, 650], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 504, *[651, 555], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 505, *[633, 652], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 506, *[635, 653], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 507, *[637, 654], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 508, *[639, 655], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 509, *[641, 656], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 510, *[643, 657], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 511, *[645, 658], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 512, *[647, 659], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 513, *[649, 660], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 514, *[651, 556], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 515, *[633, 661], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 516, *[635, 662], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 517, *[637, 663], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 518, *[639, 664], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 519, *[641, 665], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 520, *[643, 666], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 521, *[645, 667], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 522, *[647, 668], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 523, *[649, 669], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 524, *[651, 670], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 525, *[633, 671], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 526, *[635, 672], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 527, *[637, 673], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 528, *[639, 674], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 529, *[641, 675], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 530, *[643, 676], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 531, *[645, 677], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 532, *[647, 678], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 533, *[649, 679], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 534, *[651, 680], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 535, *[681, 682], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 536, *[683, 684], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 537, *[685, 686], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 538, *[687, 688], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 539, *[689, 690], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 540, *[691, 692], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 541, *[693, 694], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 542, *[695, 696], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 543, *[697, 698], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 544, *[699, 575], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 545, *[681, 700], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 546, *[683, 701], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 547, *[685, 702], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 548, *[687, 703], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 549, *[689, 704], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 550, *[691, 705], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 551, *[693, 706], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 552, *[695, 707], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 553, *[697, 708], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 554, *[699, 576], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 555, *[681, 709], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 556, *[683, 710], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 557, *[685, 711], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 558, *[687, 712], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 559, *[689, 713], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 560, *[691, 714], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 561, *[693, 715], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 562, *[695, 716], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 563, *[697, 717], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 564, *[699, 670], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 565, *[681, 718], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 566, *[683, 719], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 567, *[685, 720], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 568, *[687, 721], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 569, *[689, 722], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 570, *[691, 723], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 571, *[693, 724], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 572, *[695, 725], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 573, *[697, 726], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 574, *[699, 680], FrameSecProp_df['Cable'].A, MatProp_df['A709Gr50'].E, MatProp_df['A709Gr50'].G,
-                FrameSecProp_df['Cable'].J, FrameSecProp_df['Cable'].I33, FrameSecProp_df['Cable'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 575, *[2, 2270], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 576, *[2270, 2271], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 577, *[2271, 2272], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 578, *[2272, 2273], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 579, *[2273, 2274], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 580, *[2274, 2275], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 581, *[2275, 2276], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 582, *[2276, 2277], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 583, *[2277, 2278], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 584, *[2278, 2279], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 585, *[2279, 2280], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 586, *[2280, 2281], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 587, *[2281, 2282], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 588, *[2282, 2283], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 589, *[2283, 2284], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 590, *[2284, 2285], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 591, *[2285, 2286], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 592, *[2286, 2287], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 593, *[2287, 2288], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 594, *[2288, 3], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 595, *[5, 2289], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 596, *[2289, 2290], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 597, *[2290, 2291], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 598, *[2291, 2292], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 599, *[2292, 2293], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 600, *[2293, 2294], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 601, *[2294, 2295], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 602, *[2295, 2296], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 603, *[2296, 2297], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 604, *[2297, 2298], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 605, *[2298, 2299], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 606, *[2299, 2300], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 607, *[2300, 2301], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 608, *[2301, 2302], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 609, *[2302, 2303], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 610, *[2303, 2304], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 611, *[2304, 2305], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 612, *[2305, 2306], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 613, *[2306, 2307], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 614, *[2307, 3], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 615, *[8, 2308], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 616, *[2308, 2309], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 617, *[2309, 2310], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 618, *[2310, 2311], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 619, *[2311, 2312], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 620, *[2312, 2313], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 621, *[2313, 2314], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 622, *[2314, 2315], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 623, *[2315, 2316], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 624, *[2316, 2317], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 625, *[2317, 2318], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 626, *[2318, 2319], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 627, *[2319, 2320], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 628, *[2320, 2321], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 629, *[2321, 2322], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 630, *[2322, 2323], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 631, *[2323, 2324], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 632, *[2324, 2325], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 633, *[2325, 2326], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 634, *[2326, 9], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 635, *[11, 2327], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 636, *[2327, 2328], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 637, *[2328, 2329], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 638, *[2329, 2330], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 639, *[2330, 2331], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 640, *[2331, 2332], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 641, *[2332, 2333], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 642, *[2333, 2334], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 643, *[2334, 2335], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 644, *[2335, 2336], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 645, *[2336, 2337], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 646, *[2337, 2338], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 647, *[2338, 2339], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 648, *[2339, 2340], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 649, *[2340, 2341], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 650, *[2341, 2342], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 651, *[2342, 2343], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 652, *[2343, 2344], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 653, *[2344, 2345], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 654, *[2345, 9], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 655, *[1, 2346], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 656, *[2346, 2347], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 657, *[2347, 2348], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 658, *[2348, 2349], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 659, *[2349, 2350], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 660, *[2350, 2351], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 661, *[2351, 2352], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 662, *[2352, 2353], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 663, *[2353, 2354], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 664, *[2354, 2], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 665, *[4, 2355], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 666, *[2355, 2356], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 667, *[2356, 2357], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 668, *[2357, 2358], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 669, *[2358, 2359], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 670, *[2359, 2360], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 671, *[2360, 2361], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 672, *[2361, 2362], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 673, *[2362, 2363], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 674, *[2363, 5], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 675, *[7, 2364], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 676, *[2364, 2365], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 677, *[2365, 2366], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 678, *[2366, 2367], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 679, *[2367, 2368], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 680, *[2368, 2369], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 681, *[2369, 2370], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 682, *[2370, 2371], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 683, *[2371, 2372], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 684, *[2372, 8], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 685, *[10, 2373], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 686, *[2373, 2374], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 687, *[2374, 2375], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 688, *[2375, 2376], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 689, *[2376, 2377], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 690, *[2377, 2378], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 691, *[2378, 2379], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 692, *[2379, 2380], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 693, *[2380, 2381], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 694, *[2381, 11], FrameSecProp_df['Left_Leg'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Left_Leg'].J, FrameSecProp_df['Left_Leg'].I33, FrameSecProp_df['Left_Leg'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 695, *[3, 633], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 696, *[633, 635], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 697, *[635, 637], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 698, *[637, 639], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 699, *[639, 641], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 700, *[641, 643], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 701, *[643, 645], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 702, *[645, 647], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 703, *[647, 649], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 704, *[649, 651], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 705, *[651, 6], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 706, *[9, 681], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 707, *[681, 683], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 708, *[683, 685], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 709, *[685, 687], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 710, *[687, 689], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 711, *[689, 691], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 712, *[691, 693], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 713, *[693, 695], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 714, *[695, 697], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 715, *[697, 699], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 716, *[699, 12], FrameSecProp_df['Upper_Pylon'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Upper_Pylon'].J, FrameSecProp_df['Upper_Pylon'].I33, FrameSecProp_df['Upper_Pylon'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 717, *[553, 2382], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 718, *[2382, 2383], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 719, *[2383, 2384], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 720, *[2384, 2385], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 721, *[2385, 2386], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 722, *[2386, 2387], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 723, *[2387, 2388], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 724, *[2388, 2389], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 725, *[2389, 2390], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 726, *[2390, 554], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 727, *[557, 2391], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 728, *[2391, 2392], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 729, *[2392, 2393], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 730, *[2393, 2394], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 731, *[2394, 2395], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 732, *[2395, 2396], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 733, *[2396, 2397], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 734, *[2397, 2398], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 735, *[2398, 2399], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 736, *[2399, 558], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 737, *[561, 2400], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 738, *[2400, 2401], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 739, *[2401, 2402], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 740, *[2402, 2403], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 741, *[2403, 2404], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 742, *[2404, 2405], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 743, *[2405, 2406], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 744, *[2406, 2407], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 745, *[2407, 2408], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 746, *[2408, 562], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 747, *[565, 2409], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 748, *[2409, 2410], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 749, *[2410, 2411], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 750, *[2411, 2412], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 751, *[2412, 2413], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 752, *[2413, 2414], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 753, *[2414, 2415], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 754, *[2415, 2416], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 755, *[2416, 2417], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 756, *[2417, 566], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 757, *[569, 2418], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 758, *[2418, 2419], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 759, *[2419, 2420], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 760, *[2420, 2421], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 761, *[2421, 2422], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 762, *[2422, 2423], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 763, *[2423, 2424], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 764, *[2424, 2425], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 765, *[2425, 2426], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 766, *[2426, 570], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 767, *[573, 2427], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 768, *[2427, 2428], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 769, *[2428, 2429], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 770, *[2429, 2430], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 771, *[2430, 2431], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 772, *[2431, 2432], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 773, *[2432, 2433], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 774, *[2433, 2434], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 775, *[2434, 2435], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 776, *[2435, 574], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 777, *[577, 2436], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 778, *[2436, 2437], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 779, *[2437, 2438], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 780, *[2438, 2439], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 781, *[2439, 2440], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 782, *[2440, 2441], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 783, *[2441, 2442], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 784, *[2442, 2443], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 785, *[2443, 2444], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 786, *[2444, 578], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 787, *[581, 2445], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 788, *[2445, 2446], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 789, *[2446, 2447], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 790, *[2447, 2448], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 791, *[2448, 2449], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 792, *[2449, 2450], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 793, *[2450, 2451], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 794, *[2451, 2452], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 795, *[2452, 2453], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 796, *[2453, 582], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 797, *[585, 2454], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 798, *[2454, 2455], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 799, *[2455, 2456], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 800, *[2456, 2457], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 801, *[2457, 2458], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 802, *[2458, 2459], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 803, *[2459, 2460], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 804, *[2460, 2461], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 805, *[2461, 2462], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 806, *[2462, 586], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 807, *[589, 2463], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 808, *[2463, 2464], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 809, *[2464, 2465], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 810, *[2465, 2466], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 811, *[2466, 2467], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 812, *[2467, 2468], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 813, *[2468, 2469], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 814, *[2469, 2470], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 815, *[2470, 2471], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E,
-                MatProp_df['4000Psi'].G, FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 816, *[2471, 590], FrameSecProp_df['PierL1'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['PierL1'].J, FrameSecProp_df['PierL1'].I33, FrameSecProp_df['PierL1'].I22, transf_Ver)
-    ops.element('elasticBeamColumn', 817, *[1767, 2472], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 818, *[2472, 2473], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 819, *[2473, 2474], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 820, *[2474, 2475], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 821, *[2475, 2476], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 822, *[2476, 2477], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 823, *[2477, 2478], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 824, *[2478, 2479], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 825, *[2479, 2480], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 826, *[2480, 1766], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 827, *[8, 2481], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 828, *[2481, 2482], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 829, *[2482, 1767], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 830, *[1766, 2483], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 831, *[2483, 2484], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 832, *[2484, 11], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 833, *[1213, 2485], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 834, *[2485, 2486], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 835, *[2486, 2487], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 836, *[2487, 2488], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 837, *[2488, 2489], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 838, *[2489, 2490], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 839, *[2490, 2491], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 840, *[2491, 2492], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 841, *[2492, 2493], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 842, *[2493, 1212], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 843, *[2, 2494], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 844, *[2494, 2495], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 845, *[2495, 1213], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 846, *[1212, 2496], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 847, *[2496, 2497], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
-    ops.element('elasticBeamColumn', 848, *[2497, 5], FrameSecProp_df['Cross_Beam'].A, MatProp_df['4000Psi'].E, MatProp_df['4000Psi'].G,
-                FrameSecProp_df['Cross_Beam'].J, FrameSecProp_df['Cross_Beam'].I33, FrameSecProp_df['Cross_Beam'].I22, transf_Other)
+    ops.element(
+        "elasticBeamColumn",
+        1,
+        *[13, 14],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        2,
+        *[14, 15],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        3,
+        *[15, 16],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        4,
+        *[16, 17],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        5,
+        *[17, 18],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        6,
+        *[19, 20],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        7,
+        *[20, 21],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        8,
+        *[21, 22],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        9,
+        *[22, 23],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        10,
+        *[23, 24],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        11,
+        *[25, 26],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        12,
+        *[26, 27],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        13,
+        *[27, 28],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        14,
+        *[28, 29],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        15,
+        *[29, 30],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        16,
+        *[31, 32],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        17,
+        *[32, 33],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        18,
+        *[33, 34],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        19,
+        *[34, 35],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        20,
+        *[35, 36],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        21,
+        *[37, 38],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        22,
+        *[38, 39],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        23,
+        *[39, 40],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        24,
+        *[40, 41],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        25,
+        *[41, 42],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        26,
+        *[43, 44],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        27,
+        *[44, 45],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        28,
+        *[45, 46],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        29,
+        *[46, 47],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        30,
+        *[47, 48],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        31,
+        *[49, 50],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        32,
+        *[50, 51],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        33,
+        *[51, 52],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        34,
+        *[52, 53],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        35,
+        *[53, 54],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        36,
+        *[55, 56],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        37,
+        *[56, 57],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        38,
+        *[57, 58],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        39,
+        *[58, 59],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        40,
+        *[59, 60],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        41,
+        *[61, 62],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        42,
+        *[62, 63],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        43,
+        *[63, 64],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        44,
+        *[64, 65],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        45,
+        *[65, 66],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        46,
+        *[67, 68],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        47,
+        *[68, 69],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        48,
+        *[69, 70],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        49,
+        *[70, 71],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        50,
+        *[71, 72],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        51,
+        *[73, 74],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        52,
+        *[74, 75],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        53,
+        *[75, 76],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        54,
+        *[76, 77],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        55,
+        *[77, 78],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        56,
+        *[79, 80],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        57,
+        *[80, 81],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        58,
+        *[81, 82],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        59,
+        *[82, 83],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        60,
+        *[83, 84],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        61,
+        *[85, 86],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        62,
+        *[86, 87],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        63,
+        *[87, 88],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        64,
+        *[88, 89],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        65,
+        *[89, 90],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        66,
+        *[91, 92],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        67,
+        *[92, 93],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        68,
+        *[93, 94],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        69,
+        *[94, 95],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        70,
+        *[95, 96],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        71,
+        *[97, 98],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        72,
+        *[98, 99],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        73,
+        *[99, 100],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        74,
+        *[100, 101],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        75,
+        *[101, 102],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        76,
+        *[103, 104],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        77,
+        *[104, 105],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        78,
+        *[105, 106],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        79,
+        *[106, 107],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        80,
+        *[107, 108],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        81,
+        *[109, 110],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        82,
+        *[110, 111],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        83,
+        *[111, 112],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        84,
+        *[112, 113],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        85,
+        *[113, 114],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        86,
+        *[115, 116],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        87,
+        *[116, 117],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        88,
+        *[117, 118],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        89,
+        *[118, 119],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        90,
+        *[119, 120],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        91,
+        *[121, 122],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        92,
+        *[122, 123],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        93,
+        *[123, 124],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        94,
+        *[124, 125],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        95,
+        *[125, 126],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        96,
+        *[127, 128],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        97,
+        *[128, 129],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        98,
+        *[129, 130],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        99,
+        *[130, 131],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        100,
+        *[131, 132],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        101,
+        *[1, 134],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        102,
+        *[134, 135],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        103,
+        *[135, 136],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        104,
+        *[136, 137],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        105,
+        *[137, 138],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        106,
+        *[139, 140],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        107,
+        *[140, 141],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        108,
+        *[141, 142],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        109,
+        *[142, 143],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        110,
+        *[143, 144],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        111,
+        *[145, 146],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        112,
+        *[146, 147],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        113,
+        *[147, 148],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        114,
+        *[148, 149],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        115,
+        *[149, 150],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        116,
+        *[151, 152],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        117,
+        *[152, 153],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        118,
+        *[153, 154],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        119,
+        *[154, 155],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        120,
+        *[155, 156],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        121,
+        *[4, 158],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        122,
+        *[158, 159],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        123,
+        *[159, 160],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        124,
+        *[160, 161],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        125,
+        *[161, 162],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        126,
+        *[163, 164],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        127,
+        *[164, 165],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        128,
+        *[165, 166],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        129,
+        *[166, 167],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        130,
+        *[167, 168],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        131,
+        *[169, 170],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        132,
+        *[170, 171],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        133,
+        *[171, 172],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        134,
+        *[172, 173],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        135,
+        *[173, 174],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        136,
+        *[175, 176],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        137,
+        *[176, 177],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        138,
+        *[177, 178],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        139,
+        *[178, 179],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        140,
+        *[179, 180],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        141,
+        *[181, 182],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        142,
+        *[182, 183],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        143,
+        *[183, 184],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        144,
+        *[184, 185],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        145,
+        *[185, 186],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        146,
+        *[187, 188],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        147,
+        *[188, 189],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        148,
+        *[189, 190],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        149,
+        *[190, 191],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        150,
+        *[191, 192],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        151,
+        *[193, 194],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        152,
+        *[194, 195],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        153,
+        *[195, 196],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        154,
+        *[196, 197],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        155,
+        *[197, 198],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        156,
+        *[199, 200],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        157,
+        *[200, 201],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        158,
+        *[201, 202],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        159,
+        *[202, 203],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        160,
+        *[203, 204],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        161,
+        *[205, 206],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        162,
+        *[206, 207],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        163,
+        *[207, 208],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        164,
+        *[208, 209],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        165,
+        *[209, 210],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        166,
+        *[211, 212],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        167,
+        *[212, 213],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        168,
+        *[213, 214],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        169,
+        *[214, 215],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        170,
+        *[215, 216],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        171,
+        *[217, 218],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        172,
+        *[218, 219],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        173,
+        *[219, 220],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        174,
+        *[220, 221],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        175,
+        *[221, 222],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        176,
+        *[223, 224],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        177,
+        *[224, 225],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        178,
+        *[225, 226],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        179,
+        *[226, 227],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        180,
+        *[227, 228],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        181,
+        *[229, 230],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        182,
+        *[230, 231],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        183,
+        *[231, 232],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        184,
+        *[232, 233],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        185,
+        *[233, 234],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        186,
+        *[235, 236],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        187,
+        *[236, 237],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        188,
+        *[237, 238],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        189,
+        *[238, 239],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        190,
+        *[239, 240],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        191,
+        *[241, 242],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        192,
+        *[242, 243],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        193,
+        *[243, 244],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        194,
+        *[244, 245],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        195,
+        *[245, 246],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        196,
+        *[247, 248],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        197,
+        *[248, 249],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        198,
+        *[249, 250],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        199,
+        *[250, 251],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        200,
+        *[251, 252],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        201,
+        *[253, 254],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        202,
+        *[254, 255],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        203,
+        *[255, 256],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        204,
+        *[256, 257],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        205,
+        *[257, 258],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        206,
+        *[259, 260],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        207,
+        *[260, 261],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        208,
+        *[261, 262],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        209,
+        *[262, 263],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        210,
+        *[263, 264],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        211,
+        *[265, 266],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        212,
+        *[266, 267],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        213,
+        *[267, 268],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        214,
+        *[268, 269],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        215,
+        *[269, 270],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        216,
+        *[271, 272],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        217,
+        *[272, 273],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        218,
+        *[273, 274],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        219,
+        *[274, 275],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        220,
+        *[275, 276],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        221,
+        *[277, 278],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        222,
+        *[278, 279],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        223,
+        *[279, 280],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        224,
+        *[280, 281],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        225,
+        *[281, 282],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        226,
+        *[121, 169],
+        FrameSecProp_df["Cap1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cap1"].J,
+        FrameSecProp_df["Cap1"].I33,
+        FrameSecProp_df["Cap1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        227,
+        *[37, 253],
+        FrameSecProp_df["Cap1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cap1"].J,
+        FrameSecProp_df["Cap1"].I33,
+        FrameSecProp_df["Cap1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        228,
+        *[283, 284],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        229,
+        *[284, 285],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        230,
+        *[285, 286],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        231,
+        *[286, 287],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        232,
+        *[287, 288],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        233,
+        *[289, 290],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        234,
+        *[290, 291],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        235,
+        *[291, 292],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        236,
+        *[292, 293],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        237,
+        *[293, 294],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        238,
+        *[295, 296],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        239,
+        *[296, 297],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        240,
+        *[297, 298],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        241,
+        *[298, 299],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        242,
+        *[299, 300],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        243,
+        *[301, 302],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        244,
+        *[302, 303],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        245,
+        *[303, 304],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        246,
+        *[304, 305],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        247,
+        *[305, 306],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        248,
+        *[307, 308],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        249,
+        *[308, 309],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        250,
+        *[309, 310],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        251,
+        *[310, 311],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        252,
+        *[311, 312],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        253,
+        *[313, 314],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        254,
+        *[314, 315],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        255,
+        *[315, 316],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        256,
+        *[316, 317],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        257,
+        *[317, 318],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        258,
+        *[319, 320],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        259,
+        *[320, 321],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        260,
+        *[321, 322],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        261,
+        *[322, 323],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        262,
+        *[323, 324],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        263,
+        *[325, 326],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        264,
+        *[326, 327],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        265,
+        *[327, 328],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        266,
+        *[328, 329],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        267,
+        *[329, 330],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        268,
+        *[331, 332],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        269,
+        *[332, 333],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        270,
+        *[333, 334],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        271,
+        *[334, 335],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        272,
+        *[335, 336],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        273,
+        *[337, 338],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        274,
+        *[338, 339],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        275,
+        *[339, 340],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        276,
+        *[340, 341],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        277,
+        *[341, 342],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        278,
+        *[343, 344],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        279,
+        *[344, 345],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        280,
+        *[345, 346],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        281,
+        *[346, 347],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        282,
+        *[347, 348],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        283,
+        *[349, 350],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        284,
+        *[350, 351],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        285,
+        *[351, 352],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        286,
+        *[352, 353],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        287,
+        *[353, 354],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        288,
+        *[355, 356],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        289,
+        *[356, 357],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        290,
+        *[357, 358],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        291,
+        *[358, 359],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        292,
+        *[359, 360],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        293,
+        *[361, 362],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        294,
+        *[362, 363],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        295,
+        *[363, 364],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        296,
+        *[364, 365],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        297,
+        *[365, 366],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        298,
+        *[367, 368],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        299,
+        *[368, 369],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        300,
+        *[369, 370],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        301,
+        *[370, 371],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        302,
+        *[371, 372],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        303,
+        *[373, 374],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        304,
+        *[374, 375],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        305,
+        *[375, 376],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        306,
+        *[376, 377],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        307,
+        *[377, 378],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        308,
+        *[379, 380],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        309,
+        *[380, 381],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        310,
+        *[381, 382],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        311,
+        *[382, 383],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        312,
+        *[383, 384],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        313,
+        *[385, 386],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        314,
+        *[386, 387],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        315,
+        *[387, 388],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        316,
+        *[388, 389],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        317,
+        *[389, 390],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        318,
+        *[391, 392],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        319,
+        *[392, 393],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        320,
+        *[393, 394],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        321,
+        *[394, 395],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        322,
+        *[395, 396],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        323,
+        *[397, 398],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        324,
+        *[398, 399],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        325,
+        *[399, 400],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        326,
+        *[400, 401],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        327,
+        *[401, 402],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        328,
+        *[7, 404],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        329,
+        *[404, 405],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        330,
+        *[405, 406],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        331,
+        *[406, 407],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        332,
+        *[407, 408],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        333,
+        *[409, 410],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        334,
+        *[410, 411],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        335,
+        *[411, 412],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        336,
+        *[412, 413],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        337,
+        *[413, 414],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        338,
+        *[415, 416],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        339,
+        *[416, 417],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        340,
+        *[417, 418],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        341,
+        *[418, 419],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        342,
+        *[419, 420],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        343,
+        *[421, 422],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        344,
+        *[422, 423],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        345,
+        *[423, 424],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        346,
+        *[424, 425],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        347,
+        *[425, 426],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        348,
+        *[10, 428],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        349,
+        *[428, 429],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        350,
+        *[429, 430],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        351,
+        *[430, 431],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        352,
+        *[431, 432],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        353,
+        *[433, 434],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        354,
+        *[434, 435],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        355,
+        *[435, 436],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        356,
+        *[436, 437],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        357,
+        *[437, 438],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        358,
+        *[439, 440],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        359,
+        *[440, 441],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        360,
+        *[441, 442],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        361,
+        *[442, 443],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        362,
+        *[443, 444],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        363,
+        *[445, 446],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        364,
+        *[446, 447],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        365,
+        *[447, 448],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        366,
+        *[448, 449],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        367,
+        *[449, 450],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        368,
+        *[451, 452],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        369,
+        *[452, 453],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        370,
+        *[453, 454],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        371,
+        *[454, 455],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        372,
+        *[455, 456],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        373,
+        *[457, 458],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        374,
+        *[458, 459],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        375,
+        *[459, 460],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        376,
+        *[460, 461],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        377,
+        *[461, 462],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        378,
+        *[463, 464],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        379,
+        *[464, 465],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        380,
+        *[465, 466],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        381,
+        *[466, 467],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        382,
+        *[467, 468],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        383,
+        *[469, 470],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        384,
+        *[470, 471],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        385,
+        *[471, 472],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        386,
+        *[472, 473],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        387,
+        *[473, 474],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        388,
+        *[475, 476],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        389,
+        *[476, 477],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        390,
+        *[477, 478],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        391,
+        *[478, 479],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        392,
+        *[479, 480],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        393,
+        *[481, 482],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        394,
+        *[482, 483],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        395,
+        *[483, 484],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        396,
+        *[484, 485],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        397,
+        *[485, 486],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        398,
+        *[487, 488],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        399,
+        *[488, 489],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        400,
+        *[489, 490],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        401,
+        *[490, 491],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        402,
+        *[491, 492],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        403,
+        *[493, 494],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        404,
+        *[494, 495],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        405,
+        *[495, 496],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        406,
+        *[496, 497],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        407,
+        *[497, 498],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        408,
+        *[499, 500],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        409,
+        *[500, 501],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        410,
+        *[501, 502],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        411,
+        *[502, 503],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        412,
+        *[503, 504],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        413,
+        *[505, 506],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        414,
+        *[506, 507],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        415,
+        *[507, 508],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        416,
+        *[508, 509],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        417,
+        *[509, 510],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        418,
+        *[511, 512],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        419,
+        *[512, 513],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        420,
+        *[513, 514],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        421,
+        *[514, 515],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        422,
+        *[515, 516],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        423,
+        *[517, 518],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        424,
+        *[518, 519],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        425,
+        *[519, 520],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        426,
+        *[520, 521],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        427,
+        *[521, 522],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        428,
+        *[523, 524],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        429,
+        *[524, 525],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        430,
+        *[525, 526],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        431,
+        *[526, 527],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        432,
+        *[527, 528],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        433,
+        *[529, 530],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        434,
+        *[530, 531],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        435,
+        *[531, 532],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        436,
+        *[532, 533],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        437,
+        *[533, 534],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        438,
+        *[535, 536],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        439,
+        *[536, 537],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        440,
+        *[537, 538],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        441,
+        *[538, 539],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        442,
+        *[539, 540],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        443,
+        *[541, 542],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        444,
+        *[542, 543],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        445,
+        *[543, 544],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        446,
+        *[544, 545],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        447,
+        *[545, 546],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        448,
+        *[547, 548],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        449,
+        *[548, 549],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        450,
+        *[549, 550],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        451,
+        *[550, 551],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        452,
+        *[551, 552],
+        FrameSecProp_df["Piles"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Piles"].J,
+        FrameSecProp_df["Piles"].I33,
+        FrameSecProp_df["Piles"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        453,
+        *[391, 439],
+        FrameSecProp_df["Cap1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cap1"].J,
+        FrameSecProp_df["Cap1"].I33,
+        FrameSecProp_df["Cap1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        454,
+        *[307, 523],
+        FrameSecProp_df["Cap1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cap1"].J,
+        FrameSecProp_df["Cap1"].I33,
+        FrameSecProp_df["Cap1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        455,
+        *[555, 554],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        456,
+        *[554, 556],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        457,
+        *[559, 558],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        458,
+        *[558, 560],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        459,
+        *[563, 562],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        460,
+        *[562, 564],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        461,
+        *[567, 566],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        462,
+        *[566, 568],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        463,
+        *[571, 570],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        464,
+        *[570, 572],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        465,
+        *[575, 574],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        466,
+        *[574, 576],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        467,
+        *[579, 578],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        468,
+        *[578, 580],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        469,
+        *[583, 582],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        470,
+        *[582, 584],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        471,
+        *[587, 586],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        472,
+        *[586, 588],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        473,
+        *[591, 590],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        474,
+        *[590, 592],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        475,
+        *[593, 594],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        476,
+        *[595, 596],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        477,
+        *[597, 598],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        478,
+        *[599, 600],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        479,
+        *[601, 602],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        480,
+        *[603, 604],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        481,
+        *[605, 606],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        482,
+        *[607, 608],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        483,
+        *[609, 610],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        484,
+        *[611, 612],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        485,
+        *[613, 614],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        486,
+        *[615, 616],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        487,
+        *[617, 618],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        488,
+        *[619, 620],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        489,
+        *[621, 622],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        490,
+        *[623, 624],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        491,
+        *[625, 626],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        492,
+        *[627, 628],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        493,
+        *[629, 630],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        494,
+        *[631, 632],
+        FrameSecProp_df["FootingL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["FootingL1"].J,
+        FrameSecProp_df["FootingL1"].I33,
+        FrameSecProp_df["FootingL1"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        495,
+        *[633, 634],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        496,
+        *[635, 636],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        497,
+        *[637, 638],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        498,
+        *[639, 640],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        499,
+        *[641, 642],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        500,
+        *[643, 644],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        501,
+        *[645, 646],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        502,
+        *[647, 648],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        503,
+        *[649, 650],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        504,
+        *[651, 555],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        505,
+        *[633, 652],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        506,
+        *[635, 653],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        507,
+        *[637, 654],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        508,
+        *[639, 655],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        509,
+        *[641, 656],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        510,
+        *[643, 657],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        511,
+        *[645, 658],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        512,
+        *[647, 659],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        513,
+        *[649, 660],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        514,
+        *[651, 556],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        515,
+        *[633, 661],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        516,
+        *[635, 662],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        517,
+        *[637, 663],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        518,
+        *[639, 664],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        519,
+        *[641, 665],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        520,
+        *[643, 666],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        521,
+        *[645, 667],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        522,
+        *[647, 668],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        523,
+        *[649, 669],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        524,
+        *[651, 670],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        525,
+        *[633, 671],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        526,
+        *[635, 672],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        527,
+        *[637, 673],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        528,
+        *[639, 674],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        529,
+        *[641, 675],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        530,
+        *[643, 676],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        531,
+        *[645, 677],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        532,
+        *[647, 678],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        533,
+        *[649, 679],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        534,
+        *[651, 680],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        535,
+        *[681, 682],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        536,
+        *[683, 684],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        537,
+        *[685, 686],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        538,
+        *[687, 688],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        539,
+        *[689, 690],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        540,
+        *[691, 692],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        541,
+        *[693, 694],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        542,
+        *[695, 696],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        543,
+        *[697, 698],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        544,
+        *[699, 575],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        545,
+        *[681, 700],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        546,
+        *[683, 701],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        547,
+        *[685, 702],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        548,
+        *[687, 703],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        549,
+        *[689, 704],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        550,
+        *[691, 705],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        551,
+        *[693, 706],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        552,
+        *[695, 707],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        553,
+        *[697, 708],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        554,
+        *[699, 576],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        555,
+        *[681, 709],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        556,
+        *[683, 710],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        557,
+        *[685, 711],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        558,
+        *[687, 712],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        559,
+        *[689, 713],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        560,
+        *[691, 714],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        561,
+        *[693, 715],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        562,
+        *[695, 716],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        563,
+        *[697, 717],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        564,
+        *[699, 670],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        565,
+        *[681, 718],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        566,
+        *[683, 719],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        567,
+        *[685, 720],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        568,
+        *[687, 721],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        569,
+        *[689, 722],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        570,
+        *[691, 723],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        571,
+        *[693, 724],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        572,
+        *[695, 725],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        573,
+        *[697, 726],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        574,
+        *[699, 680],
+        FrameSecProp_df["Cable"].A,
+        MatProp_df["A709Gr50"].E,
+        MatProp_df["A709Gr50"].G,
+        FrameSecProp_df["Cable"].J,
+        FrameSecProp_df["Cable"].I33,
+        FrameSecProp_df["Cable"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        575,
+        *[2, 2270],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        576,
+        *[2270, 2271],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        577,
+        *[2271, 2272],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        578,
+        *[2272, 2273],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        579,
+        *[2273, 2274],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        580,
+        *[2274, 2275],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        581,
+        *[2275, 2276],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        582,
+        *[2276, 2277],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        583,
+        *[2277, 2278],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        584,
+        *[2278, 2279],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        585,
+        *[2279, 2280],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        586,
+        *[2280, 2281],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        587,
+        *[2281, 2282],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        588,
+        *[2282, 2283],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        589,
+        *[2283, 2284],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        590,
+        *[2284, 2285],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        591,
+        *[2285, 2286],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        592,
+        *[2286, 2287],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        593,
+        *[2287, 2288],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        594,
+        *[2288, 3],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        595,
+        *[5, 2289],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        596,
+        *[2289, 2290],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        597,
+        *[2290, 2291],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        598,
+        *[2291, 2292],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        599,
+        *[2292, 2293],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        600,
+        *[2293, 2294],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        601,
+        *[2294, 2295],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        602,
+        *[2295, 2296],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        603,
+        *[2296, 2297],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        604,
+        *[2297, 2298],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        605,
+        *[2298, 2299],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        606,
+        *[2299, 2300],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        607,
+        *[2300, 2301],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        608,
+        *[2301, 2302],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        609,
+        *[2302, 2303],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        610,
+        *[2303, 2304],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        611,
+        *[2304, 2305],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        612,
+        *[2305, 2306],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        613,
+        *[2306, 2307],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        614,
+        *[2307, 3],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        615,
+        *[8, 2308],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        616,
+        *[2308, 2309],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        617,
+        *[2309, 2310],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        618,
+        *[2310, 2311],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        619,
+        *[2311, 2312],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        620,
+        *[2312, 2313],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        621,
+        *[2313, 2314],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        622,
+        *[2314, 2315],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        623,
+        *[2315, 2316],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        624,
+        *[2316, 2317],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        625,
+        *[2317, 2318],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        626,
+        *[2318, 2319],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        627,
+        *[2319, 2320],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        628,
+        *[2320, 2321],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        629,
+        *[2321, 2322],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        630,
+        *[2322, 2323],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        631,
+        *[2323, 2324],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        632,
+        *[2324, 2325],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        633,
+        *[2325, 2326],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        634,
+        *[2326, 9],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        635,
+        *[11, 2327],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        636,
+        *[2327, 2328],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        637,
+        *[2328, 2329],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        638,
+        *[2329, 2330],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        639,
+        *[2330, 2331],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        640,
+        *[2331, 2332],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        641,
+        *[2332, 2333],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        642,
+        *[2333, 2334],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        643,
+        *[2334, 2335],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        644,
+        *[2335, 2336],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        645,
+        *[2336, 2337],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        646,
+        *[2337, 2338],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        647,
+        *[2338, 2339],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        648,
+        *[2339, 2340],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        649,
+        *[2340, 2341],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        650,
+        *[2341, 2342],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        651,
+        *[2342, 2343],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        652,
+        *[2343, 2344],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        653,
+        *[2344, 2345],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        654,
+        *[2345, 9],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        655,
+        *[1, 2346],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        656,
+        *[2346, 2347],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        657,
+        *[2347, 2348],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        658,
+        *[2348, 2349],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        659,
+        *[2349, 2350],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        660,
+        *[2350, 2351],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        661,
+        *[2351, 2352],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        662,
+        *[2352, 2353],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        663,
+        *[2353, 2354],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        664,
+        *[2354, 2],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        665,
+        *[4, 2355],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        666,
+        *[2355, 2356],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        667,
+        *[2356, 2357],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        668,
+        *[2357, 2358],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        669,
+        *[2358, 2359],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        670,
+        *[2359, 2360],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        671,
+        *[2360, 2361],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        672,
+        *[2361, 2362],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        673,
+        *[2362, 2363],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        674,
+        *[2363, 5],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        675,
+        *[7, 2364],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        676,
+        *[2364, 2365],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        677,
+        *[2365, 2366],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        678,
+        *[2366, 2367],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        679,
+        *[2367, 2368],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        680,
+        *[2368, 2369],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        681,
+        *[2369, 2370],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        682,
+        *[2370, 2371],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        683,
+        *[2371, 2372],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        684,
+        *[2372, 8],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        685,
+        *[10, 2373],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        686,
+        *[2373, 2374],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        687,
+        *[2374, 2375],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        688,
+        *[2375, 2376],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        689,
+        *[2376, 2377],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        690,
+        *[2377, 2378],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        691,
+        *[2378, 2379],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        692,
+        *[2379, 2380],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        693,
+        *[2380, 2381],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        694,
+        *[2381, 11],
+        FrameSecProp_df["Left_Leg"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Left_Leg"].J,
+        FrameSecProp_df["Left_Leg"].I33,
+        FrameSecProp_df["Left_Leg"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        695,
+        *[3, 633],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        696,
+        *[633, 635],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        697,
+        *[635, 637],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        698,
+        *[637, 639],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        699,
+        *[639, 641],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        700,
+        *[641, 643],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        701,
+        *[643, 645],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        702,
+        *[645, 647],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        703,
+        *[647, 649],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        704,
+        *[649, 651],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        705,
+        *[651, 6],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        706,
+        *[9, 681],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        707,
+        *[681, 683],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        708,
+        *[683, 685],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        709,
+        *[685, 687],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        710,
+        *[687, 689],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        711,
+        *[689, 691],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        712,
+        *[691, 693],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        713,
+        *[693, 695],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        714,
+        *[695, 697],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        715,
+        *[697, 699],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        716,
+        *[699, 12],
+        FrameSecProp_df["Upper_Pylon"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Upper_Pylon"].J,
+        FrameSecProp_df["Upper_Pylon"].I33,
+        FrameSecProp_df["Upper_Pylon"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        717,
+        *[553, 2382],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        718,
+        *[2382, 2383],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        719,
+        *[2383, 2384],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        720,
+        *[2384, 2385],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        721,
+        *[2385, 2386],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        722,
+        *[2386, 2387],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        723,
+        *[2387, 2388],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        724,
+        *[2388, 2389],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        725,
+        *[2389, 2390],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        726,
+        *[2390, 554],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        727,
+        *[557, 2391],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        728,
+        *[2391, 2392],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        729,
+        *[2392, 2393],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        730,
+        *[2393, 2394],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        731,
+        *[2394, 2395],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        732,
+        *[2395, 2396],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        733,
+        *[2396, 2397],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        734,
+        *[2397, 2398],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        735,
+        *[2398, 2399],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        736,
+        *[2399, 558],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        737,
+        *[561, 2400],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        738,
+        *[2400, 2401],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        739,
+        *[2401, 2402],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        740,
+        *[2402, 2403],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        741,
+        *[2403, 2404],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        742,
+        *[2404, 2405],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        743,
+        *[2405, 2406],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        744,
+        *[2406, 2407],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        745,
+        *[2407, 2408],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        746,
+        *[2408, 562],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        747,
+        *[565, 2409],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        748,
+        *[2409, 2410],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        749,
+        *[2410, 2411],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        750,
+        *[2411, 2412],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        751,
+        *[2412, 2413],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        752,
+        *[2413, 2414],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        753,
+        *[2414, 2415],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        754,
+        *[2415, 2416],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        755,
+        *[2416, 2417],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        756,
+        *[2417, 566],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        757,
+        *[569, 2418],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        758,
+        *[2418, 2419],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        759,
+        *[2419, 2420],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        760,
+        *[2420, 2421],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        761,
+        *[2421, 2422],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        762,
+        *[2422, 2423],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        763,
+        *[2423, 2424],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        764,
+        *[2424, 2425],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        765,
+        *[2425, 2426],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        766,
+        *[2426, 570],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        767,
+        *[573, 2427],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        768,
+        *[2427, 2428],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        769,
+        *[2428, 2429],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        770,
+        *[2429, 2430],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        771,
+        *[2430, 2431],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        772,
+        *[2431, 2432],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        773,
+        *[2432, 2433],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        774,
+        *[2433, 2434],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        775,
+        *[2434, 2435],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        776,
+        *[2435, 574],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        777,
+        *[577, 2436],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        778,
+        *[2436, 2437],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        779,
+        *[2437, 2438],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        780,
+        *[2438, 2439],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        781,
+        *[2439, 2440],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        782,
+        *[2440, 2441],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        783,
+        *[2441, 2442],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        784,
+        *[2442, 2443],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        785,
+        *[2443, 2444],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        786,
+        *[2444, 578],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        787,
+        *[581, 2445],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        788,
+        *[2445, 2446],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        789,
+        *[2446, 2447],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        790,
+        *[2447, 2448],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        791,
+        *[2448, 2449],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        792,
+        *[2449, 2450],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        793,
+        *[2450, 2451],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        794,
+        *[2451, 2452],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        795,
+        *[2452, 2453],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        796,
+        *[2453, 582],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        797,
+        *[585, 2454],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        798,
+        *[2454, 2455],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        799,
+        *[2455, 2456],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        800,
+        *[2456, 2457],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        801,
+        *[2457, 2458],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        802,
+        *[2458, 2459],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        803,
+        *[2459, 2460],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        804,
+        *[2460, 2461],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        805,
+        *[2461, 2462],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        806,
+        *[2462, 586],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        807,
+        *[589, 2463],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        808,
+        *[2463, 2464],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        809,
+        *[2464, 2465],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        810,
+        *[2465, 2466],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        811,
+        *[2466, 2467],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        812,
+        *[2467, 2468],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        813,
+        *[2468, 2469],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        814,
+        *[2469, 2470],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        815,
+        *[2470, 2471],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        816,
+        *[2471, 590],
+        FrameSecProp_df["PierL1"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["PierL1"].J,
+        FrameSecProp_df["PierL1"].I33,
+        FrameSecProp_df["PierL1"].I22,
+        transf_Ver,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        817,
+        *[1767, 2472],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        818,
+        *[2472, 2473],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        819,
+        *[2473, 2474],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        820,
+        *[2474, 2475],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        821,
+        *[2475, 2476],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        822,
+        *[2476, 2477],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        823,
+        *[2477, 2478],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        824,
+        *[2478, 2479],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        825,
+        *[2479, 2480],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        826,
+        *[2480, 1766],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        827,
+        *[8, 2481],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        828,
+        *[2481, 2482],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        829,
+        *[2482, 1767],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        830,
+        *[1766, 2483],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        831,
+        *[2483, 2484],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        832,
+        *[2484, 11],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        833,
+        *[1213, 2485],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        834,
+        *[2485, 2486],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        835,
+        *[2486, 2487],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        836,
+        *[2487, 2488],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        837,
+        *[2488, 2489],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        838,
+        *[2489, 2490],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        839,
+        *[2490, 2491],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        840,
+        *[2491, 2492],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        841,
+        *[2492, 2493],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        842,
+        *[2493, 1212],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        843,
+        *[2, 2494],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        844,
+        *[2494, 2495],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        845,
+        *[2495, 1213],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        846,
+        *[1212, 2496],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        847,
+        *[2496, 2497],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
+    ops.element(
+        "elasticBeamColumn",
+        848,
+        *[2497, 5],
+        FrameSecProp_df["Cross_Beam"].A,
+        MatProp_df["4000Psi"].E,
+        MatProp_df["4000Psi"].G,
+        FrameSecProp_df["Cross_Beam"].J,
+        FrameSecProp_df["Cross_Beam"].I33,
+        FrameSecProp_df["Cross_Beam"].I22,
+        transf_Other,
+    )
 
     # Plate_Shell element.
-    ops.nDMaterial('ElasticIsotropic', 1, 2833.72824486, 0.2)
-    ops.nDMaterial('PlateFiber', 2, 1)
-    ops.section('PlateFiber', 3, 2, 250.0)
-    ops.nDMaterial('ElasticIsotropic', 4, 2833.72824486, 0.2)
-    ops.nDMaterial('PlateFiber', 5, 4)
-    ops.section('PlateFiber', 6, 5, 750.0)
-    ops.nDMaterial('ElasticIsotropic', 7, 2833.72824486, 0.2)
-    ops.nDMaterial('PlateFiber', 8, 7)
-    ops.section('PlateFiber', 9, 8, 1666.66666666667)
-    ops.nDMaterial('ElasticIsotropic', 10, 2833.72824486, 0.2)
-    ops.nDMaterial('PlateFiber', 11, 10)
-    ops.section('PlateFiber', 12, 11, 6015.0)
+    ops.nDMaterial("ElasticIsotropic", 1, 2833.72824486, 0.2)
+    ops.nDMaterial("PlateFiber", 2, 1)
+    ops.section("PlateFiber", 3, 2, 250.0)
+    ops.nDMaterial("ElasticIsotropic", 4, 2833.72824486, 0.2)
+    ops.nDMaterial("PlateFiber", 5, 4)
+    ops.section("PlateFiber", 6, 5, 750.0)
+    ops.nDMaterial("ElasticIsotropic", 7, 2833.72824486, 0.2)
+    ops.nDMaterial("PlateFiber", 8, 7)
+    ops.section("PlateFiber", 9, 8, 1666.66666666667)
+    ops.nDMaterial("ElasticIsotropic", 10, 2833.72824486, 0.2)
+    ops.nDMaterial("PlateFiber", 11, 10)
+    ops.section("PlateFiber", 12, 11, 6015.0)
     # Create Plate_Shell element.
-    ops.element('ShellMITC4', 849, *[73, 19, 13, 67], 12)
-    ops.element('ShellMITC4', 850, *[79, 25, 19, 73], 12)
-    ops.element('ShellMITC4', 851, *[85, 31, 25, 79], 12)
-    ops.element('ShellMITC4', 852, *[91, 37, 31, 85], 12)
-    ops.element('ShellMITC4', 853, *[1424, 560, 558, 1426], 3)
-    ops.element('ShellMITC4', 854, *[560, 659, 1432, 558], 3)
-    ops.element('ShellMITC4', 855, *[97, 43, 37, 91], 12)
-    ops.element('ShellMITC4', 856, *[103, 49, 43, 97], 12)
-    ops.element('ShellMITC4', 857, *[109, 55, 49, 103], 12)
-    ops.element('ShellMITC4', 858, *[115, 61, 55, 109], 12)
-    ops.element('ShellMITC4', 859, *[127, 73, 67, 121], 12)
-    ops.element('ShellMITC4', 860, *[1, 79, 73, 127], 12)
-    ops.element('ShellMITC4', 861, *[139, 85, 79, 1], 12)
-    ops.element('ShellMITC4', 862, *[145, 91, 85, 139], 12)
-    ops.element('ShellMITC4', 863, *[151, 97, 91, 145], 12)
-    ops.element('ShellMITC4', 864, *[4, 103, 97, 151], 12)
-    ops.element('ShellMITC4', 865, *[163, 109, 103, 4], 12)
-    ops.element('ShellMITC4', 866, *[169, 115, 109, 163], 12)
-    ops.element('ShellMITC4', 867, *[181, 127, 121, 175], 12)
-    ops.element('ShellMITC4', 868, *[187, 1, 127, 181], 12)
-    ops.element('ShellMITC4', 869, *[193, 139, 1, 187], 12)
-    ops.element('ShellMITC4', 870, *[199, 145, 139, 193], 12)
-    ops.element('ShellMITC4', 871, *[205, 151, 145, 199], 12)
-    ops.element('ShellMITC4', 872, *[211, 4, 151, 205], 12)
-    ops.element('ShellMITC4', 873, *[217, 163, 4, 211], 12)
-    ops.element('ShellMITC4', 874, *[223, 169, 163, 217], 12)
-    ops.element('ShellMITC4', 875, *[235, 181, 175, 229], 12)
-    ops.element('ShellMITC4', 876, *[241, 187, 181, 235], 12)
-    ops.element('ShellMITC4', 877, *[247, 193, 187, 241], 12)
-    ops.element('ShellMITC4', 878, *[253, 199, 193, 247], 12)
-    ops.element('ShellMITC4', 879, *[259, 205, 199, 253], 12)
-    ops.element('ShellMITC4', 880, *[265, 211, 205, 259], 12)
-    ops.element('ShellMITC4', 881, *[271, 217, 211, 265], 12)
-    ops.element('ShellMITC4', 882, *[277, 223, 217, 271], 12)
-    ops.element('ShellMITC4', 883, *[343, 289, 283, 337], 12)
-    ops.element('ShellMITC4', 884, *[349, 295, 289, 343], 12)
-    ops.element('ShellMITC4', 885, *[355, 301, 295, 349], 12)
-    ops.element('ShellMITC4', 886, *[361, 307, 301, 355], 12)
-    ops.element('ShellMITC4', 887, *[367, 313, 307, 361], 12)
-    ops.element('ShellMITC4', 888, *[373, 319, 313, 367], 12)
-    ops.element('ShellMITC4', 889, *[379, 325, 319, 373], 12)
-    ops.element('ShellMITC4', 890, *[385, 331, 325, 379], 12)
-    ops.element('ShellMITC4', 891, *[397, 343, 337, 391], 12)
-    ops.element('ShellMITC4', 892, *[7, 349, 343, 397], 12)
-    ops.element('ShellMITC4', 893, *[409, 355, 349, 7], 12)
-    ops.element('ShellMITC4', 894, *[415, 361, 355, 409], 12)
-    ops.element('ShellMITC4', 895, *[421, 367, 361, 415], 12)
-    ops.element('ShellMITC4', 896, *[10, 373, 367, 421], 12)
-    ops.element('ShellMITC4', 897, *[433, 379, 373, 10], 12)
-    ops.element('ShellMITC4', 898, *[439, 385, 379, 433], 12)
-    ops.element('ShellMITC4', 899, *[451, 397, 391, 445], 12)
-    ops.element('ShellMITC4', 900, *[457, 7, 397, 451], 12)
-    ops.element('ShellMITC4', 901, *[463, 409, 7, 457], 12)
-    ops.element('ShellMITC4', 902, *[469, 415, 409, 463], 12)
-    ops.element('ShellMITC4', 903, *[475, 421, 415, 469], 12)
-    ops.element('ShellMITC4', 904, *[481, 10, 421, 475], 12)
-    ops.element('ShellMITC4', 905, *[487, 433, 10, 481], 12)
-    ops.element('ShellMITC4', 906, *[493, 439, 433, 487], 12)
-    ops.element('ShellMITC4', 907, *[505, 451, 445, 499], 12)
-    ops.element('ShellMITC4', 908, *[511, 457, 451, 505], 12)
-    ops.element('ShellMITC4', 909, *[517, 463, 457, 511], 12)
-    ops.element('ShellMITC4', 910, *[523, 469, 463, 517], 12)
-    ops.element('ShellMITC4', 911, *[529, 475, 469, 523], 12)
-    ops.element('ShellMITC4', 912, *[535, 481, 475, 529], 12)
-    ops.element('ShellMITC4', 913, *[541, 487, 481, 535], 12)
-    ops.element('ShellMITC4', 914, *[547, 493, 487, 541], 12)
-    ops.element('ShellMITC4', 915, *[729, 730, 727, 728], 9)
-    ops.element('ShellMITC4', 916, *[731, 732, 730, 729], 9)
-    ops.element('ShellMITC4', 917, *[733, 595, 732, 731], 9)
-    ops.element('ShellMITC4', 918, *[734, 735, 595, 733], 9)
-    ops.element('ShellMITC4', 919, *[736, 737, 735, 734], 9)
-    ops.element('ShellMITC4', 920, *[738, 739, 737, 736], 9)
-    ops.element('ShellMITC4', 921, *[741, 729, 728, 740], 9)
-    ops.element('ShellMITC4', 922, *[742, 731, 729, 741], 9)
-    ops.element('ShellMITC4', 923, *[743, 733, 731, 742], 9)
-    ops.element('ShellMITC4', 924, *[744, 734, 733, 743], 9)
-    ops.element('ShellMITC4', 925, *[745, 736, 734, 744], 9)
-    ops.element('ShellMITC4', 926, *[746, 738, 736, 745], 9)
-    ops.element('ShellMITC4', 927, *[747, 741, 740, 593], 9)
-    ops.element('ShellMITC4', 928, *[748, 742, 741, 747], 9)
-    ops.element('ShellMITC4', 929, *[553, 743, 742, 748], 9)
-    ops.element('ShellMITC4', 930, *[749, 744, 743, 553], 9)
-    ops.element('ShellMITC4', 931, *[750, 745, 744, 749], 9)
-    ops.element('ShellMITC4', 932, *[594, 746, 745, 750], 9)
-    ops.element('ShellMITC4', 933, *[752, 747, 593, 751], 9)
-    ops.element('ShellMITC4', 934, *[753, 748, 747, 752], 9)
-    ops.element('ShellMITC4', 935, *[754, 553, 748, 753], 9)
-    ops.element('ShellMITC4', 936, *[755, 749, 553, 754], 9)
-    ops.element('ShellMITC4', 937, *[756, 750, 749, 755], 9)
-    ops.element('ShellMITC4', 938, *[757, 594, 750, 756], 9)
-    ops.element('ShellMITC4', 939, *[759, 752, 751, 758], 9)
-    ops.element('ShellMITC4', 940, *[760, 753, 752, 759], 9)
-    ops.element('ShellMITC4', 941, *[761, 754, 753, 760], 9)
-    ops.element('ShellMITC4', 942, *[762, 755, 754, 761], 9)
-    ops.element('ShellMITC4', 943, *[763, 756, 755, 762], 9)
-    ops.element('ShellMITC4', 944, *[764, 757, 756, 763], 9)
-    ops.element('ShellMITC4', 945, *[766, 759, 758, 765], 9)
-    ops.element('ShellMITC4', 946, *[767, 760, 759, 766], 9)
-    ops.element('ShellMITC4', 947, *[596, 761, 760, 767], 9)
-    ops.element('ShellMITC4', 948, *[768, 762, 761, 596], 9)
-    ops.element('ShellMITC4', 949, *[769, 763, 762, 768], 9)
-    ops.element('ShellMITC4', 950, *[770, 764, 763, 769], 9)
-    ops.element('ShellMITC4', 951, *[773, 774, 771, 772], 9)
-    ops.element('ShellMITC4', 952, *[775, 776, 774, 773], 9)
-    ops.element('ShellMITC4', 953, *[777, 599, 776, 775], 9)
-    ops.element('ShellMITC4', 954, *[778, 779, 599, 777], 9)
-    ops.element('ShellMITC4', 955, *[780, 781, 779, 778], 9)
-    ops.element('ShellMITC4', 956, *[782, 783, 781, 780], 9)
-    ops.element('ShellMITC4', 957, *[785, 773, 772, 784], 9)
-    ops.element('ShellMITC4', 958, *[786, 775, 773, 785], 9)
-    ops.element('ShellMITC4', 959, *[787, 777, 775, 786], 9)
-    ops.element('ShellMITC4', 960, *[788, 778, 777, 787], 9)
-    ops.element('ShellMITC4', 961, *[789, 780, 778, 788], 9)
-    ops.element('ShellMITC4', 962, *[790, 782, 780, 789], 9)
-    ops.element('ShellMITC4', 963, *[791, 785, 784, 597], 9)
-    ops.element('ShellMITC4', 964, *[792, 786, 785, 791], 9)
-    ops.element('ShellMITC4', 965, *[557, 787, 786, 792], 9)
-    ops.element('ShellMITC4', 966, *[793, 788, 787, 557], 9)
-    ops.element('ShellMITC4', 967, *[794, 789, 788, 793], 9)
-    ops.element('ShellMITC4', 968, *[598, 790, 789, 794], 9)
-    ops.element('ShellMITC4', 969, *[796, 791, 597, 795], 9)
-    ops.element('ShellMITC4', 970, *[797, 792, 791, 796], 9)
-    ops.element('ShellMITC4', 971, *[798, 557, 792, 797], 9)
-    ops.element('ShellMITC4', 972, *[799, 793, 557, 798], 9)
-    ops.element('ShellMITC4', 973, *[800, 794, 793, 799], 9)
-    ops.element('ShellMITC4', 974, *[801, 598, 794, 800], 9)
-    ops.element('ShellMITC4', 975, *[803, 796, 795, 802], 9)
-    ops.element('ShellMITC4', 976, *[804, 797, 796, 803], 9)
-    ops.element('ShellMITC4', 977, *[805, 798, 797, 804], 9)
-    ops.element('ShellMITC4', 978, *[806, 799, 798, 805], 9)
-    ops.element('ShellMITC4', 979, *[807, 800, 799, 806], 9)
-    ops.element('ShellMITC4', 980, *[808, 801, 800, 807], 9)
-    ops.element('ShellMITC4', 981, *[810, 803, 802, 809], 9)
-    ops.element('ShellMITC4', 982, *[811, 804, 803, 810], 9)
-    ops.element('ShellMITC4', 983, *[600, 805, 804, 811], 9)
-    ops.element('ShellMITC4', 984, *[812, 806, 805, 600], 9)
-    ops.element('ShellMITC4', 985, *[813, 807, 806, 812], 9)
-    ops.element('ShellMITC4', 986, *[814, 808, 807, 813], 9)
-    ops.element('ShellMITC4', 987, *[817, 818, 815, 816], 9)
-    ops.element('ShellMITC4', 988, *[819, 820, 818, 817], 9)
-    ops.element('ShellMITC4', 989, *[821, 603, 820, 819], 9)
-    ops.element('ShellMITC4', 990, *[822, 823, 603, 821], 9)
-    ops.element('ShellMITC4', 991, *[824, 825, 823, 822], 9)
-    ops.element('ShellMITC4', 992, *[826, 827, 825, 824], 9)
-    ops.element('ShellMITC4', 993, *[829, 817, 816, 828], 9)
-    ops.element('ShellMITC4', 994, *[830, 819, 817, 829], 9)
-    ops.element('ShellMITC4', 995, *[831, 821, 819, 830], 9)
-    ops.element('ShellMITC4', 996, *[832, 822, 821, 831], 9)
-    ops.element('ShellMITC4', 997, *[833, 824, 822, 832], 9)
-    ops.element('ShellMITC4', 998, *[834, 826, 824, 833], 9)
-    ops.element('ShellMITC4', 999, *[835, 829, 828, 601], 9)
-    ops.element('ShellMITC4', 1000, *[836, 830, 829, 835], 9)
-    ops.element('ShellMITC4', 1001, *[561, 831, 830, 836], 9)
-    ops.element('ShellMITC4', 1002, *[837, 832, 831, 561], 9)
-    ops.element('ShellMITC4', 1003, *[838, 833, 832, 837], 9)
-    ops.element('ShellMITC4', 1004, *[602, 834, 833, 838], 9)
-    ops.element('ShellMITC4', 1005, *[840, 835, 601, 839], 9)
-    ops.element('ShellMITC4', 1006, *[841, 836, 835, 840], 9)
-    ops.element('ShellMITC4', 1007, *[842, 561, 836, 841], 9)
-    ops.element('ShellMITC4', 1008, *[843, 837, 561, 842], 9)
-    ops.element('ShellMITC4', 1009, *[844, 838, 837, 843], 9)
-    ops.element('ShellMITC4', 1010, *[845, 602, 838, 844], 9)
-    ops.element('ShellMITC4', 1011, *[847, 840, 839, 846], 9)
-    ops.element('ShellMITC4', 1012, *[848, 841, 840, 847], 9)
-    ops.element('ShellMITC4', 1013, *[849, 842, 841, 848], 9)
-    ops.element('ShellMITC4', 1014, *[850, 843, 842, 849], 9)
-    ops.element('ShellMITC4', 1015, *[851, 844, 843, 850], 9)
-    ops.element('ShellMITC4', 1016, *[852, 845, 844, 851], 9)
-    ops.element('ShellMITC4', 1017, *[854, 847, 846, 853], 9)
-    ops.element('ShellMITC4', 1018, *[855, 848, 847, 854], 9)
-    ops.element('ShellMITC4', 1019, *[604, 849, 848, 855], 9)
-    ops.element('ShellMITC4', 1020, *[856, 850, 849, 604], 9)
-    ops.element('ShellMITC4', 1021, *[857, 851, 850, 856], 9)
-    ops.element('ShellMITC4', 1022, *[858, 852, 851, 857], 9)
-    ops.element('ShellMITC4', 1023, *[861, 862, 859, 860], 9)
-    ops.element('ShellMITC4', 1024, *[863, 864, 862, 861], 9)
-    ops.element('ShellMITC4', 1025, *[865, 607, 864, 863], 9)
-    ops.element('ShellMITC4', 1026, *[866, 867, 607, 865], 9)
-    ops.element('ShellMITC4', 1027, *[868, 869, 867, 866], 9)
-    ops.element('ShellMITC4', 1028, *[870, 871, 869, 868], 9)
-    ops.element('ShellMITC4', 1029, *[873, 861, 860, 872], 9)
-    ops.element('ShellMITC4', 1030, *[874, 863, 861, 873], 9)
-    ops.element('ShellMITC4', 1031, *[875, 865, 863, 874], 9)
-    ops.element('ShellMITC4', 1032, *[876, 866, 865, 875], 9)
-    ops.element('ShellMITC4', 1033, *[877, 868, 866, 876], 9)
-    ops.element('ShellMITC4', 1034, *[878, 870, 868, 877], 9)
-    ops.element('ShellMITC4', 1035, *[879, 873, 872, 605], 9)
-    ops.element('ShellMITC4', 1036, *[880, 874, 873, 879], 9)
-    ops.element('ShellMITC4', 1037, *[565, 875, 874, 880], 9)
-    ops.element('ShellMITC4', 1038, *[881, 876, 875, 565], 9)
-    ops.element('ShellMITC4', 1039, *[882, 877, 876, 881], 9)
-    ops.element('ShellMITC4', 1040, *[606, 878, 877, 882], 9)
-    ops.element('ShellMITC4', 1041, *[884, 879, 605, 883], 9)
-    ops.element('ShellMITC4', 1042, *[885, 880, 879, 884], 9)
-    ops.element('ShellMITC4', 1043, *[886, 565, 880, 885], 9)
-    ops.element('ShellMITC4', 1044, *[887, 881, 565, 886], 9)
-    ops.element('ShellMITC4', 1045, *[888, 882, 881, 887], 9)
-    ops.element('ShellMITC4', 1046, *[889, 606, 882, 888], 9)
-    ops.element('ShellMITC4', 1047, *[891, 884, 883, 890], 9)
-    ops.element('ShellMITC4', 1048, *[892, 885, 884, 891], 9)
-    ops.element('ShellMITC4', 1049, *[893, 886, 885, 892], 9)
-    ops.element('ShellMITC4', 1050, *[894, 887, 886, 893], 9)
-    ops.element('ShellMITC4', 1051, *[895, 888, 887, 894], 9)
-    ops.element('ShellMITC4', 1052, *[896, 889, 888, 895], 9)
-    ops.element('ShellMITC4', 1053, *[898, 891, 890, 897], 9)
-    ops.element('ShellMITC4', 1054, *[899, 892, 891, 898], 9)
-    ops.element('ShellMITC4', 1055, *[608, 893, 892, 899], 9)
-    ops.element('ShellMITC4', 1056, *[900, 894, 893, 608], 9)
-    ops.element('ShellMITC4', 1057, *[901, 895, 894, 900], 9)
-    ops.element('ShellMITC4', 1058, *[902, 896, 895, 901], 9)
-    ops.element('ShellMITC4', 1059, *[905, 906, 903, 904], 9)
-    ops.element('ShellMITC4', 1060, *[907, 908, 906, 905], 9)
-    ops.element('ShellMITC4', 1061, *[909, 611, 908, 907], 9)
-    ops.element('ShellMITC4', 1062, *[910, 911, 611, 909], 9)
-    ops.element('ShellMITC4', 1063, *[912, 913, 911, 910], 9)
-    ops.element('ShellMITC4', 1064, *[914, 915, 913, 912], 9)
-    ops.element('ShellMITC4', 1065, *[917, 905, 904, 916], 9)
-    ops.element('ShellMITC4', 1066, *[918, 907, 905, 917], 9)
-    ops.element('ShellMITC4', 1067, *[919, 909, 907, 918], 9)
-    ops.element('ShellMITC4', 1068, *[920, 910, 909, 919], 9)
-    ops.element('ShellMITC4', 1069, *[921, 912, 910, 920], 9)
-    ops.element('ShellMITC4', 1070, *[922, 914, 912, 921], 9)
-    ops.element('ShellMITC4', 1071, *[923, 917, 916, 609], 9)
-    ops.element('ShellMITC4', 1072, *[924, 918, 917, 923], 9)
-    ops.element('ShellMITC4', 1073, *[569, 919, 918, 924], 9)
-    ops.element('ShellMITC4', 1074, *[925, 920, 919, 569], 9)
-    ops.element('ShellMITC4', 1075, *[926, 921, 920, 925], 9)
-    ops.element('ShellMITC4', 1076, *[610, 922, 921, 926], 9)
-    ops.element('ShellMITC4', 1077, *[928, 923, 609, 927], 9)
-    ops.element('ShellMITC4', 1078, *[929, 924, 923, 928], 9)
-    ops.element('ShellMITC4', 1079, *[930, 569, 924, 929], 9)
-    ops.element('ShellMITC4', 1080, *[931, 925, 569, 930], 9)
-    ops.element('ShellMITC4', 1081, *[932, 926, 925, 931], 9)
-    ops.element('ShellMITC4', 1082, *[933, 610, 926, 932], 9)
-    ops.element('ShellMITC4', 1083, *[935, 928, 927, 934], 9)
-    ops.element('ShellMITC4', 1084, *[936, 929, 928, 935], 9)
-    ops.element('ShellMITC4', 1085, *[937, 930, 929, 936], 9)
-    ops.element('ShellMITC4', 1086, *[938, 931, 930, 937], 9)
-    ops.element('ShellMITC4', 1087, *[939, 932, 931, 938], 9)
-    ops.element('ShellMITC4', 1088, *[940, 933, 932, 939], 9)
-    ops.element('ShellMITC4', 1089, *[942, 935, 934, 941], 9)
-    ops.element('ShellMITC4', 1090, *[943, 936, 935, 942], 9)
-    ops.element('ShellMITC4', 1091, *[612, 937, 936, 943], 9)
-    ops.element('ShellMITC4', 1092, *[944, 938, 937, 612], 9)
-    ops.element('ShellMITC4', 1093, *[945, 939, 938, 944], 9)
-    ops.element('ShellMITC4', 1094, *[946, 940, 939, 945], 9)
-    ops.element('ShellMITC4', 1095, *[949, 950, 947, 948], 9)
-    ops.element('ShellMITC4', 1096, *[951, 952, 950, 949], 9)
-    ops.element('ShellMITC4', 1097, *[953, 615, 952, 951], 9)
-    ops.element('ShellMITC4', 1098, *[954, 955, 615, 953], 9)
-    ops.element('ShellMITC4', 1099, *[956, 957, 955, 954], 9)
-    ops.element('ShellMITC4', 1100, *[958, 959, 957, 956], 9)
-    ops.element('ShellMITC4', 1101, *[961, 949, 948, 960], 9)
-    ops.element('ShellMITC4', 1102, *[962, 951, 949, 961], 9)
-    ops.element('ShellMITC4', 1103, *[963, 953, 951, 962], 9)
-    ops.element('ShellMITC4', 1104, *[964, 954, 953, 963], 9)
-    ops.element('ShellMITC4', 1105, *[965, 956, 954, 964], 9)
-    ops.element('ShellMITC4', 1106, *[966, 958, 956, 965], 9)
-    ops.element('ShellMITC4', 1107, *[967, 961, 960, 613], 9)
-    ops.element('ShellMITC4', 1108, *[968, 962, 961, 967], 9)
-    ops.element('ShellMITC4', 1109, *[573, 963, 962, 968], 9)
-    ops.element('ShellMITC4', 1110, *[969, 964, 963, 573], 9)
-    ops.element('ShellMITC4', 1111, *[970, 965, 964, 969], 9)
-    ops.element('ShellMITC4', 1112, *[614, 966, 965, 970], 9)
-    ops.element('ShellMITC4', 1113, *[972, 967, 613, 971], 9)
-    ops.element('ShellMITC4', 1114, *[973, 968, 967, 972], 9)
-    ops.element('ShellMITC4', 1115, *[974, 573, 968, 973], 9)
-    ops.element('ShellMITC4', 1116, *[975, 969, 573, 974], 9)
-    ops.element('ShellMITC4', 1117, *[976, 970, 969, 975], 9)
-    ops.element('ShellMITC4', 1118, *[977, 614, 970, 976], 9)
-    ops.element('ShellMITC4', 1119, *[979, 972, 971, 978], 9)
-    ops.element('ShellMITC4', 1120, *[980, 973, 972, 979], 9)
-    ops.element('ShellMITC4', 1121, *[981, 974, 973, 980], 9)
-    ops.element('ShellMITC4', 1122, *[982, 975, 974, 981], 9)
-    ops.element('ShellMITC4', 1123, *[983, 976, 975, 982], 9)
-    ops.element('ShellMITC4', 1124, *[984, 977, 976, 983], 9)
-    ops.element('ShellMITC4', 1125, *[986, 979, 978, 985], 9)
-    ops.element('ShellMITC4', 1126, *[987, 980, 979, 986], 9)
-    ops.element('ShellMITC4', 1127, *[616, 981, 980, 987], 9)
-    ops.element('ShellMITC4', 1128, *[988, 982, 981, 616], 9)
-    ops.element('ShellMITC4', 1129, *[989, 983, 982, 988], 9)
-    ops.element('ShellMITC4', 1130, *[990, 984, 983, 989], 9)
-    ops.element('ShellMITC4', 1131, *[993, 994, 991, 992], 9)
-    ops.element('ShellMITC4', 1132, *[995, 996, 994, 993], 9)
-    ops.element('ShellMITC4', 1133, *[997, 619, 996, 995], 9)
-    ops.element('ShellMITC4', 1134, *[998, 999, 619, 997], 9)
-    ops.element('ShellMITC4', 1135, *[1000, 1001, 999, 998], 9)
-    ops.element('ShellMITC4', 1136, *[1002, 1003, 1001, 1000], 9)
-    ops.element('ShellMITC4', 1137, *[1005, 993, 992, 1004], 9)
-    ops.element('ShellMITC4', 1138, *[1006, 995, 993, 1005], 9)
-    ops.element('ShellMITC4', 1139, *[1007, 997, 995, 1006], 9)
-    ops.element('ShellMITC4', 1140, *[1008, 998, 997, 1007], 9)
-    ops.element('ShellMITC4', 1141, *[1009, 1000, 998, 1008], 9)
-    ops.element('ShellMITC4', 1142, *[1010, 1002, 1000, 1009], 9)
-    ops.element('ShellMITC4', 1143, *[1011, 1005, 1004, 617], 9)
-    ops.element('ShellMITC4', 1144, *[1012, 1006, 1005, 1011], 9)
-    ops.element('ShellMITC4', 1145, *[577, 1007, 1006, 1012], 9)
-    ops.element('ShellMITC4', 1146, *[1013, 1008, 1007, 577], 9)
-    ops.element('ShellMITC4', 1147, *[1014, 1009, 1008, 1013], 9)
-    ops.element('ShellMITC4', 1148, *[618, 1010, 1009, 1014], 9)
-    ops.element('ShellMITC4', 1149, *[1016, 1011, 617, 1015], 9)
-    ops.element('ShellMITC4', 1150, *[1017, 1012, 1011, 1016], 9)
-    ops.element('ShellMITC4', 1151, *[1018, 577, 1012, 1017], 9)
-    ops.element('ShellMITC4', 1152, *[1019, 1013, 577, 1018], 9)
-    ops.element('ShellMITC4', 1153, *[1020, 1014, 1013, 1019], 9)
-    ops.element('ShellMITC4', 1154, *[1021, 618, 1014, 1020], 9)
-    ops.element('ShellMITC4', 1155, *[1023, 1016, 1015, 1022], 9)
-    ops.element('ShellMITC4', 1156, *[1024, 1017, 1016, 1023], 9)
-    ops.element('ShellMITC4', 1157, *[1025, 1018, 1017, 1024], 9)
-    ops.element('ShellMITC4', 1158, *[1026, 1019, 1018, 1025], 9)
-    ops.element('ShellMITC4', 1159, *[1027, 1020, 1019, 1026], 9)
-    ops.element('ShellMITC4', 1160, *[1028, 1021, 1020, 1027], 9)
-    ops.element('ShellMITC4', 1161, *[1030, 1023, 1022, 1029], 9)
-    ops.element('ShellMITC4', 1162, *[1031, 1024, 1023, 1030], 9)
-    ops.element('ShellMITC4', 1163, *[620, 1025, 1024, 1031], 9)
-    ops.element('ShellMITC4', 1164, *[1032, 1026, 1025, 620], 9)
-    ops.element('ShellMITC4', 1165, *[1033, 1027, 1026, 1032], 9)
-    ops.element('ShellMITC4', 1166, *[1034, 1028, 1027, 1033], 9)
-    ops.element('ShellMITC4', 1167, *[1037, 1038, 1035, 1036], 9)
-    ops.element('ShellMITC4', 1168, *[1039, 1040, 1038, 1037], 9)
-    ops.element('ShellMITC4', 1169, *[1041, 623, 1040, 1039], 9)
-    ops.element('ShellMITC4', 1170, *[1042, 1043, 623, 1041], 9)
-    ops.element('ShellMITC4', 1171, *[1044, 1045, 1043, 1042], 9)
-    ops.element('ShellMITC4', 1172, *[1046, 1047, 1045, 1044], 9)
-    ops.element('ShellMITC4', 1173, *[1049, 1037, 1036, 1048], 9)
-    ops.element('ShellMITC4', 1174, *[1050, 1039, 1037, 1049], 9)
-    ops.element('ShellMITC4', 1175, *[1051, 1041, 1039, 1050], 9)
-    ops.element('ShellMITC4', 1176, *[1052, 1042, 1041, 1051], 9)
-    ops.element('ShellMITC4', 1177, *[1053, 1044, 1042, 1052], 9)
-    ops.element('ShellMITC4', 1178, *[1054, 1046, 1044, 1053], 9)
-    ops.element('ShellMITC4', 1179, *[1055, 1049, 1048, 621], 9)
-    ops.element('ShellMITC4', 1180, *[1056, 1050, 1049, 1055], 9)
-    ops.element('ShellMITC4', 1181, *[581, 1051, 1050, 1056], 9)
-    ops.element('ShellMITC4', 1182, *[1057, 1052, 1051, 581], 9)
-    ops.element('ShellMITC4', 1183, *[1058, 1053, 1052, 1057], 9)
-    ops.element('ShellMITC4', 1184, *[622, 1054, 1053, 1058], 9)
-    ops.element('ShellMITC4', 1185, *[1060, 1055, 621, 1059], 9)
-    ops.element('ShellMITC4', 1186, *[1061, 1056, 1055, 1060], 9)
-    ops.element('ShellMITC4', 1187, *[1062, 581, 1056, 1061], 9)
-    ops.element('ShellMITC4', 1188, *[1063, 1057, 581, 1062], 9)
-    ops.element('ShellMITC4', 1189, *[1064, 1058, 1057, 1063], 9)
-    ops.element('ShellMITC4', 1190, *[1065, 622, 1058, 1064], 9)
-    ops.element('ShellMITC4', 1191, *[1067, 1060, 1059, 1066], 9)
-    ops.element('ShellMITC4', 1192, *[1068, 1061, 1060, 1067], 9)
-    ops.element('ShellMITC4', 1193, *[1069, 1062, 1061, 1068], 9)
-    ops.element('ShellMITC4', 1194, *[1070, 1063, 1062, 1069], 9)
-    ops.element('ShellMITC4', 1195, *[1071, 1064, 1063, 1070], 9)
-    ops.element('ShellMITC4', 1196, *[1072, 1065, 1064, 1071], 9)
-    ops.element('ShellMITC4', 1197, *[1074, 1067, 1066, 1073], 9)
-    ops.element('ShellMITC4', 1198, *[1075, 1068, 1067, 1074], 9)
-    ops.element('ShellMITC4', 1199, *[624, 1069, 1068, 1075], 9)
-    ops.element('ShellMITC4', 1200, *[1076, 1070, 1069, 624], 9)
-    ops.element('ShellMITC4', 1201, *[1077, 1071, 1070, 1076], 9)
-    ops.element('ShellMITC4', 1202, *[1078, 1072, 1071, 1077], 9)
-    ops.element('ShellMITC4', 1203, *[1081, 1082, 1079, 1080], 9)
-    ops.element('ShellMITC4', 1204, *[1083, 1084, 1082, 1081], 9)
-    ops.element('ShellMITC4', 1205, *[1085, 627, 1084, 1083], 9)
-    ops.element('ShellMITC4', 1206, *[1086, 1087, 627, 1085], 9)
-    ops.element('ShellMITC4', 1207, *[1088, 1089, 1087, 1086], 9)
-    ops.element('ShellMITC4', 1208, *[1090, 1091, 1089, 1088], 9)
-    ops.element('ShellMITC4', 1209, *[1093, 1081, 1080, 1092], 9)
-    ops.element('ShellMITC4', 1210, *[1094, 1083, 1081, 1093], 9)
-    ops.element('ShellMITC4', 1211, *[1095, 1085, 1083, 1094], 9)
-    ops.element('ShellMITC4', 1212, *[1096, 1086, 1085, 1095], 9)
-    ops.element('ShellMITC4', 1213, *[1097, 1088, 1086, 1096], 9)
-    ops.element('ShellMITC4', 1214, *[1098, 1090, 1088, 1097], 9)
-    ops.element('ShellMITC4', 1215, *[1099, 1093, 1092, 625], 9)
-    ops.element('ShellMITC4', 1216, *[1100, 1094, 1093, 1099], 9)
-    ops.element('ShellMITC4', 1217, *[585, 1095, 1094, 1100], 9)
-    ops.element('ShellMITC4', 1218, *[1101, 1096, 1095, 585], 9)
-    ops.element('ShellMITC4', 1219, *[1102, 1097, 1096, 1101], 9)
-    ops.element('ShellMITC4', 1220, *[626, 1098, 1097, 1102], 9)
-    ops.element('ShellMITC4', 1221, *[1104, 1099, 625, 1103], 9)
-    ops.element('ShellMITC4', 1222, *[1105, 1100, 1099, 1104], 9)
-    ops.element('ShellMITC4', 1223, *[1106, 585, 1100, 1105], 9)
-    ops.element('ShellMITC4', 1224, *[1107, 1101, 585, 1106], 9)
-    ops.element('ShellMITC4', 1225, *[1108, 1102, 1101, 1107], 9)
-    ops.element('ShellMITC4', 1226, *[1109, 626, 1102, 1108], 9)
-    ops.element('ShellMITC4', 1227, *[1111, 1104, 1103, 1110], 9)
-    ops.element('ShellMITC4', 1228, *[1112, 1105, 1104, 1111], 9)
-    ops.element('ShellMITC4', 1229, *[1113, 1106, 1105, 1112], 9)
-    ops.element('ShellMITC4', 1230, *[1114, 1107, 1106, 1113], 9)
-    ops.element('ShellMITC4', 1231, *[1115, 1108, 1107, 1114], 9)
-    ops.element('ShellMITC4', 1232, *[1116, 1109, 1108, 1115], 9)
-    ops.element('ShellMITC4', 1233, *[1118, 1111, 1110, 1117], 9)
-    ops.element('ShellMITC4', 1234, *[1119, 1112, 1111, 1118], 9)
-    ops.element('ShellMITC4', 1235, *[628, 1113, 1112, 1119], 9)
-    ops.element('ShellMITC4', 1236, *[1120, 1114, 1113, 628], 9)
-    ops.element('ShellMITC4', 1237, *[1121, 1115, 1114, 1120], 9)
-    ops.element('ShellMITC4', 1238, *[1122, 1116, 1115, 1121], 9)
-    ops.element('ShellMITC4', 1239, *[1125, 1126, 1123, 1124], 9)
-    ops.element('ShellMITC4', 1240, *[1127, 1128, 1126, 1125], 9)
-    ops.element('ShellMITC4', 1241, *[1129, 631, 1128, 1127], 9)
-    ops.element('ShellMITC4', 1242, *[1130, 1131, 631, 1129], 9)
-    ops.element('ShellMITC4', 1243, *[1132, 1133, 1131, 1130], 9)
-    ops.element('ShellMITC4', 1244, *[1134, 1135, 1133, 1132], 9)
-    ops.element('ShellMITC4', 1245, *[1137, 1125, 1124, 1136], 9)
-    ops.element('ShellMITC4', 1246, *[1138, 1127, 1125, 1137], 9)
-    ops.element('ShellMITC4', 1247, *[1139, 1129, 1127, 1138], 9)
-    ops.element('ShellMITC4', 1248, *[1140, 1130, 1129, 1139], 9)
-    ops.element('ShellMITC4', 1249, *[1141, 1132, 1130, 1140], 9)
-    ops.element('ShellMITC4', 1250, *[1142, 1134, 1132, 1141], 9)
-    ops.element('ShellMITC4', 1251, *[1143, 1137, 1136, 629], 9)
-    ops.element('ShellMITC4', 1252, *[1144, 1138, 1137, 1143], 9)
-    ops.element('ShellMITC4', 1253, *[589, 1139, 1138, 1144], 9)
-    ops.element('ShellMITC4', 1254, *[1145, 1140, 1139, 589], 9)
-    ops.element('ShellMITC4', 1255, *[1146, 1141, 1140, 1145], 9)
-    ops.element('ShellMITC4', 1256, *[630, 1142, 1141, 1146], 9)
-    ops.element('ShellMITC4', 1257, *[1148, 1143, 629, 1147], 9)
-    ops.element('ShellMITC4', 1258, *[1149, 1144, 1143, 1148], 9)
-    ops.element('ShellMITC4', 1259, *[1150, 589, 1144, 1149], 9)
-    ops.element('ShellMITC4', 1260, *[1151, 1145, 589, 1150], 9)
-    ops.element('ShellMITC4', 1261, *[1152, 1146, 1145, 1151], 9)
-    ops.element('ShellMITC4', 1262, *[1153, 630, 1146, 1152], 9)
-    ops.element('ShellMITC4', 1263, *[1155, 1148, 1147, 1154], 9)
-    ops.element('ShellMITC4', 1264, *[1156, 1149, 1148, 1155], 9)
-    ops.element('ShellMITC4', 1265, *[1157, 1150, 1149, 1156], 9)
-    ops.element('ShellMITC4', 1266, *[1158, 1151, 1150, 1157], 9)
-    ops.element('ShellMITC4', 1267, *[1159, 1152, 1151, 1158], 9)
-    ops.element('ShellMITC4', 1268, *[1160, 1153, 1152, 1159], 9)
-    ops.element('ShellMITC4', 1269, *[1162, 1155, 1154, 1161], 9)
-    ops.element('ShellMITC4', 1270, *[1163, 1156, 1155, 1162], 9)
-    ops.element('ShellMITC4', 1271, *[632, 1157, 1156, 1163], 9)
-    ops.element('ShellMITC4', 1272, *[1164, 1158, 1157, 632], 9)
-    ops.element('ShellMITC4', 1273, *[1165, 1159, 1158, 1164], 9)
-    ops.element('ShellMITC4', 1274, *[1166, 1160, 1159, 1165], 9)
-    ops.element('ShellMITC4', 1275, *[1169, 1167, 652, 1168], 3)
-    ops.element('ShellMITC4', 1276, *[1168, 652, 1170, 1171], 3)
-    ops.element('ShellMITC4', 1277, *[1171, 1170, 634, 1172], 3)
-    ops.element('ShellMITC4', 1278, *[1172, 634, 1173, 1174], 3)
-    ops.element('ShellMITC4', 1279, *[1168, 652, 1175, 1176], 6)
-    ops.element('ShellMITC4', 1280, *[1172, 634, 1177, 1178], 6)
-    ops.element('ShellMITC4', 1281, *[1180, 1169, 1168, 1179], 3)
-    ops.element('ShellMITC4', 1282, *[1179, 1168, 1171, 1181], 3)
-    ops.element('ShellMITC4', 1283, *[1181, 1171, 1172, 1182], 3)
-    ops.element('ShellMITC4', 1284, *[1182, 1172, 1174, 1183], 3)
-    ops.element('ShellMITC4', 1285, *[1179, 1168, 1176, 1184], 6)
-    ops.element('ShellMITC4', 1286, *[1182, 1172, 1178, 1185], 6)
-    ops.element('ShellMITC4', 1287, *[1187, 1180, 1179, 1186], 3)
-    ops.element('ShellMITC4', 1288, *[1186, 1179, 1181, 1188], 3)
-    ops.element('ShellMITC4', 1289, *[1188, 1181, 1182, 1189], 3)
-    ops.element('ShellMITC4', 1290, *[1189, 1182, 1183, 1190], 3)
-    ops.element('ShellMITC4', 1291, *[1186, 1179, 1184, 1191], 6)
-    ops.element('ShellMITC4', 1292, *[1189, 1182, 1185, 1192], 6)
-    ops.element('ShellMITC4', 1293, *[1194, 1187, 1186, 1193], 3)
-    ops.element('ShellMITC4', 1294, *[1193, 1186, 1188, 1195], 3)
-    ops.element('ShellMITC4', 1295, *[1195, 1188, 1189, 1196], 3)
-    ops.element('ShellMITC4', 1296, *[1196, 1189, 1190, 1197], 3)
-    ops.element('ShellMITC4', 1297, *[1193, 1186, 1191, 1198], 6)
-    ops.element('ShellMITC4', 1298, *[1196, 1189, 1192, 1199], 6)
-    ops.element('ShellMITC4', 1299, *[1201, 1194, 1193, 1200], 3)
-    ops.element('ShellMITC4', 1300, *[1200, 1193, 1195, 1202], 3)
-    ops.element('ShellMITC4', 1301, *[1202, 1195, 1196, 1203], 3)
-    ops.element('ShellMITC4', 1302, *[1203, 1196, 1197, 1204], 3)
-    ops.element('ShellMITC4', 1303, *[1200, 1193, 1198, 1205], 6)
-    ops.element('ShellMITC4', 1304, *[1203, 1196, 1199, 1206], 6)
-    ops.element('ShellMITC4', 1305, *[1208, 1201, 1200, 1207], 3)
-    ops.element('ShellMITC4', 1306, *[1207, 1200, 1202, 1209], 3)
-    ops.element('ShellMITC4', 1307, *[1209, 1202, 1203, 1210], 3)
-    ops.element('ShellMITC4', 1308, *[1210, 1203, 1204, 1211], 3)
-    ops.element('ShellMITC4', 1309, *[1207, 1200, 1205, 1212], 6)
-    ops.element('ShellMITC4', 1310, *[1210, 1203, 1206, 1213], 6)
-    ops.element('ShellMITC4', 1311, *[1215, 1208, 1207, 1214], 3)
-    ops.element('ShellMITC4', 1312, *[1214, 1207, 1209, 1216], 3)
-    ops.element('ShellMITC4', 1313, *[1216, 1209, 1210, 1217], 3)
-    ops.element('ShellMITC4', 1314, *[1217, 1210, 1211, 1218], 3)
-    ops.element('ShellMITC4', 1315, *[1214, 1207, 1212, 1219], 6)
-    ops.element('ShellMITC4', 1316, *[1217, 1210, 1213, 1220], 6)
-    ops.element('ShellMITC4', 1317, *[1222, 1215, 1214, 1221], 3)
-    ops.element('ShellMITC4', 1318, *[1221, 1214, 1216, 1223], 3)
-    ops.element('ShellMITC4', 1319, *[1223, 1216, 1217, 1224], 3)
-    ops.element('ShellMITC4', 1320, *[1224, 1217, 1218, 1225], 3)
-    ops.element('ShellMITC4', 1321, *[1221, 1214, 1219, 1226], 6)
-    ops.element('ShellMITC4', 1322, *[1224, 1217, 1220, 1227], 6)
-    ops.element('ShellMITC4', 1323, *[1229, 1222, 1221, 1228], 3)
-    ops.element('ShellMITC4', 1324, *[1228, 1221, 1223, 1230], 3)
-    ops.element('ShellMITC4', 1325, *[1230, 1223, 1224, 1231], 3)
-    ops.element('ShellMITC4', 1326, *[1231, 1224, 1225, 1232], 3)
-    ops.element('ShellMITC4', 1327, *[1228, 1221, 1226, 1233], 6)
-    ops.element('ShellMITC4', 1328, *[1231, 1224, 1227, 1234], 6)
-    ops.element('ShellMITC4', 1329, *[1236, 1229, 1228, 1235], 3)
-    ops.element('ShellMITC4', 1330, *[1235, 1228, 1230, 1237], 3)
-    ops.element('ShellMITC4', 1331, *[1237, 1230, 1231, 1238], 3)
-    ops.element('ShellMITC4', 1332, *[1238, 1231, 1232, 1239], 3)
-    ops.element('ShellMITC4', 1333, *[1235, 1228, 1233, 1240], 6)
-    ops.element('ShellMITC4', 1334, *[1238, 1231, 1234, 1241], 6)
-    ops.element('ShellMITC4', 1335, *[1243, 1236, 1235, 1242], 3)
-    ops.element('ShellMITC4', 1336, *[1242, 1235, 1237, 1244], 3)
-    ops.element('ShellMITC4', 1337, *[1244, 1237, 1238, 1245], 3)
-    ops.element('ShellMITC4', 1338, *[1245, 1238, 1239, 1246], 3)
-    ops.element('ShellMITC4', 1339, *[1242, 1235, 1240, 1247], 6)
-    ops.element('ShellMITC4', 1340, *[1245, 1238, 1241, 1248], 6)
-    ops.element('ShellMITC4', 1341, *[1249, 1243, 1242, 671], 3)
-    ops.element('ShellMITC4', 1342, *[671, 1242, 1244, 1250], 3)
-    ops.element('ShellMITC4', 1343, *[1250, 1244, 1245, 661], 3)
-    ops.element('ShellMITC4', 1344, *[661, 1245, 1246, 1251], 3)
-    ops.element('ShellMITC4', 1345, *[671, 1242, 1247, 1252], 6)
-    ops.element('ShellMITC4', 1346, *[661, 1245, 1248, 1253], 6)
-    ops.element('ShellMITC4', 1347, *[1167, 1255, 1254, 652], 3)
-    ops.element('ShellMITC4', 1348, *[652, 1254, 1256, 1170], 3)
-    ops.element('ShellMITC4', 1349, *[1170, 1256, 1257, 634], 3)
-    ops.element('ShellMITC4', 1350, *[634, 1257, 1258, 1173], 3)
-    ops.element('ShellMITC4', 1351, *[652, 1254, 1259, 1175], 6)
-    ops.element('ShellMITC4', 1352, *[634, 1257, 1260, 1177], 6)
-    ops.element('ShellMITC4', 1353, *[1255, 1262, 572, 1254], 3)
-    ops.element('ShellMITC4', 1354, *[1254, 572, 570, 1256], 3)
-    ops.element('ShellMITC4', 1355, *[1256, 570, 571, 1257], 3)
-    ops.element('ShellMITC4', 1356, *[1257, 571, 1265, 1258], 3)
-    ops.element('ShellMITC4', 1357, *[1254, 572, 1266, 1259], 6)
-    ops.element('ShellMITC4', 1358, *[1257, 571, 1267, 1260], 6)
-    ops.element('ShellMITC4', 1359, *[1262, 1269, 1268, 572], 3)
-    ops.element('ShellMITC4', 1360, *[572, 1268, 1270, 570], 3)
-    ops.element('ShellMITC4', 1361, *[570, 1270, 1271, 571], 3)
-    ops.element('ShellMITC4', 1362, *[1265, 571, 1271, 1272], 3)
-    ops.element('ShellMITC4', 1363, *[1266, 572, 1268, 1273], 6)
-    ops.element('ShellMITC4', 1364, *[1267, 571, 1271, 1274], 6)
-    ops.element('ShellMITC4', 1365, *[1269, 1275, 653, 1268], 3)
-    ops.element('ShellMITC4', 1366, *[1268, 653, 1276, 1270], 3)
-    ops.element('ShellMITC4', 1367, *[1270, 1276, 636, 1271], 3)
-    ops.element('ShellMITC4', 1368, *[1271, 636, 1277, 1272], 3)
-    ops.element('ShellMITC4', 1369, *[1268, 653, 1278, 1273], 6)
-    ops.element('ShellMITC4', 1370, *[1271, 636, 1279, 1274], 6)
-    ops.element('ShellMITC4', 1371, *[1275, 1281, 1280, 653], 3)
-    ops.element('ShellMITC4', 1372, *[653, 1280, 1282, 1276], 3)
-    ops.element('ShellMITC4', 1373, *[1276, 1282, 1283, 636], 3)
-    ops.element('ShellMITC4', 1374, *[636, 1283, 1284, 1277], 3)
-    ops.element('ShellMITC4', 1375, *[653, 1280, 1285, 1278], 6)
-    ops.element('ShellMITC4', 1376, *[636, 1283, 1286, 1279], 6)
-    ops.element('ShellMITC4', 1377, *[1281, 1288, 1287, 1280], 3)
-    ops.element('ShellMITC4', 1378, *[1280, 1287, 1289, 1282], 3)
-    ops.element('ShellMITC4', 1379, *[1282, 1289, 1290, 1283], 3)
-    ops.element('ShellMITC4', 1380, *[1283, 1290, 1291, 1284], 3)
-    ops.element('ShellMITC4', 1381, *[1280, 1287, 1292, 1285], 6)
-    ops.element('ShellMITC4', 1382, *[1283, 1290, 1293, 1286], 6)
-    ops.element('ShellMITC4', 1383, *[1288, 1295, 1294, 1287], 3)
-    ops.element('ShellMITC4', 1384, *[1287, 1294, 1296, 1289], 3)
-    ops.element('ShellMITC4', 1385, *[1289, 1296, 1297, 1290], 3)
-    ops.element('ShellMITC4', 1386, *[1290, 1297, 1298, 1291], 3)
-    ops.element('ShellMITC4', 1387, *[1287, 1294, 1299, 1292], 6)
-    ops.element('ShellMITC4', 1388, *[1290, 1297, 1300, 1293], 6)
-    ops.element('ShellMITC4', 1389, *[1295, 1301, 654, 1294], 3)
-    ops.element('ShellMITC4', 1390, *[1294, 654, 1302, 1296], 3)
-    ops.element('ShellMITC4', 1391, *[1296, 1302, 638, 1297], 3)
-    ops.element('ShellMITC4', 1392, *[1297, 638, 1303, 1298], 3)
-    ops.element('ShellMITC4', 1393, *[1294, 654, 1304, 1299], 6)
-    ops.element('ShellMITC4', 1394, *[1297, 638, 1305, 1300], 6)
-    ops.element('ShellMITC4', 1395, *[654, 1301, 1307, 1306], 3)
-    ops.element('ShellMITC4', 1396, *[654, 1306, 1308, 1302], 3)
-    ops.element('ShellMITC4', 1397, *[638, 1302, 1308, 1309], 3)
-    ops.element('ShellMITC4', 1398, *[638, 1309, 1310, 1303], 3)
-    ops.element('ShellMITC4', 1399, *[654, 1306, 1311, 1304], 6)
-    ops.element('ShellMITC4', 1400, *[638, 1309, 1312, 1305], 6)
-    ops.element('ShellMITC4', 1401, *[1307, 1314, 1313, 1306], 3)
-    ops.element('ShellMITC4', 1402, *[1306, 1313, 1315, 1308], 3)
-    ops.element('ShellMITC4', 1403, *[1308, 1315, 1316, 1309], 3)
-    ops.element('ShellMITC4', 1404, *[1309, 1316, 1317, 1310], 3)
-    ops.element('ShellMITC4', 1405, *[1306, 1313, 1318, 1311], 6)
-    ops.element('ShellMITC4', 1406, *[1309, 1316, 1319, 1312], 6)
-    ops.element('ShellMITC4', 1407, *[1314, 1321, 1320, 1313], 3)
-    ops.element('ShellMITC4', 1408, *[1316, 1323, 1324, 1317], 3)
-    ops.element('ShellMITC4', 1409, *[1313, 1320, 1325, 1318], 6)
-    ops.element('ShellMITC4', 1410, *[1316, 1323, 1326, 1319], 6)
-    ops.element('ShellMITC4', 1411, *[1321, 1327, 655, 1320], 3)
-    ops.element('ShellMITC4', 1412, *[1320, 655, 1328, 1322], 3)
-    ops.element('ShellMITC4', 1413, *[1322, 1328, 640, 1323], 3)
-    ops.element('ShellMITC4', 1414, *[1323, 640, 1329, 1324], 3)
-    ops.element('ShellMITC4', 1415, *[1320, 655, 1330, 1325], 6)
-    ops.element('ShellMITC4', 1416, *[1323, 640, 1331, 1326], 6)
-    ops.element('ShellMITC4', 1417, *[655, 1327, 1333, 1332], 3)
-    ops.element('ShellMITC4', 1418, *[655, 1332, 1334, 1328], 3)
-    ops.element('ShellMITC4', 1419, *[640, 1328, 1334, 1335], 3)
-    ops.element('ShellMITC4', 1420, *[640, 1335, 1336, 1329], 3)
-    ops.element('ShellMITC4', 1421, *[655, 1332, 1337, 1330], 6)
-    ops.element('ShellMITC4', 1422, *[640, 1335, 1338, 1331], 6)
-    ops.element('ShellMITC4', 1423, *[1333, 1340, 1339, 1332], 3)
-    ops.element('ShellMITC4', 1424, *[1332, 1339, 1341, 1334], 3)
-    ops.element('ShellMITC4', 1425, *[1334, 1341, 1342, 1335], 3)
-    ops.element('ShellMITC4', 1426, *[1335, 1342, 1343, 1336], 3)
-    ops.element('ShellMITC4', 1427, *[1332, 1339, 1344, 1337], 6)
-    ops.element('ShellMITC4', 1428, *[1335, 1342, 1345, 1338], 6)
-    ops.element('ShellMITC4', 1429, *[1340, 1347, 1346, 1339], 3)
-    ops.element('ShellMITC4', 1430, *[1339, 1346, 1348, 1341], 3)
-    ops.element('ShellMITC4', 1431, *[1341, 1348, 1349, 1342], 3)
-    ops.element('ShellMITC4', 1432, *[1342, 1349, 1350, 1343], 3)
-    ops.element('ShellMITC4', 1433, *[1339, 1346, 1351, 1344], 6)
-    ops.element('ShellMITC4', 1434, *[1342, 1349, 1352, 1345], 6)
-    ops.element('ShellMITC4', 1435, *[1347, 1353, 656, 1346], 3)
-    ops.element('ShellMITC4', 1436, *[1346, 656, 1354, 1348], 3)
-    ops.element('ShellMITC4', 1437, *[1348, 1354, 642, 1349], 3)
-    ops.element('ShellMITC4', 1438, *[1349, 642, 1355, 1350], 3)
-    ops.element('ShellMITC4', 1439, *[1346, 656, 1356, 1351], 6)
-    ops.element('ShellMITC4', 1440, *[1349, 642, 1357, 1352], 6)
-    ops.element('ShellMITC4', 1441, *[1353, 1359, 1358, 656], 3)
-    ops.element('ShellMITC4', 1442, *[656, 1358, 1360, 1354], 3)
-    ops.element('ShellMITC4', 1443, *[1354, 1360, 1361, 642], 3)
-    ops.element('ShellMITC4', 1444, *[642, 1361, 1362, 1355], 3)
-    ops.element('ShellMITC4', 1445, *[656, 1358, 1363, 1356], 6)
-    ops.element('ShellMITC4', 1446, *[642, 1361, 1364, 1357], 6)
-    ops.element('ShellMITC4', 1447, *[1359, 1366, 1365, 1358], 3)
-    ops.element('ShellMITC4', 1448, *[1358, 1365, 1367, 1360], 3)
-    ops.element('ShellMITC4', 1449, *[1360, 1367, 1368, 1361], 3)
-    ops.element('ShellMITC4', 1450, *[1361, 1368, 1369, 1362], 3)
-    ops.element('ShellMITC4', 1451, *[1358, 1365, 1370, 1363], 6)
-    ops.element('ShellMITC4', 1452, *[1361, 1368, 1371, 1364], 6)
-    ops.element('ShellMITC4', 1453, *[1366, 1373, 1372, 1365], 3)
-    ops.element('ShellMITC4', 1454, *[1365, 1372, 1374, 1367], 3)
-    ops.element('ShellMITC4', 1455, *[1367, 1374, 1375, 1368], 3)
-    ops.element('ShellMITC4', 1456, *[1368, 1375, 1376, 1369], 3)
-    ops.element('ShellMITC4', 1457, *[1365, 1372, 1377, 1370], 6)
-    ops.element('ShellMITC4', 1458, *[1368, 1375, 1378, 1371], 6)
-    ops.element('ShellMITC4', 1459, *[1373, 1379, 657, 1372], 3)
-    ops.element('ShellMITC4', 1460, *[1375, 644, 1381, 1376], 3)
-    ops.element('ShellMITC4', 1461, *[1372, 657, 1382, 1377], 6)
-    ops.element('ShellMITC4', 1462, *[1375, 644, 1383, 1378], 6)
-    ops.element('ShellMITC4', 1463, *[657, 1379, 1385, 1384], 3)
-    ops.element('ShellMITC4', 1464, *[657, 1384, 1386, 1380], 3)
-    ops.element('ShellMITC4', 1465, *[644, 1380, 1386, 1387], 3)
-    ops.element('ShellMITC4', 1466, *[644, 1387, 1388, 1381], 3)
-    ops.element('ShellMITC4', 1467, *[657, 1384, 1389, 1382], 6)
-    ops.element('ShellMITC4', 1468, *[644, 1387, 1390, 1383], 6)
-    ops.element('ShellMITC4', 1469, *[1385, 1392, 1391, 1384], 3)
-    ops.element('ShellMITC4', 1470, *[1384, 1391, 1393, 1386], 3)
-    ops.element('ShellMITC4', 1471, *[1386, 1393, 1394, 1387], 3)
-    ops.element('ShellMITC4', 1472, *[1387, 1394, 1395, 1388], 3)
-    ops.element('ShellMITC4', 1473, *[1384, 1391, 1396, 1389], 6)
-    ops.element('ShellMITC4', 1474, *[1387, 1394, 1397, 1390], 6)
-    ops.element('ShellMITC4', 1475, *[1392, 1399, 1398, 1391], 3)
-    ops.element('ShellMITC4', 1476, *[1391, 1398, 1400, 1393], 3)
-    ops.element('ShellMITC4', 1477, *[1393, 1400, 1401, 1394], 3)
-    ops.element('ShellMITC4', 1478, *[1394, 1401, 1402, 1395], 3)
-    ops.element('ShellMITC4', 1479, *[1391, 1398, 1403, 1396], 6)
-    ops.element('ShellMITC4', 1480, *[1394, 1401, 1404, 1397], 6)
-    ops.element('ShellMITC4', 1481, *[1399, 1405, 658, 1398], 3)
-    ops.element('ShellMITC4', 1482, *[1398, 658, 1406, 1400], 3)
-    ops.element('ShellMITC4', 1483, *[1400, 1406, 646, 1401], 3)
-    ops.element('ShellMITC4', 1484, *[1401, 646, 1407, 1402], 3)
-    ops.element('ShellMITC4', 1485, *[1398, 658, 1408, 1403], 6)
-    ops.element('ShellMITC4', 1486, *[1401, 646, 1409, 1404], 6)
-    ops.element('ShellMITC4', 1487, *[658, 1405, 1411, 1410], 3)
-    ops.element('ShellMITC4', 1488, *[658, 1410, 1412, 1406], 3)
-    ops.element('ShellMITC4', 1489, *[646, 1406, 1412, 1413], 3)
-    ops.element('ShellMITC4', 1490, *[646, 1413, 1414, 1407], 3)
-    ops.element('ShellMITC4', 1491, *[658, 1410, 1415, 1408], 6)
-    ops.element('ShellMITC4', 1492, *[646, 1413, 1416, 1409], 6)
-    ops.element('ShellMITC4', 1493, *[1411, 1418, 1417, 1410], 3)
-    ops.element('ShellMITC4', 1494, *[1410, 1417, 1419, 1412], 3)
-    ops.element('ShellMITC4', 1495, *[1412, 1419, 1420, 1413], 3)
-    ops.element('ShellMITC4', 1496, *[1413, 1420, 1421, 1414], 3)
-    ops.element('ShellMITC4', 1497, *[1410, 1417, 1422, 1415], 6)
-    ops.element('ShellMITC4', 1498, *[1413, 1420, 1423, 1416], 6)
-    ops.element('ShellMITC4', 1499, *[1418, 1425, 1424, 1417], 3)
-    ops.element('ShellMITC4', 1500, *[1417, 1424, 1426, 1419], 3)
-    ops.element('ShellMITC4', 1501, *[1419, 1426, 1427, 1420], 3)
-    ops.element('ShellMITC4', 1502, *[1420, 1427, 1428, 1421], 3)
-    ops.element('ShellMITC4', 1503, *[1417, 1424, 1429, 1422], 6)
-    ops.element('ShellMITC4', 1504, *[1420, 1427, 1430, 1423], 6)
-    ops.element('ShellMITC4', 1505, *[1425, 1431, 659, 1424], 3)
-    ops.element('ShellMITC4', 1506, *[1426, 558, 559, 1427], 3)
-    ops.element('ShellMITC4', 1507, *[1427, 648, 1433, 1428], 3)
-    ops.element('ShellMITC4', 1508, *[1424, 659, 1434, 1429], 6)
-    ops.element('ShellMITC4', 1509, *[1427, 648, 1435, 1430], 6)
-    ops.element('ShellMITC4', 1510, *[1431, 1437, 1436, 659], 3)
-    ops.element('ShellMITC4', 1511, *[659, 1436, 1438, 1432], 3)
-    ops.element('ShellMITC4', 1512, *[1432, 1438, 1439, 648], 3)
-    ops.element('ShellMITC4', 1513, *[648, 1439, 1440, 1433], 3)
-    ops.element('ShellMITC4', 1514, *[659, 1436, 1441, 1434], 6)
-    ops.element('ShellMITC4', 1515, *[648, 1439, 1442, 1435], 6)
-    ops.element('ShellMITC4', 1516, *[1437, 1444, 1443, 1436], 3)
-    ops.element('ShellMITC4', 1517, *[1436, 1443, 1445, 1438], 3)
-    ops.element('ShellMITC4', 1518, *[1438, 1445, 1446, 1439], 3)
-    ops.element('ShellMITC4', 1519, *[1439, 1446, 1447, 1440], 3)
-    ops.element('ShellMITC4', 1520, *[1436, 1443, 1448, 1441], 6)
-    ops.element('ShellMITC4', 1521, *[1439, 1446, 1449, 1442], 6)
-    ops.element('ShellMITC4', 1522, *[1444, 1451, 1450, 1443], 3)
-    ops.element('ShellMITC4', 1523, *[1443, 1450, 1452, 1445], 3)
-    ops.element('ShellMITC4', 1524, *[1445, 1452, 1453, 1446], 3)
-    ops.element('ShellMITC4', 1525, *[1446, 1453, 1454, 1447], 3)
-    ops.element('ShellMITC4', 1526, *[1443, 1450, 1455, 1448], 6)
-    ops.element('ShellMITC4', 1527, *[1446, 1453, 1456, 1449], 6)
-    ops.element('ShellMITC4', 1528, *[1451, 1457, 660, 1450], 3)
-    ops.element('ShellMITC4', 1529, *[1450, 660, 1458, 1452], 3)
-    ops.element('ShellMITC4', 1530, *[1452, 1458, 650, 1453], 3)
-    ops.element('ShellMITC4', 1531, *[1453, 650, 1459, 1454], 3)
-    ops.element('ShellMITC4', 1532, *[1450, 660, 1460, 1455], 6)
-    ops.element('ShellMITC4', 1533, *[1453, 650, 1461, 1456], 6)
-    ops.element('ShellMITC4', 1534, *[660, 1457, 1463, 1462], 3)
-    ops.element('ShellMITC4', 1535, *[660, 1462, 1464, 1458], 3)
-    ops.element('ShellMITC4', 1536, *[650, 1458, 1464, 1465], 3)
-    ops.element('ShellMITC4', 1537, *[650, 1465, 1466, 1459], 3)
-    ops.element('ShellMITC4', 1538, *[660, 1462, 1467, 1460], 6)
-    ops.element('ShellMITC4', 1539, *[650, 1465, 1468, 1461], 6)
-    ops.element('ShellMITC4', 1540, *[1463, 1470, 1469, 1462], 3)
-    ops.element('ShellMITC4', 1541, *[1462, 1469, 1471, 1464], 3)
-    ops.element('ShellMITC4', 1542, *[1464, 1471, 1472, 1465], 3)
-    ops.element('ShellMITC4', 1543, *[1465, 1472, 1473, 1466], 3)
-    ops.element('ShellMITC4', 1544, *[1462, 1469, 1474, 1467], 6)
-    ops.element('ShellMITC4', 1545, *[1465, 1472, 1475, 1468], 6)
-    ops.element('ShellMITC4', 1546, *[1470, 1477, 1476, 1469], 3)
-    ops.element('ShellMITC4', 1547, *[1469, 1476, 1478, 1471], 3)
-    ops.element('ShellMITC4', 1548, *[1471, 1478, 1479, 1472], 3)
-    ops.element('ShellMITC4', 1549, *[1472, 1479, 1480, 1473], 3)
-    ops.element('ShellMITC4', 1550, *[1469, 1476, 1481, 1474], 6)
-    ops.element('ShellMITC4', 1551, *[1472, 1479, 1482, 1475], 6)
-    ops.element('ShellMITC4', 1552, *[1477, 1483, 556, 1476], 3)
-    ops.element('ShellMITC4', 1553, *[1476, 556, 554, 1478], 3)
-    ops.element('ShellMITC4', 1554, *[1478, 554, 555, 1479], 3)
-    ops.element('ShellMITC4', 1555, *[1479, 555, 1484, 1480], 3)
-    ops.element('ShellMITC4', 1556, *[1476, 556, 1485, 1481], 6)
-    ops.element('ShellMITC4', 1557, *[1479, 555, 1486, 1482], 6)
-    ops.element('ShellMITC4', 1558, *[558, 1432, 648, 559], 3)
-    ops.element('ShellMITC4', 1559, *[1372, 564, 562, 1374], 3)
-    ops.element('ShellMITC4', 1560, *[564, 657, 1380, 562], 3)
-    ops.element('ShellMITC4', 1561, *[1374, 562, 563, 1375], 3)
-    ops.element('ShellMITC4', 1562, *[562, 1380, 644, 563], 3)
-    ops.element('ShellMITC4', 1563, *[1313, 568, 566, 1315], 3)
-    ops.element('ShellMITC4', 1564, *[1488, 1249, 671, 1487], 3)
-    ops.element('ShellMITC4', 1565, *[1487, 671, 1250, 1489], 3)
-    ops.element('ShellMITC4', 1566, *[1489, 1250, 661, 1490], 3)
-    ops.element('ShellMITC4', 1567, *[1490, 661, 1251, 1491], 3)
-    ops.element('ShellMITC4', 1568, *[1487, 671, 1252, 1492], 6)
-    ops.element('ShellMITC4', 1569, *[1490, 661, 1253, 1493], 6)
-    ops.element('ShellMITC4', 1570, *[1495, 1488, 1487, 1494], 3)
-    ops.element('ShellMITC4', 1571, *[1494, 1487, 1489, 1496], 3)
-    ops.element('ShellMITC4', 1572, *[1496, 1489, 1490, 1497], 3)
-    ops.element('ShellMITC4', 1573, *[1497, 1490, 1491, 1498], 3)
-    ops.element('ShellMITC4', 1574, *[1494, 1487, 1492, 1499], 6)
-    ops.element('ShellMITC4', 1575, *[1497, 1490, 1493, 1500], 6)
-    ops.element('ShellMITC4', 1576, *[1502, 1495, 1494, 1501], 3)
-    ops.element('ShellMITC4', 1577, *[1501, 1494, 1496, 1503], 3)
-    ops.element('ShellMITC4', 1578, *[1503, 1496, 1497, 1504], 3)
-    ops.element('ShellMITC4', 1579, *[1504, 1497, 1498, 1505], 3)
-    ops.element('ShellMITC4', 1580, *[1501, 1494, 1499, 1506], 6)
-    ops.element('ShellMITC4', 1581, *[1504, 1497, 1500, 1507], 6)
-    ops.element('ShellMITC4', 1582, *[1508, 1502, 1501, 672], 3)
-    ops.element('ShellMITC4', 1583, *[672, 1501, 1503, 1509], 3)
-    ops.element('ShellMITC4', 1584, *[1509, 1503, 1504, 662], 3)
-    ops.element('ShellMITC4', 1585, *[662, 1504, 1505, 1510], 3)
-    ops.element('ShellMITC4', 1586, *[672, 1501, 1506, 1511], 6)
-    ops.element('ShellMITC4', 1587, *[662, 1504, 1507, 1512], 6)
-    ops.element('ShellMITC4', 1588, *[1514, 1508, 672, 1513], 3)
-    ops.element('ShellMITC4', 1589, *[1513, 672, 1509, 1515], 3)
-    ops.element('ShellMITC4', 1590, *[1515, 1509, 662, 1516], 3)
-    ops.element('ShellMITC4', 1591, *[1516, 662, 1510, 1517], 3)
-    ops.element('ShellMITC4', 1592, *[1513, 672, 1511, 1518], 6)
-    ops.element('ShellMITC4', 1593, *[1516, 662, 1512, 1519], 6)
-    ops.element('ShellMITC4', 1594, *[1521, 1514, 1513, 1520], 3)
-    ops.element('ShellMITC4', 1595, *[1520, 1513, 1515, 1522], 3)
-    ops.element('ShellMITC4', 1596, *[1522, 1515, 1516, 1523], 3)
-    ops.element('ShellMITC4', 1597, *[1523, 1516, 1517, 1524], 3)
-    ops.element('ShellMITC4', 1598, *[1520, 1513, 1518, 1525], 6)
-    ops.element('ShellMITC4', 1599, *[1523, 1516, 1519, 1526], 6)
-    ops.element('ShellMITC4', 1600, *[1528, 1521, 1520, 1527], 3)
-    ops.element('ShellMITC4', 1601, *[1527, 1520, 1522, 1529], 3)
-    ops.element('ShellMITC4', 1602, *[1529, 1522, 1523, 1530], 3)
-    ops.element('ShellMITC4', 1603, *[1530, 1523, 1524, 1531], 3)
-    ops.element('ShellMITC4', 1604, *[1527, 1520, 1525, 1532], 6)
-    ops.element('ShellMITC4', 1605, *[1530, 1523, 1526, 1533], 6)
-    ops.element('ShellMITC4', 1606, *[1534, 1528, 1527, 673], 3)
-    ops.element('ShellMITC4', 1607, *[673, 1527, 1529, 1535], 3)
-    ops.element('ShellMITC4', 1608, *[1535, 1529, 1530, 663], 3)
-    ops.element('ShellMITC4', 1609, *[663, 1530, 1531, 1536], 3)
-    ops.element('ShellMITC4', 1610, *[673, 1527, 1532, 1537], 6)
-    ops.element('ShellMITC4', 1611, *[663, 1530, 1533, 1538], 6)
-    ops.element('ShellMITC4', 1612, *[1540, 1534, 673, 1539], 3)
-    ops.element('ShellMITC4', 1613, *[1539, 673, 1535, 1541], 3)
-    ops.element('ShellMITC4', 1614, *[1541, 1535, 663, 1542], 3)
-    ops.element('ShellMITC4', 1615, *[1542, 663, 1536, 1543], 3)
-    ops.element('ShellMITC4', 1616, *[1539, 673, 1537, 1544], 6)
-    ops.element('ShellMITC4', 1617, *[1542, 663, 1538, 1545], 6)
-    ops.element('ShellMITC4', 1618, *[1547, 1540, 1539, 1546], 3)
-    ops.element('ShellMITC4', 1619, *[1546, 1539, 1541, 1548], 3)
-    ops.element('ShellMITC4', 1620, *[1548, 1541, 1542, 1549], 3)
-    ops.element('ShellMITC4', 1621, *[1549, 1542, 1543, 1550], 3)
-    ops.element('ShellMITC4', 1622, *[1546, 1539, 1544, 1551], 6)
-    ops.element('ShellMITC4', 1623, *[1549, 1542, 1545, 1552], 6)
-    ops.element('ShellMITC4', 1624, *[1554, 1547, 1546, 1553], 3)
-    ops.element('ShellMITC4', 1625, *[1553, 1546, 1548, 1555], 3)
-    ops.element('ShellMITC4', 1626, *[1555, 1548, 1549, 1556], 3)
-    ops.element('ShellMITC4', 1627, *[1556, 1549, 1550, 1557], 3)
-    ops.element('ShellMITC4', 1628, *[1553, 1546, 1551, 1558], 6)
-    ops.element('ShellMITC4', 1629, *[1556, 1549, 1552, 1559], 6)
-    ops.element('ShellMITC4', 1630, *[1560, 1554, 1553, 674], 3)
-    ops.element('ShellMITC4', 1631, *[674, 1553, 1555, 1561], 3)
-    ops.element('ShellMITC4', 1632, *[1561, 1555, 1556, 664], 3)
-    ops.element('ShellMITC4', 1633, *[664, 1556, 1557, 1562], 3)
-    ops.element('ShellMITC4', 1634, *[674, 1553, 1558, 1563], 6)
-    ops.element('ShellMITC4', 1635, *[664, 1556, 1559, 1564], 6)
-    ops.element('ShellMITC4', 1636, *[1566, 1560, 674, 1565], 3)
-    ops.element('ShellMITC4', 1637, *[1565, 674, 1561, 1567], 3)
-    ops.element('ShellMITC4', 1638, *[1567, 1561, 664, 1568], 3)
-    ops.element('ShellMITC4', 1639, *[1568, 664, 1562, 1569], 3)
-    ops.element('ShellMITC4', 1640, *[1565, 674, 1563, 1570], 6)
-    ops.element('ShellMITC4', 1641, *[1568, 664, 1564, 1571], 6)
-    ops.element('ShellMITC4', 1642, *[1573, 1566, 1565, 1572], 3)
-    ops.element('ShellMITC4', 1643, *[1572, 1565, 1567, 1574], 3)
-    ops.element('ShellMITC4', 1644, *[1574, 1567, 1568, 1575], 3)
-    ops.element('ShellMITC4', 1645, *[1575, 1568, 1569, 1576], 3)
-    ops.element('ShellMITC4', 1646, *[1572, 1565, 1570, 1577], 6)
-    ops.element('ShellMITC4', 1647, *[1575, 1568, 1571, 1578], 6)
-    ops.element('ShellMITC4', 1648, *[1580, 1573, 1572, 1579], 3)
-    ops.element('ShellMITC4', 1649, *[1579, 1572, 1574, 1581], 3)
-    ops.element('ShellMITC4', 1650, *[1581, 1574, 1575, 1582], 3)
-    ops.element('ShellMITC4', 1651, *[1582, 1575, 1576, 1583], 3)
-    ops.element('ShellMITC4', 1652, *[1579, 1572, 1577, 1584], 6)
-    ops.element('ShellMITC4', 1653, *[1582, 1575, 1578, 1585], 6)
-    ops.element('ShellMITC4', 1654, *[1586, 1580, 1579, 675], 3)
-    ops.element('ShellMITC4', 1655, *[675, 1579, 1581, 1587], 3)
-    ops.element('ShellMITC4', 1656, *[1587, 1581, 1582, 665], 3)
-    ops.element('ShellMITC4', 1657, *[665, 1582, 1583, 1588], 3)
-    ops.element('ShellMITC4', 1658, *[675, 1579, 1584, 1589], 6)
-    ops.element('ShellMITC4', 1659, *[665, 1582, 1585, 1590], 6)
-    ops.element('ShellMITC4', 1660, *[1592, 1586, 675, 1591], 3)
-    ops.element('ShellMITC4', 1661, *[1591, 675, 1587, 1593], 3)
-    ops.element('ShellMITC4', 1662, *[1593, 1587, 665, 1594], 3)
-    ops.element('ShellMITC4', 1663, *[1594, 665, 1588, 1595], 3)
-    ops.element('ShellMITC4', 1664, *[1591, 675, 1589, 1596], 6)
-    ops.element('ShellMITC4', 1665, *[1594, 665, 1590, 1597], 6)
-    ops.element('ShellMITC4', 1666, *[1599, 1592, 1591, 1598], 3)
-    ops.element('ShellMITC4', 1667, *[1598, 1591, 1593, 1600], 3)
-    ops.element('ShellMITC4', 1668, *[1600, 1593, 1594, 1601], 3)
-    ops.element('ShellMITC4', 1669, *[1601, 1594, 1595, 1602], 3)
-    ops.element('ShellMITC4', 1670, *[1598, 1591, 1596, 1603], 6)
-    ops.element('ShellMITC4', 1671, *[1601, 1594, 1597, 1604], 6)
-    ops.element('ShellMITC4', 1672, *[1606, 1599, 1598, 1605], 3)
-    ops.element('ShellMITC4', 1673, *[1605, 1598, 1600, 1607], 3)
-    ops.element('ShellMITC4', 1674, *[1607, 1600, 1601, 1608], 3)
-    ops.element('ShellMITC4', 1675, *[1608, 1601, 1602, 1609], 3)
-    ops.element('ShellMITC4', 1676, *[1605, 1598, 1603, 1610], 6)
-    ops.element('ShellMITC4', 1677, *[1608, 1601, 1604, 1611], 6)
-    ops.element('ShellMITC4', 1678, *[1612, 1606, 1605, 676], 3)
-    ops.element('ShellMITC4', 1679, *[676, 1605, 1607, 1613], 3)
-    ops.element('ShellMITC4', 1680, *[1613, 1607, 1608, 666], 3)
-    ops.element('ShellMITC4', 1681, *[666, 1608, 1609, 1614], 3)
-    ops.element('ShellMITC4', 1682, *[676, 1605, 1610, 1615], 6)
-    ops.element('ShellMITC4', 1683, *[666, 1608, 1611, 1616], 6)
-    ops.element('ShellMITC4', 1684, *[1618, 1612, 676, 1617], 3)
-    ops.element('ShellMITC4', 1685, *[1617, 676, 1613, 1619], 3)
-    ops.element('ShellMITC4', 1686, *[1619, 1613, 666, 1620], 3)
-    ops.element('ShellMITC4', 1687, *[1620, 666, 1614, 1621], 3)
-    ops.element('ShellMITC4', 1688, *[1617, 676, 1615, 1622], 6)
-    ops.element('ShellMITC4', 1689, *[1620, 666, 1616, 1623], 6)
-    ops.element('ShellMITC4', 1690, *[1625, 1618, 1617, 1624], 3)
-    ops.element('ShellMITC4', 1691, *[1624, 1617, 1619, 1626], 3)
-    ops.element('ShellMITC4', 1692, *[1626, 1619, 1620, 1627], 3)
-    ops.element('ShellMITC4', 1693, *[1627, 1620, 1621, 1628], 3)
-    ops.element('ShellMITC4', 1694, *[1624, 1617, 1622, 1629], 6)
-    ops.element('ShellMITC4', 1695, *[1627, 1620, 1623, 1630], 6)
-    ops.element('ShellMITC4', 1696, *[1632, 1625, 1624, 1631], 3)
-    ops.element('ShellMITC4', 1697, *[1631, 1624, 1626, 1633], 3)
-    ops.element('ShellMITC4', 1698, *[1633, 1626, 1627, 1634], 3)
-    ops.element('ShellMITC4', 1699, *[1634, 1627, 1628, 1635], 3)
-    ops.element('ShellMITC4', 1700, *[1631, 1624, 1629, 1636], 6)
-    ops.element('ShellMITC4', 1701, *[1634, 1627, 1630, 1637], 6)
-    ops.element('ShellMITC4', 1702, *[1638, 1632, 1631, 677], 3)
-    ops.element('ShellMITC4', 1703, *[677, 1631, 1633, 1639], 3)
-    ops.element('ShellMITC4', 1704, *[1639, 1633, 1634, 667], 3)
-    ops.element('ShellMITC4', 1705, *[667, 1634, 1635, 1640], 3)
-    ops.element('ShellMITC4', 1706, *[677, 1631, 1636, 1641], 6)
-    ops.element('ShellMITC4', 1707, *[667, 1634, 1637, 1642], 6)
-    ops.element('ShellMITC4', 1708, *[1644, 1638, 677, 1643], 3)
-    ops.element('ShellMITC4', 1709, *[1643, 677, 1639, 1645], 3)
-    ops.element('ShellMITC4', 1710, *[1645, 1639, 667, 1646], 3)
-    ops.element('ShellMITC4', 1711, *[1646, 667, 1640, 1647], 3)
-    ops.element('ShellMITC4', 1712, *[1643, 677, 1641, 1648], 6)
-    ops.element('ShellMITC4', 1713, *[1646, 667, 1642, 1649], 6)
-    ops.element('ShellMITC4', 1714, *[1651, 1644, 1643, 1650], 3)
-    ops.element('ShellMITC4', 1715, *[1650, 1643, 1645, 1652], 3)
-    ops.element('ShellMITC4', 1716, *[1652, 1645, 1646, 1653], 3)
-    ops.element('ShellMITC4', 1717, *[1653, 1646, 1647, 1654], 3)
-    ops.element('ShellMITC4', 1718, *[1650, 1643, 1648, 1655], 6)
-    ops.element('ShellMITC4', 1719, *[1653, 1646, 1649, 1656], 6)
-    ops.element('ShellMITC4', 1720, *[1658, 1651, 1650, 1657], 3)
-    ops.element('ShellMITC4', 1721, *[1657, 1650, 1652, 1659], 3)
-    ops.element('ShellMITC4', 1722, *[1659, 1652, 1653, 1660], 3)
-    ops.element('ShellMITC4', 1723, *[1660, 1653, 1654, 1661], 3)
-    ops.element('ShellMITC4', 1724, *[1657, 1650, 1655, 1662], 6)
-    ops.element('ShellMITC4', 1725, *[1660, 1653, 1656, 1663], 6)
-    ops.element('ShellMITC4', 1726, *[1664, 1658, 1657, 678], 3)
-    ops.element('ShellMITC4', 1727, *[678, 1657, 1659, 1665], 3)
-    ops.element('ShellMITC4', 1728, *[1665, 1659, 1660, 668], 3)
-    ops.element('ShellMITC4', 1729, *[668, 1660, 1661, 1666], 3)
-    ops.element('ShellMITC4', 1730, *[678, 1657, 1662, 1667], 6)
-    ops.element('ShellMITC4', 1731, *[668, 1660, 1663, 1668], 6)
-    ops.element('ShellMITC4', 1732, *[1670, 1664, 678, 1669], 3)
-    ops.element('ShellMITC4', 1733, *[1669, 678, 1665, 1671], 3)
-    ops.element('ShellMITC4', 1734, *[1671, 1665, 668, 1672], 3)
-    ops.element('ShellMITC4', 1735, *[1672, 668, 1666, 1673], 3)
-    ops.element('ShellMITC4', 1736, *[1669, 678, 1667, 1674], 6)
-    ops.element('ShellMITC4', 1737, *[1672, 668, 1668, 1675], 6)
-    ops.element('ShellMITC4', 1738, *[1677, 1670, 1669, 1676], 3)
-    ops.element('ShellMITC4', 1739, *[1676, 1669, 1671, 1678], 3)
-    ops.element('ShellMITC4', 1740, *[1678, 1671, 1672, 1679], 3)
-    ops.element('ShellMITC4', 1741, *[1679, 1672, 1673, 1680], 3)
-    ops.element('ShellMITC4', 1742, *[1676, 1669, 1674, 1681], 6)
-    ops.element('ShellMITC4', 1743, *[1679, 1672, 1675, 1682], 6)
-    ops.element('ShellMITC4', 1744, *[1684, 1677, 1676, 1683], 3)
-    ops.element('ShellMITC4', 1745, *[1683, 1676, 1678, 1685], 3)
-    ops.element('ShellMITC4', 1746, *[1685, 1678, 1679, 1686], 3)
-    ops.element('ShellMITC4', 1747, *[1686, 1679, 1680, 1687], 3)
-    ops.element('ShellMITC4', 1748, *[1683, 1676, 1681, 1688], 6)
-    ops.element('ShellMITC4', 1749, *[1686, 1679, 1682, 1689], 6)
-    ops.element('ShellMITC4', 1750, *[1690, 1684, 1683, 679], 3)
-    ops.element('ShellMITC4', 1751, *[679, 1683, 1685, 1691], 3)
-    ops.element('ShellMITC4', 1752, *[1691, 1685, 1686, 669], 3)
-    ops.element('ShellMITC4', 1753, *[669, 1686, 1687, 1692], 3)
-    ops.element('ShellMITC4', 1754, *[679, 1683, 1688, 1693], 6)
-    ops.element('ShellMITC4', 1755, *[669, 1686, 1689, 1694], 6)
-    ops.element('ShellMITC4', 1756, *[1696, 1690, 679, 1695], 3)
-    ops.element('ShellMITC4', 1757, *[1695, 679, 1691, 1697], 3)
-    ops.element('ShellMITC4', 1758, *[1697, 1691, 669, 1698], 3)
-    ops.element('ShellMITC4', 1759, *[1698, 669, 1692, 1699], 3)
-    ops.element('ShellMITC4', 1760, *[1695, 679, 1693, 1700], 6)
-    ops.element('ShellMITC4', 1761, *[1698, 669, 1694, 1701], 6)
-    ops.element('ShellMITC4', 1762, *[1703, 1696, 1695, 1702], 3)
-    ops.element('ShellMITC4', 1763, *[1702, 1695, 1697, 1704], 3)
-    ops.element('ShellMITC4', 1764, *[1704, 1697, 1698, 1705], 3)
-    ops.element('ShellMITC4', 1765, *[1705, 1698, 1699, 1706], 3)
-    ops.element('ShellMITC4', 1766, *[1702, 1695, 1700, 1707], 6)
-    ops.element('ShellMITC4', 1767, *[1705, 1698, 1701, 1708], 6)
-    ops.element('ShellMITC4', 1768, *[1710, 1703, 1702, 1709], 3)
-    ops.element('ShellMITC4', 1769, *[1709, 1702, 1704, 1711], 3)
-    ops.element('ShellMITC4', 1770, *[1711, 1704, 1705, 1712], 3)
-    ops.element('ShellMITC4', 1771, *[1712, 1705, 1706, 1713], 3)
-    ops.element('ShellMITC4', 1772, *[1709, 1702, 1707, 1714], 6)
-    ops.element('ShellMITC4', 1773, *[1712, 1705, 1708, 1715], 6)
-    ops.element('ShellMITC4', 1774, *[1716, 1710, 1709, 680], 3)
-    ops.element('ShellMITC4', 1775, *[680, 1709, 1711, 1717], 3)
-    ops.element('ShellMITC4', 1776, *[1717, 1711, 1712, 670], 3)
-    ops.element('ShellMITC4', 1777, *[670, 1712, 1713, 1718], 3)
-    ops.element('ShellMITC4', 1778, *[680, 1709, 1714, 1719], 6)
-    ops.element('ShellMITC4', 1779, *[670, 1712, 1715, 1720], 6)
-    ops.element('ShellMITC4', 1780, *[1723, 1721, 718, 1722], 3)
-    ops.element('ShellMITC4', 1781, *[1722, 718, 1724, 1725], 3)
-    ops.element('ShellMITC4', 1782, *[1725, 1724, 709, 1726], 3)
-    ops.element('ShellMITC4', 1783, *[1726, 709, 1727, 1728], 3)
-    ops.element('ShellMITC4', 1784, *[1722, 718, 1729, 1730], 6)
-    ops.element('ShellMITC4', 1785, *[1726, 709, 1731, 1732], 6)
-    ops.element('ShellMITC4', 1786, *[1734, 1723, 1722, 1733], 3)
-    ops.element('ShellMITC4', 1787, *[1733, 1722, 1725, 1735], 3)
-    ops.element('ShellMITC4', 1788, *[1735, 1725, 1726, 1736], 3)
-    ops.element('ShellMITC4', 1789, *[1736, 1726, 1728, 1737], 3)
-    ops.element('ShellMITC4', 1790, *[1733, 1722, 1730, 1738], 6)
-    ops.element('ShellMITC4', 1791, *[1736, 1726, 1732, 1739], 6)
-    ops.element('ShellMITC4', 1792, *[1741, 1734, 1733, 1740], 3)
-    ops.element('ShellMITC4', 1793, *[1740, 1733, 1735, 1742], 3)
-    ops.element('ShellMITC4', 1794, *[1742, 1735, 1736, 1743], 3)
-    ops.element('ShellMITC4', 1795, *[1743, 1736, 1737, 1744], 3)
-    ops.element('ShellMITC4', 1796, *[1740, 1733, 1738, 1745], 6)
-    ops.element('ShellMITC4', 1797, *[1743, 1736, 1739, 1746], 6)
-    ops.element('ShellMITC4', 1798, *[1748, 1741, 1740, 1747], 3)
-    ops.element('ShellMITC4', 1799, *[1747, 1740, 1742, 1749], 3)
-    ops.element('ShellMITC4', 1800, *[1749, 1742, 1743, 1750], 3)
-    ops.element('ShellMITC4', 1801, *[1750, 1743, 1744, 1751], 3)
-    ops.element('ShellMITC4', 1802, *[1747, 1740, 1745, 1752], 6)
-    ops.element('ShellMITC4', 1803, *[1750, 1743, 1746, 1753], 6)
-    ops.element('ShellMITC4', 1804, *[1755, 1748, 1747, 1754], 3)
-    ops.element('ShellMITC4', 1805, *[1754, 1747, 1749, 1756], 3)
-    ops.element('ShellMITC4', 1806, *[1756, 1749, 1750, 1757], 3)
-    ops.element('ShellMITC4', 1807, *[1757, 1750, 1751, 1758], 3)
-    ops.element('ShellMITC4', 1808, *[1754, 1747, 1752, 1759], 6)
-    ops.element('ShellMITC4', 1809, *[1757, 1750, 1753, 1760], 6)
-    ops.element('ShellMITC4', 1810, *[1762, 1755, 1754, 1761], 3)
-    ops.element('ShellMITC4', 1811, *[1761, 1754, 1756, 1763], 3)
-    ops.element('ShellMITC4', 1812, *[1763, 1756, 1757, 1764], 3)
-    ops.element('ShellMITC4', 1813, *[1764, 1757, 1758, 1765], 3)
-    ops.element('ShellMITC4', 1814, *[1761, 1754, 1759, 1766], 6)
-    ops.element('ShellMITC4', 1815, *[1764, 1757, 1760, 1767], 6)
-    ops.element('ShellMITC4', 1816, *[1769, 1762, 1761, 1768], 3)
-    ops.element('ShellMITC4', 1817, *[1768, 1761, 1763, 1770], 3)
-    ops.element('ShellMITC4', 1818, *[1770, 1763, 1764, 1771], 3)
-    ops.element('ShellMITC4', 1819, *[1771, 1764, 1765, 1772], 3)
-    ops.element('ShellMITC4', 1820, *[1768, 1761, 1766, 1773], 6)
-    ops.element('ShellMITC4', 1821, *[1771, 1764, 1767, 1774], 6)
-    ops.element('ShellMITC4', 1822, *[1776, 1769, 1768, 1775], 3)
-    ops.element('ShellMITC4', 1823, *[1775, 1768, 1770, 1777], 3)
-    ops.element('ShellMITC4', 1824, *[1777, 1770, 1771, 1778], 3)
-    ops.element('ShellMITC4', 1825, *[1778, 1771, 1772, 1779], 3)
-    ops.element('ShellMITC4', 1826, *[1775, 1768, 1773, 1780], 6)
-    ops.element('ShellMITC4', 1827, *[1778, 1771, 1774, 1781], 6)
-    ops.element('ShellMITC4', 1828, *[1783, 1776, 1775, 1782], 3)
-    ops.element('ShellMITC4', 1829, *[1782, 1775, 1777, 1784], 3)
-    ops.element('ShellMITC4', 1830, *[1784, 1777, 1778, 1785], 3)
-    ops.element('ShellMITC4', 1831, *[1785, 1778, 1779, 1786], 3)
-    ops.element('ShellMITC4', 1832, *[1782, 1775, 1780, 1787], 6)
-    ops.element('ShellMITC4', 1833, *[1785, 1778, 1781, 1788], 6)
-    ops.element('ShellMITC4', 1834, *[1790, 1783, 1782, 1789], 3)
-    ops.element('ShellMITC4', 1835, *[1789, 1782, 1784, 1791], 3)
-    ops.element('ShellMITC4', 1836, *[1791, 1784, 1785, 1792], 3)
-    ops.element('ShellMITC4', 1837, *[1792, 1785, 1786, 1793], 3)
-    ops.element('ShellMITC4', 1838, *[1789, 1782, 1787, 1794], 6)
-    ops.element('ShellMITC4', 1839, *[1792, 1785, 1788, 1795], 6)
-    ops.element('ShellMITC4', 1840, *[1797, 1790, 1789, 1796], 3)
-    ops.element('ShellMITC4', 1841, *[1796, 1789, 1791, 1798], 3)
-    ops.element('ShellMITC4', 1842, *[1798, 1791, 1792, 1799], 3)
-    ops.element('ShellMITC4', 1843, *[1799, 1792, 1793, 1800], 3)
-    ops.element('ShellMITC4', 1844, *[1796, 1789, 1794, 1801], 6)
-    ops.element('ShellMITC4', 1845, *[1799, 1792, 1795, 1802], 6)
-    ops.element('ShellMITC4', 1846, *[1803, 1797, 1796, 700], 3)
-    ops.element('ShellMITC4', 1847, *[700, 1796, 1798, 1804], 3)
-    ops.element('ShellMITC4', 1848, *[1804, 1798, 1799, 682], 3)
-    ops.element('ShellMITC4', 1849, *[682, 1799, 1800, 1805], 3)
-    ops.element('ShellMITC4', 1850, *[700, 1796, 1801, 1806], 6)
-    ops.element('ShellMITC4', 1851, *[682, 1799, 1802, 1807], 6)
-    ops.element('ShellMITC4', 1852, *[1721, 1809, 1808, 718], 3)
-    ops.element('ShellMITC4', 1853, *[718, 1808, 1810, 1724], 3)
-    ops.element('ShellMITC4', 1854, *[1724, 1810, 1811, 709], 3)
-    ops.element('ShellMITC4', 1855, *[709, 1811, 1812, 1727], 3)
-    ops.element('ShellMITC4', 1856, *[718, 1808, 1813, 1729], 6)
-    ops.element('ShellMITC4', 1857, *[709, 1811, 1814, 1731], 6)
-    ops.element('ShellMITC4', 1858, *[1809, 1816, 1815, 1808], 3)
-    ops.element('ShellMITC4', 1859, *[1808, 1815, 1817, 1810], 3)
-    ops.element('ShellMITC4', 1860, *[1810, 1817, 1818, 1811], 3)
-    ops.element('ShellMITC4', 1861, *[1811, 1818, 1819, 1812], 3)
-    ops.element('ShellMITC4', 1862, *[1808, 1815, 1820, 1813], 6)
-    ops.element('ShellMITC4', 1863, *[1811, 1818, 1821, 1814], 6)
-    ops.element('ShellMITC4', 1864, *[1816, 1823, 1822, 1815], 3)
-    ops.element('ShellMITC4', 1865, *[1815, 1822, 1824, 1817], 3)
-    ops.element('ShellMITC4', 1866, *[1817, 1824, 1825, 1818], 3)
-    ops.element('ShellMITC4', 1867, *[1818, 1825, 1826, 1819], 3)
-    ops.element('ShellMITC4', 1868, *[1815, 1822, 1827, 1820], 6)
-    ops.element('ShellMITC4', 1869, *[1818, 1825, 1828, 1821], 6)
-    ops.element('ShellMITC4', 1870, *[1823, 1829, 719, 1822], 3)
-    ops.element('ShellMITC4', 1871, *[1822, 719, 1830, 1824], 3)
-    ops.element('ShellMITC4', 1872, *[1824, 1830, 710, 1825], 3)
-    ops.element('ShellMITC4', 1873, *[1825, 710, 1831, 1826], 3)
-    ops.element('ShellMITC4', 1874, *[1822, 719, 1832, 1827], 6)
-    ops.element('ShellMITC4', 1875, *[1825, 710, 1833, 1828], 6)
-    ops.element('ShellMITC4', 1876, *[1829, 1835, 1834, 719], 3)
-    ops.element('ShellMITC4', 1877, *[719, 1834, 1836, 1830], 3)
-    ops.element('ShellMITC4', 1878, *[1830, 1836, 1837, 710], 3)
-    ops.element('ShellMITC4', 1879, *[710, 1837, 1838, 1831], 3)
-    ops.element('ShellMITC4', 1880, *[719, 1834, 1839, 1832], 6)
-    ops.element('ShellMITC4', 1881, *[710, 1837, 1840, 1833], 6)
-    ops.element('ShellMITC4', 1882, *[1835, 1842, 1841, 1834], 3)
-    ops.element('ShellMITC4', 1883, *[1834, 1841, 1843, 1836], 3)
-    ops.element('ShellMITC4', 1884, *[1836, 1843, 1844, 1837], 3)
-    ops.element('ShellMITC4', 1885, *[1837, 1844, 1845, 1838], 3)
-    ops.element('ShellMITC4', 1886, *[1834, 1841, 1846, 1839], 6)
-    ops.element('ShellMITC4', 1887, *[1837, 1844, 1847, 1840], 6)
-    ops.element('ShellMITC4', 1888, *[1842, 1849, 1848, 1841], 3)
-    ops.element('ShellMITC4', 1889, *[1841, 1848, 1850, 1843], 3)
-    ops.element('ShellMITC4', 1890, *[1843, 1850, 1851, 1844], 3)
-    ops.element('ShellMITC4', 1891, *[1844, 1851, 1852, 1845], 3)
-    ops.element('ShellMITC4', 1892, *[1841, 1848, 1853, 1846], 6)
-    ops.element('ShellMITC4', 1893, *[1844, 1851, 1854, 1847], 6)
-    ops.element('ShellMITC4', 1894, *[1849, 1855, 720, 1848], 3)
-    ops.element('ShellMITC4', 1895, *[1848, 720, 1856, 1850], 3)
-    ops.element('ShellMITC4', 1896, *[1850, 1856, 711, 1851], 3)
-    ops.element('ShellMITC4', 1897, *[1851, 711, 1857, 1852], 3)
-    ops.element('ShellMITC4', 1898, *[1848, 720, 1858, 1853], 6)
-    ops.element('ShellMITC4', 1899, *[1851, 711, 1859, 1854], 6)
-    ops.element('ShellMITC4', 1900, *[1855, 1861, 1860, 720], 3)
-    ops.element('ShellMITC4', 1901, *[720, 1860, 1862, 1856], 3)
-    ops.element('ShellMITC4', 1902, *[1856, 1862, 1863, 711], 3)
-    ops.element('ShellMITC4', 1903, *[711, 1863, 1864, 1857], 3)
-    ops.element('ShellMITC4', 1904, *[720, 1860, 1865, 1858], 6)
-    ops.element('ShellMITC4', 1905, *[711, 1863, 1866, 1859], 6)
-    ops.element('ShellMITC4', 1906, *[1861, 1868, 1867, 1860], 3)
-    ops.element('ShellMITC4', 1907, *[1860, 1867, 1869, 1862], 3)
-    ops.element('ShellMITC4', 1908, *[1862, 1869, 1870, 1863], 3)
-    ops.element('ShellMITC4', 1909, *[1863, 1870, 1871, 1864], 3)
-    ops.element('ShellMITC4', 1910, *[1860, 1867, 1872, 1865], 6)
-    ops.element('ShellMITC4', 1911, *[1863, 1870, 1873, 1866], 6)
-    ops.element('ShellMITC4', 1912, *[1868, 1875, 1874, 1867], 3)
-    ops.element('ShellMITC4', 1913, *[1867, 1874, 1876, 1869], 3)
-    ops.element('ShellMITC4', 1914, *[1869, 1876, 1877, 1870], 3)
-    ops.element('ShellMITC4', 1915, *[1870, 1877, 1878, 1871], 3)
-    ops.element('ShellMITC4', 1916, *[1867, 1874, 1879, 1872], 6)
-    ops.element('ShellMITC4', 1917, *[1870, 1877, 1880, 1873], 6)
-    ops.element('ShellMITC4', 1918, *[1875, 1881, 721, 1874], 3)
-    ops.element('ShellMITC4', 1919, *[1874, 721, 1882, 1876], 3)
-    ops.element('ShellMITC4', 1920, *[1876, 1882, 712, 1877], 3)
-    ops.element('ShellMITC4', 1921, *[1877, 712, 1883, 1878], 3)
-    ops.element('ShellMITC4', 1922, *[1874, 721, 1884, 1879], 6)
-    ops.element('ShellMITC4', 1923, *[1877, 712, 1885, 1880], 6)
-    ops.element('ShellMITC4', 1924, *[1881, 1887, 1886, 721], 3)
-    ops.element('ShellMITC4', 1925, *[721, 1886, 1888, 1882], 3)
-    ops.element('ShellMITC4', 1926, *[1882, 1888, 1889, 712], 3)
-    ops.element('ShellMITC4', 1927, *[712, 1889, 1890, 1883], 3)
-    ops.element('ShellMITC4', 1928, *[721, 1886, 1891, 1884], 6)
-    ops.element('ShellMITC4', 1929, *[712, 1889, 1892, 1885], 6)
-    ops.element('ShellMITC4', 1930, *[1887, 1894, 1893, 1886], 3)
-    ops.element('ShellMITC4', 1931, *[1886, 1893, 1895, 1888], 3)
-    ops.element('ShellMITC4', 1932, *[1888, 1895, 1896, 1889], 3)
-    ops.element('ShellMITC4', 1933, *[1889, 1896, 1897, 1890], 3)
-    ops.element('ShellMITC4', 1934, *[1886, 1893, 1898, 1891], 6)
-    ops.element('ShellMITC4', 1935, *[1889, 1896, 1899, 1892], 6)
-    ops.element('ShellMITC4', 1936, *[1894, 1901, 1900, 1893], 3)
-    ops.element('ShellMITC4', 1937, *[1893, 1900, 1902, 1895], 3)
-    ops.element('ShellMITC4', 1938, *[1895, 1902, 1903, 1896], 3)
-    ops.element('ShellMITC4', 1939, *[1896, 1903, 1904, 1897], 3)
-    ops.element('ShellMITC4', 1940, *[1893, 1900, 1905, 1898], 6)
-    ops.element('ShellMITC4', 1941, *[1896, 1903, 1906, 1899], 6)
-    ops.element('ShellMITC4', 1942, *[1901, 1907, 722, 1900], 3)
-    ops.element('ShellMITC4', 1943, *[1900, 722, 1908, 1902], 3)
-    ops.element('ShellMITC4', 1944, *[1902, 1908, 713, 1903], 3)
-    ops.element('ShellMITC4', 1945, *[1903, 713, 1909, 1904], 3)
-    ops.element('ShellMITC4', 1946, *[1900, 722, 1910, 1905], 6)
-    ops.element('ShellMITC4', 1947, *[1903, 713, 1911, 1906], 6)
-    ops.element('ShellMITC4', 1948, *[1907, 1913, 1912, 722], 3)
-    ops.element('ShellMITC4', 1949, *[722, 1912, 1914, 1908], 3)
-    ops.element('ShellMITC4', 1950, *[1908, 1914, 1915, 713], 3)
-    ops.element('ShellMITC4', 1951, *[713, 1915, 1916, 1909], 3)
-    ops.element('ShellMITC4', 1952, *[722, 1912, 1917, 1910], 6)
-    ops.element('ShellMITC4', 1953, *[713, 1915, 1918, 1911], 6)
-    ops.element('ShellMITC4', 1954, *[1913, 1920, 1919, 1912], 3)
-    ops.element('ShellMITC4', 1955, *[1912, 1919, 1921, 1914], 3)
-    ops.element('ShellMITC4', 1956, *[1914, 1921, 1922, 1915], 3)
-    ops.element('ShellMITC4', 1957, *[1915, 1922, 1923, 1916], 3)
-    ops.element('ShellMITC4', 1958, *[1912, 1919, 1924, 1917], 6)
-    ops.element('ShellMITC4', 1959, *[1915, 1922, 1925, 1918], 6)
-    ops.element('ShellMITC4', 1960, *[1920, 1927, 1926, 1919], 3)
-    ops.element('ShellMITC4', 1961, *[1919, 1926, 1928, 1921], 3)
-    ops.element('ShellMITC4', 1962, *[1921, 1928, 1929, 1922], 3)
-    ops.element('ShellMITC4', 1963, *[1922, 1929, 1930, 1923], 3)
-    ops.element('ShellMITC4', 1964, *[1919, 1926, 1931, 1924], 6)
-    ops.element('ShellMITC4', 1965, *[1922, 1929, 1932, 1925], 6)
-    ops.element('ShellMITC4', 1966, *[1927, 1933, 723, 1926], 3)
-    ops.element('ShellMITC4', 1967, *[1926, 723, 1934, 1928], 3)
-    ops.element('ShellMITC4', 1968, *[1928, 1934, 714, 1929], 3)
-    ops.element('ShellMITC4', 1969, *[1929, 714, 1935, 1930], 3)
-    ops.element('ShellMITC4', 1970, *[1926, 723, 1936, 1931], 6)
-    ops.element('ShellMITC4', 1971, *[1929, 714, 1937, 1932], 6)
-    ops.element('ShellMITC4', 1972, *[723, 1933, 1939, 1938], 3)
-    ops.element('ShellMITC4', 1973, *[723, 1938, 1940, 1934], 3)
-    ops.element('ShellMITC4', 1974, *[714, 1934, 1940, 1941], 3)
-    ops.element('ShellMITC4', 1975, *[714, 1941, 1942, 1935], 3)
-    ops.element('ShellMITC4', 1976, *[723, 1938, 1943, 1936], 6)
-    ops.element('ShellMITC4', 1977, *[714, 1941, 1944, 1937], 6)
-    ops.element('ShellMITC4', 1978, *[1939, 1946, 1945, 1938], 3)
-    ops.element('ShellMITC4', 1979, *[1938, 1945, 1947, 1940], 3)
-    ops.element('ShellMITC4', 1980, *[1940, 1947, 1948, 1941], 3)
-    ops.element('ShellMITC4', 1981, *[1941, 1948, 1949, 1942], 3)
-    ops.element('ShellMITC4', 1982, *[1938, 1945, 1950, 1943], 6)
-    ops.element('ShellMITC4', 1983, *[1941, 1948, 1951, 1944], 6)
-    ops.element('ShellMITC4', 1984, *[1946, 1953, 1952, 1945], 3)
-    ops.element('ShellMITC4', 1985, *[1945, 1952, 1954, 1947], 3)
-    ops.element('ShellMITC4', 1986, *[1947, 1954, 1955, 1948], 3)
-    ops.element('ShellMITC4', 1987, *[1948, 1955, 1956, 1949], 3)
-    ops.element('ShellMITC4', 1988, *[1945, 1952, 1957, 1950], 6)
-    ops.element('ShellMITC4', 1989, *[1948, 1955, 1958, 1951], 6)
-    ops.element('ShellMITC4', 1990, *[1953, 1959, 724, 1952], 3)
-    ops.element('ShellMITC4', 1991, *[1952, 724, 1960, 1954], 3)
-    ops.element('ShellMITC4', 1992, *[1954, 1960, 715, 1955], 3)
-    ops.element('ShellMITC4', 1993, *[1955, 715, 1961, 1956], 3)
-    ops.element('ShellMITC4', 1994, *[1952, 724, 1962, 1957], 6)
-    ops.element('ShellMITC4', 1995, *[1955, 715, 1963, 1958], 6)
-    ops.element('ShellMITC4', 1996, *[1959, 1965, 1964, 724], 3)
-    ops.element('ShellMITC4', 1997, *[724, 1964, 1966, 1960], 3)
-    ops.element('ShellMITC4', 1998, *[1960, 1966, 1967, 715], 3)
-    ops.element('ShellMITC4', 1999, *[715, 1967, 1968, 1961], 3)
-    ops.element('ShellMITC4', 2000, *[724, 1964, 1969, 1962], 6)
-    ops.element('ShellMITC4', 2001, *[715, 1967, 1970, 1963], 6)
-    ops.element('ShellMITC4', 2002, *[1965, 1972, 1971, 1964], 3)
-    ops.element('ShellMITC4', 2003, *[1964, 1971, 1973, 1966], 3)
-    ops.element('ShellMITC4', 2004, *[1966, 1973, 1974, 1967], 3)
-    ops.element('ShellMITC4', 2005, *[1967, 1974, 1975, 1968], 3)
-    ops.element('ShellMITC4', 2006, *[1964, 1971, 1976, 1969], 6)
-    ops.element('ShellMITC4', 2007, *[1967, 1974, 1977, 1970], 6)
-    ops.element('ShellMITC4', 2008, *[1972, 1979, 1978, 1971], 3)
-    ops.element('ShellMITC4', 2009, *[1971, 1978, 1980, 1973], 3)
-    ops.element('ShellMITC4', 2010, *[1973, 1980, 1981, 1974], 3)
-    ops.element('ShellMITC4', 2011, *[1974, 1981, 1982, 1975], 3)
-    ops.element('ShellMITC4', 2012, *[1971, 1978, 1983, 1976], 6)
-    ops.element('ShellMITC4', 2013, *[1974, 1981, 1984, 1977], 6)
-    ops.element('ShellMITC4', 2014, *[1979, 1985, 725, 1978], 3)
-    ops.element('ShellMITC4', 2015, *[1978, 725, 1986, 1980], 3)
-    ops.element('ShellMITC4', 2016, *[1980, 1986, 716, 1981], 3)
-    ops.element('ShellMITC4', 2017, *[1981, 716, 1987, 1982], 3)
-    ops.element('ShellMITC4', 2018, *[1978, 725, 1988, 1983], 6)
-    ops.element('ShellMITC4', 2019, *[1981, 716, 1989, 1984], 6)
-    ops.element('ShellMITC4', 2020, *[1985, 1991, 1990, 725], 3)
-    ops.element('ShellMITC4', 2021, *[725, 1990, 1992, 1986], 3)
-    ops.element('ShellMITC4', 2022, *[1986, 1992, 1993, 716], 3)
-    ops.element('ShellMITC4', 2023, *[716, 1993, 1994, 1987], 3)
-    ops.element('ShellMITC4', 2024, *[725, 1990, 1995, 1988], 6)
-    ops.element('ShellMITC4', 2025, *[716, 1993, 1996, 1989], 6)
-    ops.element('ShellMITC4', 2026, *[1991, 1998, 1997, 1990], 3)
-    ops.element('ShellMITC4', 2027, *[1990, 1997, 1999, 1992], 3)
-    ops.element('ShellMITC4', 2028, *[1992, 1999, 2000, 1993], 3)
-    ops.element('ShellMITC4', 2029, *[1993, 2000, 2001, 1994], 3)
-    ops.element('ShellMITC4', 2030, *[1990, 1997, 2002, 1995], 6)
-    ops.element('ShellMITC4', 2031, *[1993, 2000, 2003, 1996], 6)
-    ops.element('ShellMITC4', 2032, *[1998, 2005, 2004, 1997], 3)
-    ops.element('ShellMITC4', 2033, *[1997, 2004, 2006, 1999], 3)
-    ops.element('ShellMITC4', 2034, *[1999, 2006, 2007, 2000], 3)
-    ops.element('ShellMITC4', 2035, *[2000, 2007, 2008, 2001], 3)
-    ops.element('ShellMITC4', 2036, *[1997, 2004, 2009, 2002], 6)
-    ops.element('ShellMITC4', 2037, *[2000, 2007, 2010, 2003], 6)
-    ops.element('ShellMITC4', 2038, *[2005, 2011, 726, 2004], 3)
-    ops.element('ShellMITC4', 2039, *[2004, 726, 2012, 2006], 3)
-    ops.element('ShellMITC4', 2040, *[2006, 2012, 717, 2007], 3)
-    ops.element('ShellMITC4', 2041, *[2007, 717, 2013, 2008], 3)
-    ops.element('ShellMITC4', 2042, *[2004, 726, 2014, 2009], 6)
-    ops.element('ShellMITC4', 2043, *[2007, 717, 2015, 2010], 6)
-    ops.element('ShellMITC4', 2044, *[726, 2011, 2017, 2016], 3)
-    ops.element('ShellMITC4', 2045, *[726, 2016, 2018, 2012], 3)
-    ops.element('ShellMITC4', 2046, *[717, 2012, 2018, 2019], 3)
-    ops.element('ShellMITC4', 2047, *[717, 2019, 2020, 2013], 3)
-    ops.element('ShellMITC4', 2048, *[726, 2016, 2021, 2014], 6)
-    ops.element('ShellMITC4', 2049, *[717, 2019, 2022, 2015], 6)
-    ops.element('ShellMITC4', 2050, *[2017, 2024, 2023, 2016], 3)
-    ops.element('ShellMITC4', 2051, *[2016, 2023, 2025, 2018], 3)
-    ops.element('ShellMITC4', 2052, *[2018, 2025, 2026, 2019], 3)
-    ops.element('ShellMITC4', 2053, *[2019, 2026, 2027, 2020], 3)
-    ops.element('ShellMITC4', 2054, *[2016, 2023, 2028, 2021], 6)
-    ops.element('ShellMITC4', 2055, *[2019, 2026, 2029, 2022], 6)
-    ops.element('ShellMITC4', 2056, *[2024, 2031, 2030, 2023], 3)
-    ops.element('ShellMITC4', 2057, *[2023, 2030, 2032, 2025], 3)
-    ops.element('ShellMITC4', 2058, *[2025, 2032, 2033, 2026], 3)
-    ops.element('ShellMITC4', 2059, *[2026, 2033, 2034, 2027], 3)
-    ops.element('ShellMITC4', 2060, *[2023, 2030, 2035, 2028], 6)
-    ops.element('ShellMITC4', 2061, *[2026, 2033, 2036, 2029], 6)
-    ops.element('ShellMITC4', 2062, *[2031, 1716, 680, 2030], 3)
-    ops.element('ShellMITC4', 2063, *[2030, 680, 1717, 2032], 3)
-    ops.element('ShellMITC4', 2064, *[2032, 1717, 670, 2033], 3)
-    ops.element('ShellMITC4', 2065, *[2033, 670, 1718, 2034], 3)
-    ops.element('ShellMITC4', 2066, *[2030, 680, 1719, 2035], 6)
-    ops.element('ShellMITC4', 2067, *[2033, 670, 1720, 2036], 6)
-    ops.element('ShellMITC4', 2068, *[2038, 1803, 700, 2037], 3)
-    ops.element('ShellMITC4', 2069, *[2037, 700, 1804, 2039], 3)
-    ops.element('ShellMITC4', 2070, *[2039, 1804, 682, 2040], 3)
-    ops.element('ShellMITC4', 2071, *[2040, 682, 1805, 2041], 3)
-    ops.element('ShellMITC4', 2072, *[2037, 700, 1806, 2042], 6)
-    ops.element('ShellMITC4', 2073, *[2040, 682, 1807, 2043], 6)
-    ops.element('ShellMITC4', 2074, *[2045, 2038, 2037, 2044], 3)
-    ops.element('ShellMITC4', 2075, *[2044, 2037, 2039, 2046], 3)
-    ops.element('ShellMITC4', 2076, *[2046, 2039, 2040, 2047], 3)
-    ops.element('ShellMITC4', 2077, *[2047, 2040, 2041, 2048], 3)
-    ops.element('ShellMITC4', 2078, *[2044, 2037, 2042, 2049], 6)
-    ops.element('ShellMITC4', 2079, *[2047, 2040, 2043, 2050], 6)
-    ops.element('ShellMITC4', 2080, *[2052, 2045, 2044, 2051], 3)
-    ops.element('ShellMITC4', 2081, *[2054, 2047, 2048, 2055], 3)
-    ops.element('ShellMITC4', 2082, *[2051, 2044, 2049, 2056], 6)
-    ops.element('ShellMITC4', 2083, *[2054, 2047, 2050, 2057], 6)
-    ops.element('ShellMITC4', 2084, *[2058, 2052, 2051, 701], 3)
-    ops.element('ShellMITC4', 2085, *[701, 2051, 2053, 2059], 3)
-    ops.element('ShellMITC4', 2086, *[2059, 2053, 2054, 684], 3)
-    ops.element('ShellMITC4', 2087, *[684, 2054, 2055, 2060], 3)
-    ops.element('ShellMITC4', 2088, *[701, 2051, 2056, 2061], 6)
-    ops.element('ShellMITC4', 2089, *[684, 2054, 2057, 2062], 6)
-    ops.element('ShellMITC4', 2090, *[2064, 2058, 701, 2063], 3)
-    ops.element('ShellMITC4', 2091, *[2063, 701, 2059, 2065], 3)
-    ops.element('ShellMITC4', 2092, *[2065, 2059, 684, 2066], 3)
-    ops.element('ShellMITC4', 2093, *[2066, 684, 2060, 2067], 3)
-    ops.element('ShellMITC4', 2094, *[2063, 701, 2061, 2068], 6)
-    ops.element('ShellMITC4', 2095, *[2066, 684, 2062, 2069], 6)
-    ops.element('ShellMITC4', 2096, *[2071, 2064, 2063, 2070], 3)
-    ops.element('ShellMITC4', 2097, *[2070, 2063, 2065, 2072], 3)
-    ops.element('ShellMITC4', 2098, *[2072, 2065, 2066, 2073], 3)
-    ops.element('ShellMITC4', 2099, *[2073, 2066, 2067, 2074], 3)
-    ops.element('ShellMITC4', 2100, *[2070, 2063, 2068, 2075], 6)
-    ops.element('ShellMITC4', 2101, *[2073, 2066, 2069, 2076], 6)
-    ops.element('ShellMITC4', 2102, *[2078, 2071, 2070, 2077], 3)
-    ops.element('ShellMITC4', 2103, *[2077, 2070, 2072, 2079], 3)
-    ops.element('ShellMITC4', 2104, *[2079, 2072, 2073, 2080], 3)
-    ops.element('ShellMITC4', 2105, *[2080, 2073, 2074, 2081], 3)
-    ops.element('ShellMITC4', 2106, *[2077, 2070, 2075, 2082], 6)
-    ops.element('ShellMITC4', 2107, *[2080, 2073, 2076, 2083], 6)
-    ops.element('ShellMITC4', 2108, *[2084, 2078, 2077, 702], 3)
-    ops.element('ShellMITC4', 2109, *[702, 2077, 2079, 2085], 3)
-    ops.element('ShellMITC4', 2110, *[2085, 2079, 2080, 686], 3)
-    ops.element('ShellMITC4', 2111, *[686, 2080, 2081, 2086], 3)
-    ops.element('ShellMITC4', 2112, *[702, 2077, 2082, 2087], 6)
-    ops.element('ShellMITC4', 2113, *[686, 2080, 2083, 2088], 6)
-    ops.element('ShellMITC4', 2114, *[2090, 2084, 702, 2089], 3)
-    ops.element('ShellMITC4', 2115, *[2089, 702, 2085, 2091], 3)
-    ops.element('ShellMITC4', 2116, *[2091, 2085, 686, 2092], 3)
-    ops.element('ShellMITC4', 2117, *[2092, 686, 2086, 2093], 3)
-    ops.element('ShellMITC4', 2118, *[2089, 702, 2087, 2094], 6)
-    ops.element('ShellMITC4', 2119, *[2092, 686, 2088, 2095], 6)
-    ops.element('ShellMITC4', 2120, *[2097, 2090, 2089, 2096], 3)
-    ops.element('ShellMITC4', 2121, *[2096, 2089, 2091, 2098], 3)
-    ops.element('ShellMITC4', 2122, *[2098, 2091, 2092, 2099], 3)
-    ops.element('ShellMITC4', 2123, *[2099, 2092, 2093, 2100], 3)
-    ops.element('ShellMITC4', 2124, *[2096, 2089, 2094, 2101], 6)
-    ops.element('ShellMITC4', 2125, *[2099, 2092, 2095, 2102], 6)
-    ops.element('ShellMITC4', 2126, *[2104, 2097, 2096, 2103], 3)
-    ops.element('ShellMITC4', 2127, *[2106, 2099, 2100, 2107], 3)
-    ops.element('ShellMITC4', 2128, *[2103, 2096, 2101, 2108], 6)
-    ops.element('ShellMITC4', 2129, *[2106, 2099, 2102, 2109], 6)
-    ops.element('ShellMITC4', 2130, *[2110, 2104, 2103, 703], 3)
-    ops.element('ShellMITC4', 2131, *[703, 2103, 2105, 2111], 3)
-    ops.element('ShellMITC4', 2132, *[2111, 2105, 2106, 688], 3)
-    ops.element('ShellMITC4', 2133, *[688, 2106, 2107, 2112], 3)
-    ops.element('ShellMITC4', 2134, *[703, 2103, 2108, 2113], 6)
-    ops.element('ShellMITC4', 2135, *[688, 2106, 2109, 2114], 6)
-    ops.element('ShellMITC4', 2136, *[2116, 2110, 703, 2115], 3)
-    ops.element('ShellMITC4', 2137, *[2115, 703, 2111, 2117], 3)
-    ops.element('ShellMITC4', 2138, *[2117, 2111, 688, 2118], 3)
-    ops.element('ShellMITC4', 2139, *[2118, 688, 2112, 2119], 3)
-    ops.element('ShellMITC4', 2140, *[2115, 703, 2113, 2120], 6)
-    ops.element('ShellMITC4', 2141, *[2118, 688, 2114, 2121], 6)
-    ops.element('ShellMITC4', 2142, *[2123, 2116, 2115, 2122], 3)
-    ops.element('ShellMITC4', 2143, *[2122, 2115, 2117, 2124], 3)
-    ops.element('ShellMITC4', 2144, *[2124, 2117, 2118, 2125], 3)
-    ops.element('ShellMITC4', 2145, *[2125, 2118, 2119, 2126], 3)
-    ops.element('ShellMITC4', 2146, *[2122, 2115, 2120, 2127], 6)
-    ops.element('ShellMITC4', 2147, *[2125, 2118, 2121, 2128], 6)
-    ops.element('ShellMITC4', 2148, *[2130, 2123, 2122, 2129], 3)
-    ops.element('ShellMITC4', 2149, *[2129, 2122, 2124, 2131], 3)
-    ops.element('ShellMITC4', 2150, *[2131, 2124, 2125, 2132], 3)
-    ops.element('ShellMITC4', 2151, *[2132, 2125, 2126, 2133], 3)
-    ops.element('ShellMITC4', 2152, *[2129, 2122, 2127, 2134], 6)
-    ops.element('ShellMITC4', 2153, *[2132, 2125, 2128, 2135], 6)
-    ops.element('ShellMITC4', 2154, *[2136, 2130, 2129, 704], 3)
-    ops.element('ShellMITC4', 2155, *[704, 2129, 2131, 2137], 3)
-    ops.element('ShellMITC4', 2156, *[2137, 2131, 2132, 690], 3)
-    ops.element('ShellMITC4', 2157, *[690, 2132, 2133, 2138], 3)
-    ops.element('ShellMITC4', 2158, *[704, 2129, 2134, 2139], 6)
-    ops.element('ShellMITC4', 2159, *[690, 2132, 2135, 2140], 6)
-    ops.element('ShellMITC4', 2160, *[2142, 2136, 704, 2141], 3)
-    ops.element('ShellMITC4', 2161, *[2141, 704, 2137, 2143], 3)
-    ops.element('ShellMITC4', 2162, *[2143, 2137, 690, 2144], 3)
-    ops.element('ShellMITC4', 2163, *[2144, 690, 2138, 2145], 3)
-    ops.element('ShellMITC4', 2164, *[2141, 704, 2139, 2146], 6)
-    ops.element('ShellMITC4', 2165, *[2144, 690, 2140, 2147], 6)
-    ops.element('ShellMITC4', 2166, *[2149, 2142, 2141, 2148], 3)
-    ops.element('ShellMITC4', 2167, *[2148, 2141, 2143, 2150], 3)
-    ops.element('ShellMITC4', 2168, *[2150, 2143, 2144, 2151], 3)
-    ops.element('ShellMITC4', 2169, *[2151, 2144, 2145, 2152], 3)
-    ops.element('ShellMITC4', 2170, *[2148, 2141, 2146, 2153], 6)
-    ops.element('ShellMITC4', 2171, *[2151, 2144, 2147, 2154], 6)
-    ops.element('ShellMITC4', 2172, *[2156, 2149, 2148, 2155], 3)
-    ops.element('ShellMITC4', 2173, *[2155, 2148, 2150, 2157], 3)
-    ops.element('ShellMITC4', 2174, *[2157, 2150, 2151, 2158], 3)
-    ops.element('ShellMITC4', 2175, *[2158, 2151, 2152, 2159], 3)
-    ops.element('ShellMITC4', 2176, *[2155, 2148, 2153, 2160], 6)
-    ops.element('ShellMITC4', 2177, *[2158, 2151, 2154, 2161], 6)
-    ops.element('ShellMITC4', 2178, *[2162, 2156, 2155, 705], 3)
-    ops.element('ShellMITC4', 2179, *[692, 2158, 2159, 2164], 3)
-    ops.element('ShellMITC4', 2180, *[705, 2155, 2160, 2165], 6)
-    ops.element('ShellMITC4', 2181, *[692, 2158, 2161, 2166], 6)
-    ops.element('ShellMITC4', 2182, *[2168, 2162, 705, 2167], 3)
-    ops.element('ShellMITC4', 2183, *[2167, 705, 2163, 2169], 3)
-    ops.element('ShellMITC4', 2184, *[2169, 2163, 692, 2170], 3)
-    ops.element('ShellMITC4', 2185, *[2170, 692, 2164, 2171], 3)
-    ops.element('ShellMITC4', 2186, *[2167, 705, 2165, 2172], 6)
-    ops.element('ShellMITC4', 2187, *[2170, 692, 2166, 2173], 6)
-    ops.element('ShellMITC4', 2188, *[2175, 2168, 2167, 2174], 3)
-    ops.element('ShellMITC4', 2189, *[2174, 2167, 2169, 2176], 3)
-    ops.element('ShellMITC4', 2190, *[2176, 2169, 2170, 2177], 3)
-    ops.element('ShellMITC4', 2191, *[2177, 2170, 2171, 2178], 3)
-    ops.element('ShellMITC4', 2192, *[2174, 2167, 2172, 2179], 6)
-    ops.element('ShellMITC4', 2193, *[2177, 2170, 2173, 2180], 6)
-    ops.element('ShellMITC4', 2194, *[2182, 2175, 2174, 2181], 3)
-    ops.element('ShellMITC4', 2195, *[2181, 2174, 2176, 2183], 3)
-    ops.element('ShellMITC4', 2196, *[2183, 2176, 2177, 2184], 3)
-    ops.element('ShellMITC4', 2197, *[2184, 2177, 2178, 2185], 3)
-    ops.element('ShellMITC4', 2198, *[2181, 2174, 2179, 2186], 6)
-    ops.element('ShellMITC4', 2199, *[2184, 2177, 2180, 2187], 6)
-    ops.element('ShellMITC4', 2200, *[2188, 2182, 2181, 706], 3)
-    ops.element('ShellMITC4', 2201, *[706, 2181, 2183, 2189], 3)
-    ops.element('ShellMITC4', 2202, *[2189, 2183, 2184, 694], 3)
-    ops.element('ShellMITC4', 2203, *[694, 2184, 2185, 2190], 3)
-    ops.element('ShellMITC4', 2204, *[706, 2181, 2186, 2191], 6)
-    ops.element('ShellMITC4', 2205, *[694, 2184, 2187, 2192], 6)
-    ops.element('ShellMITC4', 2206, *[2194, 2188, 706, 2193], 3)
-    ops.element('ShellMITC4', 2207, *[2193, 706, 2189, 2195], 3)
-    ops.element('ShellMITC4', 2208, *[2195, 2189, 694, 2196], 3)
-    ops.element('ShellMITC4', 2209, *[2196, 694, 2190, 2197], 3)
-    ops.element('ShellMITC4', 2210, *[2193, 706, 2191, 2198], 6)
-    ops.element('ShellMITC4', 2211, *[2196, 694, 2192, 2199], 6)
-    ops.element('ShellMITC4', 2212, *[2201, 2194, 2193, 2200], 3)
-    ops.element('ShellMITC4', 2213, *[2200, 2193, 2195, 2202], 3)
-    ops.element('ShellMITC4', 2214, *[2202, 2195, 2196, 2203], 3)
-    ops.element('ShellMITC4', 2215, *[2203, 2196, 2197, 2204], 3)
-    ops.element('ShellMITC4', 2216, *[2200, 2193, 2198, 2205], 6)
-    ops.element('ShellMITC4', 2217, *[2203, 2196, 2199, 2206], 6)
-    ops.element('ShellMITC4', 2218, *[2208, 2201, 2200, 2207], 3)
-    ops.element('ShellMITC4', 2219, *[2207, 2200, 2202, 2209], 3)
-    ops.element('ShellMITC4', 2220, *[2209, 2202, 2203, 2210], 3)
-    ops.element('ShellMITC4', 2221, *[2210, 2203, 2204, 2211], 3)
-    ops.element('ShellMITC4', 2222, *[2207, 2200, 2205, 2212], 6)
-    ops.element('ShellMITC4', 2223, *[2210, 2203, 2206, 2213], 6)
-    ops.element('ShellMITC4', 2224, *[707, 2214, 2208, 2207], 3)
-    ops.element('ShellMITC4', 2225, *[696, 2210, 2211, 2216], 3)
-    ops.element('ShellMITC4', 2226, *[707, 2207, 2212, 2217], 6)
-    ops.element('ShellMITC4', 2227, *[696, 2210, 2213, 2218], 6)
-    ops.element('ShellMITC4', 2228, *[2220, 2214, 707, 2219], 3)
-    ops.element('ShellMITC4', 2229, *[2219, 707, 2215, 2221], 3)
-    ops.element('ShellMITC4', 2230, *[2221, 2215, 696, 2222], 3)
-    ops.element('ShellMITC4', 2231, *[2222, 696, 2216, 2223], 3)
-    ops.element('ShellMITC4', 2232, *[2219, 707, 2217, 2224], 6)
-    ops.element('ShellMITC4', 2233, *[2222, 696, 2218, 2225], 6)
-    ops.element('ShellMITC4', 2234, *[2227, 2220, 2219, 2226], 3)
-    ops.element('ShellMITC4', 2235, *[2226, 2219, 2221, 2228], 3)
-    ops.element('ShellMITC4', 2236, *[2228, 2221, 2222, 2229], 3)
-    ops.element('ShellMITC4', 2237, *[2229, 2222, 2223, 2230], 3)
-    ops.element('ShellMITC4', 2238, *[2226, 2219, 2224, 2231], 6)
-    ops.element('ShellMITC4', 2239, *[2229, 2222, 2225, 2232], 6)
-    ops.element('ShellMITC4', 2240, *[2234, 2227, 2226, 2233], 3)
-    ops.element('ShellMITC4', 2241, *[2233, 2226, 2228, 2235], 3)
-    ops.element('ShellMITC4', 2242, *[2235, 2228, 2229, 2236], 3)
-    ops.element('ShellMITC4', 2243, *[2236, 2229, 2230, 2237], 3)
-    ops.element('ShellMITC4', 2244, *[2233, 2226, 2231, 2238], 6)
-    ops.element('ShellMITC4', 2245, *[2236, 2229, 2232, 2239], 6)
-    ops.element('ShellMITC4', 2246, *[2240, 2234, 2233, 708], 3)
-    ops.element('ShellMITC4', 2247, *[708, 2233, 2235, 2241], 3)
-    ops.element('ShellMITC4', 2248, *[2241, 2235, 2236, 698], 3)
-    ops.element('ShellMITC4', 2249, *[698, 2236, 2237, 2242], 3)
-    ops.element('ShellMITC4', 2250, *[708, 2233, 2238, 2243], 6)
-    ops.element('ShellMITC4', 2251, *[698, 2236, 2239, 2244], 6)
-    ops.element('ShellMITC4', 2252, *[2246, 2240, 708, 2245], 3)
-    ops.element('ShellMITC4', 2253, *[2245, 708, 2241, 2247], 3)
-    ops.element('ShellMITC4', 2254, *[2247, 2241, 698, 2248], 3)
-    ops.element('ShellMITC4', 2255, *[2248, 698, 2242, 2249], 3)
-    ops.element('ShellMITC4', 2256, *[2245, 708, 2243, 2250], 6)
-    ops.element('ShellMITC4', 2257, *[2248, 698, 2244, 2251], 6)
-    ops.element('ShellMITC4', 2258, *[2253, 2246, 2245, 2252], 3)
-    ops.element('ShellMITC4', 2259, *[2252, 2245, 2247, 2254], 3)
-    ops.element('ShellMITC4', 2260, *[2254, 2247, 2248, 2255], 3)
-    ops.element('ShellMITC4', 2261, *[2255, 2248, 2249, 2256], 3)
-    ops.element('ShellMITC4', 2262, *[2252, 2245, 2250, 2257], 6)
-    ops.element('ShellMITC4', 2263, *[2255, 2248, 2251, 2258], 6)
-    ops.element('ShellMITC4', 2264, *[2260, 2253, 2252, 2259], 3)
-    ops.element('ShellMITC4', 2265, *[2259, 2252, 2254, 2261], 3)
-    ops.element('ShellMITC4', 2266, *[2261, 2254, 2255, 2262], 3)
-    ops.element('ShellMITC4', 2267, *[2262, 2255, 2256, 2263], 3)
-    ops.element('ShellMITC4', 2268, *[2259, 2252, 2257, 2264], 6)
-    ops.element('ShellMITC4', 2269, *[2262, 2255, 2258, 2265], 6)
-    ops.element('ShellMITC4', 2270, *[576, 2266, 2260, 2259], 3)
-    ops.element('ShellMITC4', 2271, *[576, 2259, 2261, 574], 3)
-    ops.element('ShellMITC4', 2272, *[574, 2261, 2262, 575], 3)
-    ops.element('ShellMITC4', 2273, *[575, 2262, 2263, 2267], 3)
-    ops.element('ShellMITC4', 2274, *[576, 2259, 2264, 2268], 6)
-    ops.element('ShellMITC4', 2275, *[575, 2262, 2265, 2269], 6)
-    ops.element('ShellMITC4', 2276, *[568, 1320, 1322, 566], 3)
-    ops.element('ShellMITC4', 2277, *[1315, 566, 567, 1316], 3)
-    ops.element('ShellMITC4', 2278, *[566, 1322, 1323, 567], 3)
-    ops.element('ShellMITC4', 2279, *[580, 2207, 2209, 578], 3)
-    ops.element('ShellMITC4', 2280, *[707, 580, 578, 2215], 3)
-    ops.element('ShellMITC4', 2281, *[578, 2209, 2210, 579], 3)
-    ops.element('ShellMITC4', 2282, *[696, 2215, 578, 579], 3)
-    ops.element('ShellMITC4', 2283, *[584, 2155, 2157, 582], 3)
-    ops.element('ShellMITC4', 2284, *[705, 584, 582, 2163], 3)
-    ops.element('ShellMITC4', 2285, *[582, 2157, 2158, 583], 3)
-    ops.element('ShellMITC4', 2286, *[2163, 582, 583, 692], 3)
-    ops.element('ShellMITC4', 2287, *[588, 2096, 2098, 586], 3)
-    ops.element('ShellMITC4', 2288, *[2103, 588, 586, 2105], 3)
-    ops.element('ShellMITC4', 2289, *[586, 2098, 2099, 587], 3)
-    ops.element('ShellMITC4', 2290, *[2105, 586, 587, 2106], 3)
-    ops.element('ShellMITC4', 2291, *[592, 2044, 2046, 590], 3)
-    ops.element('ShellMITC4', 2292, *[2051, 592, 590, 2053], 3)
-    ops.element('ShellMITC4', 2293, *[590, 2046, 2047, 591], 3)
-    ops.element('ShellMITC4', 2294, *[2053, 590, 591, 2054], 3)
+    ops.element("ShellMITC4", 849, *[73, 19, 13, 67], 12)
+    ops.element("ShellMITC4", 850, *[79, 25, 19, 73], 12)
+    ops.element("ShellMITC4", 851, *[85, 31, 25, 79], 12)
+    ops.element("ShellMITC4", 852, *[91, 37, 31, 85], 12)
+    ops.element("ShellMITC4", 853, *[1424, 560, 558, 1426], 3)
+    ops.element("ShellMITC4", 854, *[560, 659, 1432, 558], 3)
+    ops.element("ShellMITC4", 855, *[97, 43, 37, 91], 12)
+    ops.element("ShellMITC4", 856, *[103, 49, 43, 97], 12)
+    ops.element("ShellMITC4", 857, *[109, 55, 49, 103], 12)
+    ops.element("ShellMITC4", 858, *[115, 61, 55, 109], 12)
+    ops.element("ShellMITC4", 859, *[127, 73, 67, 121], 12)
+    ops.element("ShellMITC4", 860, *[1, 79, 73, 127], 12)
+    ops.element("ShellMITC4", 861, *[139, 85, 79, 1], 12)
+    ops.element("ShellMITC4", 862, *[145, 91, 85, 139], 12)
+    ops.element("ShellMITC4", 863, *[151, 97, 91, 145], 12)
+    ops.element("ShellMITC4", 864, *[4, 103, 97, 151], 12)
+    ops.element("ShellMITC4", 865, *[163, 109, 103, 4], 12)
+    ops.element("ShellMITC4", 866, *[169, 115, 109, 163], 12)
+    ops.element("ShellMITC4", 867, *[181, 127, 121, 175], 12)
+    ops.element("ShellMITC4", 868, *[187, 1, 127, 181], 12)
+    ops.element("ShellMITC4", 869, *[193, 139, 1, 187], 12)
+    ops.element("ShellMITC4", 870, *[199, 145, 139, 193], 12)
+    ops.element("ShellMITC4", 871, *[205, 151, 145, 199], 12)
+    ops.element("ShellMITC4", 872, *[211, 4, 151, 205], 12)
+    ops.element("ShellMITC4", 873, *[217, 163, 4, 211], 12)
+    ops.element("ShellMITC4", 874, *[223, 169, 163, 217], 12)
+    ops.element("ShellMITC4", 875, *[235, 181, 175, 229], 12)
+    ops.element("ShellMITC4", 876, *[241, 187, 181, 235], 12)
+    ops.element("ShellMITC4", 877, *[247, 193, 187, 241], 12)
+    ops.element("ShellMITC4", 878, *[253, 199, 193, 247], 12)
+    ops.element("ShellMITC4", 879, *[259, 205, 199, 253], 12)
+    ops.element("ShellMITC4", 880, *[265, 211, 205, 259], 12)
+    ops.element("ShellMITC4", 881, *[271, 217, 211, 265], 12)
+    ops.element("ShellMITC4", 882, *[277, 223, 217, 271], 12)
+    ops.element("ShellMITC4", 883, *[343, 289, 283, 337], 12)
+    ops.element("ShellMITC4", 884, *[349, 295, 289, 343], 12)
+    ops.element("ShellMITC4", 885, *[355, 301, 295, 349], 12)
+    ops.element("ShellMITC4", 886, *[361, 307, 301, 355], 12)
+    ops.element("ShellMITC4", 887, *[367, 313, 307, 361], 12)
+    ops.element("ShellMITC4", 888, *[373, 319, 313, 367], 12)
+    ops.element("ShellMITC4", 889, *[379, 325, 319, 373], 12)
+    ops.element("ShellMITC4", 890, *[385, 331, 325, 379], 12)
+    ops.element("ShellMITC4", 891, *[397, 343, 337, 391], 12)
+    ops.element("ShellMITC4", 892, *[7, 349, 343, 397], 12)
+    ops.element("ShellMITC4", 893, *[409, 355, 349, 7], 12)
+    ops.element("ShellMITC4", 894, *[415, 361, 355, 409], 12)
+    ops.element("ShellMITC4", 895, *[421, 367, 361, 415], 12)
+    ops.element("ShellMITC4", 896, *[10, 373, 367, 421], 12)
+    ops.element("ShellMITC4", 897, *[433, 379, 373, 10], 12)
+    ops.element("ShellMITC4", 898, *[439, 385, 379, 433], 12)
+    ops.element("ShellMITC4", 899, *[451, 397, 391, 445], 12)
+    ops.element("ShellMITC4", 900, *[457, 7, 397, 451], 12)
+    ops.element("ShellMITC4", 901, *[463, 409, 7, 457], 12)
+    ops.element("ShellMITC4", 902, *[469, 415, 409, 463], 12)
+    ops.element("ShellMITC4", 903, *[475, 421, 415, 469], 12)
+    ops.element("ShellMITC4", 904, *[481, 10, 421, 475], 12)
+    ops.element("ShellMITC4", 905, *[487, 433, 10, 481], 12)
+    ops.element("ShellMITC4", 906, *[493, 439, 433, 487], 12)
+    ops.element("ShellMITC4", 907, *[505, 451, 445, 499], 12)
+    ops.element("ShellMITC4", 908, *[511, 457, 451, 505], 12)
+    ops.element("ShellMITC4", 909, *[517, 463, 457, 511], 12)
+    ops.element("ShellMITC4", 910, *[523, 469, 463, 517], 12)
+    ops.element("ShellMITC4", 911, *[529, 475, 469, 523], 12)
+    ops.element("ShellMITC4", 912, *[535, 481, 475, 529], 12)
+    ops.element("ShellMITC4", 913, *[541, 487, 481, 535], 12)
+    ops.element("ShellMITC4", 914, *[547, 493, 487, 541], 12)
+    ops.element("ShellMITC4", 915, *[729, 730, 727, 728], 9)
+    ops.element("ShellMITC4", 916, *[731, 732, 730, 729], 9)
+    ops.element("ShellMITC4", 917, *[733, 595, 732, 731], 9)
+    ops.element("ShellMITC4", 918, *[734, 735, 595, 733], 9)
+    ops.element("ShellMITC4", 919, *[736, 737, 735, 734], 9)
+    ops.element("ShellMITC4", 920, *[738, 739, 737, 736], 9)
+    ops.element("ShellMITC4", 921, *[741, 729, 728, 740], 9)
+    ops.element("ShellMITC4", 922, *[742, 731, 729, 741], 9)
+    ops.element("ShellMITC4", 923, *[743, 733, 731, 742], 9)
+    ops.element("ShellMITC4", 924, *[744, 734, 733, 743], 9)
+    ops.element("ShellMITC4", 925, *[745, 736, 734, 744], 9)
+    ops.element("ShellMITC4", 926, *[746, 738, 736, 745], 9)
+    ops.element("ShellMITC4", 927, *[747, 741, 740, 593], 9)
+    ops.element("ShellMITC4", 928, *[748, 742, 741, 747], 9)
+    ops.element("ShellMITC4", 929, *[553, 743, 742, 748], 9)
+    ops.element("ShellMITC4", 930, *[749, 744, 743, 553], 9)
+    ops.element("ShellMITC4", 931, *[750, 745, 744, 749], 9)
+    ops.element("ShellMITC4", 932, *[594, 746, 745, 750], 9)
+    ops.element("ShellMITC4", 933, *[752, 747, 593, 751], 9)
+    ops.element("ShellMITC4", 934, *[753, 748, 747, 752], 9)
+    ops.element("ShellMITC4", 935, *[754, 553, 748, 753], 9)
+    ops.element("ShellMITC4", 936, *[755, 749, 553, 754], 9)
+    ops.element("ShellMITC4", 937, *[756, 750, 749, 755], 9)
+    ops.element("ShellMITC4", 938, *[757, 594, 750, 756], 9)
+    ops.element("ShellMITC4", 939, *[759, 752, 751, 758], 9)
+    ops.element("ShellMITC4", 940, *[760, 753, 752, 759], 9)
+    ops.element("ShellMITC4", 941, *[761, 754, 753, 760], 9)
+    ops.element("ShellMITC4", 942, *[762, 755, 754, 761], 9)
+    ops.element("ShellMITC4", 943, *[763, 756, 755, 762], 9)
+    ops.element("ShellMITC4", 944, *[764, 757, 756, 763], 9)
+    ops.element("ShellMITC4", 945, *[766, 759, 758, 765], 9)
+    ops.element("ShellMITC4", 946, *[767, 760, 759, 766], 9)
+    ops.element("ShellMITC4", 947, *[596, 761, 760, 767], 9)
+    ops.element("ShellMITC4", 948, *[768, 762, 761, 596], 9)
+    ops.element("ShellMITC4", 949, *[769, 763, 762, 768], 9)
+    ops.element("ShellMITC4", 950, *[770, 764, 763, 769], 9)
+    ops.element("ShellMITC4", 951, *[773, 774, 771, 772], 9)
+    ops.element("ShellMITC4", 952, *[775, 776, 774, 773], 9)
+    ops.element("ShellMITC4", 953, *[777, 599, 776, 775], 9)
+    ops.element("ShellMITC4", 954, *[778, 779, 599, 777], 9)
+    ops.element("ShellMITC4", 955, *[780, 781, 779, 778], 9)
+    ops.element("ShellMITC4", 956, *[782, 783, 781, 780], 9)
+    ops.element("ShellMITC4", 957, *[785, 773, 772, 784], 9)
+    ops.element("ShellMITC4", 958, *[786, 775, 773, 785], 9)
+    ops.element("ShellMITC4", 959, *[787, 777, 775, 786], 9)
+    ops.element("ShellMITC4", 960, *[788, 778, 777, 787], 9)
+    ops.element("ShellMITC4", 961, *[789, 780, 778, 788], 9)
+    ops.element("ShellMITC4", 962, *[790, 782, 780, 789], 9)
+    ops.element("ShellMITC4", 963, *[791, 785, 784, 597], 9)
+    ops.element("ShellMITC4", 964, *[792, 786, 785, 791], 9)
+    ops.element("ShellMITC4", 965, *[557, 787, 786, 792], 9)
+    ops.element("ShellMITC4", 966, *[793, 788, 787, 557], 9)
+    ops.element("ShellMITC4", 967, *[794, 789, 788, 793], 9)
+    ops.element("ShellMITC4", 968, *[598, 790, 789, 794], 9)
+    ops.element("ShellMITC4", 969, *[796, 791, 597, 795], 9)
+    ops.element("ShellMITC4", 970, *[797, 792, 791, 796], 9)
+    ops.element("ShellMITC4", 971, *[798, 557, 792, 797], 9)
+    ops.element("ShellMITC4", 972, *[799, 793, 557, 798], 9)
+    ops.element("ShellMITC4", 973, *[800, 794, 793, 799], 9)
+    ops.element("ShellMITC4", 974, *[801, 598, 794, 800], 9)
+    ops.element("ShellMITC4", 975, *[803, 796, 795, 802], 9)
+    ops.element("ShellMITC4", 976, *[804, 797, 796, 803], 9)
+    ops.element("ShellMITC4", 977, *[805, 798, 797, 804], 9)
+    ops.element("ShellMITC4", 978, *[806, 799, 798, 805], 9)
+    ops.element("ShellMITC4", 979, *[807, 800, 799, 806], 9)
+    ops.element("ShellMITC4", 980, *[808, 801, 800, 807], 9)
+    ops.element("ShellMITC4", 981, *[810, 803, 802, 809], 9)
+    ops.element("ShellMITC4", 982, *[811, 804, 803, 810], 9)
+    ops.element("ShellMITC4", 983, *[600, 805, 804, 811], 9)
+    ops.element("ShellMITC4", 984, *[812, 806, 805, 600], 9)
+    ops.element("ShellMITC4", 985, *[813, 807, 806, 812], 9)
+    ops.element("ShellMITC4", 986, *[814, 808, 807, 813], 9)
+    ops.element("ShellMITC4", 987, *[817, 818, 815, 816], 9)
+    ops.element("ShellMITC4", 988, *[819, 820, 818, 817], 9)
+    ops.element("ShellMITC4", 989, *[821, 603, 820, 819], 9)
+    ops.element("ShellMITC4", 990, *[822, 823, 603, 821], 9)
+    ops.element("ShellMITC4", 991, *[824, 825, 823, 822], 9)
+    ops.element("ShellMITC4", 992, *[826, 827, 825, 824], 9)
+    ops.element("ShellMITC4", 993, *[829, 817, 816, 828], 9)
+    ops.element("ShellMITC4", 994, *[830, 819, 817, 829], 9)
+    ops.element("ShellMITC4", 995, *[831, 821, 819, 830], 9)
+    ops.element("ShellMITC4", 996, *[832, 822, 821, 831], 9)
+    ops.element("ShellMITC4", 997, *[833, 824, 822, 832], 9)
+    ops.element("ShellMITC4", 998, *[834, 826, 824, 833], 9)
+    ops.element("ShellMITC4", 999, *[835, 829, 828, 601], 9)
+    ops.element("ShellMITC4", 1000, *[836, 830, 829, 835], 9)
+    ops.element("ShellMITC4", 1001, *[561, 831, 830, 836], 9)
+    ops.element("ShellMITC4", 1002, *[837, 832, 831, 561], 9)
+    ops.element("ShellMITC4", 1003, *[838, 833, 832, 837], 9)
+    ops.element("ShellMITC4", 1004, *[602, 834, 833, 838], 9)
+    ops.element("ShellMITC4", 1005, *[840, 835, 601, 839], 9)
+    ops.element("ShellMITC4", 1006, *[841, 836, 835, 840], 9)
+    ops.element("ShellMITC4", 1007, *[842, 561, 836, 841], 9)
+    ops.element("ShellMITC4", 1008, *[843, 837, 561, 842], 9)
+    ops.element("ShellMITC4", 1009, *[844, 838, 837, 843], 9)
+    ops.element("ShellMITC4", 1010, *[845, 602, 838, 844], 9)
+    ops.element("ShellMITC4", 1011, *[847, 840, 839, 846], 9)
+    ops.element("ShellMITC4", 1012, *[848, 841, 840, 847], 9)
+    ops.element("ShellMITC4", 1013, *[849, 842, 841, 848], 9)
+    ops.element("ShellMITC4", 1014, *[850, 843, 842, 849], 9)
+    ops.element("ShellMITC4", 1015, *[851, 844, 843, 850], 9)
+    ops.element("ShellMITC4", 1016, *[852, 845, 844, 851], 9)
+    ops.element("ShellMITC4", 1017, *[854, 847, 846, 853], 9)
+    ops.element("ShellMITC4", 1018, *[855, 848, 847, 854], 9)
+    ops.element("ShellMITC4", 1019, *[604, 849, 848, 855], 9)
+    ops.element("ShellMITC4", 1020, *[856, 850, 849, 604], 9)
+    ops.element("ShellMITC4", 1021, *[857, 851, 850, 856], 9)
+    ops.element("ShellMITC4", 1022, *[858, 852, 851, 857], 9)
+    ops.element("ShellMITC4", 1023, *[861, 862, 859, 860], 9)
+    ops.element("ShellMITC4", 1024, *[863, 864, 862, 861], 9)
+    ops.element("ShellMITC4", 1025, *[865, 607, 864, 863], 9)
+    ops.element("ShellMITC4", 1026, *[866, 867, 607, 865], 9)
+    ops.element("ShellMITC4", 1027, *[868, 869, 867, 866], 9)
+    ops.element("ShellMITC4", 1028, *[870, 871, 869, 868], 9)
+    ops.element("ShellMITC4", 1029, *[873, 861, 860, 872], 9)
+    ops.element("ShellMITC4", 1030, *[874, 863, 861, 873], 9)
+    ops.element("ShellMITC4", 1031, *[875, 865, 863, 874], 9)
+    ops.element("ShellMITC4", 1032, *[876, 866, 865, 875], 9)
+    ops.element("ShellMITC4", 1033, *[877, 868, 866, 876], 9)
+    ops.element("ShellMITC4", 1034, *[878, 870, 868, 877], 9)
+    ops.element("ShellMITC4", 1035, *[879, 873, 872, 605], 9)
+    ops.element("ShellMITC4", 1036, *[880, 874, 873, 879], 9)
+    ops.element("ShellMITC4", 1037, *[565, 875, 874, 880], 9)
+    ops.element("ShellMITC4", 1038, *[881, 876, 875, 565], 9)
+    ops.element("ShellMITC4", 1039, *[882, 877, 876, 881], 9)
+    ops.element("ShellMITC4", 1040, *[606, 878, 877, 882], 9)
+    ops.element("ShellMITC4", 1041, *[884, 879, 605, 883], 9)
+    ops.element("ShellMITC4", 1042, *[885, 880, 879, 884], 9)
+    ops.element("ShellMITC4", 1043, *[886, 565, 880, 885], 9)
+    ops.element("ShellMITC4", 1044, *[887, 881, 565, 886], 9)
+    ops.element("ShellMITC4", 1045, *[888, 882, 881, 887], 9)
+    ops.element("ShellMITC4", 1046, *[889, 606, 882, 888], 9)
+    ops.element("ShellMITC4", 1047, *[891, 884, 883, 890], 9)
+    ops.element("ShellMITC4", 1048, *[892, 885, 884, 891], 9)
+    ops.element("ShellMITC4", 1049, *[893, 886, 885, 892], 9)
+    ops.element("ShellMITC4", 1050, *[894, 887, 886, 893], 9)
+    ops.element("ShellMITC4", 1051, *[895, 888, 887, 894], 9)
+    ops.element("ShellMITC4", 1052, *[896, 889, 888, 895], 9)
+    ops.element("ShellMITC4", 1053, *[898, 891, 890, 897], 9)
+    ops.element("ShellMITC4", 1054, *[899, 892, 891, 898], 9)
+    ops.element("ShellMITC4", 1055, *[608, 893, 892, 899], 9)
+    ops.element("ShellMITC4", 1056, *[900, 894, 893, 608], 9)
+    ops.element("ShellMITC4", 1057, *[901, 895, 894, 900], 9)
+    ops.element("ShellMITC4", 1058, *[902, 896, 895, 901], 9)
+    ops.element("ShellMITC4", 1059, *[905, 906, 903, 904], 9)
+    ops.element("ShellMITC4", 1060, *[907, 908, 906, 905], 9)
+    ops.element("ShellMITC4", 1061, *[909, 611, 908, 907], 9)
+    ops.element("ShellMITC4", 1062, *[910, 911, 611, 909], 9)
+    ops.element("ShellMITC4", 1063, *[912, 913, 911, 910], 9)
+    ops.element("ShellMITC4", 1064, *[914, 915, 913, 912], 9)
+    ops.element("ShellMITC4", 1065, *[917, 905, 904, 916], 9)
+    ops.element("ShellMITC4", 1066, *[918, 907, 905, 917], 9)
+    ops.element("ShellMITC4", 1067, *[919, 909, 907, 918], 9)
+    ops.element("ShellMITC4", 1068, *[920, 910, 909, 919], 9)
+    ops.element("ShellMITC4", 1069, *[921, 912, 910, 920], 9)
+    ops.element("ShellMITC4", 1070, *[922, 914, 912, 921], 9)
+    ops.element("ShellMITC4", 1071, *[923, 917, 916, 609], 9)
+    ops.element("ShellMITC4", 1072, *[924, 918, 917, 923], 9)
+    ops.element("ShellMITC4", 1073, *[569, 919, 918, 924], 9)
+    ops.element("ShellMITC4", 1074, *[925, 920, 919, 569], 9)
+    ops.element("ShellMITC4", 1075, *[926, 921, 920, 925], 9)
+    ops.element("ShellMITC4", 1076, *[610, 922, 921, 926], 9)
+    ops.element("ShellMITC4", 1077, *[928, 923, 609, 927], 9)
+    ops.element("ShellMITC4", 1078, *[929, 924, 923, 928], 9)
+    ops.element("ShellMITC4", 1079, *[930, 569, 924, 929], 9)
+    ops.element("ShellMITC4", 1080, *[931, 925, 569, 930], 9)
+    ops.element("ShellMITC4", 1081, *[932, 926, 925, 931], 9)
+    ops.element("ShellMITC4", 1082, *[933, 610, 926, 932], 9)
+    ops.element("ShellMITC4", 1083, *[935, 928, 927, 934], 9)
+    ops.element("ShellMITC4", 1084, *[936, 929, 928, 935], 9)
+    ops.element("ShellMITC4", 1085, *[937, 930, 929, 936], 9)
+    ops.element("ShellMITC4", 1086, *[938, 931, 930, 937], 9)
+    ops.element("ShellMITC4", 1087, *[939, 932, 931, 938], 9)
+    ops.element("ShellMITC4", 1088, *[940, 933, 932, 939], 9)
+    ops.element("ShellMITC4", 1089, *[942, 935, 934, 941], 9)
+    ops.element("ShellMITC4", 1090, *[943, 936, 935, 942], 9)
+    ops.element("ShellMITC4", 1091, *[612, 937, 936, 943], 9)
+    ops.element("ShellMITC4", 1092, *[944, 938, 937, 612], 9)
+    ops.element("ShellMITC4", 1093, *[945, 939, 938, 944], 9)
+    ops.element("ShellMITC4", 1094, *[946, 940, 939, 945], 9)
+    ops.element("ShellMITC4", 1095, *[949, 950, 947, 948], 9)
+    ops.element("ShellMITC4", 1096, *[951, 952, 950, 949], 9)
+    ops.element("ShellMITC4", 1097, *[953, 615, 952, 951], 9)
+    ops.element("ShellMITC4", 1098, *[954, 955, 615, 953], 9)
+    ops.element("ShellMITC4", 1099, *[956, 957, 955, 954], 9)
+    ops.element("ShellMITC4", 1100, *[958, 959, 957, 956], 9)
+    ops.element("ShellMITC4", 1101, *[961, 949, 948, 960], 9)
+    ops.element("ShellMITC4", 1102, *[962, 951, 949, 961], 9)
+    ops.element("ShellMITC4", 1103, *[963, 953, 951, 962], 9)
+    ops.element("ShellMITC4", 1104, *[964, 954, 953, 963], 9)
+    ops.element("ShellMITC4", 1105, *[965, 956, 954, 964], 9)
+    ops.element("ShellMITC4", 1106, *[966, 958, 956, 965], 9)
+    ops.element("ShellMITC4", 1107, *[967, 961, 960, 613], 9)
+    ops.element("ShellMITC4", 1108, *[968, 962, 961, 967], 9)
+    ops.element("ShellMITC4", 1109, *[573, 963, 962, 968], 9)
+    ops.element("ShellMITC4", 1110, *[969, 964, 963, 573], 9)
+    ops.element("ShellMITC4", 1111, *[970, 965, 964, 969], 9)
+    ops.element("ShellMITC4", 1112, *[614, 966, 965, 970], 9)
+    ops.element("ShellMITC4", 1113, *[972, 967, 613, 971], 9)
+    ops.element("ShellMITC4", 1114, *[973, 968, 967, 972], 9)
+    ops.element("ShellMITC4", 1115, *[974, 573, 968, 973], 9)
+    ops.element("ShellMITC4", 1116, *[975, 969, 573, 974], 9)
+    ops.element("ShellMITC4", 1117, *[976, 970, 969, 975], 9)
+    ops.element("ShellMITC4", 1118, *[977, 614, 970, 976], 9)
+    ops.element("ShellMITC4", 1119, *[979, 972, 971, 978], 9)
+    ops.element("ShellMITC4", 1120, *[980, 973, 972, 979], 9)
+    ops.element("ShellMITC4", 1121, *[981, 974, 973, 980], 9)
+    ops.element("ShellMITC4", 1122, *[982, 975, 974, 981], 9)
+    ops.element("ShellMITC4", 1123, *[983, 976, 975, 982], 9)
+    ops.element("ShellMITC4", 1124, *[984, 977, 976, 983], 9)
+    ops.element("ShellMITC4", 1125, *[986, 979, 978, 985], 9)
+    ops.element("ShellMITC4", 1126, *[987, 980, 979, 986], 9)
+    ops.element("ShellMITC4", 1127, *[616, 981, 980, 987], 9)
+    ops.element("ShellMITC4", 1128, *[988, 982, 981, 616], 9)
+    ops.element("ShellMITC4", 1129, *[989, 983, 982, 988], 9)
+    ops.element("ShellMITC4", 1130, *[990, 984, 983, 989], 9)
+    ops.element("ShellMITC4", 1131, *[993, 994, 991, 992], 9)
+    ops.element("ShellMITC4", 1132, *[995, 996, 994, 993], 9)
+    ops.element("ShellMITC4", 1133, *[997, 619, 996, 995], 9)
+    ops.element("ShellMITC4", 1134, *[998, 999, 619, 997], 9)
+    ops.element("ShellMITC4", 1135, *[1000, 1001, 999, 998], 9)
+    ops.element("ShellMITC4", 1136, *[1002, 1003, 1001, 1000], 9)
+    ops.element("ShellMITC4", 1137, *[1005, 993, 992, 1004], 9)
+    ops.element("ShellMITC4", 1138, *[1006, 995, 993, 1005], 9)
+    ops.element("ShellMITC4", 1139, *[1007, 997, 995, 1006], 9)
+    ops.element("ShellMITC4", 1140, *[1008, 998, 997, 1007], 9)
+    ops.element("ShellMITC4", 1141, *[1009, 1000, 998, 1008], 9)
+    ops.element("ShellMITC4", 1142, *[1010, 1002, 1000, 1009], 9)
+    ops.element("ShellMITC4", 1143, *[1011, 1005, 1004, 617], 9)
+    ops.element("ShellMITC4", 1144, *[1012, 1006, 1005, 1011], 9)
+    ops.element("ShellMITC4", 1145, *[577, 1007, 1006, 1012], 9)
+    ops.element("ShellMITC4", 1146, *[1013, 1008, 1007, 577], 9)
+    ops.element("ShellMITC4", 1147, *[1014, 1009, 1008, 1013], 9)
+    ops.element("ShellMITC4", 1148, *[618, 1010, 1009, 1014], 9)
+    ops.element("ShellMITC4", 1149, *[1016, 1011, 617, 1015], 9)
+    ops.element("ShellMITC4", 1150, *[1017, 1012, 1011, 1016], 9)
+    ops.element("ShellMITC4", 1151, *[1018, 577, 1012, 1017], 9)
+    ops.element("ShellMITC4", 1152, *[1019, 1013, 577, 1018], 9)
+    ops.element("ShellMITC4", 1153, *[1020, 1014, 1013, 1019], 9)
+    ops.element("ShellMITC4", 1154, *[1021, 618, 1014, 1020], 9)
+    ops.element("ShellMITC4", 1155, *[1023, 1016, 1015, 1022], 9)
+    ops.element("ShellMITC4", 1156, *[1024, 1017, 1016, 1023], 9)
+    ops.element("ShellMITC4", 1157, *[1025, 1018, 1017, 1024], 9)
+    ops.element("ShellMITC4", 1158, *[1026, 1019, 1018, 1025], 9)
+    ops.element("ShellMITC4", 1159, *[1027, 1020, 1019, 1026], 9)
+    ops.element("ShellMITC4", 1160, *[1028, 1021, 1020, 1027], 9)
+    ops.element("ShellMITC4", 1161, *[1030, 1023, 1022, 1029], 9)
+    ops.element("ShellMITC4", 1162, *[1031, 1024, 1023, 1030], 9)
+    ops.element("ShellMITC4", 1163, *[620, 1025, 1024, 1031], 9)
+    ops.element("ShellMITC4", 1164, *[1032, 1026, 1025, 620], 9)
+    ops.element("ShellMITC4", 1165, *[1033, 1027, 1026, 1032], 9)
+    ops.element("ShellMITC4", 1166, *[1034, 1028, 1027, 1033], 9)
+    ops.element("ShellMITC4", 1167, *[1037, 1038, 1035, 1036], 9)
+    ops.element("ShellMITC4", 1168, *[1039, 1040, 1038, 1037], 9)
+    ops.element("ShellMITC4", 1169, *[1041, 623, 1040, 1039], 9)
+    ops.element("ShellMITC4", 1170, *[1042, 1043, 623, 1041], 9)
+    ops.element("ShellMITC4", 1171, *[1044, 1045, 1043, 1042], 9)
+    ops.element("ShellMITC4", 1172, *[1046, 1047, 1045, 1044], 9)
+    ops.element("ShellMITC4", 1173, *[1049, 1037, 1036, 1048], 9)
+    ops.element("ShellMITC4", 1174, *[1050, 1039, 1037, 1049], 9)
+    ops.element("ShellMITC4", 1175, *[1051, 1041, 1039, 1050], 9)
+    ops.element("ShellMITC4", 1176, *[1052, 1042, 1041, 1051], 9)
+    ops.element("ShellMITC4", 1177, *[1053, 1044, 1042, 1052], 9)
+    ops.element("ShellMITC4", 1178, *[1054, 1046, 1044, 1053], 9)
+    ops.element("ShellMITC4", 1179, *[1055, 1049, 1048, 621], 9)
+    ops.element("ShellMITC4", 1180, *[1056, 1050, 1049, 1055], 9)
+    ops.element("ShellMITC4", 1181, *[581, 1051, 1050, 1056], 9)
+    ops.element("ShellMITC4", 1182, *[1057, 1052, 1051, 581], 9)
+    ops.element("ShellMITC4", 1183, *[1058, 1053, 1052, 1057], 9)
+    ops.element("ShellMITC4", 1184, *[622, 1054, 1053, 1058], 9)
+    ops.element("ShellMITC4", 1185, *[1060, 1055, 621, 1059], 9)
+    ops.element("ShellMITC4", 1186, *[1061, 1056, 1055, 1060], 9)
+    ops.element("ShellMITC4", 1187, *[1062, 581, 1056, 1061], 9)
+    ops.element("ShellMITC4", 1188, *[1063, 1057, 581, 1062], 9)
+    ops.element("ShellMITC4", 1189, *[1064, 1058, 1057, 1063], 9)
+    ops.element("ShellMITC4", 1190, *[1065, 622, 1058, 1064], 9)
+    ops.element("ShellMITC4", 1191, *[1067, 1060, 1059, 1066], 9)
+    ops.element("ShellMITC4", 1192, *[1068, 1061, 1060, 1067], 9)
+    ops.element("ShellMITC4", 1193, *[1069, 1062, 1061, 1068], 9)
+    ops.element("ShellMITC4", 1194, *[1070, 1063, 1062, 1069], 9)
+    ops.element("ShellMITC4", 1195, *[1071, 1064, 1063, 1070], 9)
+    ops.element("ShellMITC4", 1196, *[1072, 1065, 1064, 1071], 9)
+    ops.element("ShellMITC4", 1197, *[1074, 1067, 1066, 1073], 9)
+    ops.element("ShellMITC4", 1198, *[1075, 1068, 1067, 1074], 9)
+    ops.element("ShellMITC4", 1199, *[624, 1069, 1068, 1075], 9)
+    ops.element("ShellMITC4", 1200, *[1076, 1070, 1069, 624], 9)
+    ops.element("ShellMITC4", 1201, *[1077, 1071, 1070, 1076], 9)
+    ops.element("ShellMITC4", 1202, *[1078, 1072, 1071, 1077], 9)
+    ops.element("ShellMITC4", 1203, *[1081, 1082, 1079, 1080], 9)
+    ops.element("ShellMITC4", 1204, *[1083, 1084, 1082, 1081], 9)
+    ops.element("ShellMITC4", 1205, *[1085, 627, 1084, 1083], 9)
+    ops.element("ShellMITC4", 1206, *[1086, 1087, 627, 1085], 9)
+    ops.element("ShellMITC4", 1207, *[1088, 1089, 1087, 1086], 9)
+    ops.element("ShellMITC4", 1208, *[1090, 1091, 1089, 1088], 9)
+    ops.element("ShellMITC4", 1209, *[1093, 1081, 1080, 1092], 9)
+    ops.element("ShellMITC4", 1210, *[1094, 1083, 1081, 1093], 9)
+    ops.element("ShellMITC4", 1211, *[1095, 1085, 1083, 1094], 9)
+    ops.element("ShellMITC4", 1212, *[1096, 1086, 1085, 1095], 9)
+    ops.element("ShellMITC4", 1213, *[1097, 1088, 1086, 1096], 9)
+    ops.element("ShellMITC4", 1214, *[1098, 1090, 1088, 1097], 9)
+    ops.element("ShellMITC4", 1215, *[1099, 1093, 1092, 625], 9)
+    ops.element("ShellMITC4", 1216, *[1100, 1094, 1093, 1099], 9)
+    ops.element("ShellMITC4", 1217, *[585, 1095, 1094, 1100], 9)
+    ops.element("ShellMITC4", 1218, *[1101, 1096, 1095, 585], 9)
+    ops.element("ShellMITC4", 1219, *[1102, 1097, 1096, 1101], 9)
+    ops.element("ShellMITC4", 1220, *[626, 1098, 1097, 1102], 9)
+    ops.element("ShellMITC4", 1221, *[1104, 1099, 625, 1103], 9)
+    ops.element("ShellMITC4", 1222, *[1105, 1100, 1099, 1104], 9)
+    ops.element("ShellMITC4", 1223, *[1106, 585, 1100, 1105], 9)
+    ops.element("ShellMITC4", 1224, *[1107, 1101, 585, 1106], 9)
+    ops.element("ShellMITC4", 1225, *[1108, 1102, 1101, 1107], 9)
+    ops.element("ShellMITC4", 1226, *[1109, 626, 1102, 1108], 9)
+    ops.element("ShellMITC4", 1227, *[1111, 1104, 1103, 1110], 9)
+    ops.element("ShellMITC4", 1228, *[1112, 1105, 1104, 1111], 9)
+    ops.element("ShellMITC4", 1229, *[1113, 1106, 1105, 1112], 9)
+    ops.element("ShellMITC4", 1230, *[1114, 1107, 1106, 1113], 9)
+    ops.element("ShellMITC4", 1231, *[1115, 1108, 1107, 1114], 9)
+    ops.element("ShellMITC4", 1232, *[1116, 1109, 1108, 1115], 9)
+    ops.element("ShellMITC4", 1233, *[1118, 1111, 1110, 1117], 9)
+    ops.element("ShellMITC4", 1234, *[1119, 1112, 1111, 1118], 9)
+    ops.element("ShellMITC4", 1235, *[628, 1113, 1112, 1119], 9)
+    ops.element("ShellMITC4", 1236, *[1120, 1114, 1113, 628], 9)
+    ops.element("ShellMITC4", 1237, *[1121, 1115, 1114, 1120], 9)
+    ops.element("ShellMITC4", 1238, *[1122, 1116, 1115, 1121], 9)
+    ops.element("ShellMITC4", 1239, *[1125, 1126, 1123, 1124], 9)
+    ops.element("ShellMITC4", 1240, *[1127, 1128, 1126, 1125], 9)
+    ops.element("ShellMITC4", 1241, *[1129, 631, 1128, 1127], 9)
+    ops.element("ShellMITC4", 1242, *[1130, 1131, 631, 1129], 9)
+    ops.element("ShellMITC4", 1243, *[1132, 1133, 1131, 1130], 9)
+    ops.element("ShellMITC4", 1244, *[1134, 1135, 1133, 1132], 9)
+    ops.element("ShellMITC4", 1245, *[1137, 1125, 1124, 1136], 9)
+    ops.element("ShellMITC4", 1246, *[1138, 1127, 1125, 1137], 9)
+    ops.element("ShellMITC4", 1247, *[1139, 1129, 1127, 1138], 9)
+    ops.element("ShellMITC4", 1248, *[1140, 1130, 1129, 1139], 9)
+    ops.element("ShellMITC4", 1249, *[1141, 1132, 1130, 1140], 9)
+    ops.element("ShellMITC4", 1250, *[1142, 1134, 1132, 1141], 9)
+    ops.element("ShellMITC4", 1251, *[1143, 1137, 1136, 629], 9)
+    ops.element("ShellMITC4", 1252, *[1144, 1138, 1137, 1143], 9)
+    ops.element("ShellMITC4", 1253, *[589, 1139, 1138, 1144], 9)
+    ops.element("ShellMITC4", 1254, *[1145, 1140, 1139, 589], 9)
+    ops.element("ShellMITC4", 1255, *[1146, 1141, 1140, 1145], 9)
+    ops.element("ShellMITC4", 1256, *[630, 1142, 1141, 1146], 9)
+    ops.element("ShellMITC4", 1257, *[1148, 1143, 629, 1147], 9)
+    ops.element("ShellMITC4", 1258, *[1149, 1144, 1143, 1148], 9)
+    ops.element("ShellMITC4", 1259, *[1150, 589, 1144, 1149], 9)
+    ops.element("ShellMITC4", 1260, *[1151, 1145, 589, 1150], 9)
+    ops.element("ShellMITC4", 1261, *[1152, 1146, 1145, 1151], 9)
+    ops.element("ShellMITC4", 1262, *[1153, 630, 1146, 1152], 9)
+    ops.element("ShellMITC4", 1263, *[1155, 1148, 1147, 1154], 9)
+    ops.element("ShellMITC4", 1264, *[1156, 1149, 1148, 1155], 9)
+    ops.element("ShellMITC4", 1265, *[1157, 1150, 1149, 1156], 9)
+    ops.element("ShellMITC4", 1266, *[1158, 1151, 1150, 1157], 9)
+    ops.element("ShellMITC4", 1267, *[1159, 1152, 1151, 1158], 9)
+    ops.element("ShellMITC4", 1268, *[1160, 1153, 1152, 1159], 9)
+    ops.element("ShellMITC4", 1269, *[1162, 1155, 1154, 1161], 9)
+    ops.element("ShellMITC4", 1270, *[1163, 1156, 1155, 1162], 9)
+    ops.element("ShellMITC4", 1271, *[632, 1157, 1156, 1163], 9)
+    ops.element("ShellMITC4", 1272, *[1164, 1158, 1157, 632], 9)
+    ops.element("ShellMITC4", 1273, *[1165, 1159, 1158, 1164], 9)
+    ops.element("ShellMITC4", 1274, *[1166, 1160, 1159, 1165], 9)
+    ops.element("ShellMITC4", 1275, *[1169, 1167, 652, 1168], 3)
+    ops.element("ShellMITC4", 1276, *[1168, 652, 1170, 1171], 3)
+    ops.element("ShellMITC4", 1277, *[1171, 1170, 634, 1172], 3)
+    ops.element("ShellMITC4", 1278, *[1172, 634, 1173, 1174], 3)
+    ops.element("ShellMITC4", 1279, *[1168, 652, 1175, 1176], 6)
+    ops.element("ShellMITC4", 1280, *[1172, 634, 1177, 1178], 6)
+    ops.element("ShellMITC4", 1281, *[1180, 1169, 1168, 1179], 3)
+    ops.element("ShellMITC4", 1282, *[1179, 1168, 1171, 1181], 3)
+    ops.element("ShellMITC4", 1283, *[1181, 1171, 1172, 1182], 3)
+    ops.element("ShellMITC4", 1284, *[1182, 1172, 1174, 1183], 3)
+    ops.element("ShellMITC4", 1285, *[1179, 1168, 1176, 1184], 6)
+    ops.element("ShellMITC4", 1286, *[1182, 1172, 1178, 1185], 6)
+    ops.element("ShellMITC4", 1287, *[1187, 1180, 1179, 1186], 3)
+    ops.element("ShellMITC4", 1288, *[1186, 1179, 1181, 1188], 3)
+    ops.element("ShellMITC4", 1289, *[1188, 1181, 1182, 1189], 3)
+    ops.element("ShellMITC4", 1290, *[1189, 1182, 1183, 1190], 3)
+    ops.element("ShellMITC4", 1291, *[1186, 1179, 1184, 1191], 6)
+    ops.element("ShellMITC4", 1292, *[1189, 1182, 1185, 1192], 6)
+    ops.element("ShellMITC4", 1293, *[1194, 1187, 1186, 1193], 3)
+    ops.element("ShellMITC4", 1294, *[1193, 1186, 1188, 1195], 3)
+    ops.element("ShellMITC4", 1295, *[1195, 1188, 1189, 1196], 3)
+    ops.element("ShellMITC4", 1296, *[1196, 1189, 1190, 1197], 3)
+    ops.element("ShellMITC4", 1297, *[1193, 1186, 1191, 1198], 6)
+    ops.element("ShellMITC4", 1298, *[1196, 1189, 1192, 1199], 6)
+    ops.element("ShellMITC4", 1299, *[1201, 1194, 1193, 1200], 3)
+    ops.element("ShellMITC4", 1300, *[1200, 1193, 1195, 1202], 3)
+    ops.element("ShellMITC4", 1301, *[1202, 1195, 1196, 1203], 3)
+    ops.element("ShellMITC4", 1302, *[1203, 1196, 1197, 1204], 3)
+    ops.element("ShellMITC4", 1303, *[1200, 1193, 1198, 1205], 6)
+    ops.element("ShellMITC4", 1304, *[1203, 1196, 1199, 1206], 6)
+    ops.element("ShellMITC4", 1305, *[1208, 1201, 1200, 1207], 3)
+    ops.element("ShellMITC4", 1306, *[1207, 1200, 1202, 1209], 3)
+    ops.element("ShellMITC4", 1307, *[1209, 1202, 1203, 1210], 3)
+    ops.element("ShellMITC4", 1308, *[1210, 1203, 1204, 1211], 3)
+    ops.element("ShellMITC4", 1309, *[1207, 1200, 1205, 1212], 6)
+    ops.element("ShellMITC4", 1310, *[1210, 1203, 1206, 1213], 6)
+    ops.element("ShellMITC4", 1311, *[1215, 1208, 1207, 1214], 3)
+    ops.element("ShellMITC4", 1312, *[1214, 1207, 1209, 1216], 3)
+    ops.element("ShellMITC4", 1313, *[1216, 1209, 1210, 1217], 3)
+    ops.element("ShellMITC4", 1314, *[1217, 1210, 1211, 1218], 3)
+    ops.element("ShellMITC4", 1315, *[1214, 1207, 1212, 1219], 6)
+    ops.element("ShellMITC4", 1316, *[1217, 1210, 1213, 1220], 6)
+    ops.element("ShellMITC4", 1317, *[1222, 1215, 1214, 1221], 3)
+    ops.element("ShellMITC4", 1318, *[1221, 1214, 1216, 1223], 3)
+    ops.element("ShellMITC4", 1319, *[1223, 1216, 1217, 1224], 3)
+    ops.element("ShellMITC4", 1320, *[1224, 1217, 1218, 1225], 3)
+    ops.element("ShellMITC4", 1321, *[1221, 1214, 1219, 1226], 6)
+    ops.element("ShellMITC4", 1322, *[1224, 1217, 1220, 1227], 6)
+    ops.element("ShellMITC4", 1323, *[1229, 1222, 1221, 1228], 3)
+    ops.element("ShellMITC4", 1324, *[1228, 1221, 1223, 1230], 3)
+    ops.element("ShellMITC4", 1325, *[1230, 1223, 1224, 1231], 3)
+    ops.element("ShellMITC4", 1326, *[1231, 1224, 1225, 1232], 3)
+    ops.element("ShellMITC4", 1327, *[1228, 1221, 1226, 1233], 6)
+    ops.element("ShellMITC4", 1328, *[1231, 1224, 1227, 1234], 6)
+    ops.element("ShellMITC4", 1329, *[1236, 1229, 1228, 1235], 3)
+    ops.element("ShellMITC4", 1330, *[1235, 1228, 1230, 1237], 3)
+    ops.element("ShellMITC4", 1331, *[1237, 1230, 1231, 1238], 3)
+    ops.element("ShellMITC4", 1332, *[1238, 1231, 1232, 1239], 3)
+    ops.element("ShellMITC4", 1333, *[1235, 1228, 1233, 1240], 6)
+    ops.element("ShellMITC4", 1334, *[1238, 1231, 1234, 1241], 6)
+    ops.element("ShellMITC4", 1335, *[1243, 1236, 1235, 1242], 3)
+    ops.element("ShellMITC4", 1336, *[1242, 1235, 1237, 1244], 3)
+    ops.element("ShellMITC4", 1337, *[1244, 1237, 1238, 1245], 3)
+    ops.element("ShellMITC4", 1338, *[1245, 1238, 1239, 1246], 3)
+    ops.element("ShellMITC4", 1339, *[1242, 1235, 1240, 1247], 6)
+    ops.element("ShellMITC4", 1340, *[1245, 1238, 1241, 1248], 6)
+    ops.element("ShellMITC4", 1341, *[1249, 1243, 1242, 671], 3)
+    ops.element("ShellMITC4", 1342, *[671, 1242, 1244, 1250], 3)
+    ops.element("ShellMITC4", 1343, *[1250, 1244, 1245, 661], 3)
+    ops.element("ShellMITC4", 1344, *[661, 1245, 1246, 1251], 3)
+    ops.element("ShellMITC4", 1345, *[671, 1242, 1247, 1252], 6)
+    ops.element("ShellMITC4", 1346, *[661, 1245, 1248, 1253], 6)
+    ops.element("ShellMITC4", 1347, *[1167, 1255, 1254, 652], 3)
+    ops.element("ShellMITC4", 1348, *[652, 1254, 1256, 1170], 3)
+    ops.element("ShellMITC4", 1349, *[1170, 1256, 1257, 634], 3)
+    ops.element("ShellMITC4", 1350, *[634, 1257, 1258, 1173], 3)
+    ops.element("ShellMITC4", 1351, *[652, 1254, 1259, 1175], 6)
+    ops.element("ShellMITC4", 1352, *[634, 1257, 1260, 1177], 6)
+    ops.element("ShellMITC4", 1353, *[1255, 1262, 572, 1254], 3)
+    ops.element("ShellMITC4", 1354, *[1254, 572, 570, 1256], 3)
+    ops.element("ShellMITC4", 1355, *[1256, 570, 571, 1257], 3)
+    ops.element("ShellMITC4", 1356, *[1257, 571, 1265, 1258], 3)
+    ops.element("ShellMITC4", 1357, *[1254, 572, 1266, 1259], 6)
+    ops.element("ShellMITC4", 1358, *[1257, 571, 1267, 1260], 6)
+    ops.element("ShellMITC4", 1359, *[1262, 1269, 1268, 572], 3)
+    ops.element("ShellMITC4", 1360, *[572, 1268, 1270, 570], 3)
+    ops.element("ShellMITC4", 1361, *[570, 1270, 1271, 571], 3)
+    ops.element("ShellMITC4", 1362, *[1265, 571, 1271, 1272], 3)
+    ops.element("ShellMITC4", 1363, *[1266, 572, 1268, 1273], 6)
+    ops.element("ShellMITC4", 1364, *[1267, 571, 1271, 1274], 6)
+    ops.element("ShellMITC4", 1365, *[1269, 1275, 653, 1268], 3)
+    ops.element("ShellMITC4", 1366, *[1268, 653, 1276, 1270], 3)
+    ops.element("ShellMITC4", 1367, *[1270, 1276, 636, 1271], 3)
+    ops.element("ShellMITC4", 1368, *[1271, 636, 1277, 1272], 3)
+    ops.element("ShellMITC4", 1369, *[1268, 653, 1278, 1273], 6)
+    ops.element("ShellMITC4", 1370, *[1271, 636, 1279, 1274], 6)
+    ops.element("ShellMITC4", 1371, *[1275, 1281, 1280, 653], 3)
+    ops.element("ShellMITC4", 1372, *[653, 1280, 1282, 1276], 3)
+    ops.element("ShellMITC4", 1373, *[1276, 1282, 1283, 636], 3)
+    ops.element("ShellMITC4", 1374, *[636, 1283, 1284, 1277], 3)
+    ops.element("ShellMITC4", 1375, *[653, 1280, 1285, 1278], 6)
+    ops.element("ShellMITC4", 1376, *[636, 1283, 1286, 1279], 6)
+    ops.element("ShellMITC4", 1377, *[1281, 1288, 1287, 1280], 3)
+    ops.element("ShellMITC4", 1378, *[1280, 1287, 1289, 1282], 3)
+    ops.element("ShellMITC4", 1379, *[1282, 1289, 1290, 1283], 3)
+    ops.element("ShellMITC4", 1380, *[1283, 1290, 1291, 1284], 3)
+    ops.element("ShellMITC4", 1381, *[1280, 1287, 1292, 1285], 6)
+    ops.element("ShellMITC4", 1382, *[1283, 1290, 1293, 1286], 6)
+    ops.element("ShellMITC4", 1383, *[1288, 1295, 1294, 1287], 3)
+    ops.element("ShellMITC4", 1384, *[1287, 1294, 1296, 1289], 3)
+    ops.element("ShellMITC4", 1385, *[1289, 1296, 1297, 1290], 3)
+    ops.element("ShellMITC4", 1386, *[1290, 1297, 1298, 1291], 3)
+    ops.element("ShellMITC4", 1387, *[1287, 1294, 1299, 1292], 6)
+    ops.element("ShellMITC4", 1388, *[1290, 1297, 1300, 1293], 6)
+    ops.element("ShellMITC4", 1389, *[1295, 1301, 654, 1294], 3)
+    ops.element("ShellMITC4", 1390, *[1294, 654, 1302, 1296], 3)
+    ops.element("ShellMITC4", 1391, *[1296, 1302, 638, 1297], 3)
+    ops.element("ShellMITC4", 1392, *[1297, 638, 1303, 1298], 3)
+    ops.element("ShellMITC4", 1393, *[1294, 654, 1304, 1299], 6)
+    ops.element("ShellMITC4", 1394, *[1297, 638, 1305, 1300], 6)
+    ops.element("ShellMITC4", 1395, *[654, 1301, 1307, 1306], 3)
+    ops.element("ShellMITC4", 1396, *[654, 1306, 1308, 1302], 3)
+    ops.element("ShellMITC4", 1397, *[638, 1302, 1308, 1309], 3)
+    ops.element("ShellMITC4", 1398, *[638, 1309, 1310, 1303], 3)
+    ops.element("ShellMITC4", 1399, *[654, 1306, 1311, 1304], 6)
+    ops.element("ShellMITC4", 1400, *[638, 1309, 1312, 1305], 6)
+    ops.element("ShellMITC4", 1401, *[1307, 1314, 1313, 1306], 3)
+    ops.element("ShellMITC4", 1402, *[1306, 1313, 1315, 1308], 3)
+    ops.element("ShellMITC4", 1403, *[1308, 1315, 1316, 1309], 3)
+    ops.element("ShellMITC4", 1404, *[1309, 1316, 1317, 1310], 3)
+    ops.element("ShellMITC4", 1405, *[1306, 1313, 1318, 1311], 6)
+    ops.element("ShellMITC4", 1406, *[1309, 1316, 1319, 1312], 6)
+    ops.element("ShellMITC4", 1407, *[1314, 1321, 1320, 1313], 3)
+    ops.element("ShellMITC4", 1408, *[1316, 1323, 1324, 1317], 3)
+    ops.element("ShellMITC4", 1409, *[1313, 1320, 1325, 1318], 6)
+    ops.element("ShellMITC4", 1410, *[1316, 1323, 1326, 1319], 6)
+    ops.element("ShellMITC4", 1411, *[1321, 1327, 655, 1320], 3)
+    ops.element("ShellMITC4", 1412, *[1320, 655, 1328, 1322], 3)
+    ops.element("ShellMITC4", 1413, *[1322, 1328, 640, 1323], 3)
+    ops.element("ShellMITC4", 1414, *[1323, 640, 1329, 1324], 3)
+    ops.element("ShellMITC4", 1415, *[1320, 655, 1330, 1325], 6)
+    ops.element("ShellMITC4", 1416, *[1323, 640, 1331, 1326], 6)
+    ops.element("ShellMITC4", 1417, *[655, 1327, 1333, 1332], 3)
+    ops.element("ShellMITC4", 1418, *[655, 1332, 1334, 1328], 3)
+    ops.element("ShellMITC4", 1419, *[640, 1328, 1334, 1335], 3)
+    ops.element("ShellMITC4", 1420, *[640, 1335, 1336, 1329], 3)
+    ops.element("ShellMITC4", 1421, *[655, 1332, 1337, 1330], 6)
+    ops.element("ShellMITC4", 1422, *[640, 1335, 1338, 1331], 6)
+    ops.element("ShellMITC4", 1423, *[1333, 1340, 1339, 1332], 3)
+    ops.element("ShellMITC4", 1424, *[1332, 1339, 1341, 1334], 3)
+    ops.element("ShellMITC4", 1425, *[1334, 1341, 1342, 1335], 3)
+    ops.element("ShellMITC4", 1426, *[1335, 1342, 1343, 1336], 3)
+    ops.element("ShellMITC4", 1427, *[1332, 1339, 1344, 1337], 6)
+    ops.element("ShellMITC4", 1428, *[1335, 1342, 1345, 1338], 6)
+    ops.element("ShellMITC4", 1429, *[1340, 1347, 1346, 1339], 3)
+    ops.element("ShellMITC4", 1430, *[1339, 1346, 1348, 1341], 3)
+    ops.element("ShellMITC4", 1431, *[1341, 1348, 1349, 1342], 3)
+    ops.element("ShellMITC4", 1432, *[1342, 1349, 1350, 1343], 3)
+    ops.element("ShellMITC4", 1433, *[1339, 1346, 1351, 1344], 6)
+    ops.element("ShellMITC4", 1434, *[1342, 1349, 1352, 1345], 6)
+    ops.element("ShellMITC4", 1435, *[1347, 1353, 656, 1346], 3)
+    ops.element("ShellMITC4", 1436, *[1346, 656, 1354, 1348], 3)
+    ops.element("ShellMITC4", 1437, *[1348, 1354, 642, 1349], 3)
+    ops.element("ShellMITC4", 1438, *[1349, 642, 1355, 1350], 3)
+    ops.element("ShellMITC4", 1439, *[1346, 656, 1356, 1351], 6)
+    ops.element("ShellMITC4", 1440, *[1349, 642, 1357, 1352], 6)
+    ops.element("ShellMITC4", 1441, *[1353, 1359, 1358, 656], 3)
+    ops.element("ShellMITC4", 1442, *[656, 1358, 1360, 1354], 3)
+    ops.element("ShellMITC4", 1443, *[1354, 1360, 1361, 642], 3)
+    ops.element("ShellMITC4", 1444, *[642, 1361, 1362, 1355], 3)
+    ops.element("ShellMITC4", 1445, *[656, 1358, 1363, 1356], 6)
+    ops.element("ShellMITC4", 1446, *[642, 1361, 1364, 1357], 6)
+    ops.element("ShellMITC4", 1447, *[1359, 1366, 1365, 1358], 3)
+    ops.element("ShellMITC4", 1448, *[1358, 1365, 1367, 1360], 3)
+    ops.element("ShellMITC4", 1449, *[1360, 1367, 1368, 1361], 3)
+    ops.element("ShellMITC4", 1450, *[1361, 1368, 1369, 1362], 3)
+    ops.element("ShellMITC4", 1451, *[1358, 1365, 1370, 1363], 6)
+    ops.element("ShellMITC4", 1452, *[1361, 1368, 1371, 1364], 6)
+    ops.element("ShellMITC4", 1453, *[1366, 1373, 1372, 1365], 3)
+    ops.element("ShellMITC4", 1454, *[1365, 1372, 1374, 1367], 3)
+    ops.element("ShellMITC4", 1455, *[1367, 1374, 1375, 1368], 3)
+    ops.element("ShellMITC4", 1456, *[1368, 1375, 1376, 1369], 3)
+    ops.element("ShellMITC4", 1457, *[1365, 1372, 1377, 1370], 6)
+    ops.element("ShellMITC4", 1458, *[1368, 1375, 1378, 1371], 6)
+    ops.element("ShellMITC4", 1459, *[1373, 1379, 657, 1372], 3)
+    ops.element("ShellMITC4", 1460, *[1375, 644, 1381, 1376], 3)
+    ops.element("ShellMITC4", 1461, *[1372, 657, 1382, 1377], 6)
+    ops.element("ShellMITC4", 1462, *[1375, 644, 1383, 1378], 6)
+    ops.element("ShellMITC4", 1463, *[657, 1379, 1385, 1384], 3)
+    ops.element("ShellMITC4", 1464, *[657, 1384, 1386, 1380], 3)
+    ops.element("ShellMITC4", 1465, *[644, 1380, 1386, 1387], 3)
+    ops.element("ShellMITC4", 1466, *[644, 1387, 1388, 1381], 3)
+    ops.element("ShellMITC4", 1467, *[657, 1384, 1389, 1382], 6)
+    ops.element("ShellMITC4", 1468, *[644, 1387, 1390, 1383], 6)
+    ops.element("ShellMITC4", 1469, *[1385, 1392, 1391, 1384], 3)
+    ops.element("ShellMITC4", 1470, *[1384, 1391, 1393, 1386], 3)
+    ops.element("ShellMITC4", 1471, *[1386, 1393, 1394, 1387], 3)
+    ops.element("ShellMITC4", 1472, *[1387, 1394, 1395, 1388], 3)
+    ops.element("ShellMITC4", 1473, *[1384, 1391, 1396, 1389], 6)
+    ops.element("ShellMITC4", 1474, *[1387, 1394, 1397, 1390], 6)
+    ops.element("ShellMITC4", 1475, *[1392, 1399, 1398, 1391], 3)
+    ops.element("ShellMITC4", 1476, *[1391, 1398, 1400, 1393], 3)
+    ops.element("ShellMITC4", 1477, *[1393, 1400, 1401, 1394], 3)
+    ops.element("ShellMITC4", 1478, *[1394, 1401, 1402, 1395], 3)
+    ops.element("ShellMITC4", 1479, *[1391, 1398, 1403, 1396], 6)
+    ops.element("ShellMITC4", 1480, *[1394, 1401, 1404, 1397], 6)
+    ops.element("ShellMITC4", 1481, *[1399, 1405, 658, 1398], 3)
+    ops.element("ShellMITC4", 1482, *[1398, 658, 1406, 1400], 3)
+    ops.element("ShellMITC4", 1483, *[1400, 1406, 646, 1401], 3)
+    ops.element("ShellMITC4", 1484, *[1401, 646, 1407, 1402], 3)
+    ops.element("ShellMITC4", 1485, *[1398, 658, 1408, 1403], 6)
+    ops.element("ShellMITC4", 1486, *[1401, 646, 1409, 1404], 6)
+    ops.element("ShellMITC4", 1487, *[658, 1405, 1411, 1410], 3)
+    ops.element("ShellMITC4", 1488, *[658, 1410, 1412, 1406], 3)
+    ops.element("ShellMITC4", 1489, *[646, 1406, 1412, 1413], 3)
+    ops.element("ShellMITC4", 1490, *[646, 1413, 1414, 1407], 3)
+    ops.element("ShellMITC4", 1491, *[658, 1410, 1415, 1408], 6)
+    ops.element("ShellMITC4", 1492, *[646, 1413, 1416, 1409], 6)
+    ops.element("ShellMITC4", 1493, *[1411, 1418, 1417, 1410], 3)
+    ops.element("ShellMITC4", 1494, *[1410, 1417, 1419, 1412], 3)
+    ops.element("ShellMITC4", 1495, *[1412, 1419, 1420, 1413], 3)
+    ops.element("ShellMITC4", 1496, *[1413, 1420, 1421, 1414], 3)
+    ops.element("ShellMITC4", 1497, *[1410, 1417, 1422, 1415], 6)
+    ops.element("ShellMITC4", 1498, *[1413, 1420, 1423, 1416], 6)
+    ops.element("ShellMITC4", 1499, *[1418, 1425, 1424, 1417], 3)
+    ops.element("ShellMITC4", 1500, *[1417, 1424, 1426, 1419], 3)
+    ops.element("ShellMITC4", 1501, *[1419, 1426, 1427, 1420], 3)
+    ops.element("ShellMITC4", 1502, *[1420, 1427, 1428, 1421], 3)
+    ops.element("ShellMITC4", 1503, *[1417, 1424, 1429, 1422], 6)
+    ops.element("ShellMITC4", 1504, *[1420, 1427, 1430, 1423], 6)
+    ops.element("ShellMITC4", 1505, *[1425, 1431, 659, 1424], 3)
+    ops.element("ShellMITC4", 1506, *[1426, 558, 559, 1427], 3)
+    ops.element("ShellMITC4", 1507, *[1427, 648, 1433, 1428], 3)
+    ops.element("ShellMITC4", 1508, *[1424, 659, 1434, 1429], 6)
+    ops.element("ShellMITC4", 1509, *[1427, 648, 1435, 1430], 6)
+    ops.element("ShellMITC4", 1510, *[1431, 1437, 1436, 659], 3)
+    ops.element("ShellMITC4", 1511, *[659, 1436, 1438, 1432], 3)
+    ops.element("ShellMITC4", 1512, *[1432, 1438, 1439, 648], 3)
+    ops.element("ShellMITC4", 1513, *[648, 1439, 1440, 1433], 3)
+    ops.element("ShellMITC4", 1514, *[659, 1436, 1441, 1434], 6)
+    ops.element("ShellMITC4", 1515, *[648, 1439, 1442, 1435], 6)
+    ops.element("ShellMITC4", 1516, *[1437, 1444, 1443, 1436], 3)
+    ops.element("ShellMITC4", 1517, *[1436, 1443, 1445, 1438], 3)
+    ops.element("ShellMITC4", 1518, *[1438, 1445, 1446, 1439], 3)
+    ops.element("ShellMITC4", 1519, *[1439, 1446, 1447, 1440], 3)
+    ops.element("ShellMITC4", 1520, *[1436, 1443, 1448, 1441], 6)
+    ops.element("ShellMITC4", 1521, *[1439, 1446, 1449, 1442], 6)
+    ops.element("ShellMITC4", 1522, *[1444, 1451, 1450, 1443], 3)
+    ops.element("ShellMITC4", 1523, *[1443, 1450, 1452, 1445], 3)
+    ops.element("ShellMITC4", 1524, *[1445, 1452, 1453, 1446], 3)
+    ops.element("ShellMITC4", 1525, *[1446, 1453, 1454, 1447], 3)
+    ops.element("ShellMITC4", 1526, *[1443, 1450, 1455, 1448], 6)
+    ops.element("ShellMITC4", 1527, *[1446, 1453, 1456, 1449], 6)
+    ops.element("ShellMITC4", 1528, *[1451, 1457, 660, 1450], 3)
+    ops.element("ShellMITC4", 1529, *[1450, 660, 1458, 1452], 3)
+    ops.element("ShellMITC4", 1530, *[1452, 1458, 650, 1453], 3)
+    ops.element("ShellMITC4", 1531, *[1453, 650, 1459, 1454], 3)
+    ops.element("ShellMITC4", 1532, *[1450, 660, 1460, 1455], 6)
+    ops.element("ShellMITC4", 1533, *[1453, 650, 1461, 1456], 6)
+    ops.element("ShellMITC4", 1534, *[660, 1457, 1463, 1462], 3)
+    ops.element("ShellMITC4", 1535, *[660, 1462, 1464, 1458], 3)
+    ops.element("ShellMITC4", 1536, *[650, 1458, 1464, 1465], 3)
+    ops.element("ShellMITC4", 1537, *[650, 1465, 1466, 1459], 3)
+    ops.element("ShellMITC4", 1538, *[660, 1462, 1467, 1460], 6)
+    ops.element("ShellMITC4", 1539, *[650, 1465, 1468, 1461], 6)
+    ops.element("ShellMITC4", 1540, *[1463, 1470, 1469, 1462], 3)
+    ops.element("ShellMITC4", 1541, *[1462, 1469, 1471, 1464], 3)
+    ops.element("ShellMITC4", 1542, *[1464, 1471, 1472, 1465], 3)
+    ops.element("ShellMITC4", 1543, *[1465, 1472, 1473, 1466], 3)
+    ops.element("ShellMITC4", 1544, *[1462, 1469, 1474, 1467], 6)
+    ops.element("ShellMITC4", 1545, *[1465, 1472, 1475, 1468], 6)
+    ops.element("ShellMITC4", 1546, *[1470, 1477, 1476, 1469], 3)
+    ops.element("ShellMITC4", 1547, *[1469, 1476, 1478, 1471], 3)
+    ops.element("ShellMITC4", 1548, *[1471, 1478, 1479, 1472], 3)
+    ops.element("ShellMITC4", 1549, *[1472, 1479, 1480, 1473], 3)
+    ops.element("ShellMITC4", 1550, *[1469, 1476, 1481, 1474], 6)
+    ops.element("ShellMITC4", 1551, *[1472, 1479, 1482, 1475], 6)
+    ops.element("ShellMITC4", 1552, *[1477, 1483, 556, 1476], 3)
+    ops.element("ShellMITC4", 1553, *[1476, 556, 554, 1478], 3)
+    ops.element("ShellMITC4", 1554, *[1478, 554, 555, 1479], 3)
+    ops.element("ShellMITC4", 1555, *[1479, 555, 1484, 1480], 3)
+    ops.element("ShellMITC4", 1556, *[1476, 556, 1485, 1481], 6)
+    ops.element("ShellMITC4", 1557, *[1479, 555, 1486, 1482], 6)
+    ops.element("ShellMITC4", 1558, *[558, 1432, 648, 559], 3)
+    ops.element("ShellMITC4", 1559, *[1372, 564, 562, 1374], 3)
+    ops.element("ShellMITC4", 1560, *[564, 657, 1380, 562], 3)
+    ops.element("ShellMITC4", 1561, *[1374, 562, 563, 1375], 3)
+    ops.element("ShellMITC4", 1562, *[562, 1380, 644, 563], 3)
+    ops.element("ShellMITC4", 1563, *[1313, 568, 566, 1315], 3)
+    ops.element("ShellMITC4", 1564, *[1488, 1249, 671, 1487], 3)
+    ops.element("ShellMITC4", 1565, *[1487, 671, 1250, 1489], 3)
+    ops.element("ShellMITC4", 1566, *[1489, 1250, 661, 1490], 3)
+    ops.element("ShellMITC4", 1567, *[1490, 661, 1251, 1491], 3)
+    ops.element("ShellMITC4", 1568, *[1487, 671, 1252, 1492], 6)
+    ops.element("ShellMITC4", 1569, *[1490, 661, 1253, 1493], 6)
+    ops.element("ShellMITC4", 1570, *[1495, 1488, 1487, 1494], 3)
+    ops.element("ShellMITC4", 1571, *[1494, 1487, 1489, 1496], 3)
+    ops.element("ShellMITC4", 1572, *[1496, 1489, 1490, 1497], 3)
+    ops.element("ShellMITC4", 1573, *[1497, 1490, 1491, 1498], 3)
+    ops.element("ShellMITC4", 1574, *[1494, 1487, 1492, 1499], 6)
+    ops.element("ShellMITC4", 1575, *[1497, 1490, 1493, 1500], 6)
+    ops.element("ShellMITC4", 1576, *[1502, 1495, 1494, 1501], 3)
+    ops.element("ShellMITC4", 1577, *[1501, 1494, 1496, 1503], 3)
+    ops.element("ShellMITC4", 1578, *[1503, 1496, 1497, 1504], 3)
+    ops.element("ShellMITC4", 1579, *[1504, 1497, 1498, 1505], 3)
+    ops.element("ShellMITC4", 1580, *[1501, 1494, 1499, 1506], 6)
+    ops.element("ShellMITC4", 1581, *[1504, 1497, 1500, 1507], 6)
+    ops.element("ShellMITC4", 1582, *[1508, 1502, 1501, 672], 3)
+    ops.element("ShellMITC4", 1583, *[672, 1501, 1503, 1509], 3)
+    ops.element("ShellMITC4", 1584, *[1509, 1503, 1504, 662], 3)
+    ops.element("ShellMITC4", 1585, *[662, 1504, 1505, 1510], 3)
+    ops.element("ShellMITC4", 1586, *[672, 1501, 1506, 1511], 6)
+    ops.element("ShellMITC4", 1587, *[662, 1504, 1507, 1512], 6)
+    ops.element("ShellMITC4", 1588, *[1514, 1508, 672, 1513], 3)
+    ops.element("ShellMITC4", 1589, *[1513, 672, 1509, 1515], 3)
+    ops.element("ShellMITC4", 1590, *[1515, 1509, 662, 1516], 3)
+    ops.element("ShellMITC4", 1591, *[1516, 662, 1510, 1517], 3)
+    ops.element("ShellMITC4", 1592, *[1513, 672, 1511, 1518], 6)
+    ops.element("ShellMITC4", 1593, *[1516, 662, 1512, 1519], 6)
+    ops.element("ShellMITC4", 1594, *[1521, 1514, 1513, 1520], 3)
+    ops.element("ShellMITC4", 1595, *[1520, 1513, 1515, 1522], 3)
+    ops.element("ShellMITC4", 1596, *[1522, 1515, 1516, 1523], 3)
+    ops.element("ShellMITC4", 1597, *[1523, 1516, 1517, 1524], 3)
+    ops.element("ShellMITC4", 1598, *[1520, 1513, 1518, 1525], 6)
+    ops.element("ShellMITC4", 1599, *[1523, 1516, 1519, 1526], 6)
+    ops.element("ShellMITC4", 1600, *[1528, 1521, 1520, 1527], 3)
+    ops.element("ShellMITC4", 1601, *[1527, 1520, 1522, 1529], 3)
+    ops.element("ShellMITC4", 1602, *[1529, 1522, 1523, 1530], 3)
+    ops.element("ShellMITC4", 1603, *[1530, 1523, 1524, 1531], 3)
+    ops.element("ShellMITC4", 1604, *[1527, 1520, 1525, 1532], 6)
+    ops.element("ShellMITC4", 1605, *[1530, 1523, 1526, 1533], 6)
+    ops.element("ShellMITC4", 1606, *[1534, 1528, 1527, 673], 3)
+    ops.element("ShellMITC4", 1607, *[673, 1527, 1529, 1535], 3)
+    ops.element("ShellMITC4", 1608, *[1535, 1529, 1530, 663], 3)
+    ops.element("ShellMITC4", 1609, *[663, 1530, 1531, 1536], 3)
+    ops.element("ShellMITC4", 1610, *[673, 1527, 1532, 1537], 6)
+    ops.element("ShellMITC4", 1611, *[663, 1530, 1533, 1538], 6)
+    ops.element("ShellMITC4", 1612, *[1540, 1534, 673, 1539], 3)
+    ops.element("ShellMITC4", 1613, *[1539, 673, 1535, 1541], 3)
+    ops.element("ShellMITC4", 1614, *[1541, 1535, 663, 1542], 3)
+    ops.element("ShellMITC4", 1615, *[1542, 663, 1536, 1543], 3)
+    ops.element("ShellMITC4", 1616, *[1539, 673, 1537, 1544], 6)
+    ops.element("ShellMITC4", 1617, *[1542, 663, 1538, 1545], 6)
+    ops.element("ShellMITC4", 1618, *[1547, 1540, 1539, 1546], 3)
+    ops.element("ShellMITC4", 1619, *[1546, 1539, 1541, 1548], 3)
+    ops.element("ShellMITC4", 1620, *[1548, 1541, 1542, 1549], 3)
+    ops.element("ShellMITC4", 1621, *[1549, 1542, 1543, 1550], 3)
+    ops.element("ShellMITC4", 1622, *[1546, 1539, 1544, 1551], 6)
+    ops.element("ShellMITC4", 1623, *[1549, 1542, 1545, 1552], 6)
+    ops.element("ShellMITC4", 1624, *[1554, 1547, 1546, 1553], 3)
+    ops.element("ShellMITC4", 1625, *[1553, 1546, 1548, 1555], 3)
+    ops.element("ShellMITC4", 1626, *[1555, 1548, 1549, 1556], 3)
+    ops.element("ShellMITC4", 1627, *[1556, 1549, 1550, 1557], 3)
+    ops.element("ShellMITC4", 1628, *[1553, 1546, 1551, 1558], 6)
+    ops.element("ShellMITC4", 1629, *[1556, 1549, 1552, 1559], 6)
+    ops.element("ShellMITC4", 1630, *[1560, 1554, 1553, 674], 3)
+    ops.element("ShellMITC4", 1631, *[674, 1553, 1555, 1561], 3)
+    ops.element("ShellMITC4", 1632, *[1561, 1555, 1556, 664], 3)
+    ops.element("ShellMITC4", 1633, *[664, 1556, 1557, 1562], 3)
+    ops.element("ShellMITC4", 1634, *[674, 1553, 1558, 1563], 6)
+    ops.element("ShellMITC4", 1635, *[664, 1556, 1559, 1564], 6)
+    ops.element("ShellMITC4", 1636, *[1566, 1560, 674, 1565], 3)
+    ops.element("ShellMITC4", 1637, *[1565, 674, 1561, 1567], 3)
+    ops.element("ShellMITC4", 1638, *[1567, 1561, 664, 1568], 3)
+    ops.element("ShellMITC4", 1639, *[1568, 664, 1562, 1569], 3)
+    ops.element("ShellMITC4", 1640, *[1565, 674, 1563, 1570], 6)
+    ops.element("ShellMITC4", 1641, *[1568, 664, 1564, 1571], 6)
+    ops.element("ShellMITC4", 1642, *[1573, 1566, 1565, 1572], 3)
+    ops.element("ShellMITC4", 1643, *[1572, 1565, 1567, 1574], 3)
+    ops.element("ShellMITC4", 1644, *[1574, 1567, 1568, 1575], 3)
+    ops.element("ShellMITC4", 1645, *[1575, 1568, 1569, 1576], 3)
+    ops.element("ShellMITC4", 1646, *[1572, 1565, 1570, 1577], 6)
+    ops.element("ShellMITC4", 1647, *[1575, 1568, 1571, 1578], 6)
+    ops.element("ShellMITC4", 1648, *[1580, 1573, 1572, 1579], 3)
+    ops.element("ShellMITC4", 1649, *[1579, 1572, 1574, 1581], 3)
+    ops.element("ShellMITC4", 1650, *[1581, 1574, 1575, 1582], 3)
+    ops.element("ShellMITC4", 1651, *[1582, 1575, 1576, 1583], 3)
+    ops.element("ShellMITC4", 1652, *[1579, 1572, 1577, 1584], 6)
+    ops.element("ShellMITC4", 1653, *[1582, 1575, 1578, 1585], 6)
+    ops.element("ShellMITC4", 1654, *[1586, 1580, 1579, 675], 3)
+    ops.element("ShellMITC4", 1655, *[675, 1579, 1581, 1587], 3)
+    ops.element("ShellMITC4", 1656, *[1587, 1581, 1582, 665], 3)
+    ops.element("ShellMITC4", 1657, *[665, 1582, 1583, 1588], 3)
+    ops.element("ShellMITC4", 1658, *[675, 1579, 1584, 1589], 6)
+    ops.element("ShellMITC4", 1659, *[665, 1582, 1585, 1590], 6)
+    ops.element("ShellMITC4", 1660, *[1592, 1586, 675, 1591], 3)
+    ops.element("ShellMITC4", 1661, *[1591, 675, 1587, 1593], 3)
+    ops.element("ShellMITC4", 1662, *[1593, 1587, 665, 1594], 3)
+    ops.element("ShellMITC4", 1663, *[1594, 665, 1588, 1595], 3)
+    ops.element("ShellMITC4", 1664, *[1591, 675, 1589, 1596], 6)
+    ops.element("ShellMITC4", 1665, *[1594, 665, 1590, 1597], 6)
+    ops.element("ShellMITC4", 1666, *[1599, 1592, 1591, 1598], 3)
+    ops.element("ShellMITC4", 1667, *[1598, 1591, 1593, 1600], 3)
+    ops.element("ShellMITC4", 1668, *[1600, 1593, 1594, 1601], 3)
+    ops.element("ShellMITC4", 1669, *[1601, 1594, 1595, 1602], 3)
+    ops.element("ShellMITC4", 1670, *[1598, 1591, 1596, 1603], 6)
+    ops.element("ShellMITC4", 1671, *[1601, 1594, 1597, 1604], 6)
+    ops.element("ShellMITC4", 1672, *[1606, 1599, 1598, 1605], 3)
+    ops.element("ShellMITC4", 1673, *[1605, 1598, 1600, 1607], 3)
+    ops.element("ShellMITC4", 1674, *[1607, 1600, 1601, 1608], 3)
+    ops.element("ShellMITC4", 1675, *[1608, 1601, 1602, 1609], 3)
+    ops.element("ShellMITC4", 1676, *[1605, 1598, 1603, 1610], 6)
+    ops.element("ShellMITC4", 1677, *[1608, 1601, 1604, 1611], 6)
+    ops.element("ShellMITC4", 1678, *[1612, 1606, 1605, 676], 3)
+    ops.element("ShellMITC4", 1679, *[676, 1605, 1607, 1613], 3)
+    ops.element("ShellMITC4", 1680, *[1613, 1607, 1608, 666], 3)
+    ops.element("ShellMITC4", 1681, *[666, 1608, 1609, 1614], 3)
+    ops.element("ShellMITC4", 1682, *[676, 1605, 1610, 1615], 6)
+    ops.element("ShellMITC4", 1683, *[666, 1608, 1611, 1616], 6)
+    ops.element("ShellMITC4", 1684, *[1618, 1612, 676, 1617], 3)
+    ops.element("ShellMITC4", 1685, *[1617, 676, 1613, 1619], 3)
+    ops.element("ShellMITC4", 1686, *[1619, 1613, 666, 1620], 3)
+    ops.element("ShellMITC4", 1687, *[1620, 666, 1614, 1621], 3)
+    ops.element("ShellMITC4", 1688, *[1617, 676, 1615, 1622], 6)
+    ops.element("ShellMITC4", 1689, *[1620, 666, 1616, 1623], 6)
+    ops.element("ShellMITC4", 1690, *[1625, 1618, 1617, 1624], 3)
+    ops.element("ShellMITC4", 1691, *[1624, 1617, 1619, 1626], 3)
+    ops.element("ShellMITC4", 1692, *[1626, 1619, 1620, 1627], 3)
+    ops.element("ShellMITC4", 1693, *[1627, 1620, 1621, 1628], 3)
+    ops.element("ShellMITC4", 1694, *[1624, 1617, 1622, 1629], 6)
+    ops.element("ShellMITC4", 1695, *[1627, 1620, 1623, 1630], 6)
+    ops.element("ShellMITC4", 1696, *[1632, 1625, 1624, 1631], 3)
+    ops.element("ShellMITC4", 1697, *[1631, 1624, 1626, 1633], 3)
+    ops.element("ShellMITC4", 1698, *[1633, 1626, 1627, 1634], 3)
+    ops.element("ShellMITC4", 1699, *[1634, 1627, 1628, 1635], 3)
+    ops.element("ShellMITC4", 1700, *[1631, 1624, 1629, 1636], 6)
+    ops.element("ShellMITC4", 1701, *[1634, 1627, 1630, 1637], 6)
+    ops.element("ShellMITC4", 1702, *[1638, 1632, 1631, 677], 3)
+    ops.element("ShellMITC4", 1703, *[677, 1631, 1633, 1639], 3)
+    ops.element("ShellMITC4", 1704, *[1639, 1633, 1634, 667], 3)
+    ops.element("ShellMITC4", 1705, *[667, 1634, 1635, 1640], 3)
+    ops.element("ShellMITC4", 1706, *[677, 1631, 1636, 1641], 6)
+    ops.element("ShellMITC4", 1707, *[667, 1634, 1637, 1642], 6)
+    ops.element("ShellMITC4", 1708, *[1644, 1638, 677, 1643], 3)
+    ops.element("ShellMITC4", 1709, *[1643, 677, 1639, 1645], 3)
+    ops.element("ShellMITC4", 1710, *[1645, 1639, 667, 1646], 3)
+    ops.element("ShellMITC4", 1711, *[1646, 667, 1640, 1647], 3)
+    ops.element("ShellMITC4", 1712, *[1643, 677, 1641, 1648], 6)
+    ops.element("ShellMITC4", 1713, *[1646, 667, 1642, 1649], 6)
+    ops.element("ShellMITC4", 1714, *[1651, 1644, 1643, 1650], 3)
+    ops.element("ShellMITC4", 1715, *[1650, 1643, 1645, 1652], 3)
+    ops.element("ShellMITC4", 1716, *[1652, 1645, 1646, 1653], 3)
+    ops.element("ShellMITC4", 1717, *[1653, 1646, 1647, 1654], 3)
+    ops.element("ShellMITC4", 1718, *[1650, 1643, 1648, 1655], 6)
+    ops.element("ShellMITC4", 1719, *[1653, 1646, 1649, 1656], 6)
+    ops.element("ShellMITC4", 1720, *[1658, 1651, 1650, 1657], 3)
+    ops.element("ShellMITC4", 1721, *[1657, 1650, 1652, 1659], 3)
+    ops.element("ShellMITC4", 1722, *[1659, 1652, 1653, 1660], 3)
+    ops.element("ShellMITC4", 1723, *[1660, 1653, 1654, 1661], 3)
+    ops.element("ShellMITC4", 1724, *[1657, 1650, 1655, 1662], 6)
+    ops.element("ShellMITC4", 1725, *[1660, 1653, 1656, 1663], 6)
+    ops.element("ShellMITC4", 1726, *[1664, 1658, 1657, 678], 3)
+    ops.element("ShellMITC4", 1727, *[678, 1657, 1659, 1665], 3)
+    ops.element("ShellMITC4", 1728, *[1665, 1659, 1660, 668], 3)
+    ops.element("ShellMITC4", 1729, *[668, 1660, 1661, 1666], 3)
+    ops.element("ShellMITC4", 1730, *[678, 1657, 1662, 1667], 6)
+    ops.element("ShellMITC4", 1731, *[668, 1660, 1663, 1668], 6)
+    ops.element("ShellMITC4", 1732, *[1670, 1664, 678, 1669], 3)
+    ops.element("ShellMITC4", 1733, *[1669, 678, 1665, 1671], 3)
+    ops.element("ShellMITC4", 1734, *[1671, 1665, 668, 1672], 3)
+    ops.element("ShellMITC4", 1735, *[1672, 668, 1666, 1673], 3)
+    ops.element("ShellMITC4", 1736, *[1669, 678, 1667, 1674], 6)
+    ops.element("ShellMITC4", 1737, *[1672, 668, 1668, 1675], 6)
+    ops.element("ShellMITC4", 1738, *[1677, 1670, 1669, 1676], 3)
+    ops.element("ShellMITC4", 1739, *[1676, 1669, 1671, 1678], 3)
+    ops.element("ShellMITC4", 1740, *[1678, 1671, 1672, 1679], 3)
+    ops.element("ShellMITC4", 1741, *[1679, 1672, 1673, 1680], 3)
+    ops.element("ShellMITC4", 1742, *[1676, 1669, 1674, 1681], 6)
+    ops.element("ShellMITC4", 1743, *[1679, 1672, 1675, 1682], 6)
+    ops.element("ShellMITC4", 1744, *[1684, 1677, 1676, 1683], 3)
+    ops.element("ShellMITC4", 1745, *[1683, 1676, 1678, 1685], 3)
+    ops.element("ShellMITC4", 1746, *[1685, 1678, 1679, 1686], 3)
+    ops.element("ShellMITC4", 1747, *[1686, 1679, 1680, 1687], 3)
+    ops.element("ShellMITC4", 1748, *[1683, 1676, 1681, 1688], 6)
+    ops.element("ShellMITC4", 1749, *[1686, 1679, 1682, 1689], 6)
+    ops.element("ShellMITC4", 1750, *[1690, 1684, 1683, 679], 3)
+    ops.element("ShellMITC4", 1751, *[679, 1683, 1685, 1691], 3)
+    ops.element("ShellMITC4", 1752, *[1691, 1685, 1686, 669], 3)
+    ops.element("ShellMITC4", 1753, *[669, 1686, 1687, 1692], 3)
+    ops.element("ShellMITC4", 1754, *[679, 1683, 1688, 1693], 6)
+    ops.element("ShellMITC4", 1755, *[669, 1686, 1689, 1694], 6)
+    ops.element("ShellMITC4", 1756, *[1696, 1690, 679, 1695], 3)
+    ops.element("ShellMITC4", 1757, *[1695, 679, 1691, 1697], 3)
+    ops.element("ShellMITC4", 1758, *[1697, 1691, 669, 1698], 3)
+    ops.element("ShellMITC4", 1759, *[1698, 669, 1692, 1699], 3)
+    ops.element("ShellMITC4", 1760, *[1695, 679, 1693, 1700], 6)
+    ops.element("ShellMITC4", 1761, *[1698, 669, 1694, 1701], 6)
+    ops.element("ShellMITC4", 1762, *[1703, 1696, 1695, 1702], 3)
+    ops.element("ShellMITC4", 1763, *[1702, 1695, 1697, 1704], 3)
+    ops.element("ShellMITC4", 1764, *[1704, 1697, 1698, 1705], 3)
+    ops.element("ShellMITC4", 1765, *[1705, 1698, 1699, 1706], 3)
+    ops.element("ShellMITC4", 1766, *[1702, 1695, 1700, 1707], 6)
+    ops.element("ShellMITC4", 1767, *[1705, 1698, 1701, 1708], 6)
+    ops.element("ShellMITC4", 1768, *[1710, 1703, 1702, 1709], 3)
+    ops.element("ShellMITC4", 1769, *[1709, 1702, 1704, 1711], 3)
+    ops.element("ShellMITC4", 1770, *[1711, 1704, 1705, 1712], 3)
+    ops.element("ShellMITC4", 1771, *[1712, 1705, 1706, 1713], 3)
+    ops.element("ShellMITC4", 1772, *[1709, 1702, 1707, 1714], 6)
+    ops.element("ShellMITC4", 1773, *[1712, 1705, 1708, 1715], 6)
+    ops.element("ShellMITC4", 1774, *[1716, 1710, 1709, 680], 3)
+    ops.element("ShellMITC4", 1775, *[680, 1709, 1711, 1717], 3)
+    ops.element("ShellMITC4", 1776, *[1717, 1711, 1712, 670], 3)
+    ops.element("ShellMITC4", 1777, *[670, 1712, 1713, 1718], 3)
+    ops.element("ShellMITC4", 1778, *[680, 1709, 1714, 1719], 6)
+    ops.element("ShellMITC4", 1779, *[670, 1712, 1715, 1720], 6)
+    ops.element("ShellMITC4", 1780, *[1723, 1721, 718, 1722], 3)
+    ops.element("ShellMITC4", 1781, *[1722, 718, 1724, 1725], 3)
+    ops.element("ShellMITC4", 1782, *[1725, 1724, 709, 1726], 3)
+    ops.element("ShellMITC4", 1783, *[1726, 709, 1727, 1728], 3)
+    ops.element("ShellMITC4", 1784, *[1722, 718, 1729, 1730], 6)
+    ops.element("ShellMITC4", 1785, *[1726, 709, 1731, 1732], 6)
+    ops.element("ShellMITC4", 1786, *[1734, 1723, 1722, 1733], 3)
+    ops.element("ShellMITC4", 1787, *[1733, 1722, 1725, 1735], 3)
+    ops.element("ShellMITC4", 1788, *[1735, 1725, 1726, 1736], 3)
+    ops.element("ShellMITC4", 1789, *[1736, 1726, 1728, 1737], 3)
+    ops.element("ShellMITC4", 1790, *[1733, 1722, 1730, 1738], 6)
+    ops.element("ShellMITC4", 1791, *[1736, 1726, 1732, 1739], 6)
+    ops.element("ShellMITC4", 1792, *[1741, 1734, 1733, 1740], 3)
+    ops.element("ShellMITC4", 1793, *[1740, 1733, 1735, 1742], 3)
+    ops.element("ShellMITC4", 1794, *[1742, 1735, 1736, 1743], 3)
+    ops.element("ShellMITC4", 1795, *[1743, 1736, 1737, 1744], 3)
+    ops.element("ShellMITC4", 1796, *[1740, 1733, 1738, 1745], 6)
+    ops.element("ShellMITC4", 1797, *[1743, 1736, 1739, 1746], 6)
+    ops.element("ShellMITC4", 1798, *[1748, 1741, 1740, 1747], 3)
+    ops.element("ShellMITC4", 1799, *[1747, 1740, 1742, 1749], 3)
+    ops.element("ShellMITC4", 1800, *[1749, 1742, 1743, 1750], 3)
+    ops.element("ShellMITC4", 1801, *[1750, 1743, 1744, 1751], 3)
+    ops.element("ShellMITC4", 1802, *[1747, 1740, 1745, 1752], 6)
+    ops.element("ShellMITC4", 1803, *[1750, 1743, 1746, 1753], 6)
+    ops.element("ShellMITC4", 1804, *[1755, 1748, 1747, 1754], 3)
+    ops.element("ShellMITC4", 1805, *[1754, 1747, 1749, 1756], 3)
+    ops.element("ShellMITC4", 1806, *[1756, 1749, 1750, 1757], 3)
+    ops.element("ShellMITC4", 1807, *[1757, 1750, 1751, 1758], 3)
+    ops.element("ShellMITC4", 1808, *[1754, 1747, 1752, 1759], 6)
+    ops.element("ShellMITC4", 1809, *[1757, 1750, 1753, 1760], 6)
+    ops.element("ShellMITC4", 1810, *[1762, 1755, 1754, 1761], 3)
+    ops.element("ShellMITC4", 1811, *[1761, 1754, 1756, 1763], 3)
+    ops.element("ShellMITC4", 1812, *[1763, 1756, 1757, 1764], 3)
+    ops.element("ShellMITC4", 1813, *[1764, 1757, 1758, 1765], 3)
+    ops.element("ShellMITC4", 1814, *[1761, 1754, 1759, 1766], 6)
+    ops.element("ShellMITC4", 1815, *[1764, 1757, 1760, 1767], 6)
+    ops.element("ShellMITC4", 1816, *[1769, 1762, 1761, 1768], 3)
+    ops.element("ShellMITC4", 1817, *[1768, 1761, 1763, 1770], 3)
+    ops.element("ShellMITC4", 1818, *[1770, 1763, 1764, 1771], 3)
+    ops.element("ShellMITC4", 1819, *[1771, 1764, 1765, 1772], 3)
+    ops.element("ShellMITC4", 1820, *[1768, 1761, 1766, 1773], 6)
+    ops.element("ShellMITC4", 1821, *[1771, 1764, 1767, 1774], 6)
+    ops.element("ShellMITC4", 1822, *[1776, 1769, 1768, 1775], 3)
+    ops.element("ShellMITC4", 1823, *[1775, 1768, 1770, 1777], 3)
+    ops.element("ShellMITC4", 1824, *[1777, 1770, 1771, 1778], 3)
+    ops.element("ShellMITC4", 1825, *[1778, 1771, 1772, 1779], 3)
+    ops.element("ShellMITC4", 1826, *[1775, 1768, 1773, 1780], 6)
+    ops.element("ShellMITC4", 1827, *[1778, 1771, 1774, 1781], 6)
+    ops.element("ShellMITC4", 1828, *[1783, 1776, 1775, 1782], 3)
+    ops.element("ShellMITC4", 1829, *[1782, 1775, 1777, 1784], 3)
+    ops.element("ShellMITC4", 1830, *[1784, 1777, 1778, 1785], 3)
+    ops.element("ShellMITC4", 1831, *[1785, 1778, 1779, 1786], 3)
+    ops.element("ShellMITC4", 1832, *[1782, 1775, 1780, 1787], 6)
+    ops.element("ShellMITC4", 1833, *[1785, 1778, 1781, 1788], 6)
+    ops.element("ShellMITC4", 1834, *[1790, 1783, 1782, 1789], 3)
+    ops.element("ShellMITC4", 1835, *[1789, 1782, 1784, 1791], 3)
+    ops.element("ShellMITC4", 1836, *[1791, 1784, 1785, 1792], 3)
+    ops.element("ShellMITC4", 1837, *[1792, 1785, 1786, 1793], 3)
+    ops.element("ShellMITC4", 1838, *[1789, 1782, 1787, 1794], 6)
+    ops.element("ShellMITC4", 1839, *[1792, 1785, 1788, 1795], 6)
+    ops.element("ShellMITC4", 1840, *[1797, 1790, 1789, 1796], 3)
+    ops.element("ShellMITC4", 1841, *[1796, 1789, 1791, 1798], 3)
+    ops.element("ShellMITC4", 1842, *[1798, 1791, 1792, 1799], 3)
+    ops.element("ShellMITC4", 1843, *[1799, 1792, 1793, 1800], 3)
+    ops.element("ShellMITC4", 1844, *[1796, 1789, 1794, 1801], 6)
+    ops.element("ShellMITC4", 1845, *[1799, 1792, 1795, 1802], 6)
+    ops.element("ShellMITC4", 1846, *[1803, 1797, 1796, 700], 3)
+    ops.element("ShellMITC4", 1847, *[700, 1796, 1798, 1804], 3)
+    ops.element("ShellMITC4", 1848, *[1804, 1798, 1799, 682], 3)
+    ops.element("ShellMITC4", 1849, *[682, 1799, 1800, 1805], 3)
+    ops.element("ShellMITC4", 1850, *[700, 1796, 1801, 1806], 6)
+    ops.element("ShellMITC4", 1851, *[682, 1799, 1802, 1807], 6)
+    ops.element("ShellMITC4", 1852, *[1721, 1809, 1808, 718], 3)
+    ops.element("ShellMITC4", 1853, *[718, 1808, 1810, 1724], 3)
+    ops.element("ShellMITC4", 1854, *[1724, 1810, 1811, 709], 3)
+    ops.element("ShellMITC4", 1855, *[709, 1811, 1812, 1727], 3)
+    ops.element("ShellMITC4", 1856, *[718, 1808, 1813, 1729], 6)
+    ops.element("ShellMITC4", 1857, *[709, 1811, 1814, 1731], 6)
+    ops.element("ShellMITC4", 1858, *[1809, 1816, 1815, 1808], 3)
+    ops.element("ShellMITC4", 1859, *[1808, 1815, 1817, 1810], 3)
+    ops.element("ShellMITC4", 1860, *[1810, 1817, 1818, 1811], 3)
+    ops.element("ShellMITC4", 1861, *[1811, 1818, 1819, 1812], 3)
+    ops.element("ShellMITC4", 1862, *[1808, 1815, 1820, 1813], 6)
+    ops.element("ShellMITC4", 1863, *[1811, 1818, 1821, 1814], 6)
+    ops.element("ShellMITC4", 1864, *[1816, 1823, 1822, 1815], 3)
+    ops.element("ShellMITC4", 1865, *[1815, 1822, 1824, 1817], 3)
+    ops.element("ShellMITC4", 1866, *[1817, 1824, 1825, 1818], 3)
+    ops.element("ShellMITC4", 1867, *[1818, 1825, 1826, 1819], 3)
+    ops.element("ShellMITC4", 1868, *[1815, 1822, 1827, 1820], 6)
+    ops.element("ShellMITC4", 1869, *[1818, 1825, 1828, 1821], 6)
+    ops.element("ShellMITC4", 1870, *[1823, 1829, 719, 1822], 3)
+    ops.element("ShellMITC4", 1871, *[1822, 719, 1830, 1824], 3)
+    ops.element("ShellMITC4", 1872, *[1824, 1830, 710, 1825], 3)
+    ops.element("ShellMITC4", 1873, *[1825, 710, 1831, 1826], 3)
+    ops.element("ShellMITC4", 1874, *[1822, 719, 1832, 1827], 6)
+    ops.element("ShellMITC4", 1875, *[1825, 710, 1833, 1828], 6)
+    ops.element("ShellMITC4", 1876, *[1829, 1835, 1834, 719], 3)
+    ops.element("ShellMITC4", 1877, *[719, 1834, 1836, 1830], 3)
+    ops.element("ShellMITC4", 1878, *[1830, 1836, 1837, 710], 3)
+    ops.element("ShellMITC4", 1879, *[710, 1837, 1838, 1831], 3)
+    ops.element("ShellMITC4", 1880, *[719, 1834, 1839, 1832], 6)
+    ops.element("ShellMITC4", 1881, *[710, 1837, 1840, 1833], 6)
+    ops.element("ShellMITC4", 1882, *[1835, 1842, 1841, 1834], 3)
+    ops.element("ShellMITC4", 1883, *[1834, 1841, 1843, 1836], 3)
+    ops.element("ShellMITC4", 1884, *[1836, 1843, 1844, 1837], 3)
+    ops.element("ShellMITC4", 1885, *[1837, 1844, 1845, 1838], 3)
+    ops.element("ShellMITC4", 1886, *[1834, 1841, 1846, 1839], 6)
+    ops.element("ShellMITC4", 1887, *[1837, 1844, 1847, 1840], 6)
+    ops.element("ShellMITC4", 1888, *[1842, 1849, 1848, 1841], 3)
+    ops.element("ShellMITC4", 1889, *[1841, 1848, 1850, 1843], 3)
+    ops.element("ShellMITC4", 1890, *[1843, 1850, 1851, 1844], 3)
+    ops.element("ShellMITC4", 1891, *[1844, 1851, 1852, 1845], 3)
+    ops.element("ShellMITC4", 1892, *[1841, 1848, 1853, 1846], 6)
+    ops.element("ShellMITC4", 1893, *[1844, 1851, 1854, 1847], 6)
+    ops.element("ShellMITC4", 1894, *[1849, 1855, 720, 1848], 3)
+    ops.element("ShellMITC4", 1895, *[1848, 720, 1856, 1850], 3)
+    ops.element("ShellMITC4", 1896, *[1850, 1856, 711, 1851], 3)
+    ops.element("ShellMITC4", 1897, *[1851, 711, 1857, 1852], 3)
+    ops.element("ShellMITC4", 1898, *[1848, 720, 1858, 1853], 6)
+    ops.element("ShellMITC4", 1899, *[1851, 711, 1859, 1854], 6)
+    ops.element("ShellMITC4", 1900, *[1855, 1861, 1860, 720], 3)
+    ops.element("ShellMITC4", 1901, *[720, 1860, 1862, 1856], 3)
+    ops.element("ShellMITC4", 1902, *[1856, 1862, 1863, 711], 3)
+    ops.element("ShellMITC4", 1903, *[711, 1863, 1864, 1857], 3)
+    ops.element("ShellMITC4", 1904, *[720, 1860, 1865, 1858], 6)
+    ops.element("ShellMITC4", 1905, *[711, 1863, 1866, 1859], 6)
+    ops.element("ShellMITC4", 1906, *[1861, 1868, 1867, 1860], 3)
+    ops.element("ShellMITC4", 1907, *[1860, 1867, 1869, 1862], 3)
+    ops.element("ShellMITC4", 1908, *[1862, 1869, 1870, 1863], 3)
+    ops.element("ShellMITC4", 1909, *[1863, 1870, 1871, 1864], 3)
+    ops.element("ShellMITC4", 1910, *[1860, 1867, 1872, 1865], 6)
+    ops.element("ShellMITC4", 1911, *[1863, 1870, 1873, 1866], 6)
+    ops.element("ShellMITC4", 1912, *[1868, 1875, 1874, 1867], 3)
+    ops.element("ShellMITC4", 1913, *[1867, 1874, 1876, 1869], 3)
+    ops.element("ShellMITC4", 1914, *[1869, 1876, 1877, 1870], 3)
+    ops.element("ShellMITC4", 1915, *[1870, 1877, 1878, 1871], 3)
+    ops.element("ShellMITC4", 1916, *[1867, 1874, 1879, 1872], 6)
+    ops.element("ShellMITC4", 1917, *[1870, 1877, 1880, 1873], 6)
+    ops.element("ShellMITC4", 1918, *[1875, 1881, 721, 1874], 3)
+    ops.element("ShellMITC4", 1919, *[1874, 721, 1882, 1876], 3)
+    ops.element("ShellMITC4", 1920, *[1876, 1882, 712, 1877], 3)
+    ops.element("ShellMITC4", 1921, *[1877, 712, 1883, 1878], 3)
+    ops.element("ShellMITC4", 1922, *[1874, 721, 1884, 1879], 6)
+    ops.element("ShellMITC4", 1923, *[1877, 712, 1885, 1880], 6)
+    ops.element("ShellMITC4", 1924, *[1881, 1887, 1886, 721], 3)
+    ops.element("ShellMITC4", 1925, *[721, 1886, 1888, 1882], 3)
+    ops.element("ShellMITC4", 1926, *[1882, 1888, 1889, 712], 3)
+    ops.element("ShellMITC4", 1927, *[712, 1889, 1890, 1883], 3)
+    ops.element("ShellMITC4", 1928, *[721, 1886, 1891, 1884], 6)
+    ops.element("ShellMITC4", 1929, *[712, 1889, 1892, 1885], 6)
+    ops.element("ShellMITC4", 1930, *[1887, 1894, 1893, 1886], 3)
+    ops.element("ShellMITC4", 1931, *[1886, 1893, 1895, 1888], 3)
+    ops.element("ShellMITC4", 1932, *[1888, 1895, 1896, 1889], 3)
+    ops.element("ShellMITC4", 1933, *[1889, 1896, 1897, 1890], 3)
+    ops.element("ShellMITC4", 1934, *[1886, 1893, 1898, 1891], 6)
+    ops.element("ShellMITC4", 1935, *[1889, 1896, 1899, 1892], 6)
+    ops.element("ShellMITC4", 1936, *[1894, 1901, 1900, 1893], 3)
+    ops.element("ShellMITC4", 1937, *[1893, 1900, 1902, 1895], 3)
+    ops.element("ShellMITC4", 1938, *[1895, 1902, 1903, 1896], 3)
+    ops.element("ShellMITC4", 1939, *[1896, 1903, 1904, 1897], 3)
+    ops.element("ShellMITC4", 1940, *[1893, 1900, 1905, 1898], 6)
+    ops.element("ShellMITC4", 1941, *[1896, 1903, 1906, 1899], 6)
+    ops.element("ShellMITC4", 1942, *[1901, 1907, 722, 1900], 3)
+    ops.element("ShellMITC4", 1943, *[1900, 722, 1908, 1902], 3)
+    ops.element("ShellMITC4", 1944, *[1902, 1908, 713, 1903], 3)
+    ops.element("ShellMITC4", 1945, *[1903, 713, 1909, 1904], 3)
+    ops.element("ShellMITC4", 1946, *[1900, 722, 1910, 1905], 6)
+    ops.element("ShellMITC4", 1947, *[1903, 713, 1911, 1906], 6)
+    ops.element("ShellMITC4", 1948, *[1907, 1913, 1912, 722], 3)
+    ops.element("ShellMITC4", 1949, *[722, 1912, 1914, 1908], 3)
+    ops.element("ShellMITC4", 1950, *[1908, 1914, 1915, 713], 3)
+    ops.element("ShellMITC4", 1951, *[713, 1915, 1916, 1909], 3)
+    ops.element("ShellMITC4", 1952, *[722, 1912, 1917, 1910], 6)
+    ops.element("ShellMITC4", 1953, *[713, 1915, 1918, 1911], 6)
+    ops.element("ShellMITC4", 1954, *[1913, 1920, 1919, 1912], 3)
+    ops.element("ShellMITC4", 1955, *[1912, 1919, 1921, 1914], 3)
+    ops.element("ShellMITC4", 1956, *[1914, 1921, 1922, 1915], 3)
+    ops.element("ShellMITC4", 1957, *[1915, 1922, 1923, 1916], 3)
+    ops.element("ShellMITC4", 1958, *[1912, 1919, 1924, 1917], 6)
+    ops.element("ShellMITC4", 1959, *[1915, 1922, 1925, 1918], 6)
+    ops.element("ShellMITC4", 1960, *[1920, 1927, 1926, 1919], 3)
+    ops.element("ShellMITC4", 1961, *[1919, 1926, 1928, 1921], 3)
+    ops.element("ShellMITC4", 1962, *[1921, 1928, 1929, 1922], 3)
+    ops.element("ShellMITC4", 1963, *[1922, 1929, 1930, 1923], 3)
+    ops.element("ShellMITC4", 1964, *[1919, 1926, 1931, 1924], 6)
+    ops.element("ShellMITC4", 1965, *[1922, 1929, 1932, 1925], 6)
+    ops.element("ShellMITC4", 1966, *[1927, 1933, 723, 1926], 3)
+    ops.element("ShellMITC4", 1967, *[1926, 723, 1934, 1928], 3)
+    ops.element("ShellMITC4", 1968, *[1928, 1934, 714, 1929], 3)
+    ops.element("ShellMITC4", 1969, *[1929, 714, 1935, 1930], 3)
+    ops.element("ShellMITC4", 1970, *[1926, 723, 1936, 1931], 6)
+    ops.element("ShellMITC4", 1971, *[1929, 714, 1937, 1932], 6)
+    ops.element("ShellMITC4", 1972, *[723, 1933, 1939, 1938], 3)
+    ops.element("ShellMITC4", 1973, *[723, 1938, 1940, 1934], 3)
+    ops.element("ShellMITC4", 1974, *[714, 1934, 1940, 1941], 3)
+    ops.element("ShellMITC4", 1975, *[714, 1941, 1942, 1935], 3)
+    ops.element("ShellMITC4", 1976, *[723, 1938, 1943, 1936], 6)
+    ops.element("ShellMITC4", 1977, *[714, 1941, 1944, 1937], 6)
+    ops.element("ShellMITC4", 1978, *[1939, 1946, 1945, 1938], 3)
+    ops.element("ShellMITC4", 1979, *[1938, 1945, 1947, 1940], 3)
+    ops.element("ShellMITC4", 1980, *[1940, 1947, 1948, 1941], 3)
+    ops.element("ShellMITC4", 1981, *[1941, 1948, 1949, 1942], 3)
+    ops.element("ShellMITC4", 1982, *[1938, 1945, 1950, 1943], 6)
+    ops.element("ShellMITC4", 1983, *[1941, 1948, 1951, 1944], 6)
+    ops.element("ShellMITC4", 1984, *[1946, 1953, 1952, 1945], 3)
+    ops.element("ShellMITC4", 1985, *[1945, 1952, 1954, 1947], 3)
+    ops.element("ShellMITC4", 1986, *[1947, 1954, 1955, 1948], 3)
+    ops.element("ShellMITC4", 1987, *[1948, 1955, 1956, 1949], 3)
+    ops.element("ShellMITC4", 1988, *[1945, 1952, 1957, 1950], 6)
+    ops.element("ShellMITC4", 1989, *[1948, 1955, 1958, 1951], 6)
+    ops.element("ShellMITC4", 1990, *[1953, 1959, 724, 1952], 3)
+    ops.element("ShellMITC4", 1991, *[1952, 724, 1960, 1954], 3)
+    ops.element("ShellMITC4", 1992, *[1954, 1960, 715, 1955], 3)
+    ops.element("ShellMITC4", 1993, *[1955, 715, 1961, 1956], 3)
+    ops.element("ShellMITC4", 1994, *[1952, 724, 1962, 1957], 6)
+    ops.element("ShellMITC4", 1995, *[1955, 715, 1963, 1958], 6)
+    ops.element("ShellMITC4", 1996, *[1959, 1965, 1964, 724], 3)
+    ops.element("ShellMITC4", 1997, *[724, 1964, 1966, 1960], 3)
+    ops.element("ShellMITC4", 1998, *[1960, 1966, 1967, 715], 3)
+    ops.element("ShellMITC4", 1999, *[715, 1967, 1968, 1961], 3)
+    ops.element("ShellMITC4", 2000, *[724, 1964, 1969, 1962], 6)
+    ops.element("ShellMITC4", 2001, *[715, 1967, 1970, 1963], 6)
+    ops.element("ShellMITC4", 2002, *[1965, 1972, 1971, 1964], 3)
+    ops.element("ShellMITC4", 2003, *[1964, 1971, 1973, 1966], 3)
+    ops.element("ShellMITC4", 2004, *[1966, 1973, 1974, 1967], 3)
+    ops.element("ShellMITC4", 2005, *[1967, 1974, 1975, 1968], 3)
+    ops.element("ShellMITC4", 2006, *[1964, 1971, 1976, 1969], 6)
+    ops.element("ShellMITC4", 2007, *[1967, 1974, 1977, 1970], 6)
+    ops.element("ShellMITC4", 2008, *[1972, 1979, 1978, 1971], 3)
+    ops.element("ShellMITC4", 2009, *[1971, 1978, 1980, 1973], 3)
+    ops.element("ShellMITC4", 2010, *[1973, 1980, 1981, 1974], 3)
+    ops.element("ShellMITC4", 2011, *[1974, 1981, 1982, 1975], 3)
+    ops.element("ShellMITC4", 2012, *[1971, 1978, 1983, 1976], 6)
+    ops.element("ShellMITC4", 2013, *[1974, 1981, 1984, 1977], 6)
+    ops.element("ShellMITC4", 2014, *[1979, 1985, 725, 1978], 3)
+    ops.element("ShellMITC4", 2015, *[1978, 725, 1986, 1980], 3)
+    ops.element("ShellMITC4", 2016, *[1980, 1986, 716, 1981], 3)
+    ops.element("ShellMITC4", 2017, *[1981, 716, 1987, 1982], 3)
+    ops.element("ShellMITC4", 2018, *[1978, 725, 1988, 1983], 6)
+    ops.element("ShellMITC4", 2019, *[1981, 716, 1989, 1984], 6)
+    ops.element("ShellMITC4", 2020, *[1985, 1991, 1990, 725], 3)
+    ops.element("ShellMITC4", 2021, *[725, 1990, 1992, 1986], 3)
+    ops.element("ShellMITC4", 2022, *[1986, 1992, 1993, 716], 3)
+    ops.element("ShellMITC4", 2023, *[716, 1993, 1994, 1987], 3)
+    ops.element("ShellMITC4", 2024, *[725, 1990, 1995, 1988], 6)
+    ops.element("ShellMITC4", 2025, *[716, 1993, 1996, 1989], 6)
+    ops.element("ShellMITC4", 2026, *[1991, 1998, 1997, 1990], 3)
+    ops.element("ShellMITC4", 2027, *[1990, 1997, 1999, 1992], 3)
+    ops.element("ShellMITC4", 2028, *[1992, 1999, 2000, 1993], 3)
+    ops.element("ShellMITC4", 2029, *[1993, 2000, 2001, 1994], 3)
+    ops.element("ShellMITC4", 2030, *[1990, 1997, 2002, 1995], 6)
+    ops.element("ShellMITC4", 2031, *[1993, 2000, 2003, 1996], 6)
+    ops.element("ShellMITC4", 2032, *[1998, 2005, 2004, 1997], 3)
+    ops.element("ShellMITC4", 2033, *[1997, 2004, 2006, 1999], 3)
+    ops.element("ShellMITC4", 2034, *[1999, 2006, 2007, 2000], 3)
+    ops.element("ShellMITC4", 2035, *[2000, 2007, 2008, 2001], 3)
+    ops.element("ShellMITC4", 2036, *[1997, 2004, 2009, 2002], 6)
+    ops.element("ShellMITC4", 2037, *[2000, 2007, 2010, 2003], 6)
+    ops.element("ShellMITC4", 2038, *[2005, 2011, 726, 2004], 3)
+    ops.element("ShellMITC4", 2039, *[2004, 726, 2012, 2006], 3)
+    ops.element("ShellMITC4", 2040, *[2006, 2012, 717, 2007], 3)
+    ops.element("ShellMITC4", 2041, *[2007, 717, 2013, 2008], 3)
+    ops.element("ShellMITC4", 2042, *[2004, 726, 2014, 2009], 6)
+    ops.element("ShellMITC4", 2043, *[2007, 717, 2015, 2010], 6)
+    ops.element("ShellMITC4", 2044, *[726, 2011, 2017, 2016], 3)
+    ops.element("ShellMITC4", 2045, *[726, 2016, 2018, 2012], 3)
+    ops.element("ShellMITC4", 2046, *[717, 2012, 2018, 2019], 3)
+    ops.element("ShellMITC4", 2047, *[717, 2019, 2020, 2013], 3)
+    ops.element("ShellMITC4", 2048, *[726, 2016, 2021, 2014], 6)
+    ops.element("ShellMITC4", 2049, *[717, 2019, 2022, 2015], 6)
+    ops.element("ShellMITC4", 2050, *[2017, 2024, 2023, 2016], 3)
+    ops.element("ShellMITC4", 2051, *[2016, 2023, 2025, 2018], 3)
+    ops.element("ShellMITC4", 2052, *[2018, 2025, 2026, 2019], 3)
+    ops.element("ShellMITC4", 2053, *[2019, 2026, 2027, 2020], 3)
+    ops.element("ShellMITC4", 2054, *[2016, 2023, 2028, 2021], 6)
+    ops.element("ShellMITC4", 2055, *[2019, 2026, 2029, 2022], 6)
+    ops.element("ShellMITC4", 2056, *[2024, 2031, 2030, 2023], 3)
+    ops.element("ShellMITC4", 2057, *[2023, 2030, 2032, 2025], 3)
+    ops.element("ShellMITC4", 2058, *[2025, 2032, 2033, 2026], 3)
+    ops.element("ShellMITC4", 2059, *[2026, 2033, 2034, 2027], 3)
+    ops.element("ShellMITC4", 2060, *[2023, 2030, 2035, 2028], 6)
+    ops.element("ShellMITC4", 2061, *[2026, 2033, 2036, 2029], 6)
+    ops.element("ShellMITC4", 2062, *[2031, 1716, 680, 2030], 3)
+    ops.element("ShellMITC4", 2063, *[2030, 680, 1717, 2032], 3)
+    ops.element("ShellMITC4", 2064, *[2032, 1717, 670, 2033], 3)
+    ops.element("ShellMITC4", 2065, *[2033, 670, 1718, 2034], 3)
+    ops.element("ShellMITC4", 2066, *[2030, 680, 1719, 2035], 6)
+    ops.element("ShellMITC4", 2067, *[2033, 670, 1720, 2036], 6)
+    ops.element("ShellMITC4", 2068, *[2038, 1803, 700, 2037], 3)
+    ops.element("ShellMITC4", 2069, *[2037, 700, 1804, 2039], 3)
+    ops.element("ShellMITC4", 2070, *[2039, 1804, 682, 2040], 3)
+    ops.element("ShellMITC4", 2071, *[2040, 682, 1805, 2041], 3)
+    ops.element("ShellMITC4", 2072, *[2037, 700, 1806, 2042], 6)
+    ops.element("ShellMITC4", 2073, *[2040, 682, 1807, 2043], 6)
+    ops.element("ShellMITC4", 2074, *[2045, 2038, 2037, 2044], 3)
+    ops.element("ShellMITC4", 2075, *[2044, 2037, 2039, 2046], 3)
+    ops.element("ShellMITC4", 2076, *[2046, 2039, 2040, 2047], 3)
+    ops.element("ShellMITC4", 2077, *[2047, 2040, 2041, 2048], 3)
+    ops.element("ShellMITC4", 2078, *[2044, 2037, 2042, 2049], 6)
+    ops.element("ShellMITC4", 2079, *[2047, 2040, 2043, 2050], 6)
+    ops.element("ShellMITC4", 2080, *[2052, 2045, 2044, 2051], 3)
+    ops.element("ShellMITC4", 2081, *[2054, 2047, 2048, 2055], 3)
+    ops.element("ShellMITC4", 2082, *[2051, 2044, 2049, 2056], 6)
+    ops.element("ShellMITC4", 2083, *[2054, 2047, 2050, 2057], 6)
+    ops.element("ShellMITC4", 2084, *[2058, 2052, 2051, 701], 3)
+    ops.element("ShellMITC4", 2085, *[701, 2051, 2053, 2059], 3)
+    ops.element("ShellMITC4", 2086, *[2059, 2053, 2054, 684], 3)
+    ops.element("ShellMITC4", 2087, *[684, 2054, 2055, 2060], 3)
+    ops.element("ShellMITC4", 2088, *[701, 2051, 2056, 2061], 6)
+    ops.element("ShellMITC4", 2089, *[684, 2054, 2057, 2062], 6)
+    ops.element("ShellMITC4", 2090, *[2064, 2058, 701, 2063], 3)
+    ops.element("ShellMITC4", 2091, *[2063, 701, 2059, 2065], 3)
+    ops.element("ShellMITC4", 2092, *[2065, 2059, 684, 2066], 3)
+    ops.element("ShellMITC4", 2093, *[2066, 684, 2060, 2067], 3)
+    ops.element("ShellMITC4", 2094, *[2063, 701, 2061, 2068], 6)
+    ops.element("ShellMITC4", 2095, *[2066, 684, 2062, 2069], 6)
+    ops.element("ShellMITC4", 2096, *[2071, 2064, 2063, 2070], 3)
+    ops.element("ShellMITC4", 2097, *[2070, 2063, 2065, 2072], 3)
+    ops.element("ShellMITC4", 2098, *[2072, 2065, 2066, 2073], 3)
+    ops.element("ShellMITC4", 2099, *[2073, 2066, 2067, 2074], 3)
+    ops.element("ShellMITC4", 2100, *[2070, 2063, 2068, 2075], 6)
+    ops.element("ShellMITC4", 2101, *[2073, 2066, 2069, 2076], 6)
+    ops.element("ShellMITC4", 2102, *[2078, 2071, 2070, 2077], 3)
+    ops.element("ShellMITC4", 2103, *[2077, 2070, 2072, 2079], 3)
+    ops.element("ShellMITC4", 2104, *[2079, 2072, 2073, 2080], 3)
+    ops.element("ShellMITC4", 2105, *[2080, 2073, 2074, 2081], 3)
+    ops.element("ShellMITC4", 2106, *[2077, 2070, 2075, 2082], 6)
+    ops.element("ShellMITC4", 2107, *[2080, 2073, 2076, 2083], 6)
+    ops.element("ShellMITC4", 2108, *[2084, 2078, 2077, 702], 3)
+    ops.element("ShellMITC4", 2109, *[702, 2077, 2079, 2085], 3)
+    ops.element("ShellMITC4", 2110, *[2085, 2079, 2080, 686], 3)
+    ops.element("ShellMITC4", 2111, *[686, 2080, 2081, 2086], 3)
+    ops.element("ShellMITC4", 2112, *[702, 2077, 2082, 2087], 6)
+    ops.element("ShellMITC4", 2113, *[686, 2080, 2083, 2088], 6)
+    ops.element("ShellMITC4", 2114, *[2090, 2084, 702, 2089], 3)
+    ops.element("ShellMITC4", 2115, *[2089, 702, 2085, 2091], 3)
+    ops.element("ShellMITC4", 2116, *[2091, 2085, 686, 2092], 3)
+    ops.element("ShellMITC4", 2117, *[2092, 686, 2086, 2093], 3)
+    ops.element("ShellMITC4", 2118, *[2089, 702, 2087, 2094], 6)
+    ops.element("ShellMITC4", 2119, *[2092, 686, 2088, 2095], 6)
+    ops.element("ShellMITC4", 2120, *[2097, 2090, 2089, 2096], 3)
+    ops.element("ShellMITC4", 2121, *[2096, 2089, 2091, 2098], 3)
+    ops.element("ShellMITC4", 2122, *[2098, 2091, 2092, 2099], 3)
+    ops.element("ShellMITC4", 2123, *[2099, 2092, 2093, 2100], 3)
+    ops.element("ShellMITC4", 2124, *[2096, 2089, 2094, 2101], 6)
+    ops.element("ShellMITC4", 2125, *[2099, 2092, 2095, 2102], 6)
+    ops.element("ShellMITC4", 2126, *[2104, 2097, 2096, 2103], 3)
+    ops.element("ShellMITC4", 2127, *[2106, 2099, 2100, 2107], 3)
+    ops.element("ShellMITC4", 2128, *[2103, 2096, 2101, 2108], 6)
+    ops.element("ShellMITC4", 2129, *[2106, 2099, 2102, 2109], 6)
+    ops.element("ShellMITC4", 2130, *[2110, 2104, 2103, 703], 3)
+    ops.element("ShellMITC4", 2131, *[703, 2103, 2105, 2111], 3)
+    ops.element("ShellMITC4", 2132, *[2111, 2105, 2106, 688], 3)
+    ops.element("ShellMITC4", 2133, *[688, 2106, 2107, 2112], 3)
+    ops.element("ShellMITC4", 2134, *[703, 2103, 2108, 2113], 6)
+    ops.element("ShellMITC4", 2135, *[688, 2106, 2109, 2114], 6)
+    ops.element("ShellMITC4", 2136, *[2116, 2110, 703, 2115], 3)
+    ops.element("ShellMITC4", 2137, *[2115, 703, 2111, 2117], 3)
+    ops.element("ShellMITC4", 2138, *[2117, 2111, 688, 2118], 3)
+    ops.element("ShellMITC4", 2139, *[2118, 688, 2112, 2119], 3)
+    ops.element("ShellMITC4", 2140, *[2115, 703, 2113, 2120], 6)
+    ops.element("ShellMITC4", 2141, *[2118, 688, 2114, 2121], 6)
+    ops.element("ShellMITC4", 2142, *[2123, 2116, 2115, 2122], 3)
+    ops.element("ShellMITC4", 2143, *[2122, 2115, 2117, 2124], 3)
+    ops.element("ShellMITC4", 2144, *[2124, 2117, 2118, 2125], 3)
+    ops.element("ShellMITC4", 2145, *[2125, 2118, 2119, 2126], 3)
+    ops.element("ShellMITC4", 2146, *[2122, 2115, 2120, 2127], 6)
+    ops.element("ShellMITC4", 2147, *[2125, 2118, 2121, 2128], 6)
+    ops.element("ShellMITC4", 2148, *[2130, 2123, 2122, 2129], 3)
+    ops.element("ShellMITC4", 2149, *[2129, 2122, 2124, 2131], 3)
+    ops.element("ShellMITC4", 2150, *[2131, 2124, 2125, 2132], 3)
+    ops.element("ShellMITC4", 2151, *[2132, 2125, 2126, 2133], 3)
+    ops.element("ShellMITC4", 2152, *[2129, 2122, 2127, 2134], 6)
+    ops.element("ShellMITC4", 2153, *[2132, 2125, 2128, 2135], 6)
+    ops.element("ShellMITC4", 2154, *[2136, 2130, 2129, 704], 3)
+    ops.element("ShellMITC4", 2155, *[704, 2129, 2131, 2137], 3)
+    ops.element("ShellMITC4", 2156, *[2137, 2131, 2132, 690], 3)
+    ops.element("ShellMITC4", 2157, *[690, 2132, 2133, 2138], 3)
+    ops.element("ShellMITC4", 2158, *[704, 2129, 2134, 2139], 6)
+    ops.element("ShellMITC4", 2159, *[690, 2132, 2135, 2140], 6)
+    ops.element("ShellMITC4", 2160, *[2142, 2136, 704, 2141], 3)
+    ops.element("ShellMITC4", 2161, *[2141, 704, 2137, 2143], 3)
+    ops.element("ShellMITC4", 2162, *[2143, 2137, 690, 2144], 3)
+    ops.element("ShellMITC4", 2163, *[2144, 690, 2138, 2145], 3)
+    ops.element("ShellMITC4", 2164, *[2141, 704, 2139, 2146], 6)
+    ops.element("ShellMITC4", 2165, *[2144, 690, 2140, 2147], 6)
+    ops.element("ShellMITC4", 2166, *[2149, 2142, 2141, 2148], 3)
+    ops.element("ShellMITC4", 2167, *[2148, 2141, 2143, 2150], 3)
+    ops.element("ShellMITC4", 2168, *[2150, 2143, 2144, 2151], 3)
+    ops.element("ShellMITC4", 2169, *[2151, 2144, 2145, 2152], 3)
+    ops.element("ShellMITC4", 2170, *[2148, 2141, 2146, 2153], 6)
+    ops.element("ShellMITC4", 2171, *[2151, 2144, 2147, 2154], 6)
+    ops.element("ShellMITC4", 2172, *[2156, 2149, 2148, 2155], 3)
+    ops.element("ShellMITC4", 2173, *[2155, 2148, 2150, 2157], 3)
+    ops.element("ShellMITC4", 2174, *[2157, 2150, 2151, 2158], 3)
+    ops.element("ShellMITC4", 2175, *[2158, 2151, 2152, 2159], 3)
+    ops.element("ShellMITC4", 2176, *[2155, 2148, 2153, 2160], 6)
+    ops.element("ShellMITC4", 2177, *[2158, 2151, 2154, 2161], 6)
+    ops.element("ShellMITC4", 2178, *[2162, 2156, 2155, 705], 3)
+    ops.element("ShellMITC4", 2179, *[692, 2158, 2159, 2164], 3)
+    ops.element("ShellMITC4", 2180, *[705, 2155, 2160, 2165], 6)
+    ops.element("ShellMITC4", 2181, *[692, 2158, 2161, 2166], 6)
+    ops.element("ShellMITC4", 2182, *[2168, 2162, 705, 2167], 3)
+    ops.element("ShellMITC4", 2183, *[2167, 705, 2163, 2169], 3)
+    ops.element("ShellMITC4", 2184, *[2169, 2163, 692, 2170], 3)
+    ops.element("ShellMITC4", 2185, *[2170, 692, 2164, 2171], 3)
+    ops.element("ShellMITC4", 2186, *[2167, 705, 2165, 2172], 6)
+    ops.element("ShellMITC4", 2187, *[2170, 692, 2166, 2173], 6)
+    ops.element("ShellMITC4", 2188, *[2175, 2168, 2167, 2174], 3)
+    ops.element("ShellMITC4", 2189, *[2174, 2167, 2169, 2176], 3)
+    ops.element("ShellMITC4", 2190, *[2176, 2169, 2170, 2177], 3)
+    ops.element("ShellMITC4", 2191, *[2177, 2170, 2171, 2178], 3)
+    ops.element("ShellMITC4", 2192, *[2174, 2167, 2172, 2179], 6)
+    ops.element("ShellMITC4", 2193, *[2177, 2170, 2173, 2180], 6)
+    ops.element("ShellMITC4", 2194, *[2182, 2175, 2174, 2181], 3)
+    ops.element("ShellMITC4", 2195, *[2181, 2174, 2176, 2183], 3)
+    ops.element("ShellMITC4", 2196, *[2183, 2176, 2177, 2184], 3)
+    ops.element("ShellMITC4", 2197, *[2184, 2177, 2178, 2185], 3)
+    ops.element("ShellMITC4", 2198, *[2181, 2174, 2179, 2186], 6)
+    ops.element("ShellMITC4", 2199, *[2184, 2177, 2180, 2187], 6)
+    ops.element("ShellMITC4", 2200, *[2188, 2182, 2181, 706], 3)
+    ops.element("ShellMITC4", 2201, *[706, 2181, 2183, 2189], 3)
+    ops.element("ShellMITC4", 2202, *[2189, 2183, 2184, 694], 3)
+    ops.element("ShellMITC4", 2203, *[694, 2184, 2185, 2190], 3)
+    ops.element("ShellMITC4", 2204, *[706, 2181, 2186, 2191], 6)
+    ops.element("ShellMITC4", 2205, *[694, 2184, 2187, 2192], 6)
+    ops.element("ShellMITC4", 2206, *[2194, 2188, 706, 2193], 3)
+    ops.element("ShellMITC4", 2207, *[2193, 706, 2189, 2195], 3)
+    ops.element("ShellMITC4", 2208, *[2195, 2189, 694, 2196], 3)
+    ops.element("ShellMITC4", 2209, *[2196, 694, 2190, 2197], 3)
+    ops.element("ShellMITC4", 2210, *[2193, 706, 2191, 2198], 6)
+    ops.element("ShellMITC4", 2211, *[2196, 694, 2192, 2199], 6)
+    ops.element("ShellMITC4", 2212, *[2201, 2194, 2193, 2200], 3)
+    ops.element("ShellMITC4", 2213, *[2200, 2193, 2195, 2202], 3)
+    ops.element("ShellMITC4", 2214, *[2202, 2195, 2196, 2203], 3)
+    ops.element("ShellMITC4", 2215, *[2203, 2196, 2197, 2204], 3)
+    ops.element("ShellMITC4", 2216, *[2200, 2193, 2198, 2205], 6)
+    ops.element("ShellMITC4", 2217, *[2203, 2196, 2199, 2206], 6)
+    ops.element("ShellMITC4", 2218, *[2208, 2201, 2200, 2207], 3)
+    ops.element("ShellMITC4", 2219, *[2207, 2200, 2202, 2209], 3)
+    ops.element("ShellMITC4", 2220, *[2209, 2202, 2203, 2210], 3)
+    ops.element("ShellMITC4", 2221, *[2210, 2203, 2204, 2211], 3)
+    ops.element("ShellMITC4", 2222, *[2207, 2200, 2205, 2212], 6)
+    ops.element("ShellMITC4", 2223, *[2210, 2203, 2206, 2213], 6)
+    ops.element("ShellMITC4", 2224, *[707, 2214, 2208, 2207], 3)
+    ops.element("ShellMITC4", 2225, *[696, 2210, 2211, 2216], 3)
+    ops.element("ShellMITC4", 2226, *[707, 2207, 2212, 2217], 6)
+    ops.element("ShellMITC4", 2227, *[696, 2210, 2213, 2218], 6)
+    ops.element("ShellMITC4", 2228, *[2220, 2214, 707, 2219], 3)
+    ops.element("ShellMITC4", 2229, *[2219, 707, 2215, 2221], 3)
+    ops.element("ShellMITC4", 2230, *[2221, 2215, 696, 2222], 3)
+    ops.element("ShellMITC4", 2231, *[2222, 696, 2216, 2223], 3)
+    ops.element("ShellMITC4", 2232, *[2219, 707, 2217, 2224], 6)
+    ops.element("ShellMITC4", 2233, *[2222, 696, 2218, 2225], 6)
+    ops.element("ShellMITC4", 2234, *[2227, 2220, 2219, 2226], 3)
+    ops.element("ShellMITC4", 2235, *[2226, 2219, 2221, 2228], 3)
+    ops.element("ShellMITC4", 2236, *[2228, 2221, 2222, 2229], 3)
+    ops.element("ShellMITC4", 2237, *[2229, 2222, 2223, 2230], 3)
+    ops.element("ShellMITC4", 2238, *[2226, 2219, 2224, 2231], 6)
+    ops.element("ShellMITC4", 2239, *[2229, 2222, 2225, 2232], 6)
+    ops.element("ShellMITC4", 2240, *[2234, 2227, 2226, 2233], 3)
+    ops.element("ShellMITC4", 2241, *[2233, 2226, 2228, 2235], 3)
+    ops.element("ShellMITC4", 2242, *[2235, 2228, 2229, 2236], 3)
+    ops.element("ShellMITC4", 2243, *[2236, 2229, 2230, 2237], 3)
+    ops.element("ShellMITC4", 2244, *[2233, 2226, 2231, 2238], 6)
+    ops.element("ShellMITC4", 2245, *[2236, 2229, 2232, 2239], 6)
+    ops.element("ShellMITC4", 2246, *[2240, 2234, 2233, 708], 3)
+    ops.element("ShellMITC4", 2247, *[708, 2233, 2235, 2241], 3)
+    ops.element("ShellMITC4", 2248, *[2241, 2235, 2236, 698], 3)
+    ops.element("ShellMITC4", 2249, *[698, 2236, 2237, 2242], 3)
+    ops.element("ShellMITC4", 2250, *[708, 2233, 2238, 2243], 6)
+    ops.element("ShellMITC4", 2251, *[698, 2236, 2239, 2244], 6)
+    ops.element("ShellMITC4", 2252, *[2246, 2240, 708, 2245], 3)
+    ops.element("ShellMITC4", 2253, *[2245, 708, 2241, 2247], 3)
+    ops.element("ShellMITC4", 2254, *[2247, 2241, 698, 2248], 3)
+    ops.element("ShellMITC4", 2255, *[2248, 698, 2242, 2249], 3)
+    ops.element("ShellMITC4", 2256, *[2245, 708, 2243, 2250], 6)
+    ops.element("ShellMITC4", 2257, *[2248, 698, 2244, 2251], 6)
+    ops.element("ShellMITC4", 2258, *[2253, 2246, 2245, 2252], 3)
+    ops.element("ShellMITC4", 2259, *[2252, 2245, 2247, 2254], 3)
+    ops.element("ShellMITC4", 2260, *[2254, 2247, 2248, 2255], 3)
+    ops.element("ShellMITC4", 2261, *[2255, 2248, 2249, 2256], 3)
+    ops.element("ShellMITC4", 2262, *[2252, 2245, 2250, 2257], 6)
+    ops.element("ShellMITC4", 2263, *[2255, 2248, 2251, 2258], 6)
+    ops.element("ShellMITC4", 2264, *[2260, 2253, 2252, 2259], 3)
+    ops.element("ShellMITC4", 2265, *[2259, 2252, 2254, 2261], 3)
+    ops.element("ShellMITC4", 2266, *[2261, 2254, 2255, 2262], 3)
+    ops.element("ShellMITC4", 2267, *[2262, 2255, 2256, 2263], 3)
+    ops.element("ShellMITC4", 2268, *[2259, 2252, 2257, 2264], 6)
+    ops.element("ShellMITC4", 2269, *[2262, 2255, 2258, 2265], 6)
+    ops.element("ShellMITC4", 2270, *[576, 2266, 2260, 2259], 3)
+    ops.element("ShellMITC4", 2271, *[576, 2259, 2261, 574], 3)
+    ops.element("ShellMITC4", 2272, *[574, 2261, 2262, 575], 3)
+    ops.element("ShellMITC4", 2273, *[575, 2262, 2263, 2267], 3)
+    ops.element("ShellMITC4", 2274, *[576, 2259, 2264, 2268], 6)
+    ops.element("ShellMITC4", 2275, *[575, 2262, 2265, 2269], 6)
+    ops.element("ShellMITC4", 2276, *[568, 1320, 1322, 566], 3)
+    ops.element("ShellMITC4", 2277, *[1315, 566, 567, 1316], 3)
+    ops.element("ShellMITC4", 2278, *[566, 1322, 1323, 567], 3)
+    ops.element("ShellMITC4", 2279, *[580, 2207, 2209, 578], 3)
+    ops.element("ShellMITC4", 2280, *[707, 580, 578, 2215], 3)
+    ops.element("ShellMITC4", 2281, *[578, 2209, 2210, 579], 3)
+    ops.element("ShellMITC4", 2282, *[696, 2215, 578, 579], 3)
+    ops.element("ShellMITC4", 2283, *[584, 2155, 2157, 582], 3)
+    ops.element("ShellMITC4", 2284, *[705, 584, 582, 2163], 3)
+    ops.element("ShellMITC4", 2285, *[582, 2157, 2158, 583], 3)
+    ops.element("ShellMITC4", 2286, *[2163, 582, 583, 692], 3)
+    ops.element("ShellMITC4", 2287, *[588, 2096, 2098, 586], 3)
+    ops.element("ShellMITC4", 2288, *[2103, 588, 586, 2105], 3)
+    ops.element("ShellMITC4", 2289, *[586, 2098, 2099, 587], 3)
+    ops.element("ShellMITC4", 2290, *[2105, 586, 587, 2106], 3)
+    ops.element("ShellMITC4", 2291, *[592, 2044, 2046, 590], 3)
+    ops.element("ShellMITC4", 2292, *[2051, 592, 590, 2053], 3)
+    ops.element("ShellMITC4", 2293, *[590, 2046, 2047, 591], 3)
+    ops.element("ShellMITC4", 2294, *[2053, 590, 591, 2054], 3)
 
     # Set the mass at a node.
     ops.mass(1, *[37.051442982612315, 37.051442982612315, 37.051442982612315])
@@ -6419,22 +15005,19 @@ def CableStayedBridge():
     ops.mass(106, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(107, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(108, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(109, *[30.685837549652557,
-             30.685837549652557, 30.685837549652557])
+    ops.mass(109, *[30.685837549652557, 30.685837549652557, 30.685837549652557])
     ops.mass(110, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(111, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(112, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(113, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(114, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(115, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(115, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(116, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(117, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(118, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(119, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(120, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(121, *[158.63705418220968,
-             158.63705418220968, 158.63705418220968])
+    ops.mass(121, *[158.63705418220968, 158.63705418220968, 158.63705418220968])
     ops.mass(122, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(123, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(124, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6463,8 +15046,7 @@ def CableStayedBridge():
     ops.mass(148, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(149, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(150, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(151, *[30.699156665217856,
-             30.699156665217856, 30.699156665217856])
+    ops.mass(151, *[30.699156665217856, 30.699156665217856, 30.699156665217856])
     ops.mass(152, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(153, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(154, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6481,22 +15063,19 @@ def CableStayedBridge():
     ops.mass(166, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(167, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(168, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(169, *[158.63705418220968,
-             158.63705418220968, 158.63705418220968])
+    ops.mass(169, *[158.63705418220968, 158.63705418220968, 158.63705418220968])
     ops.mass(170, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(171, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(172, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(173, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(174, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(175, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(175, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(176, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(177, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(178, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(179, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(180, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(181, *[30.685837549652522,
-             30.685837549652522, 30.685837549652522])
+    ops.mass(181, *[30.685837549652522, 30.685837549652522, 30.685837549652522])
     ops.mass(182, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(183, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(184, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6532,15 +15111,13 @@ def CableStayedBridge():
     ops.mass(214, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(215, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(216, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(217, *[30.685837549652522,
-             30.685837549652522, 30.685837549652522])
+    ops.mass(217, *[30.685837549652522, 30.685837549652522, 30.685837549652522])
     ops.mass(218, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(219, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(220, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(221, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(222, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(223, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(223, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(224, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(225, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(226, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6552,50 +15129,43 @@ def CableStayedBridge():
     ops.mass(232, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(233, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(234, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(235, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(235, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(236, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(237, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(238, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(239, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(240, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(241, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(241, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(242, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(243, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(244, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(245, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(246, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(247, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(247, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(248, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(249, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(250, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(251, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(252, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(253, *[101.90314847769514,
-             101.90314847769514, 101.90314847769514])
+    ops.mass(253, *[101.90314847769514, 101.90314847769514, 101.90314847769514])
     ops.mass(254, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(255, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(256, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(257, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(258, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(259, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(259, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(260, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(261, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(262, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(263, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(264, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(265, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(265, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(266, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(267, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(268, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(269, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(270, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(271, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(271, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(272, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(273, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(274, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6613,50 +15183,43 @@ def CableStayedBridge():
     ops.mass(286, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(287, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(288, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(289, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(289, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(290, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(291, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(292, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(293, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(294, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(295, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(295, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(296, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(297, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(298, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(299, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(300, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(301, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(301, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(302, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(303, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(304, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(305, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(306, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(307, *[101.90314847769514,
-             101.90314847769514, 101.90314847769514])
+    ops.mass(307, *[101.90314847769514, 101.90314847769514, 101.90314847769514])
     ops.mass(308, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(309, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(310, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(311, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(312, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(313, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(313, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(314, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(315, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(316, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(317, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(318, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(319, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(319, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(320, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(321, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(322, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(323, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(324, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(325, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(325, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(326, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(327, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(328, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6668,8 +15231,7 @@ def CableStayedBridge():
     ops.mass(334, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(335, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(336, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(337, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(337, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(338, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(339, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(340, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6681,15 +15243,13 @@ def CableStayedBridge():
     ops.mass(346, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(347, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(348, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(349, *[30.690277254840975,
-             30.690277254840975, 30.690277254840975])
+    ops.mass(349, *[30.690277254840975, 30.690277254840975, 30.690277254840975])
     ops.mass(350, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(351, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(352, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(353, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(354, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(355, *[30.694716960029435,
-             30.694716960029435, 30.694716960029435])
+    ops.mass(355, *[30.694716960029435, 30.694716960029435, 30.694716960029435])
     ops.mass(356, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(357, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(358, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6701,8 +15261,7 @@ def CableStayedBridge():
     ops.mass(364, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(365, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(366, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(367, *[30.694716960029435,
-             30.694716960029435, 30.694716960029435])
+    ops.mass(367, *[30.694716960029435, 30.694716960029435, 30.694716960029435])
     ops.mass(368, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(369, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(370, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6720,22 +15279,19 @@ def CableStayedBridge():
     ops.mass(382, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(383, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(384, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(385, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(385, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(386, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(387, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(388, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(389, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(390, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(391, *[158.63705418220968,
-             158.63705418220968, 158.63705418220968])
+    ops.mass(391, *[158.63705418220968, 158.63705418220968, 158.63705418220968])
     ops.mass(392, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(393, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(394, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(395, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(396, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(397, *[30.681397844464065,
-             30.681397844464065, 30.681397844464065])
+    ops.mass(397, *[30.681397844464065, 30.681397844464065, 30.681397844464065])
     ops.mass(398, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(399, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(400, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6746,8 +15302,7 @@ def CableStayedBridge():
     ops.mass(406, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(407, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(408, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(409, *[30.699156665217895,
-             30.699156665217895, 30.699156665217895])
+    ops.mass(409, *[30.699156665217895, 30.699156665217895, 30.699156665217895])
     ops.mass(410, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(411, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(412, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6759,8 +15314,7 @@ def CableStayedBridge():
     ops.mass(418, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(419, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(420, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(421, *[30.699156665217895,
-             30.699156665217895, 30.699156665217895])
+    ops.mass(421, *[30.699156665217895, 30.699156665217895, 30.699156665217895])
     ops.mass(422, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(423, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(424, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6771,29 +15325,25 @@ def CableStayedBridge():
     ops.mass(430, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(431, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(432, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(433, *[30.681397844464065,
-             30.681397844464065, 30.681397844464065])
+    ops.mass(433, *[30.681397844464065, 30.681397844464065, 30.681397844464065])
     ops.mass(434, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(435, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(436, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(437, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(438, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(439, *[158.63705418220968,
-             158.63705418220968, 158.63705418220968])
+    ops.mass(439, *[158.63705418220968, 158.63705418220968, 158.63705418220968])
     ops.mass(440, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(441, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(442, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(443, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(444, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(445, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(445, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(446, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(447, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(448, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(449, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(450, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(451, *[30.685837549652522,
-             30.685837549652522, 30.685837549652522])
+    ops.mass(451, *[30.685837549652522, 30.685837549652522, 30.685837549652522])
     ops.mass(452, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(453, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(454, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6829,15 +15379,13 @@ def CableStayedBridge():
     ops.mass(484, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(485, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(486, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(487, *[30.685837549652522,
-             30.685837549652522, 30.685837549652522])
+    ops.mass(487, *[30.685837549652522, 30.685837549652522, 30.685837549652522])
     ops.mass(488, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(489, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(490, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(491, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(492, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(493, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(493, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(494, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(495, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(496, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6849,50 +15397,43 @@ def CableStayedBridge():
     ops.mass(502, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(503, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(504, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(505, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(505, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(506, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(507, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(508, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(509, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(510, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(511, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(511, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(512, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(513, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(514, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(515, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(516, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(517, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(517, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(518, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(519, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(520, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(521, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(522, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(523, *[101.90314847769514,
-             101.90314847769514, 101.90314847769514])
+    ops.mass(523, *[101.90314847769514, 101.90314847769514, 101.90314847769514])
     ops.mass(524, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(525, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(526, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(527, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(528, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(529, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(529, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(530, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(531, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(532, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(533, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(534, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(535, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(535, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(536, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(537, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(538, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(539, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(540, *[2.205128765699316, 2.205128765699316, 2.205128765699316])
-    ops.mass(541, *[16.447703010270146,
-             16.447703010270146, 16.447703010270146])
+    ops.mass(541, *[16.447703010270146, 16.447703010270146, 16.447703010270146])
     ops.mass(542, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(543, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
     ops.mass(544, *[4.410257531398632, 4.410257531398632, 4.410257531398632])
@@ -6909,36 +15450,27 @@ def CableStayedBridge():
     ops.mass(555, *[15.29967211538883, 15.29967211538883, 15.29967211538883])
     ops.mass(556, *[15.29967211538883, 15.29967211538883, 15.29967211538883])
     ops.mass(557, *[4.694292635787068, 4.694292635787068, 4.694292635787068])
-    ops.mass(558, *[27.248653650592786,
-             27.248653650592786, 27.248653650592786])
+    ops.mass(558, *[27.248653650592786, 27.248653650592786, 27.248653650592786])
     ops.mass(559, *[12.41150600416177, 12.41150600416177, 12.41150600416177])
     ops.mass(560, *[12.41150600416177, 12.41150600416177, 12.41150600416177])
     ops.mass(561, *[4.694292635787065, 4.694292635787065, 4.694292635787065])
-    ops.mass(562, *[27.248653650592786,
-             27.248653650592786, 27.248653650592786])
-    ops.mass(563, *[12.411506004161769,
-             12.411506004161769, 12.411506004161769])
-    ops.mass(564, *[12.411506004161769,
-             12.411506004161769, 12.411506004161769])
+    ops.mass(562, *[27.248653650592786, 27.248653650592786, 27.248653650592786])
+    ops.mass(563, *[12.411506004161769, 12.411506004161769, 12.411506004161769])
+    ops.mass(564, *[12.411506004161769, 12.411506004161769, 12.411506004161769])
     ops.mass(565, *[4.694292635787074, 4.694292635787074, 4.694292635787074])
     ops.mass(566, *[27.2486536505928, 27.2486536505928, 27.2486536505928])
-    ops.mass(567, *[12.411506004161776,
-             12.411506004161776, 12.411506004161776])
-    ops.mass(568, *[12.411506004161776,
-             12.411506004161776, 12.411506004161776])
+    ops.mass(567, *[12.411506004161776, 12.411506004161776, 12.411506004161776])
+    ops.mass(568, *[12.411506004161776, 12.411506004161776, 12.411506004161776])
     ops.mass(569, *[4.694292635787074, 4.694292635787074, 4.694292635787074])
-    ops.mass(570, *[28.550292158123646,
-             28.550292158123646, 28.550292158123646])
+    ops.mass(570, *[28.550292158123646, 28.550292158123646, 28.550292158123646])
     ops.mass(571, *[14.36396376545805, 14.36396376545805, 14.36396376545805])
     ops.mass(572, *[14.36396376545805, 14.36396376545805, 14.36396376545805])
     ops.mass(573, *[4.204264021187168, 4.204264021187168, 4.204264021187168])
-    ops.mass(574, *[26.758625035993187,
-             26.758625035993187, 26.758625035993187])
+    ops.mass(574, *[26.758625035993187, 26.758625035993187, 26.758625035993187])
     ops.mass(575, *[15.29967211538902, 15.29967211538902, 15.29967211538902])
     ops.mass(576, *[15.29967211538902, 15.29967211538902, 15.29967211538902])
     ops.mass(577, *[4.204264021187168, 4.204264021187168, 4.204264021187168])
-    ops.mass(578, *[26.758625035993003,
-             26.758625035993003, 26.758625035993003])
+    ops.mass(578, *[26.758625035993003, 26.758625035993003, 26.758625035993003])
     ops.mass(579, *[12.4115060041618, 12.4115060041618, 12.4115060041618])
     ops.mass(580, *[12.4115060041618, 12.4115060041618, 12.4115060041618])
     ops.mass(581, *[4.204264021187168, 4.204264021187168, 4.204264021187168])
@@ -6967,16 +15499,12 @@ def CableStayedBridge():
     ops.mass(604, *[4.537301987035633, 4.537301987035633, 4.537301987035633])
     ops.mass(605, *[7.940278477312361, 7.940278477312361, 7.940278477312361])
     ops.mass(606, *[7.940278477312361, 7.940278477312361, 7.940278477312361])
-    ops.mass(607, *[4.5373019870356375,
-             4.5373019870356375, 4.5373019870356375])
-    ops.mass(608, *[4.5373019870356375,
-             4.5373019870356375, 4.5373019870356375])
+    ops.mass(607, *[4.5373019870356375, 4.5373019870356375, 4.5373019870356375])
+    ops.mass(608, *[4.5373019870356375, 4.5373019870356375, 4.5373019870356375])
     ops.mass(609, *[7.940278477312361, 7.940278477312361, 7.940278477312361])
     ops.mass(610, *[7.940278477312361, 7.940278477312361, 7.940278477312361])
-    ops.mass(611, *[4.5373019870356375,
-             4.5373019870356375, 4.5373019870356375])
-    ops.mass(612, *[4.5373019870356375,
-             4.5373019870356375, 4.5373019870356375])
+    ops.mass(611, *[4.5373019870356375, 4.5373019870356375, 4.5373019870356375])
+    ops.mass(612, *[4.5373019870356375, 4.5373019870356375, 4.5373019870356375])
     ops.mass(613, *[7.940278477312333, 7.940278477312333, 7.940278477312333])
     ops.mass(614, *[7.940278477312333, 7.940278477312333, 7.940278477312333])
     ops.mass(615, *[4.537301987035609, 4.537301987035609, 4.537301987035609])
@@ -6997,119 +15525,84 @@ def CableStayedBridge():
     ops.mass(630, *[7.940278477312372, 7.940278477312372, 7.940278477312372])
     ops.mass(631, *[4.537301987035647, 4.537301987035647, 4.537301987035647])
     ops.mass(632, *[4.537301987035647, 4.537301987035647, 4.537301987035647])
-    ops.mass(633, *[20.761050670876546,
-             20.761050670876546, 20.761050670876546])
-    ops.mass(634, *[3.7354902181258374,
-             3.7354902181258374, 3.7354902181258374])
-    ops.mass(635, *[12.811420055171727,
-             12.811420055171727, 12.811420055171727])
-    ops.mass(636, *[3.7388238110115255,
-             3.7388238110115255, 3.7388238110115255])
+    ops.mass(633, *[20.761050670876546, 20.761050670876546, 20.761050670876546])
+    ops.mass(634, *[3.7354902181258374, 3.7354902181258374, 3.7354902181258374])
+    ops.mass(635, *[12.811420055171727, 12.811420055171727, 12.811420055171727])
+    ops.mass(636, *[3.7388238110115255, 3.7388238110115255, 3.7388238110115255])
     ops.mass(637, *[13.21512773495984, 13.21512773495984, 13.21512773495984])
     ops.mass(638, *[3.839750730958547, 3.839750730958547, 3.839750730958547])
-    ops.mass(639, *[13.684162071487048,
-             13.684162071487048, 13.684162071487048])
+    ops.mass(639, *[13.684162071487048, 13.684162071487048, 13.684162071487048])
     ops.mass(640, *[3.957009315090344, 3.957009315090344, 3.957009315090344])
     ops.mass(641, *[14.20305214182983, 14.20305214182983, 14.20305214182983])
     ops.mass(642, *[4.086731832676045, 4.086731832676045, 4.086731832676045])
     ops.mass(643, *[14.75985184634337, 14.75985184634337, 14.75985184634337])
     ops.mass(644, *[4.187648273288827, 4.187648273288827, 4.187648273288827])
-    ops.mass(645, *[15.345618168518012,
-             15.345618168518012, 15.345618168518012])
-    ops.mass(646, *[4.3723733393480835,
-             4.3723733393480835, 4.3723733393480835])
-    ops.mass(647, *[15.953729843892265,
-             15.953729843892265, 15.953729843892265])
+    ops.mass(645, *[15.345618168518012, 15.345618168518012, 15.345618168518012])
+    ops.mass(646, *[4.3723733393480835, 4.3723733393480835, 4.3723733393480835])
+    ops.mass(647, *[15.953729843892265, 15.953729843892265, 15.953729843892265])
     ops.mass(648, *[4.179849888551145, 4.179849888551145, 4.179849888551145])
-    ops.mass(649, *[16.579282764079423,
-             16.579282764079423, 16.579282764079423])
+    ops.mass(649, *[16.579282764079423, 16.579282764079423, 16.579282764079423])
     ops.mass(650, *[4.680789488238442, 4.680789488238442, 4.680789488238442])
     ops.mass(651, *[25.48785317259148, 25.48785317259148, 25.48785317259148])
-    ops.mass(652, *[3.7354902181258374,
-             3.7354902181258374, 3.7354902181258374])
-    ops.mass(653, *[3.7388238110115255,
-             3.7388238110115255, 3.7388238110115255])
+    ops.mass(652, *[3.7354902181258374, 3.7354902181258374, 3.7354902181258374])
+    ops.mass(653, *[3.7388238110115255, 3.7388238110115255, 3.7388238110115255])
     ops.mass(654, *[3.839750730958547, 3.839750730958547, 3.839750730958547])
     ops.mass(655, *[3.957009315090343, 3.957009315090343, 3.957009315090343])
     ops.mass(656, *[4.086731832676045, 4.086731832676045, 4.086731832676045])
     ops.mass(657, *[4.187648273288827, 4.187648273288827, 4.187648273288827])
-    ops.mass(658, *[4.3723733393480835,
-             4.3723733393480835, 4.3723733393480835])
-    ops.mass(659, *[4.1798498885511455,
-             4.1798498885511455, 4.1798498885511455])
+    ops.mass(658, *[4.3723733393480835, 4.3723733393480835, 4.3723733393480835])
+    ops.mass(659, *[4.1798498885511455, 4.1798498885511455, 4.1798498885511455])
     ops.mass(660, *[4.680789488238441, 4.680789488238441, 4.680789488238441])
-    ops.mass(661, *[3.7354902181258343,
-             3.7354902181258343, 3.7354902181258343])
-    ops.mass(662, *[3.7388238110115095,
-             3.7388238110115095, 3.7388238110115095])
-    ops.mass(663, *[3.8397507309585412,
-             3.8397507309585412, 3.8397507309585412])
-    ops.mass(664, *[3.9570093150903323,
-             3.9570093150903323, 3.9570093150903323])
+    ops.mass(661, *[3.7354902181258343, 3.7354902181258343, 3.7354902181258343])
+    ops.mass(662, *[3.7388238110115095, 3.7388238110115095, 3.7388238110115095])
+    ops.mass(663, *[3.8397507309585412, 3.8397507309585412, 3.8397507309585412])
+    ops.mass(664, *[3.9570093150903323, 3.9570093150903323, 3.9570093150903323])
     ops.mass(665, *[4.08673183267604, 4.08673183267604, 4.08673183267604])
     ops.mass(666, *[4.225931758804419, 4.225931758804419, 4.225931758804419])
-    ops.mass(667, *[4.3723733393480835,
-             4.3723733393480835, 4.3723733393480835])
-    ops.mass(668, *[4.5244012581916655,
-             4.5244012581916655, 4.5244012581916655])
+    ops.mass(667, *[4.3723733393480835, 4.3723733393480835, 4.3723733393480835])
+    ops.mass(668, *[4.5244012581916655, 4.5244012581916655, 4.5244012581916655])
     ops.mass(669, *[4.680789488238455, 4.680789488238455, 4.680789488238455])
     ops.mass(670, *[7.077970729984756, 7.077970729984756, 7.077970729984756])
-    ops.mass(671, *[3.7354902181258343,
-             3.7354902181258343, 3.7354902181258343])
-    ops.mass(672, *[3.7388238110115095,
-             3.7388238110115095, 3.7388238110115095])
-    ops.mass(673, *[3.8397507309585412,
-             3.8397507309585412, 3.8397507309585412])
-    ops.mass(674, *[3.9570093150903323,
-             3.9570093150903323, 3.9570093150903323])
+    ops.mass(671, *[3.7354902181258343, 3.7354902181258343, 3.7354902181258343])
+    ops.mass(672, *[3.7388238110115095, 3.7388238110115095, 3.7388238110115095])
+    ops.mass(673, *[3.8397507309585412, 3.8397507309585412, 3.8397507309585412])
+    ops.mass(674, *[3.9570093150903323, 3.9570093150903323, 3.9570093150903323])
     ops.mass(675, *[4.08673183267604, 4.08673183267604, 4.08673183267604])
     ops.mass(676, *[4.225931758804419, 4.225931758804419, 4.225931758804419])
-    ops.mass(677, *[4.3723733393480835,
-             4.3723733393480835, 4.3723733393480835])
+    ops.mass(677, *[4.3723733393480835, 4.3723733393480835, 4.3723733393480835])
     ops.mass(678, *[4.524401258191665, 4.524401258191665, 4.524401258191665])
     ops.mass(679, *[4.680789488238455, 4.680789488238455, 4.680789488238455])
     ops.mass(680, *[7.077970729984756, 7.077970729984756, 7.077970729984756])
-    ops.mass(681, *[20.761050670876546,
-             20.761050670876546, 20.761050670876546])
+    ops.mass(681, *[20.761050670876546, 20.761050670876546, 20.761050670876546])
     ops.mass(682, *[3.735490218125845, 3.735490218125845, 3.735490218125845])
-    ops.mass(683, *[12.811420055171727,
-             12.811420055171727, 12.811420055171727])
-    ops.mass(684, *[3.7388238110115317,
-             3.7388238110115317, 3.7388238110115317])
+    ops.mass(683, *[12.811420055171727, 12.811420055171727, 12.811420055171727])
+    ops.mass(684, *[3.7388238110115317, 3.7388238110115317, 3.7388238110115317])
     ops.mass(685, *[13.21512773495984, 13.21512773495984, 13.21512773495984])
     ops.mass(686, *[3.83975073095856, 3.83975073095856, 3.83975073095856])
-    ops.mass(687, *[13.684162071487048,
-             13.684162071487048, 13.684162071487048])
+    ops.mass(687, *[13.684162071487048, 13.684162071487048, 13.684162071487048])
     ops.mass(688, *[3.95700931509033, 3.95700931509033, 3.95700931509033])
     ops.mass(689, *[14.20305214182983, 14.20305214182983, 14.20305214182983])
     ops.mass(690, *[4.086731832676017, 4.086731832676017, 4.086731832676017])
     ops.mass(691, *[14.75985184634337, 14.75985184634337, 14.75985184634337])
     ops.mass(692, *[4.187648273288784, 4.187648273288784, 4.187648273288784])
-    ops.mass(693, *[15.345618168518012,
-             15.345618168518012, 15.345618168518012])
-    ops.mass(694, *[4.3723733393480515,
-             4.3723733393480515, 4.3723733393480515])
-    ops.mass(695, *[15.953729843892265,
-             15.953729843892265, 15.953729843892265])
+    ops.mass(693, *[15.345618168518012, 15.345618168518012, 15.345618168518012])
+    ops.mass(694, *[4.3723733393480515, 4.3723733393480515, 4.3723733393480515])
+    ops.mass(695, *[15.953729843892265, 15.953729843892265, 15.953729843892265])
     ops.mass(696, *[4.179849888551045, 4.179849888551045, 4.179849888551045])
-    ops.mass(697, *[16.579282764079423,
-             16.579282764079423, 16.579282764079423])
+    ops.mass(697, *[16.579282764079423, 16.579282764079423, 16.579282764079423])
     ops.mass(698, *[4.680789488238416, 4.680789488238416, 4.680789488238416])
     ops.mass(699, *[25.48785317259148, 25.48785317259148, 25.48785317259148])
     ops.mass(700, *[3.735490218125845, 3.735490218125845, 3.735490218125845])
-    ops.mass(701, *[3.7388238110115317,
-             3.7388238110115317, 3.7388238110115317])
+    ops.mass(701, *[3.7388238110115317, 3.7388238110115317, 3.7388238110115317])
     ops.mass(702, *[3.83975073095856, 3.83975073095856, 3.83975073095856])
     ops.mass(703, *[3.95700931509033, 3.95700931509033, 3.95700931509033])
     ops.mass(704, *[4.086731832676017, 4.086731832676017, 4.086731832676017])
     ops.mass(705, *[4.187648273288784, 4.187648273288784, 4.187648273288784])
-    ops.mass(706, *[4.3723733393480515,
-             4.3723733393480515, 4.3723733393480515])
+    ops.mass(706, *[4.3723733393480515, 4.3723733393480515, 4.3723733393480515])
     ops.mass(707, *[4.179849888551045, 4.179849888551045, 4.179849888551045])
     ops.mass(708, *[4.680789488238416, 4.680789488238416, 4.680789488238416])
     ops.mass(709, *[3.735490218125845, 3.735490218125845, 3.735490218125845])
-    ops.mass(710, *[3.7388238110115317,
-             3.7388238110115317, 3.7388238110115317])
+    ops.mass(710, *[3.7388238110115317, 3.7388238110115317, 3.7388238110115317])
     ops.mass(711, *[3.83975073095856, 3.83975073095856, 3.83975073095856])
     ops.mass(712, *[3.957009315090356, 3.957009315090356, 3.957009315090356])
     ops.mass(713, *[4.086731832676057, 4.086731832676057, 4.086731832676057])
@@ -7118,386 +15611,234 @@ def CableStayedBridge():
     ops.mass(716, *[4.524401258191665, 4.524401258191665, 4.524401258191665])
     ops.mass(717, *[4.680789488238456, 4.680789488238456, 4.680789488238456])
     ops.mass(718, *[3.735490218125845, 3.735490218125845, 3.735490218125845])
-    ops.mass(719, *[3.7388238110115317,
-             3.7388238110115317, 3.7388238110115317])
+    ops.mass(719, *[3.7388238110115317, 3.7388238110115317, 3.7388238110115317])
     ops.mass(720, *[3.83975073095856, 3.83975073095856, 3.83975073095856])
-    ops.mass(721, *[3.9570093150903554,
-             3.9570093150903554, 3.9570093150903554])
+    ops.mass(721, *[3.9570093150903554, 3.9570093150903554, 3.9570093150903554])
     ops.mass(722, *[4.086731832676057, 4.086731832676057, 4.086731832676057])
     ops.mass(723, *[4.225931758804447, 4.225931758804447, 4.225931758804447])
     ops.mass(724, *[4.372373339348097, 4.372373339348097, 4.372373339348097])
     ops.mass(725, *[4.524401258191665, 4.524401258191665, 4.524401258191665])
     ops.mass(726, *[4.680789488238456, 4.680789488238456, 4.680789488238456])
-    ops.mass(727, *[0.5671627483794552,
-             0.5671627483794552, 0.5671627483794552])
-    ops.mass(728, *[1.1343254967589105,
-             1.1343254967589105, 1.1343254967589105])
+    ops.mass(727, *[0.5671627483794552, 0.5671627483794552, 0.5671627483794552])
+    ops.mass(728, *[1.1343254967589105, 1.1343254967589105, 1.1343254967589105])
     ops.mass(729, *[2.26865099351782, 2.26865099351782, 2.26865099351782])
-    ops.mass(730, *[1.1343254967589105,
-             1.1343254967589105, 1.1343254967589105])
+    ops.mass(730, *[1.1343254967589105, 1.1343254967589105, 1.1343254967589105])
     ops.mass(731, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
-    ops.mass(732, *[1.1343254967589105,
-             1.1343254967589105, 1.1343254967589105])
+    ops.mass(732, *[1.1343254967589105, 1.1343254967589105, 1.1343254967589105])
     ops.mass(733, *[2.26865099351782, 2.26865099351782, 2.26865099351782])
     ops.mass(734, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
-    ops.mass(735, *[1.1343254967589105,
-             1.1343254967589105, 1.1343254967589105])
+    ops.mass(735, *[1.1343254967589105, 1.1343254967589105, 1.1343254967589105])
     ops.mass(736, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
-    ops.mass(737, *[1.1343254967589096,
-             1.1343254967589096, 1.1343254967589096])
-    ops.mass(738, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(739, *[0.5671627483794544,
-             0.5671627483794544, 0.5671627483794544])
-    ops.mass(740, *[1.1343254967589105,
-             1.1343254967589105, 1.1343254967589105])
+    ops.mass(737, *[1.1343254967589096, 1.1343254967589096, 1.1343254967589096])
+    ops.mass(738, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(739, *[0.5671627483794544, 0.5671627483794544, 0.5671627483794544])
+    ops.mass(740, *[1.1343254967589105, 1.1343254967589105, 1.1343254967589105])
     ops.mass(741, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
-    ops.mass(742, *[2.2686509935178174,
-             2.2686509935178174, 2.2686509935178174])
+    ops.mass(742, *[2.2686509935178174, 2.2686509935178174, 2.2686509935178174])
     ops.mass(743, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(744, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
     ops.mass(745, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
-    ops.mass(746, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
+    ops.mass(746, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
     ops.mass(747, *[2.26865099351782, 2.26865099351782, 2.26865099351782])
     ops.mass(748, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(749, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
     ops.mass(750, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
-    ops.mass(751, *[1.1343254967589105,
-             1.1343254967589105, 1.1343254967589105])
+    ops.mass(751, *[1.1343254967589105, 1.1343254967589105, 1.1343254967589105])
     ops.mass(752, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
     ops.mass(753, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
     ops.mass(754, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
     ops.mass(755, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
     ops.mass(756, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
-    ops.mass(757, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(758, *[1.1343254967589096,
-             1.1343254967589096, 1.1343254967589096])
+    ops.mass(757, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(758, *[1.1343254967589096, 1.1343254967589096, 1.1343254967589096])
     ops.mass(759, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(760, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(761, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(762, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
-    ops.mass(763, *[2.2686509935178183,
-             2.2686509935178183, 2.2686509935178183])
-    ops.mass(764, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(765, *[0.5671627483794544,
-             0.5671627483794544, 0.5671627483794544])
-    ops.mass(766, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(767, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(768, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(769, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(770, *[0.5671627483794544,
-             0.5671627483794544, 0.5671627483794544])
-    ops.mass(771, *[0.5671627483794552,
-             0.5671627483794552, 0.5671627483794552])
-    ops.mass(772, *[1.1343254967589096,
-             1.1343254967589096, 1.1343254967589096])
+    ops.mass(763, *[2.2686509935178183, 2.2686509935178183, 2.2686509935178183])
+    ops.mass(764, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(765, *[0.5671627483794544, 0.5671627483794544, 0.5671627483794544])
+    ops.mass(766, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(767, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(768, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(769, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(770, *[0.5671627483794544, 0.5671627483794544, 0.5671627483794544])
+    ops.mass(771, *[0.5671627483794552, 0.5671627483794552, 0.5671627483794552])
+    ops.mass(772, *[1.1343254967589096, 1.1343254967589096, 1.1343254967589096])
     ops.mass(773, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
-    ops.mass(774, *[1.1343254967589105,
-             1.1343254967589105, 1.1343254967589105])
+    ops.mass(774, *[1.1343254967589105, 1.1343254967589105, 1.1343254967589105])
     ops.mass(775, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
-    ops.mass(776, *[1.1343254967589105,
-             1.1343254967589105, 1.1343254967589105])
+    ops.mass(776, *[1.1343254967589105, 1.1343254967589105, 1.1343254967589105])
     ops.mass(777, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(778, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
-    ops.mass(779, *[1.1343254967589105,
-             1.1343254967589105, 1.1343254967589105])
+    ops.mass(779, *[1.1343254967589105, 1.1343254967589105, 1.1343254967589105])
     ops.mass(780, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
-    ops.mass(781, *[1.1343254967589105,
-             1.1343254967589105, 1.1343254967589105])
-    ops.mass(782, *[1.1343254967589096,
-             1.1343254967589096, 1.1343254967589096])
-    ops.mass(783, *[0.5671627483794552,
-             0.5671627483794552, 0.5671627483794552])
-    ops.mass(784, *[1.1343254967589096,
-             1.1343254967589096, 1.1343254967589096])
+    ops.mass(781, *[1.1343254967589105, 1.1343254967589105, 1.1343254967589105])
+    ops.mass(782, *[1.1343254967589096, 1.1343254967589096, 1.1343254967589096])
+    ops.mass(783, *[0.5671627483794552, 0.5671627483794552, 0.5671627483794552])
+    ops.mass(784, *[1.1343254967589096, 1.1343254967589096, 1.1343254967589096])
     ops.mass(785, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(786, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(787, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(788, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(789, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
-    ops.mass(790, *[1.1343254967589096,
-             1.1343254967589096, 1.1343254967589096])
+    ops.mass(790, *[1.1343254967589096, 1.1343254967589096, 1.1343254967589096])
     ops.mass(791, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
     ops.mass(792, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
     ops.mass(793, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
     ops.mass(794, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
-    ops.mass(795, *[1.1343254967589105,
-             1.1343254967589105, 1.1343254967589105])
+    ops.mass(795, *[1.1343254967589105, 1.1343254967589105, 1.1343254967589105])
     ops.mass(796, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
     ops.mass(797, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
     ops.mass(798, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
     ops.mass(799, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
     ops.mass(800, *[2.268650993517821, 2.268650993517821, 2.268650993517821])
-    ops.mass(801, *[1.1343254967589105,
-             1.1343254967589105, 1.1343254967589105])
-    ops.mass(802, *[1.1343254967589096,
-             1.1343254967589096, 1.1343254967589096])
+    ops.mass(801, *[1.1343254967589105, 1.1343254967589105, 1.1343254967589105])
+    ops.mass(802, *[1.1343254967589096, 1.1343254967589096, 1.1343254967589096])
     ops.mass(803, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(804, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(805, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(806, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
     ops.mass(807, *[2.268650993517819, 2.268650993517819, 2.268650993517819])
-    ops.mass(808, *[1.1343254967589096,
-             1.1343254967589096, 1.1343254967589096])
-    ops.mass(809, *[0.5671627483794544,
-             0.5671627483794544, 0.5671627483794544])
-    ops.mass(810, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(811, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(812, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(813, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(814, *[0.5671627483794544,
-             0.5671627483794544, 0.5671627483794544])
-    ops.mass(815, *[0.5671627483794544,
-             0.5671627483794544, 0.5671627483794544])
-    ops.mass(816, *[1.1343254967589107,
-             1.1343254967589107, 1.1343254967589107])
-    ops.mass(817, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(818, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(819, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(820, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(821, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(822, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(823, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(824, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(825, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(826, *[1.1343254967589107,
-             1.1343254967589107, 1.1343254967589107])
-    ops.mass(827, *[0.5671627483794544,
-             0.5671627483794544, 0.5671627483794544])
-    ops.mass(828, *[1.1343254967589107,
-             1.1343254967589107, 1.1343254967589107])
-    ops.mass(829, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(830, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(831, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(832, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(833, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(834, *[1.1343254967589107,
-             1.1343254967589107, 1.1343254967589107])
-    ops.mass(835, *[2.2686509935178174,
-             2.2686509935178174, 2.2686509935178174])
-    ops.mass(836, *[2.2686509935178174,
-             2.2686509935178174, 2.2686509935178174])
-    ops.mass(837, *[2.2686509935178174,
-             2.2686509935178174, 2.2686509935178174])
-    ops.mass(838, *[2.2686509935178174,
-             2.2686509935178174, 2.2686509935178174])
-    ops.mass(839, *[1.1343254967589107,
-             1.1343254967589107, 1.1343254967589107])
-    ops.mass(840, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(841, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(842, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(843, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(844, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(845, *[1.1343254967589107,
-             1.1343254967589107, 1.1343254967589107])
-    ops.mass(846, *[1.1343254967589107,
-             1.1343254967589107, 1.1343254967589107])
-    ops.mass(847, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(848, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(849, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(850, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(851, *[2.2686509935178214,
-             2.2686509935178214, 2.2686509935178214])
-    ops.mass(852, *[1.1343254967589107,
-             1.1343254967589107, 1.1343254967589107])
-    ops.mass(853, *[0.5671627483794544,
-             0.5671627483794544, 0.5671627483794544])
-    ops.mass(854, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(855, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(856, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(857, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
-    ops.mass(858, *[0.5671627483794544,
-             0.5671627483794544, 0.5671627483794544])
-    ops.mass(859, *[0.5671627483794563,
-             0.5671627483794563, 0.5671627483794563])
-    ops.mass(860, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
+    ops.mass(808, *[1.1343254967589096, 1.1343254967589096, 1.1343254967589096])
+    ops.mass(809, *[0.5671627483794544, 0.5671627483794544, 0.5671627483794544])
+    ops.mass(810, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(811, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(812, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(813, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(814, *[0.5671627483794544, 0.5671627483794544, 0.5671627483794544])
+    ops.mass(815, *[0.5671627483794544, 0.5671627483794544, 0.5671627483794544])
+    ops.mass(816, *[1.1343254967589107, 1.1343254967589107, 1.1343254967589107])
+    ops.mass(817, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(818, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(819, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(820, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(821, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(822, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(823, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(824, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(825, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(826, *[1.1343254967589107, 1.1343254967589107, 1.1343254967589107])
+    ops.mass(827, *[0.5671627483794544, 0.5671627483794544, 0.5671627483794544])
+    ops.mass(828, *[1.1343254967589107, 1.1343254967589107, 1.1343254967589107])
+    ops.mass(829, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(830, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(831, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(832, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(833, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(834, *[1.1343254967589107, 1.1343254967589107, 1.1343254967589107])
+    ops.mass(835, *[2.2686509935178174, 2.2686509935178174, 2.2686509935178174])
+    ops.mass(836, *[2.2686509935178174, 2.2686509935178174, 2.2686509935178174])
+    ops.mass(837, *[2.2686509935178174, 2.2686509935178174, 2.2686509935178174])
+    ops.mass(838, *[2.2686509935178174, 2.2686509935178174, 2.2686509935178174])
+    ops.mass(839, *[1.1343254967589107, 1.1343254967589107, 1.1343254967589107])
+    ops.mass(840, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(841, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(842, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(843, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(844, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(845, *[1.1343254967589107, 1.1343254967589107, 1.1343254967589107])
+    ops.mass(846, *[1.1343254967589107, 1.1343254967589107, 1.1343254967589107])
+    ops.mass(847, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(848, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(849, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(850, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(851, *[2.2686509935178214, 2.2686509935178214, 2.2686509935178214])
+    ops.mass(852, *[1.1343254967589107, 1.1343254967589107, 1.1343254967589107])
+    ops.mass(853, *[0.5671627483794544, 0.5671627483794544, 0.5671627483794544])
+    ops.mass(854, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(855, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(856, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(857, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
+    ops.mass(858, *[0.5671627483794544, 0.5671627483794544, 0.5671627483794544])
+    ops.mass(859, *[0.5671627483794563, 0.5671627483794563, 0.5671627483794563])
+    ops.mass(860, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
     ops.mass(861, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(862, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
-    ops.mass(863, *[2.2686509935178147,
-             2.2686509935178147, 2.2686509935178147])
-    ops.mass(864, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
+    ops.mass(862, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
+    ops.mass(863, *[2.2686509935178147, 2.2686509935178147, 2.2686509935178147])
+    ops.mass(864, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
     ops.mass(865, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(866, *[2.2686509935178174,
-             2.2686509935178174, 2.2686509935178174])
-    ops.mass(867, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
+    ops.mass(866, *[2.2686509935178174, 2.2686509935178174, 2.2686509935178174])
+    ops.mass(867, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
     ops.mass(868, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(869, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
-    ops.mass(870, *[1.1343254967589074,
-             1.1343254967589074, 1.1343254967589074])
-    ops.mass(871, *[0.5671627483794563,
-             0.5671627483794563, 0.5671627483794563])
-    ops.mass(872, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
+    ops.mass(869, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
+    ops.mass(870, *[1.1343254967589074, 1.1343254967589074, 1.1343254967589074])
+    ops.mass(871, *[0.5671627483794563, 0.5671627483794563, 0.5671627483794563])
+    ops.mass(872, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
     ops.mass(873, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(874, *[2.2686509935178147,
-             2.2686509935178147, 2.2686509935178147])
+    ops.mass(874, *[2.2686509935178147, 2.2686509935178147, 2.2686509935178147])
     ops.mass(875, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(876, *[2.2686509935178174,
-             2.2686509935178174, 2.2686509935178174])
+    ops.mass(876, *[2.2686509935178174, 2.2686509935178174, 2.2686509935178174])
     ops.mass(877, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(878, *[1.1343254967589074,
-             1.1343254967589074, 1.1343254967589074])
-    ops.mass(879, *[2.2686509935178254,
-             2.2686509935178254, 2.2686509935178254])
-    ops.mass(880, *[2.2686509935178254,
-             2.2686509935178254, 2.2686509935178254])
-    ops.mass(881, *[2.2686509935178254,
-             2.2686509935178254, 2.2686509935178254])
-    ops.mass(882, *[2.2686509935178254,
-             2.2686509935178254, 2.2686509935178254])
-    ops.mass(883, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
+    ops.mass(878, *[1.1343254967589074, 1.1343254967589074, 1.1343254967589074])
+    ops.mass(879, *[2.2686509935178254, 2.2686509935178254, 2.2686509935178254])
+    ops.mass(880, *[2.2686509935178254, 2.2686509935178254, 2.2686509935178254])
+    ops.mass(881, *[2.2686509935178254, 2.2686509935178254, 2.2686509935178254])
+    ops.mass(882, *[2.2686509935178254, 2.2686509935178254, 2.2686509935178254])
+    ops.mass(883, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
     ops.mass(884, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(885, *[2.2686509935178147,
-             2.2686509935178147, 2.2686509935178147])
+    ops.mass(885, *[2.2686509935178147, 2.2686509935178147, 2.2686509935178147])
     ops.mass(886, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(887, *[2.2686509935178174,
-             2.2686509935178174, 2.2686509935178174])
+    ops.mass(887, *[2.2686509935178174, 2.2686509935178174, 2.2686509935178174])
     ops.mass(888, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(889, *[1.1343254967589074,
-             1.1343254967589074, 1.1343254967589074])
-    ops.mass(890, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
+    ops.mass(889, *[1.1343254967589074, 1.1343254967589074, 1.1343254967589074])
+    ops.mass(890, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
     ops.mass(891, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(892, *[2.2686509935178147,
-             2.2686509935178147, 2.2686509935178147])
+    ops.mass(892, *[2.2686509935178147, 2.2686509935178147, 2.2686509935178147])
     ops.mass(893, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(894, *[2.2686509935178174,
-             2.2686509935178174, 2.2686509935178174])
+    ops.mass(894, *[2.2686509935178174, 2.2686509935178174, 2.2686509935178174])
     ops.mass(895, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(896, *[1.1343254967589074,
-             1.1343254967589074, 1.1343254967589074])
-    ops.mass(897, *[0.5671627483794563,
-             0.5671627483794563, 0.5671627483794563])
-    ops.mass(898, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
-    ops.mass(899, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
-    ops.mass(900, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
-    ops.mass(901, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
-    ops.mass(902, *[0.5671627483794563,
-             0.5671627483794563, 0.5671627483794563])
-    ops.mass(903, *[0.5671627483794563,
-             0.5671627483794563, 0.5671627483794563])
-    ops.mass(904, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
+    ops.mass(896, *[1.1343254967589074, 1.1343254967589074, 1.1343254967589074])
+    ops.mass(897, *[0.5671627483794563, 0.5671627483794563, 0.5671627483794563])
+    ops.mass(898, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
+    ops.mass(899, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
+    ops.mass(900, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
+    ops.mass(901, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
+    ops.mass(902, *[0.5671627483794563, 0.5671627483794563, 0.5671627483794563])
+    ops.mass(903, *[0.5671627483794563, 0.5671627483794563, 0.5671627483794563])
+    ops.mass(904, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
     ops.mass(905, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(906, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
-    ops.mass(907, *[2.2686509935178147,
-             2.2686509935178147, 2.2686509935178147])
-    ops.mass(908, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
+    ops.mass(906, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
+    ops.mass(907, *[2.2686509935178147, 2.2686509935178147, 2.2686509935178147])
+    ops.mass(908, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
     ops.mass(909, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(910, *[2.2686509935178174,
-             2.2686509935178174, 2.2686509935178174])
-    ops.mass(911, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
+    ops.mass(910, *[2.2686509935178174, 2.2686509935178174, 2.2686509935178174])
+    ops.mass(911, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
     ops.mass(912, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(913, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
-    ops.mass(914, *[1.1343254967589074,
-             1.1343254967589074, 1.1343254967589074])
-    ops.mass(915, *[0.5671627483794563,
-             0.5671627483794563, 0.5671627483794563])
-    ops.mass(916, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
+    ops.mass(913, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
+    ops.mass(914, *[1.1343254967589074, 1.1343254967589074, 1.1343254967589074])
+    ops.mass(915, *[0.5671627483794563, 0.5671627483794563, 0.5671627483794563])
+    ops.mass(916, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
     ops.mass(917, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(918, *[2.2686509935178147,
-             2.2686509935178147, 2.2686509935178147])
+    ops.mass(918, *[2.2686509935178147, 2.2686509935178147, 2.2686509935178147])
     ops.mass(919, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(920, *[2.2686509935178174,
-             2.2686509935178174, 2.2686509935178174])
+    ops.mass(920, *[2.2686509935178174, 2.2686509935178174, 2.2686509935178174])
     ops.mass(921, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(922, *[1.1343254967589074,
-             1.1343254967589074, 1.1343254967589074])
-    ops.mass(923, *[2.2686509935178254,
-             2.2686509935178254, 2.2686509935178254])
-    ops.mass(924, *[2.2686509935178254,
-             2.2686509935178254, 2.2686509935178254])
-    ops.mass(925, *[2.2686509935178254,
-             2.2686509935178254, 2.2686509935178254])
-    ops.mass(926, *[2.2686509935178254,
-             2.2686509935178254, 2.2686509935178254])
-    ops.mass(927, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
+    ops.mass(922, *[1.1343254967589074, 1.1343254967589074, 1.1343254967589074])
+    ops.mass(923, *[2.2686509935178254, 2.2686509935178254, 2.2686509935178254])
+    ops.mass(924, *[2.2686509935178254, 2.2686509935178254, 2.2686509935178254])
+    ops.mass(925, *[2.2686509935178254, 2.2686509935178254, 2.2686509935178254])
+    ops.mass(926, *[2.2686509935178254, 2.2686509935178254, 2.2686509935178254])
+    ops.mass(927, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
     ops.mass(928, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(929, *[2.2686509935178147,
-             2.2686509935178147, 2.2686509935178147])
+    ops.mass(929, *[2.2686509935178147, 2.2686509935178147, 2.2686509935178147])
     ops.mass(930, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(931, *[2.2686509935178174,
-             2.2686509935178174, 2.2686509935178174])
+    ops.mass(931, *[2.2686509935178174, 2.2686509935178174, 2.2686509935178174])
     ops.mass(932, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(933, *[1.1343254967589074,
-             1.1343254967589074, 1.1343254967589074])
-    ops.mass(934, *[1.1343254967589087,
-             1.1343254967589087, 1.1343254967589087])
+    ops.mass(933, *[1.1343254967589074, 1.1343254967589074, 1.1343254967589074])
+    ops.mass(934, *[1.1343254967589087, 1.1343254967589087, 1.1343254967589087])
     ops.mass(935, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(936, *[2.2686509935178147,
-             2.2686509935178147, 2.2686509935178147])
+    ops.mass(936, *[2.2686509935178147, 2.2686509935178147, 2.2686509935178147])
     ops.mass(937, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(938, *[2.2686509935178174,
-             2.2686509935178174, 2.2686509935178174])
+    ops.mass(938, *[2.2686509935178174, 2.2686509935178174, 2.2686509935178174])
     ops.mass(939, *[2.268650993517816, 2.268650993517816, 2.268650993517816])
-    ops.mass(940, *[1.1343254967589074,
-             1.1343254967589074, 1.1343254967589074])
-    ops.mass(941, *[0.5671627483794563,
-             0.5671627483794563, 0.5671627483794563])
-    ops.mass(942, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
-    ops.mass(943, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
-    ops.mass(944, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
-    ops.mass(945, *[1.1343254967589127,
-             1.1343254967589127, 1.1343254967589127])
-    ops.mass(946, *[0.5671627483794563,
-             0.5671627483794563, 0.5671627483794563])
+    ops.mass(940, *[1.1343254967589074, 1.1343254967589074, 1.1343254967589074])
+    ops.mass(941, *[0.5671627483794563, 0.5671627483794563, 0.5671627483794563])
+    ops.mass(942, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
+    ops.mass(943, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
+    ops.mass(944, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
+    ops.mass(945, *[1.1343254967589127, 1.1343254967589127, 1.1343254967589127])
+    ops.mass(946, *[0.5671627483794563, 0.5671627483794563, 0.5671627483794563])
     ops.mass(947, *[0.567162748379442, 0.567162748379442, 0.567162748379442])
     ops.mass(948, *[1.134325496758923, 1.134325496758923, 1.134325496758923])
     ops.mass(949, *[2.268650993517846, 2.268650993517846, 2.268650993517846])
@@ -7630,10 +15971,8 @@ def CableStayedBridge():
     ops.mass(1076, *[1.134325496758884, 1.134325496758884, 1.134325496758884])
     ops.mass(1077, *[1.134325496758884, 1.134325496758884, 1.134325496758884])
     ops.mass(1078, *[0.567162748379442, 0.567162748379442, 0.567162748379442])
-    ops.mass(1079, *[0.5671627483794615,
-             0.5671627483794615, 0.5671627483794615])
-    ops.mass(1080, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
+    ops.mass(1079, *[0.5671627483794615, 0.5671627483794615, 0.5671627483794615])
+    ops.mass(1080, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
     ops.mass(1081, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
     ops.mass(1082, *[1.134325496758923, 1.134325496758923, 1.134325496758923])
     ops.mass(1083, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
@@ -7643,24 +15982,15 @@ def CableStayedBridge():
     ops.mass(1087, *[1.134325496758923, 1.134325496758923, 1.134325496758923])
     ops.mass(1088, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
     ops.mass(1089, *[1.134325496758923, 1.134325496758923, 1.134325496758923])
-    ops.mass(1090, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
-    ops.mass(1091, *[0.5671627483794615,
-             0.5671627483794615, 0.5671627483794615])
-    ops.mass(1092, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
-    ops.mass(1093, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1094, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1095, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1096, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1097, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1098, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
+    ops.mass(1090, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
+    ops.mass(1091, *[0.5671627483794615, 0.5671627483794615, 0.5671627483794615])
+    ops.mass(1092, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
+    ops.mass(1093, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1094, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1095, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1096, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1097, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1098, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
     ops.mass(1099, *[2.268650993517846, 2.268650993517846, 2.268650993517846])
     ops.mass(1100, *[2.268650993517846, 2.268650993517846, 2.268650993517846])
     ops.mass(1101, *[2.268650993517846, 2.268650993517846, 2.268650993517846])
@@ -7672,25 +16002,21 @@ def CableStayedBridge():
     ops.mass(1107, *[2.268650993517846, 2.268650993517846, 2.268650993517846])
     ops.mass(1108, *[2.268650993517846, 2.268650993517846, 2.268650993517846])
     ops.mass(1109, *[1.134325496758923, 1.134325496758923, 1.134325496758923])
-    ops.mass(1110, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
+    ops.mass(1110, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
     ops.mass(1111, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
     ops.mass(1112, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
     ops.mass(1113, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
     ops.mass(1114, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
     ops.mass(1115, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
-    ops.mass(1116, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
+    ops.mass(1116, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
     ops.mass(1117, *[0.567162748379442, 0.567162748379442, 0.567162748379442])
     ops.mass(1118, *[1.134325496758884, 1.134325496758884, 1.134325496758884])
     ops.mass(1119, *[1.134325496758884, 1.134325496758884, 1.134325496758884])
     ops.mass(1120, *[1.134325496758884, 1.134325496758884, 1.134325496758884])
     ops.mass(1121, *[1.134325496758884, 1.134325496758884, 1.134325496758884])
     ops.mass(1122, *[0.567162748379442, 0.567162748379442, 0.567162748379442])
-    ops.mass(1123, *[0.5671627483794615,
-             0.5671627483794615, 0.5671627483794615])
-    ops.mass(1124, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
+    ops.mass(1123, *[0.5671627483794615, 0.5671627483794615, 0.5671627483794615])
+    ops.mass(1124, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
     ops.mass(1125, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
     ops.mass(1126, *[1.134325496758923, 1.134325496758923, 1.134325496758923])
     ops.mass(1127, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
@@ -7700,1236 +16026,715 @@ def CableStayedBridge():
     ops.mass(1131, *[1.134325496758923, 1.134325496758923, 1.134325496758923])
     ops.mass(1132, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
     ops.mass(1133, *[1.134325496758923, 1.134325496758923, 1.134325496758923])
-    ops.mass(1134, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
-    ops.mass(1135, *[0.5671627483794615,
-             0.5671627483794615, 0.5671627483794615])
-    ops.mass(1136, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
-    ops.mass(1137, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1138, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1139, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1140, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1141, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1142, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
+    ops.mass(1134, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
+    ops.mass(1135, *[0.5671627483794615, 0.5671627483794615, 0.5671627483794615])
+    ops.mass(1136, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
+    ops.mass(1137, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1138, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1139, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1140, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1141, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1142, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
     ops.mass(1143, *[2.268650993517846, 2.268650993517846, 2.268650993517846])
     ops.mass(1144, *[2.268650993517846, 2.268650993517846, 2.268650993517846])
     ops.mass(1145, *[2.268650993517846, 2.268650993517846, 2.268650993517846])
     ops.mass(1146, *[2.268650993517846, 2.268650993517846, 2.268650993517846])
-    ops.mass(1147, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
+    ops.mass(1147, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
     ops.mass(1148, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
     ops.mass(1149, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
     ops.mass(1150, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
     ops.mass(1151, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
     ops.mass(1152, *[2.268650993517807, 2.268650993517807, 2.268650993517807])
-    ops.mass(1153, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
-    ops.mass(1154, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
-    ops.mass(1155, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1156, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1157, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1158, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1159, *[2.2686509935178067,
-             2.2686509935178067, 2.2686509935178067])
-    ops.mass(1160, *[1.1343254967589034,
-             1.1343254967589034, 1.1343254967589034])
-    ops.mass(1161, *[0.5671627483794615,
-             0.5671627483794615, 0.5671627483794615])
+    ops.mass(1153, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
+    ops.mass(1154, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
+    ops.mass(1155, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1156, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1157, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1158, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1159, *[2.2686509935178067, 2.2686509935178067, 2.2686509935178067])
+    ops.mass(1160, *[1.1343254967589034, 1.1343254967589034, 1.1343254967589034])
+    ops.mass(1161, *[0.5671627483794615, 0.5671627483794615, 0.5671627483794615])
     ops.mass(1162, *[1.134325496758923, 1.134325496758923, 1.134325496758923])
     ops.mass(1163, *[1.134325496758923, 1.134325496758923, 1.134325496758923])
     ops.mass(1164, *[1.134325496758923, 1.134325496758923, 1.134325496758923])
     ops.mass(1165, *[1.134325496758923, 1.134325496758923, 1.134325496758923])
-    ops.mass(1166, *[0.5671627483794615,
-             0.5671627483794615, 0.5671627483794615])
-    ops.mass(1167, *[0.33498049826161486,
-                     0.33498049826161486, 0.33498049826161486])
+    ops.mass(1166, *[0.5671627483794615, 0.5671627483794615, 0.5671627483794615])
+    ops.mass(1167, *[0.33498049826161486, 0.33498049826161486, 0.33498049826161486])
     ops.mass(1168, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1169, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1170, *[2.6798439860929215,
-             2.6798439860929215, 2.6798439860929215])
+    ops.mass(1169, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1170, *[2.6798439860929215, 2.6798439860929215, 2.6798439860929215])
     ops.mass(1171, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1172, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1173, *[0.33498049826161486,
-                     0.33498049826161486, 0.33498049826161486])
-    ops.mass(1174, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1175, *[1.0049414947848445,
-             1.0049414947848445, 1.0049414947848445])
-    ops.mass(1176, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1177, *[1.0049414947848445,
-             1.0049414947848445, 1.0049414947848445])
-    ops.mass(1178, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1173, *[0.33498049826161486, 0.33498049826161486, 0.33498049826161486])
+    ops.mass(1174, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1175, *[1.0049414947848445, 1.0049414947848445, 1.0049414947848445])
+    ops.mass(1176, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1177, *[1.0049414947848445, 1.0049414947848445, 1.0049414947848445])
+    ops.mass(1178, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1179, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1180, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1180, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1181, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1182, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1183, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1184, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1185, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1183, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1184, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1185, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1186, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1187, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1187, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1188, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1189, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1190, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1191, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1192, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1190, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1191, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1192, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1193, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1194, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1194, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1195, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1196, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1197, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1198, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1199, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1197, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1198, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1199, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1200, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1201, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1201, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1202, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1203, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1204, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1205, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1206, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1204, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1205, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1206, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1207, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1208, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1208, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1209, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1210, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1211, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1211, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1212, *[8.04819598959451, 8.04819598959451, 8.04819598959451])
     ops.mass(1213, *[8.04819598959451, 8.04819598959451, 8.04819598959451])
     ops.mass(1214, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1215, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1215, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1216, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1217, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1218, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1219, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1220, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1218, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1219, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1220, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1221, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1222, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1222, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1223, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1224, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1225, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1226, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1227, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1225, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1226, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1227, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1228, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1229, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1229, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1230, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1231, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1232, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1233, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1234, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1232, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1233, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1234, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1235, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1236, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1236, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1237, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1238, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1239, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1240, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1241, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1239, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1240, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1241, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1242, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1243, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1243, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1244, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1245, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1246, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1247, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1248, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1249, *[0.33498049826161486,
-                     0.33498049826161486, 0.33498049826161486])
-    ops.mass(1250, *[2.6798439860929157,
-             2.6798439860929157, 2.6798439860929157])
-    ops.mass(1251, *[0.33498049826161486,
-                     0.33498049826161486, 0.33498049826161486])
-    ops.mass(1252, *[1.0049414947848445,
-             1.0049414947848445, 1.0049414947848445])
-    ops.mass(1253, *[1.0049414947848445,
-             1.0049414947848445, 1.0049414947848445])
-    ops.mass(1254, *[2.7181274716085317,
-             2.7181274716085317, 2.7181274716085317])
-    ops.mass(1255, *[0.33498049826161486,
-                     0.33498049826161486, 0.33498049826161486])
+    ops.mass(1246, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1247, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1248, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1249, *[0.33498049826161486, 0.33498049826161486, 0.33498049826161486])
+    ops.mass(1250, *[2.6798439860929157, 2.6798439860929157, 2.6798439860929157])
+    ops.mass(1251, *[0.33498049826161486, 0.33498049826161486, 0.33498049826161486])
+    ops.mass(1252, *[1.0049414947848445, 1.0049414947848445, 1.0049414947848445])
+    ops.mass(1253, *[1.0049414947848445, 1.0049414947848445, 1.0049414947848445])
+    ops.mass(1254, *[2.7181274716085317, 2.7181274716085317, 2.7181274716085317])
+    ops.mass(1255, *[0.33498049826161486, 0.33498049826161486, 0.33498049826161486])
     ops.mass(1256, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1257, *[2.7181274716085317,
-             2.7181274716085317, 2.7181274716085317])
-    ops.mass(1258, *[0.33498049826161486,
-                     0.33498049826161486, 0.33498049826161486])
-    ops.mass(1259, *[1.0049414947848445,
-             1.0049414947848445, 1.0049414947848445])
-    ops.mass(1260, *[1.0049414947848445,
-             1.0049414947848445, 1.0049414947848445])
-    ops.mass(1262, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1265, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1266, *[0.9762288806481393,
-             0.9762288806481393, 0.9762288806481393])
-    ops.mass(1267, *[0.9762288806481393,
-             0.9762288806481393, 0.9762288806481393])
-    ops.mass(1268, *[2.4884265585148597,
-             2.4884265585148597, 2.4884265585148597])
-    ops.mass(1269, *[0.3158387555038083,
-             0.3158387555038083, 0.3158387555038083])
-    ops.mass(1270, *[2.4501430729992433,
-             2.4501430729992433, 2.4501430729992433])
-    ops.mass(1271, *[2.4884265585148597,
-             2.4884265585148597, 2.4884265585148597])
-    ops.mass(1272, *[0.3158387555038083,
-             0.3158387555038083, 0.3158387555038083])
-    ops.mass(1273, *[0.9475162665114295,
-             0.9475162665114295, 0.9475162665114295])
-    ops.mass(1274, *[0.9475162665114295,
-             0.9475162665114295, 0.9475162665114295])
-    ops.mass(1275, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1276, *[2.6032770150616957,
-             2.6032770150616957, 2.6032770150616957])
-    ops.mass(1277, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1278, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1279, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1280, *[2.6032770150617033,
-             2.6032770150617033, 2.6032770150617033])
-    ops.mass(1281, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1282, *[2.6032770150617015,
-             2.6032770150617015, 2.6032770150617015])
-    ops.mass(1283, *[2.6032770150617033,
-             2.6032770150617033, 2.6032770150617033])
-    ops.mass(1284, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1285, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1286, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1287, *[2.6032770150616953,
-             2.6032770150616953, 2.6032770150616953])
-    ops.mass(1288, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1289, *[2.6032770150616984,
-             2.6032770150616984, 2.6032770150616984])
-    ops.mass(1290, *[2.6032770150616953,
-             2.6032770150616953, 2.6032770150616953])
-    ops.mass(1291, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1292, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1293, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1294, *[2.6032770150616846,
-             2.6032770150616846, 2.6032770150616846])
+    ops.mass(1257, *[2.7181274716085317, 2.7181274716085317, 2.7181274716085317])
+    ops.mass(1258, *[0.33498049826161486, 0.33498049826161486, 0.33498049826161486])
+    ops.mass(1259, *[1.0049414947848445, 1.0049414947848445, 1.0049414947848445])
+    ops.mass(1260, *[1.0049414947848445, 1.0049414947848445, 1.0049414947848445])
+    ops.mass(1262, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1265, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1266, *[0.9762288806481393, 0.9762288806481393, 0.9762288806481393])
+    ops.mass(1267, *[0.9762288806481393, 0.9762288806481393, 0.9762288806481393])
+    ops.mass(1268, *[2.4884265585148597, 2.4884265585148597, 2.4884265585148597])
+    ops.mass(1269, *[0.3158387555038083, 0.3158387555038083, 0.3158387555038083])
+    ops.mass(1270, *[2.4501430729992433, 2.4501430729992433, 2.4501430729992433])
+    ops.mass(1271, *[2.4884265585148597, 2.4884265585148597, 2.4884265585148597])
+    ops.mass(1272, *[0.3158387555038083, 0.3158387555038083, 0.3158387555038083])
+    ops.mass(1273, *[0.9475162665114295, 0.9475162665114295, 0.9475162665114295])
+    ops.mass(1274, *[0.9475162665114295, 0.9475162665114295, 0.9475162665114295])
+    ops.mass(1275, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1276, *[2.6032770150616957, 2.6032770150616957, 2.6032770150616957])
+    ops.mass(1277, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1278, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1279, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1280, *[2.6032770150617033, 2.6032770150617033, 2.6032770150617033])
+    ops.mass(1281, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1282, *[2.6032770150617015, 2.6032770150617015, 2.6032770150617015])
+    ops.mass(1283, *[2.6032770150617033, 2.6032770150617033, 2.6032770150617033])
+    ops.mass(1284, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1285, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1286, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1287, *[2.6032770150616953, 2.6032770150616953, 2.6032770150616953])
+    ops.mass(1288, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1289, *[2.6032770150616984, 2.6032770150616984, 2.6032770150616984])
+    ops.mass(1290, *[2.6032770150616953, 2.6032770150616953, 2.6032770150616953])
+    ops.mass(1291, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1292, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1293, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1294, *[2.6032770150616846, 2.6032770150616846, 2.6032770150616846])
     ops.mass(1295, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
     ops.mass(1296, *[2.603277015061689, 2.603277015061689, 2.603277015061689])
-    ops.mass(1297, *[2.6032770150616846,
-             2.6032770150616846, 2.6032770150616846])
+    ops.mass(1297, *[2.6032770150616846, 2.6032770150616846, 2.6032770150616846])
     ops.mass(1298, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1299, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1300, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1301, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1302, *[2.6032770150616953,
-             2.6032770150616953, 2.6032770150616953])
-    ops.mass(1303, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1304, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1305, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1306, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1307, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1308, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1309, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1310, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1311, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1312, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
+    ops.mass(1299, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1300, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1301, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1302, *[2.6032770150616953, 2.6032770150616953, 2.6032770150616953])
+    ops.mass(1303, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1304, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1305, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1306, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1307, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1308, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1309, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1310, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1311, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1312, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
     ops.mass(1313, *[2.335292616452393, 2.335292616452393, 2.335292616452393])
-    ops.mass(1314, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1315, *[2.0673082178430935,
-             2.0673082178430935, 2.0673082178430935])
+    ops.mass(1314, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1315, *[2.0673082178430935, 2.0673082178430935, 2.0673082178430935])
     ops.mass(1316, *[2.335292616452393, 2.335292616452393, 2.335292616452393])
-    ops.mass(1317, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1318, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1319, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1320, *[2.2204421599055597,
-             2.2204421599055597, 2.2204421599055597])
+    ops.mass(1317, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1318, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1319, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1320, *[2.2204421599055597, 2.2204421599055597, 2.2204421599055597])
     ops.mass(1321, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1322, *[1.8376073047494395,
-             1.8376073047494395, 1.8376073047494395])
-    ops.mass(1323, *[2.2204421599055597,
-             2.2204421599055597, 2.2204421599055597])
+    ops.mass(1322, *[1.8376073047494395, 1.8376073047494395, 1.8376073047494395])
+    ops.mass(1323, *[2.2204421599055597, 2.2204421599055597, 2.2204421599055597])
     ops.mass(1324, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1325, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1326, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1327, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1328, *[2.6032770150616957,
-             2.6032770150616957, 2.6032770150616957])
-    ops.mass(1329, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1330, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1331, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1332, *[2.6032770150617064,
-             2.6032770150617064, 2.6032770150617064])
-    ops.mass(1333, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1334, *[2.6032770150617077,
-             2.6032770150617077, 2.6032770150617077])
-    ops.mass(1335, *[2.6032770150617064,
-             2.6032770150617064, 2.6032770150617064])
-    ops.mass(1336, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1337, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1338, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1339, *[2.6032770150616953,
-             2.6032770150616953, 2.6032770150616953])
-    ops.mass(1340, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1341, *[2.6032770150616984,
-             2.6032770150616984, 2.6032770150616984])
-    ops.mass(1342, *[2.6032770150616953,
-             2.6032770150616953, 2.6032770150616953])
-    ops.mass(1343, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1344, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1345, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
+    ops.mass(1325, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1326, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1327, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1328, *[2.6032770150616957, 2.6032770150616957, 2.6032770150616957])
+    ops.mass(1329, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1330, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1331, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1332, *[2.6032770150617064, 2.6032770150617064, 2.6032770150617064])
+    ops.mass(1333, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1334, *[2.6032770150617077, 2.6032770150617077, 2.6032770150617077])
+    ops.mass(1335, *[2.6032770150617064, 2.6032770150617064, 2.6032770150617064])
+    ops.mass(1336, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1337, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1338, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1339, *[2.6032770150616953, 2.6032770150616953, 2.6032770150616953])
+    ops.mass(1340, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1341, *[2.6032770150616984, 2.6032770150616984, 2.6032770150616984])
+    ops.mass(1342, *[2.6032770150616953, 2.6032770150616953, 2.6032770150616953])
+    ops.mass(1343, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1344, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1345, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
     ops.mass(1346, *[2.60327701506168, 2.60327701506168, 2.60327701506168])
     ops.mass(1347, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
     ops.mass(1348, *[2.60327701506168, 2.60327701506168, 2.60327701506168])
     ops.mass(1349, *[2.60327701506168, 2.60327701506168, 2.60327701506168])
     ops.mass(1350, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1351, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1352, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1353, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1354, *[2.6032770150616957,
-             2.6032770150616957, 2.6032770150616957])
-    ops.mass(1355, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1356, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1357, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1358, *[2.6032770150617077,
-             2.6032770150617077, 2.6032770150617077])
-    ops.mass(1359, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1360, *[2.6032770150617113,
-             2.6032770150617113, 2.6032770150617113])
-    ops.mass(1361, *[2.6032770150617077,
-             2.6032770150617077, 2.6032770150617077])
-    ops.mass(1362, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1363, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1364, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1365, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1366, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1367, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1368, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1369, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1370, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1371, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1372, *[1.9907412468118624,
-             1.9907412468118624, 1.9907412468118624])
+    ops.mass(1351, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1352, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1353, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1354, *[2.6032770150616957, 2.6032770150616957, 2.6032770150616957])
+    ops.mass(1355, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1356, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1357, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1358, *[2.6032770150617077, 2.6032770150617077, 2.6032770150617077])
+    ops.mass(1359, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1360, *[2.6032770150617113, 2.6032770150617113, 2.6032770150617113])
+    ops.mass(1361, *[2.6032770150617077, 2.6032770150617077, 2.6032770150617077])
+    ops.mass(1362, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1363, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1364, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1365, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1366, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1367, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1368, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1369, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1370, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1371, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1372, *[1.9907412468118624, 1.9907412468118624, 1.9907412468118624])
     ops.mass(1373, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1374, *[1.3782054785620446,
-             1.3782054785620446, 1.3782054785620446])
-    ops.mass(1375, *[1.9907412468118624,
-             1.9907412468118624, 1.9907412468118624])
+    ops.mass(1374, *[1.3782054785620446, 1.3782054785620446, 1.3782054785620446])
+    ops.mass(1375, *[1.9907412468118624, 1.9907412468118624, 1.9907412468118624])
     ops.mass(1376, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1377, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1378, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1379, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
+    ops.mass(1377, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1378, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1379, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
     ops.mass(1380, *[2.526710044030491, 2.526710044030491, 2.526710044030491])
-    ops.mass(1381, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1382, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1383, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
+    ops.mass(1381, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1382, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1383, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
     ops.mass(1384, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
-    ops.mass(1385, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
+    ops.mass(1385, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
     ops.mass(1386, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
     ops.mass(1387, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
-    ops.mass(1388, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1389, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1390, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1391, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1392, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1393, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1394, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1395, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1396, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1397, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
+    ops.mass(1388, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1389, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1390, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1391, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1392, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1393, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1394, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1395, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1396, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1397, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
     ops.mass(1398, *[2.60327701506168, 2.60327701506168, 2.60327701506168])
     ops.mass(1399, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
     ops.mass(1400, *[2.60327701506168, 2.60327701506168, 2.60327701506168])
     ops.mass(1401, *[2.60327701506168, 2.60327701506168, 2.60327701506168])
     ops.mass(1402, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1403, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1404, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1405, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1406, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1407, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1408, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1409, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
+    ops.mass(1403, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1404, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1405, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1406, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1407, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1408, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1409, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
     ops.mass(1410, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
-    ops.mass(1411, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
+    ops.mass(1411, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
     ops.mass(1412, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
     ops.mass(1413, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
-    ops.mass(1414, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1415, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1416, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1417, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1418, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1419, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1420, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1421, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1422, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1423, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
+    ops.mass(1414, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1415, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1416, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1417, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1418, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1419, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1420, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1421, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1422, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1423, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
     ops.mass(1424, *[2.297009130936771, 2.297009130936771, 2.297009130936771])
     ops.mass(1425, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
     ops.mass(1426, *[1.990741246811861, 1.990741246811861, 1.990741246811861])
     ops.mass(1427, *[2.297009130936771, 2.297009130936771, 2.297009130936771])
     ops.mass(1428, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1429, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1430, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1431, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1432, *[1.9141742757806777,
-             1.9141742757806777, 1.9141742757806777])
-    ops.mass(1433, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1434, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1435, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
+    ops.mass(1429, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1430, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1431, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1432, *[1.9141742757806777, 1.9141742757806777, 1.9141742757806777])
+    ops.mass(1433, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1434, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1435, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
     ops.mass(1436, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
-    ops.mass(1437, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
+    ops.mass(1437, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
     ops.mass(1438, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
     ops.mass(1439, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
-    ops.mass(1440, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1441, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1442, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1443, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1444, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1445, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1446, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1447, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1448, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1449, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1450, *[2.6032770150616784,
-             2.6032770150616784, 2.6032770150616784])
+    ops.mass(1440, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1441, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1442, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1443, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1444, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1445, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1446, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1447, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1448, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1449, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1450, *[2.6032770150616784, 2.6032770150616784, 2.6032770150616784])
     ops.mass(1451, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1452, *[2.6032770150616775,
-             2.6032770150616775, 2.6032770150616775])
-    ops.mass(1453, *[2.6032770150616793,
-             2.6032770150616793, 2.6032770150616793])
+    ops.mass(1452, *[2.6032770150616775, 2.6032770150616775, 2.6032770150616775])
+    ops.mass(1453, *[2.6032770150616793, 2.6032770150616793, 2.6032770150616793])
     ops.mass(1454, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1455, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1456, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1457, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1458, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1459, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1460, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1461, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1462, *[2.6032770150617064,
-             2.6032770150617064, 2.6032770150617064])
-    ops.mass(1463, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1464, *[2.6032770150617077,
-             2.6032770150617077, 2.6032770150617077])
-    ops.mass(1465, *[2.6032770150617064,
-             2.6032770150617064, 2.6032770150617064])
-    ops.mass(1466, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1467, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1468, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1469, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1470, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1471, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1472, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1473, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1474, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1475, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
+    ops.mass(1455, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1456, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1457, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1458, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1459, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1460, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1461, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1462, *[2.6032770150617064, 2.6032770150617064, 2.6032770150617064])
+    ops.mass(1463, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1464, *[2.6032770150617077, 2.6032770150617077, 2.6032770150617077])
+    ops.mass(1465, *[2.6032770150617064, 2.6032770150617064, 2.6032770150617064])
+    ops.mass(1466, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1467, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1468, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1469, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1470, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1471, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1472, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1473, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1474, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1475, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
     ops.mass(1476, *[2.603277015061674, 2.603277015061674, 2.603277015061674])
     ops.mass(1477, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1478, *[2.6032770150616678,
-             2.6032770150616678, 2.6032770150616678])
+    ops.mass(1478, *[2.6032770150616678, 2.6032770150616678, 2.6032770150616678])
     ops.mass(1479, *[2.603277015061674, 2.603277015061674, 2.603277015061674])
     ops.mass(1480, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1481, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1482, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1483, *[0.16270481344135423,
-                     0.16270481344135423, 0.16270481344135423])
-    ops.mass(1484, *[0.16270481344135423,
-                     0.16270481344135423, 0.16270481344135423])
-    ops.mass(1485, *[0.4881144403240627,
-             0.4881144403240627, 0.4881144403240627])
-    ops.mass(1486, *[0.4881144403240627,
-             0.4881144403240627, 0.4881144403240627])
-    ops.mass(1487, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1488, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1489, *[2.6032770150616864,
-             2.6032770150616864, 2.6032770150616864])
-    ops.mass(1490, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1491, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1492, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1493, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1494, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1495, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1496, *[2.6032770150616864,
-             2.6032770150616864, 2.6032770150616864])
-    ops.mass(1497, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1498, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1499, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1500, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1501, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1502, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
+    ops.mass(1481, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1482, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1483, *[0.16270481344135423, 0.16270481344135423, 0.16270481344135423])
+    ops.mass(1484, *[0.16270481344135423, 0.16270481344135423, 0.16270481344135423])
+    ops.mass(1485, *[0.4881144403240627, 0.4881144403240627, 0.4881144403240627])
+    ops.mass(1486, *[0.4881144403240627, 0.4881144403240627, 0.4881144403240627])
+    ops.mass(1487, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1488, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1489, *[2.6032770150616864, 2.6032770150616864, 2.6032770150616864])
+    ops.mass(1490, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1491, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1492, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1493, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1494, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1495, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1496, *[2.6032770150616864, 2.6032770150616864, 2.6032770150616864])
+    ops.mass(1497, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1498, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1499, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1500, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1501, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1502, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
     ops.mass(1503, *[2.603277015061692, 2.603277015061692, 2.603277015061692])
-    ops.mass(1504, *[2.6032770150616926,
-             2.6032770150616926, 2.6032770150616926])
-    ops.mass(1505, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1506, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1507, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
+    ops.mass(1504, *[2.6032770150616926, 2.6032770150616926, 2.6032770150616926])
+    ops.mass(1505, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1506, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1507, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
     ops.mass(1508, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1509, *[2.6032770150616864,
-             2.6032770150616864, 2.6032770150616864])
+    ops.mass(1509, *[2.6032770150616864, 2.6032770150616864, 2.6032770150616864])
     ops.mass(1510, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1511, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1512, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
+    ops.mass(1511, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1512, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
     ops.mass(1513, *[2.60327701506168, 2.60327701506168, 2.60327701506168])
     ops.mass(1514, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
     ops.mass(1515, *[2.60327701506168, 2.60327701506168, 2.60327701506168])
     ops.mass(1516, *[2.60327701506168, 2.60327701506168, 2.60327701506168])
     ops.mass(1517, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1518, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1519, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1520, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1521, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1522, *[2.6032770150616864,
-             2.6032770150616864, 2.6032770150616864])
-    ops.mass(1523, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1524, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1525, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1526, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
+    ops.mass(1518, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1519, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1520, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1521, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1522, *[2.6032770150616864, 2.6032770150616864, 2.6032770150616864])
+    ops.mass(1523, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1524, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1525, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1526, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
     ops.mass(1527, *[2.6032770150617, 2.6032770150617, 2.6032770150617])
-    ops.mass(1528, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1529, *[2.6032770150616957,
-             2.6032770150616957, 2.6032770150616957])
-    ops.mass(1530, *[2.6032770150616997,
-             2.6032770150616997, 2.6032770150616997])
-    ops.mass(1531, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1532, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1533, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1534, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1535, *[2.6032770150616833,
-             2.6032770150616833, 2.6032770150616833])
-    ops.mass(1536, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1537, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1538, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1539, *[2.6032770150616775,
-             2.6032770150616775, 2.6032770150616775])
+    ops.mass(1528, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1529, *[2.6032770150616957, 2.6032770150616957, 2.6032770150616957])
+    ops.mass(1530, *[2.6032770150616997, 2.6032770150616997, 2.6032770150616997])
+    ops.mass(1531, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1532, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1533, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1534, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1535, *[2.6032770150616833, 2.6032770150616833, 2.6032770150616833])
+    ops.mass(1536, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1537, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1538, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1539, *[2.6032770150616775, 2.6032770150616775, 2.6032770150616775])
     ops.mass(1540, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
     ops.mass(1541, *[2.603277015061674, 2.603277015061674, 2.603277015061674])
-    ops.mass(1542, *[2.6032770150616775,
-             2.6032770150616775, 2.6032770150616775])
+    ops.mass(1542, *[2.6032770150616775, 2.6032770150616775, 2.6032770150616775])
     ops.mass(1543, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1544, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1545, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1546, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1547, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1548, *[2.6032770150616864,
-             2.6032770150616864, 2.6032770150616864])
-    ops.mass(1549, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1550, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1551, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1552, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1553, *[2.6032770150617064,
-             2.6032770150617064, 2.6032770150617064])
-    ops.mass(1554, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
+    ops.mass(1544, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1545, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1546, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1547, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1548, *[2.6032770150616864, 2.6032770150616864, 2.6032770150616864])
+    ops.mass(1549, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1550, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1551, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1552, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1553, *[2.6032770150617064, 2.6032770150617064, 2.6032770150617064])
+    ops.mass(1554, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
     ops.mass(1555, *[2.603277015061708, 2.603277015061708, 2.603277015061708])
     ops.mass(1556, *[2.603277015061706, 2.603277015061706, 2.603277015061706])
-    ops.mass(1557, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1558, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1559, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
+    ops.mass(1557, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1558, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1559, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
     ops.mass(1560, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1561, *[2.6032770150616864,
-             2.6032770150616864, 2.6032770150616864])
+    ops.mass(1561, *[2.6032770150616864, 2.6032770150616864, 2.6032770150616864])
     ops.mass(1562, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1563, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1564, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1565, *[2.6032770150616664,
-             2.6032770150616664, 2.6032770150616664])
-    ops.mass(1566, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
+    ops.mass(1563, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1564, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1565, *[2.6032770150616664, 2.6032770150616664, 2.6032770150616664])
+    ops.mass(1566, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
     ops.mass(1567, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(1568, *[2.6032770150616664,
-             2.6032770150616664, 2.6032770150616664])
-    ops.mass(1569, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
-    ops.mass(1570, *[0.9762288806481255,
-             0.9762288806481255, 0.9762288806481255])
-    ops.mass(1571, *[0.9762288806481255,
-             0.9762288806481255, 0.9762288806481255])
-    ops.mass(1572, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1573, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1574, *[2.6032770150616864,
-             2.6032770150616864, 2.6032770150616864])
-    ops.mass(1575, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1576, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1577, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1578, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1579, *[2.6032770150617144,
-             2.6032770150617144, 2.6032770150617144])
-    ops.mass(1580, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1568, *[2.6032770150616664, 2.6032770150616664, 2.6032770150616664])
+    ops.mass(1569, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
+    ops.mass(1570, *[0.9762288806481255, 0.9762288806481255, 0.9762288806481255])
+    ops.mass(1571, *[0.9762288806481255, 0.9762288806481255, 0.9762288806481255])
+    ops.mass(1572, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1573, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1574, *[2.6032770150616864, 2.6032770150616864, 2.6032770150616864])
+    ops.mass(1575, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1576, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1577, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1578, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1579, *[2.6032770150617144, 2.6032770150617144, 2.6032770150617144])
+    ops.mass(1580, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1581, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
     ops.mass(1582, *[2.603277015061714, 2.603277015061714, 2.603277015061714])
-    ops.mass(1583, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1584, *[0.9762288806481438,
-             0.9762288806481438, 0.9762288806481438])
-    ops.mass(1585, *[0.9762288806481438,
-             0.9762288806481438, 0.9762288806481438])
-    ops.mass(1586, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1587, *[2.6032770150616833,
-             2.6032770150616833, 2.6032770150616833])
-    ops.mass(1588, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1589, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1590, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1591, *[2.6032770150616633,
-             2.6032770150616633, 2.6032770150616633])
-    ops.mass(1592, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
+    ops.mass(1583, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1584, *[0.9762288806481438, 0.9762288806481438, 0.9762288806481438])
+    ops.mass(1585, *[0.9762288806481438, 0.9762288806481438, 0.9762288806481438])
+    ops.mass(1586, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1587, *[2.6032770150616833, 2.6032770150616833, 2.6032770150616833])
+    ops.mass(1588, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1589, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1590, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1591, *[2.6032770150616633, 2.6032770150616633, 2.6032770150616633])
+    ops.mass(1592, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
     ops.mass(1593, *[2.603277015061659, 2.603277015061659, 2.603277015061659])
-    ops.mass(1594, *[2.6032770150616633,
-             2.6032770150616633, 2.6032770150616633])
-    ops.mass(1595, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
-    ops.mass(1596, *[0.9762288806481255,
-             0.9762288806481255, 0.9762288806481255])
-    ops.mass(1597, *[0.9762288806481255,
-             0.9762288806481255, 0.9762288806481255])
-    ops.mass(1598, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1599, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1600, *[2.6032770150616864,
-             2.6032770150616864, 2.6032770150616864])
-    ops.mass(1601, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1602, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1603, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1604, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
+    ops.mass(1594, *[2.6032770150616633, 2.6032770150616633, 2.6032770150616633])
+    ops.mass(1595, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
+    ops.mass(1596, *[0.9762288806481255, 0.9762288806481255, 0.9762288806481255])
+    ops.mass(1597, *[0.9762288806481255, 0.9762288806481255, 0.9762288806481255])
+    ops.mass(1598, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1599, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1600, *[2.6032770150616864, 2.6032770150616864, 2.6032770150616864])
+    ops.mass(1601, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1602, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1603, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1604, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
     ops.mass(1605, *[2.603277015061717, 2.603277015061717, 2.603277015061717])
-    ops.mass(1606, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1606, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1607, *[2.603277015061717, 2.603277015061717, 2.603277015061717])
     ops.mass(1608, *[2.603277015061717, 2.603277015061717, 2.603277015061717])
-    ops.mass(1609, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1610, *[0.9762288806481438,
-             0.9762288806481438, 0.9762288806481438])
-    ops.mass(1611, *[0.9762288806481438,
-             0.9762288806481438, 0.9762288806481438])
+    ops.mass(1609, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1610, *[0.9762288806481438, 0.9762288806481438, 0.9762288806481438])
+    ops.mass(1611, *[0.9762288806481438, 0.9762288806481438, 0.9762288806481438])
     ops.mass(1612, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1613, *[2.6032770150616864,
-             2.6032770150616864, 2.6032770150616864])
+    ops.mass(1613, *[2.6032770150616864, 2.6032770150616864, 2.6032770150616864])
     ops.mass(1614, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1615, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1616, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1617, *[2.6032770150616558,
-             2.6032770150616558, 2.6032770150616558])
+    ops.mass(1615, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1616, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1617, *[2.6032770150616558, 2.6032770150616558, 2.6032770150616558])
     ops.mass(1618, *[0.325409626882707, 0.325409626882707, 0.325409626882707])
-    ops.mass(1619, *[2.6032770150616553,
-             2.6032770150616553, 2.6032770150616553])
-    ops.mass(1620, *[2.6032770150616558,
-             2.6032770150616558, 2.6032770150616558])
+    ops.mass(1619, *[2.6032770150616553, 2.6032770150616553, 2.6032770150616553])
+    ops.mass(1620, *[2.6032770150616558, 2.6032770150616558, 2.6032770150616558])
     ops.mass(1621, *[0.325409626882707, 0.325409626882707, 0.325409626882707])
     ops.mass(1622, *[0.976228880648121, 0.976228880648121, 0.976228880648121])
     ops.mass(1623, *[0.976228880648121, 0.976228880648121, 0.976228880648121])
-    ops.mass(1624, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1625, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1626, *[2.6032770150616864,
-             2.6032770150616864, 2.6032770150616864])
-    ops.mass(1627, *[2.6032770150616895,
-             2.6032770150616895, 2.6032770150616895])
-    ops.mass(1628, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1629, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1630, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1631, *[2.6032770150617264,
-             2.6032770150617264, 2.6032770150617264])
-    ops.mass(1632, *[0.3254096268827177,
-             0.3254096268827177, 0.3254096268827177])
-    ops.mass(1633, *[2.6032770150617295,
-             2.6032770150617295, 2.6032770150617295])
-    ops.mass(1634, *[2.6032770150617264,
-             2.6032770150617264, 2.6032770150617264])
-    ops.mass(1635, *[0.3254096268827177,
-             0.3254096268827177, 0.3254096268827177])
-    ops.mass(1636, *[0.9762288806481438,
-             0.9762288806481438, 0.9762288806481438])
-    ops.mass(1637, *[0.9762288806481438,
-             0.9762288806481438, 0.9762288806481438])
-    ops.mass(1638, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1639, *[2.6032770150616984,
-             2.6032770150616984, 2.6032770150616984])
-    ops.mass(1640, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1641, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1642, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1643, *[2.6032770150616664,
-             2.6032770150616664, 2.6032770150616664])
-    ops.mass(1644, *[0.3254096268827085,
-             0.3254096268827085, 0.3254096268827085])
-    ops.mass(1645, *[2.6032770150616646,
-             2.6032770150616646, 2.6032770150616646])
+    ops.mass(1624, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1625, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1626, *[2.6032770150616864, 2.6032770150616864, 2.6032770150616864])
+    ops.mass(1627, *[2.6032770150616895, 2.6032770150616895, 2.6032770150616895])
+    ops.mass(1628, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1629, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1630, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1631, *[2.6032770150617264, 2.6032770150617264, 2.6032770150617264])
+    ops.mass(1632, *[0.3254096268827177, 0.3254096268827177, 0.3254096268827177])
+    ops.mass(1633, *[2.6032770150617295, 2.6032770150617295, 2.6032770150617295])
+    ops.mass(1634, *[2.6032770150617264, 2.6032770150617264, 2.6032770150617264])
+    ops.mass(1635, *[0.3254096268827177, 0.3254096268827177, 0.3254096268827177])
+    ops.mass(1636, *[0.9762288806481438, 0.9762288806481438, 0.9762288806481438])
+    ops.mass(1637, *[0.9762288806481438, 0.9762288806481438, 0.9762288806481438])
+    ops.mass(1638, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1639, *[2.6032770150616984, 2.6032770150616984, 2.6032770150616984])
+    ops.mass(1640, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1641, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1642, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1643, *[2.6032770150616664, 2.6032770150616664, 2.6032770150616664])
+    ops.mass(1644, *[0.3254096268827085, 0.3254096268827085, 0.3254096268827085])
+    ops.mass(1645, *[2.6032770150616646, 2.6032770150616646, 2.6032770150616646])
     ops.mass(1646, *[2.603277015061666, 2.603277015061666, 2.603277015061666])
-    ops.mass(1647, *[0.3254096268827085,
-             0.3254096268827085, 0.3254096268827085])
-    ops.mass(1648, *[0.9762288806481256,
-             0.9762288806481256, 0.9762288806481256])
-    ops.mass(1649, *[0.9762288806481256,
-             0.9762288806481256, 0.9762288806481256])
+    ops.mass(1647, *[0.3254096268827085, 0.3254096268827085, 0.3254096268827085])
+    ops.mass(1648, *[0.9762288806481256, 0.9762288806481256, 0.9762288806481256])
+    ops.mass(1649, *[0.9762288806481256, 0.9762288806481256, 0.9762288806481256])
     ops.mass(1650, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(1651, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1652, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1653, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(1654, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1651, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1652, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1653, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(1654, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1655, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1656, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
-    ops.mass(1657, *[2.6032770150617277,
-             2.6032770150617277, 2.6032770150617277])
-    ops.mass(1658, *[0.32540962688271613,
-                     0.32540962688271613, 0.32540962688271613])
-    ops.mass(1659, *[2.6032770150617264,
-             2.6032770150617264, 2.6032770150617264])
-    ops.mass(1660, *[2.6032770150617277,
-             2.6032770150617277, 2.6032770150617277])
-    ops.mass(1661, *[0.32540962688271613,
-                     0.32540962688271613, 0.32540962688271613])
-    ops.mass(1662, *[0.9762288806481485,
-             0.9762288806481485, 0.9762288806481485])
-    ops.mass(1663, *[0.9762288806481485,
-             0.9762288806481485, 0.9762288806481485])
-    ops.mass(1664, *[0.3254096268827131,
-             0.3254096268827131, 0.3254096268827131])
+    ops.mass(1657, *[2.6032770150617277, 2.6032770150617277, 2.6032770150617277])
+    ops.mass(1658, *[0.32540962688271613, 0.32540962688271613, 0.32540962688271613])
+    ops.mass(1659, *[2.6032770150617264, 2.6032770150617264, 2.6032770150617264])
+    ops.mass(1660, *[2.6032770150617277, 2.6032770150617277, 2.6032770150617277])
+    ops.mass(1661, *[0.32540962688271613, 0.32540962688271613, 0.32540962688271613])
+    ops.mass(1662, *[0.9762288806481485, 0.9762288806481485, 0.9762288806481485])
+    ops.mass(1663, *[0.9762288806481485, 0.9762288806481485, 0.9762288806481485])
+    ops.mass(1664, *[0.3254096268827131, 0.3254096268827131, 0.3254096268827131])
     ops.mass(1665, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
-    ops.mass(1666, *[0.3254096268827131,
-             0.3254096268827131, 0.3254096268827131])
-    ops.mass(1667, *[0.9762288806481392,
-             0.9762288806481392, 0.9762288806481392])
-    ops.mass(1668, *[0.9762288806481392,
-             0.9762288806481392, 0.9762288806481392])
-    ops.mass(1669, *[2.6032770150616877,
-             2.6032770150616877, 2.6032770150616877])
-    ops.mass(1670, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1671, *[2.6032770150616833,
-             2.6032770150616833, 2.6032770150616833])
-    ops.mass(1672, *[2.6032770150616877,
-             2.6032770150616877, 2.6032770150616877])
-    ops.mass(1673, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(1674, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(1675, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
+    ops.mass(1666, *[0.3254096268827131, 0.3254096268827131, 0.3254096268827131])
+    ops.mass(1667, *[0.9762288806481392, 0.9762288806481392, 0.9762288806481392])
+    ops.mass(1668, *[0.9762288806481392, 0.9762288806481392, 0.9762288806481392])
+    ops.mass(1669, *[2.6032770150616877, 2.6032770150616877, 2.6032770150616877])
+    ops.mass(1670, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1671, *[2.6032770150616833, 2.6032770150616833, 2.6032770150616833])
+    ops.mass(1672, *[2.6032770150616877, 2.6032770150616877, 2.6032770150616877])
+    ops.mass(1673, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(1674, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(1675, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
     ops.mass(1676, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(1677, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1678, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1679, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(1680, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1677, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1678, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1679, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(1680, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1681, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1682, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1683, *[2.603277015061717, 2.603277015061717, 2.603277015061717])
-    ops.mass(1684, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1684, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1685, *[2.603277015061717, 2.603277015061717, 2.603277015061717])
-    ops.mass(1686, *[2.6032770150617166,
-             2.6032770150617166, 2.6032770150617166])
-    ops.mass(1687, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1686, *[2.6032770150617166, 2.6032770150617166, 2.6032770150617166])
+    ops.mass(1687, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1688, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1689, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
-    ops.mass(1690, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1691, *[2.6032770150617077,
-             2.6032770150617077, 2.6032770150617077])
-    ops.mass(1692, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1693, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1694, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
+    ops.mass(1690, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1691, *[2.6032770150617077, 2.6032770150617077, 2.6032770150617077])
+    ops.mass(1692, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1693, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1694, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
     ops.mass(1695, *[2.6032770150617, 2.6032770150617, 2.6032770150617])
-    ops.mass(1696, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1697, *[2.6032770150616957,
-             2.6032770150616957, 2.6032770150616957])
-    ops.mass(1698, *[2.6032770150616997,
-             2.6032770150616997, 2.6032770150616997])
-    ops.mass(1699, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1700, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1701, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
+    ops.mass(1696, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1697, *[2.6032770150616957, 2.6032770150616957, 2.6032770150616957])
+    ops.mass(1698, *[2.6032770150616997, 2.6032770150616997, 2.6032770150616997])
+    ops.mass(1699, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1700, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1701, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
     ops.mass(1702, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(1703, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1704, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1705, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(1706, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1703, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1704, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1705, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(1706, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1707, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1708, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1709, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(1710, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1711, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1712, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(1713, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1710, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1711, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1712, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(1713, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1714, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1715, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
-    ops.mass(1716, *[0.3254096268826825,
-             0.3254096268826825, 0.3254096268826825])
-    ops.mass(1717, *[2.6032770150614537,
-             2.6032770150614537, 2.6032770150614537])
-    ops.mass(1718, *[0.3254096268826825,
-             0.3254096268826825, 0.3254096268826825])
-    ops.mass(1719, *[0.9762288806480475,
-             0.9762288806480475, 0.9762288806480475])
-    ops.mass(1720, *[0.9762288806480475,
-             0.9762288806480475, 0.9762288806480475])
-    ops.mass(1721, *[0.33498049826161636,
-                     0.33498049826161636, 0.33498049826161636])
+    ops.mass(1716, *[0.3254096268826825, 0.3254096268826825, 0.3254096268826825])
+    ops.mass(1717, *[2.6032770150614537, 2.6032770150614537, 2.6032770150614537])
+    ops.mass(1718, *[0.3254096268826825, 0.3254096268826825, 0.3254096268826825])
+    ops.mass(1719, *[0.9762288806480475, 0.9762288806480475, 0.9762288806480475])
+    ops.mass(1720, *[0.9762288806480475, 0.9762288806480475, 0.9762288806480475])
+    ops.mass(1721, *[0.33498049826161636, 0.33498049826161636, 0.33498049826161636])
     ops.mass(1722, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1723, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1723, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1724, *[2.679843986092925, 2.679843986092925, 2.679843986092925])
     ops.mass(1725, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1726, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1727, *[0.33498049826161636,
-                     0.33498049826161636, 0.33498049826161636])
-    ops.mass(1728, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1729, *[1.0049414947848492,
-             1.0049414947848492, 1.0049414947848492])
-    ops.mass(1730, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1731, *[1.0049414947848492,
-             1.0049414947848492, 1.0049414947848492])
-    ops.mass(1732, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1727, *[0.33498049826161636, 0.33498049826161636, 0.33498049826161636])
+    ops.mass(1728, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1729, *[1.0049414947848492, 1.0049414947848492, 1.0049414947848492])
+    ops.mass(1730, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1731, *[1.0049414947848492, 1.0049414947848492, 1.0049414947848492])
+    ops.mass(1732, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1733, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1734, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1734, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1735, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1736, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1737, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1738, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1739, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1737, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1738, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1739, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1740, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1741, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1741, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1742, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1743, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1744, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1745, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1746, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1744, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1745, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1746, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1747, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1748, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1748, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1749, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1750, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1751, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1752, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1753, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1751, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1752, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1753, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1754, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1755, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1755, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1756, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1757, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1758, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1759, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1760, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1758, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1759, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1760, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1761, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1762, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1762, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1763, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1764, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1765, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1765, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1766, *[8.04819598959451, 8.04819598959451, 8.04819598959451])
     ops.mass(1767, *[8.04819598959451, 8.04819598959451, 8.04819598959451])
     ops.mass(1768, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1769, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1769, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1770, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1771, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1772, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1773, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1774, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1772, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1773, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1774, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1775, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1776, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1776, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1777, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1778, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1779, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1780, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1781, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1779, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1780, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1781, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1782, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1783, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1783, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1784, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1785, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1786, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1787, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1788, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1786, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1787, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1788, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1789, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1790, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1790, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1791, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1792, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1793, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1794, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1795, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
+    ops.mass(1793, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1794, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1795, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
     ops.mass(1796, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1797, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
+    ops.mass(1797, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
     ops.mass(1798, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
     ops.mass(1799, *[2.756410957124145, 2.756410957124145, 2.756410957124145])
-    ops.mass(1800, *[0.34455136964051813,
-                     0.34455136964051813, 0.34455136964051813])
-    ops.mass(1801, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1802, *[1.0336541089215543,
-             1.0336541089215543, 1.0336541089215543])
-    ops.mass(1803, *[0.33498049826161636,
-                     0.33498049826161636, 0.33498049826161636])
+    ops.mass(1800, *[0.34455136964051813, 0.34455136964051813, 0.34455136964051813])
+    ops.mass(1801, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1802, *[1.0336541089215543, 1.0336541089215543, 1.0336541089215543])
+    ops.mass(1803, *[0.33498049826161636, 0.33498049826161636, 0.33498049826161636])
     ops.mass(1804, *[2.679843986092925, 2.679843986092925, 2.679843986092925])
-    ops.mass(1805, *[0.33498049826161636,
-                     0.33498049826161636, 0.33498049826161636])
-    ops.mass(1806, *[1.0049414947848492,
-             1.0049414947848492, 1.0049414947848492])
-    ops.mass(1807, *[1.0049414947848492,
-             1.0049414947848492, 1.0049414947848492])
+    ops.mass(1805, *[0.33498049826161636, 0.33498049826161636, 0.33498049826161636])
+    ops.mass(1806, *[1.0049414947848492, 1.0049414947848492, 1.0049414947848492])
+    ops.mass(1807, *[1.0049414947848492, 1.0049414947848492, 1.0049414947848492])
     ops.mass(1808, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(1809, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1810, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1811, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(1812, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1809, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1810, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1811, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(1812, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1813, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1814, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1815, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(1816, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1817, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1818, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(1819, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1816, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1817, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1818, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(1819, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1820, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1821, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1822, *[2.6032770150617, 2.6032770150617, 2.6032770150617])
-    ops.mass(1823, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1824, *[2.6032770150616953,
-             2.6032770150616953, 2.6032770150616953])
+    ops.mass(1823, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1824, *[2.6032770150616953, 2.6032770150616953, 2.6032770150616953])
     ops.mass(1825, *[2.6032770150617, 2.6032770150617, 2.6032770150617])
-    ops.mass(1826, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1827, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1828, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1829, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
+    ops.mass(1826, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1827, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1828, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1829, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
     ops.mass(1830, *[2.603277015061708, 2.603277015061708, 2.603277015061708])
-    ops.mass(1831, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1832, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1833, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
+    ops.mass(1831, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1832, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1833, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
     ops.mass(1834, *[2.603277015061717, 2.603277015061717, 2.603277015061717])
-    ops.mass(1835, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1835, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1836, *[2.603277015061717, 2.603277015061717, 2.603277015061717])
-    ops.mass(1837, *[2.6032770150617166,
-             2.6032770150617166, 2.6032770150617166])
-    ops.mass(1838, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1837, *[2.6032770150617166, 2.6032770150617166, 2.6032770150617166])
+    ops.mass(1838, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1839, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1840, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1841, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(1842, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1843, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1844, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(1845, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1842, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1843, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1844, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(1845, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1846, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1847, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1848, *[2.603277015061677, 2.603277015061677, 2.603277015061677])
@@ -8937,399 +16742,228 @@ def CableStayedBridge():
     ops.mass(1850, *[2.603277015061674, 2.603277015061674, 2.603277015061674])
     ops.mass(1851, *[2.603277015061677, 2.603277015061677, 2.603277015061677])
     ops.mass(1852, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(1853, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1854, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(1855, *[0.3254096268827131,
-             0.3254096268827131, 0.3254096268827131])
-    ops.mass(1856, *[2.6032770150617077,
-             2.6032770150617077, 2.6032770150617077])
-    ops.mass(1857, *[0.3254096268827131,
-             0.3254096268827131, 0.3254096268827131])
-    ops.mass(1858, *[0.9762288806481392,
-             0.9762288806481392, 0.9762288806481392])
-    ops.mass(1859, *[0.9762288806481392,
-             0.9762288806481392, 0.9762288806481392])
-    ops.mass(1860, *[2.6032770150617397,
-             2.6032770150617397, 2.6032770150617397])
-    ops.mass(1861, *[0.3254096268827177,
-             0.3254096268827177, 0.3254096268827177])
-    ops.mass(1862, *[2.6032770150617384,
-             2.6032770150617384, 2.6032770150617384])
-    ops.mass(1863, *[2.6032770150617397,
-             2.6032770150617397, 2.6032770150617397])
-    ops.mass(1864, *[0.3254096268827177,
-             0.3254096268827177, 0.3254096268827177])
+    ops.mass(1853, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1854, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(1855, *[0.3254096268827131, 0.3254096268827131, 0.3254096268827131])
+    ops.mass(1856, *[2.6032770150617077, 2.6032770150617077, 2.6032770150617077])
+    ops.mass(1857, *[0.3254096268827131, 0.3254096268827131, 0.3254096268827131])
+    ops.mass(1858, *[0.9762288806481392, 0.9762288806481392, 0.9762288806481392])
+    ops.mass(1859, *[0.9762288806481392, 0.9762288806481392, 0.9762288806481392])
+    ops.mass(1860, *[2.6032770150617397, 2.6032770150617397, 2.6032770150617397])
+    ops.mass(1861, *[0.3254096268827177, 0.3254096268827177, 0.3254096268827177])
+    ops.mass(1862, *[2.6032770150617384, 2.6032770150617384, 2.6032770150617384])
+    ops.mass(1863, *[2.6032770150617397, 2.6032770150617397, 2.6032770150617397])
+    ops.mass(1864, *[0.3254096268827177, 0.3254096268827177, 0.3254096268827177])
     ops.mass(1865, *[0.976228880648153, 0.976228880648153, 0.976228880648153])
     ops.mass(1866, *[0.976228880648153, 0.976228880648153, 0.976228880648153])
     ops.mass(1867, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(1868, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1869, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1870, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(1871, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1868, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1869, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1870, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(1871, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1872, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1873, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
-    ops.mass(1874, *[2.6032770150616664,
-             2.6032770150616664, 2.6032770150616664])
-    ops.mass(1875, *[0.3254096268827085,
-             0.3254096268827085, 0.3254096268827085])
-    ops.mass(1876, *[2.6032770150616646,
-             2.6032770150616646, 2.6032770150616646])
-    ops.mass(1877, *[2.6032770150616664,
-             2.6032770150616664, 2.6032770150616664])
-    ops.mass(1878, *[0.3254096268827085,
-             0.3254096268827085, 0.3254096268827085])
-    ops.mass(1879, *[0.9762288806481256,
-             0.9762288806481256, 0.9762288806481256])
-    ops.mass(1880, *[0.9762288806481256,
-             0.9762288806481256, 0.9762288806481256])
-    ops.mass(1881, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1882, *[2.6032770150617077,
-             2.6032770150617077, 2.6032770150617077])
-    ops.mass(1883, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1884, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1885, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
+    ops.mass(1874, *[2.6032770150616664, 2.6032770150616664, 2.6032770150616664])
+    ops.mass(1875, *[0.3254096268827085, 0.3254096268827085, 0.3254096268827085])
+    ops.mass(1876, *[2.6032770150616646, 2.6032770150616646, 2.6032770150616646])
+    ops.mass(1877, *[2.6032770150616664, 2.6032770150616664, 2.6032770150616664])
+    ops.mass(1878, *[0.3254096268827085, 0.3254096268827085, 0.3254096268827085])
+    ops.mass(1879, *[0.9762288806481256, 0.9762288806481256, 0.9762288806481256])
+    ops.mass(1880, *[0.9762288806481256, 0.9762288806481256, 0.9762288806481256])
+    ops.mass(1881, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1882, *[2.6032770150617077, 2.6032770150617077, 2.6032770150617077])
+    ops.mass(1883, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1884, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1885, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
     ops.mass(1886, *[2.603277015061751, 2.603277015061751, 2.603277015061751])
-    ops.mass(1887, *[0.32540962688271924,
-                     0.32540962688271924, 0.32540962688271924])
-    ops.mass(1888, *[2.6032770150617477,
-             2.6032770150617477, 2.6032770150617477])
-    ops.mass(1889, *[2.6032770150617504,
-             2.6032770150617504, 2.6032770150617504])
-    ops.mass(1890, *[0.32540962688271924,
-                     0.32540962688271924, 0.32540962688271924])
-    ops.mass(1891, *[0.9762288806481577,
-             0.9762288806481577, 0.9762288806481577])
-    ops.mass(1892, *[0.9762288806481577,
-             0.9762288806481577, 0.9762288806481577])
+    ops.mass(1887, *[0.32540962688271924, 0.32540962688271924, 0.32540962688271924])
+    ops.mass(1888, *[2.6032770150617477, 2.6032770150617477, 2.6032770150617477])
+    ops.mass(1889, *[2.6032770150617504, 2.6032770150617504, 2.6032770150617504])
+    ops.mass(1890, *[0.32540962688271924, 0.32540962688271924, 0.32540962688271924])
+    ops.mass(1891, *[0.9762288806481577, 0.9762288806481577, 0.9762288806481577])
+    ops.mass(1892, *[0.9762288806481577, 0.9762288806481577, 0.9762288806481577])
     ops.mass(1893, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(1894, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1895, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1896, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(1897, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1894, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1895, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1896, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(1897, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1898, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1899, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
-    ops.mass(1900, *[2.6032770150616433,
-             2.6032770150616433, 2.6032770150616433])
-    ops.mass(1901, *[0.32540962688270547,
-                     0.32540962688270547, 0.32540962688270547])
-    ops.mass(1902, *[2.6032770150616433,
-             2.6032770150616433, 2.6032770150616433])
-    ops.mass(1903, *[2.6032770150616433,
-             2.6032770150616433, 2.6032770150616433])
-    ops.mass(1904, *[0.32540962688270547,
-                     0.32540962688270547, 0.32540962688270547])
-    ops.mass(1905, *[0.9762288806481164,
-             0.9762288806481164, 0.9762288806481164])
-    ops.mass(1906, *[0.9762288806481164,
-             0.9762288806481164, 0.9762288806481164])
-    ops.mass(1907, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1908, *[2.6032770150617077,
-             2.6032770150617077, 2.6032770150617077])
-    ops.mass(1909, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1910, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1911, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1912, *[2.6032770150617734,
-             2.6032770150617734, 2.6032770150617734])
-    ops.mass(1913, *[0.3254096268827223,
-             0.3254096268827223, 0.3254096268827223])
+    ops.mass(1900, *[2.6032770150616433, 2.6032770150616433, 2.6032770150616433])
+    ops.mass(1901, *[0.32540962688270547, 0.32540962688270547, 0.32540962688270547])
+    ops.mass(1902, *[2.6032770150616433, 2.6032770150616433, 2.6032770150616433])
+    ops.mass(1903, *[2.6032770150616433, 2.6032770150616433, 2.6032770150616433])
+    ops.mass(1904, *[0.32540962688270547, 0.32540962688270547, 0.32540962688270547])
+    ops.mass(1905, *[0.9762288806481164, 0.9762288806481164, 0.9762288806481164])
+    ops.mass(1906, *[0.9762288806481164, 0.9762288806481164, 0.9762288806481164])
+    ops.mass(1907, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1908, *[2.6032770150617077, 2.6032770150617077, 2.6032770150617077])
+    ops.mass(1909, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1910, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1911, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1912, *[2.6032770150617734, 2.6032770150617734, 2.6032770150617734])
+    ops.mass(1913, *[0.3254096268827223, 0.3254096268827223, 0.3254096268827223])
     ops.mass(1914, *[2.603277015061769, 2.603277015061769, 2.603277015061769])
-    ops.mass(1915, *[2.6032770150617734,
-             2.6032770150617734, 2.6032770150617734])
-    ops.mass(1916, *[0.3254096268827223,
-             0.3254096268827223, 0.3254096268827223])
-    ops.mass(1917, *[0.9762288806481669,
-             0.9762288806481669, 0.9762288806481669])
-    ops.mass(1918, *[0.9762288806481669,
-             0.9762288806481669, 0.9762288806481669])
+    ops.mass(1915, *[2.6032770150617734, 2.6032770150617734, 2.6032770150617734])
+    ops.mass(1916, *[0.3254096268827223, 0.3254096268827223, 0.3254096268827223])
+    ops.mass(1917, *[0.9762288806481669, 0.9762288806481669, 0.9762288806481669])
+    ops.mass(1918, *[0.9762288806481669, 0.9762288806481669, 0.9762288806481669])
     ops.mass(1919, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(1920, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1921, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1922, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(1923, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1920, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1921, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1922, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(1923, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1924, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1925, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1926, *[2.603277015061637, 2.603277015061637, 2.603277015061637])
-    ops.mass(1927, *[0.32540962688270547,
-                     0.32540962688270547, 0.32540962688270547])
-    ops.mass(1928, *[2.6032770150616313,
-             2.6032770150616313, 2.6032770150616313])
-    ops.mass(1929, *[2.6032770150616376,
-             2.6032770150616376, 2.6032770150616376])
-    ops.mass(1930, *[0.32540962688270547,
-                     0.32540962688270547, 0.32540962688270547])
-    ops.mass(1931, *[0.9762288806481164,
-             0.9762288806481164, 0.9762288806481164])
-    ops.mass(1932, *[0.9762288806481164,
-             0.9762288806481164, 0.9762288806481164])
-    ops.mass(1933, *[0.3254096268827147,
-             0.3254096268827147, 0.3254096268827147])
+    ops.mass(1927, *[0.32540962688270547, 0.32540962688270547, 0.32540962688270547])
+    ops.mass(1928, *[2.6032770150616313, 2.6032770150616313, 2.6032770150616313])
+    ops.mass(1929, *[2.6032770150616376, 2.6032770150616376, 2.6032770150616376])
+    ops.mass(1930, *[0.32540962688270547, 0.32540962688270547, 0.32540962688270547])
+    ops.mass(1931, *[0.9762288806481164, 0.9762288806481164, 0.9762288806481164])
+    ops.mass(1932, *[0.9762288806481164, 0.9762288806481164, 0.9762288806481164])
+    ops.mass(1933, *[0.3254096268827147, 0.3254096268827147, 0.3254096268827147])
     ops.mass(1934, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
-    ops.mass(1935, *[0.3254096268827147,
-             0.3254096268827147, 0.3254096268827147])
-    ops.mass(1936, *[0.9762288806481441,
-             0.9762288806481441, 0.9762288806481441])
-    ops.mass(1937, *[0.9762288806481441,
-             0.9762288806481441, 0.9762288806481441])
+    ops.mass(1935, *[0.3254096268827147, 0.3254096268827147, 0.3254096268827147])
+    ops.mass(1936, *[0.9762288806481441, 0.9762288806481441, 0.9762288806481441])
+    ops.mass(1937, *[0.9762288806481441, 0.9762288806481441, 0.9762288806481441])
     ops.mass(1938, *[2.603277015061784, 2.603277015061784, 2.603277015061784])
-    ops.mass(1939, *[0.32540962688272385,
-                     0.32540962688272385, 0.32540962688272385])
-    ops.mass(1940, *[2.6032770150617783,
-             2.6032770150617783, 2.6032770150617783])
+    ops.mass(1939, *[0.32540962688272385, 0.32540962688272385, 0.32540962688272385])
+    ops.mass(1940, *[2.6032770150617783, 2.6032770150617783, 2.6032770150617783])
     ops.mass(1941, *[2.603277015061784, 2.603277015061784, 2.603277015061784])
-    ops.mass(1942, *[0.32540962688272385,
-                     0.32540962688272385, 0.32540962688272385])
-    ops.mass(1943, *[0.9762288806481716,
-             0.9762288806481716, 0.9762288806481716])
-    ops.mass(1944, *[0.9762288806481716,
-             0.9762288806481716, 0.9762288806481716])
+    ops.mass(1942, *[0.32540962688272385, 0.32540962688272385, 0.32540962688272385])
+    ops.mass(1943, *[0.9762288806481716, 0.9762288806481716, 0.9762288806481716])
+    ops.mass(1944, *[0.9762288806481716, 0.9762288806481716, 0.9762288806481716])
     ops.mass(1945, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(1946, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1947, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1948, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(1949, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1946, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1947, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1948, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(1949, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1950, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1951, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1952, *[2.603277015061627, 2.603277015061627, 2.603277015061627])
-    ops.mass(1953, *[0.3254096268827039,
-             0.3254096268827039, 0.3254096268827039])
-    ops.mass(1954, *[2.6032770150616216,
-             2.6032770150616216, 2.6032770150616216])
-    ops.mass(1955, *[2.6032770150616265,
-             2.6032770150616265, 2.6032770150616265])
-    ops.mass(1956, *[0.3254096268827039,
-             0.3254096268827039, 0.3254096268827039])
-    ops.mass(1957, *[0.9762288806481118,
-             0.9762288806481118, 0.9762288806481118])
-    ops.mass(1958, *[0.9762288806481118,
-             0.9762288806481118, 0.9762288806481118])
-    ops.mass(1959, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1960, *[2.6032770150617077,
-             2.6032770150617077, 2.6032770150617077])
-    ops.mass(1961, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1962, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1963, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1964, *[2.6032770150617903,
-             2.6032770150617903, 2.6032770150617903])
-    ops.mass(1965, *[0.32540962688272385,
-                     0.32540962688272385, 0.32540962688272385])
-    ops.mass(1966, *[2.6032770150617908,
-             2.6032770150617908, 2.6032770150617908])
-    ops.mass(1967, *[2.6032770150617903,
-             2.6032770150617903, 2.6032770150617903])
-    ops.mass(1968, *[0.32540962688272385,
-                     0.32540962688272385, 0.32540962688272385])
-    ops.mass(1969, *[0.9762288806481716,
-             0.9762288806481716, 0.9762288806481716])
-    ops.mass(1970, *[0.9762288806481716,
-             0.9762288806481716, 0.9762288806481716])
+    ops.mass(1953, *[0.3254096268827039, 0.3254096268827039, 0.3254096268827039])
+    ops.mass(1954, *[2.6032770150616216, 2.6032770150616216, 2.6032770150616216])
+    ops.mass(1955, *[2.6032770150616265, 2.6032770150616265, 2.6032770150616265])
+    ops.mass(1956, *[0.3254096268827039, 0.3254096268827039, 0.3254096268827039])
+    ops.mass(1957, *[0.9762288806481118, 0.9762288806481118, 0.9762288806481118])
+    ops.mass(1958, *[0.9762288806481118, 0.9762288806481118, 0.9762288806481118])
+    ops.mass(1959, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1960, *[2.6032770150617077, 2.6032770150617077, 2.6032770150617077])
+    ops.mass(1961, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1962, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1963, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1964, *[2.6032770150617903, 2.6032770150617903, 2.6032770150617903])
+    ops.mass(1965, *[0.32540962688272385, 0.32540962688272385, 0.32540962688272385])
+    ops.mass(1966, *[2.6032770150617908, 2.6032770150617908, 2.6032770150617908])
+    ops.mass(1967, *[2.6032770150617903, 2.6032770150617903, 2.6032770150617903])
+    ops.mass(1968, *[0.32540962688272385, 0.32540962688272385, 0.32540962688272385])
+    ops.mass(1969, *[0.9762288806481716, 0.9762288806481716, 0.9762288806481716])
+    ops.mass(1970, *[0.9762288806481716, 0.9762288806481716, 0.9762288806481716])
     ops.mass(1971, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(1972, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1973, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(1974, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(1975, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1972, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1973, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(1974, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(1975, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(1976, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1977, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(1978, *[2.603277015061604, 2.603277015061604, 2.603277015061604])
-    ops.mass(1979, *[0.32540962688270086,
-                     0.32540962688270086, 0.32540962688270086])
-    ops.mass(1980, *[2.6032770150616007,
-             2.6032770150616007, 2.6032770150616007])
-    ops.mass(1981, *[2.6032770150616034,
-             2.6032770150616034, 2.6032770150616034])
-    ops.mass(1982, *[0.32540962688270086,
-                     0.32540962688270086, 0.32540962688270086])
-    ops.mass(1983, *[0.9762288806481026,
-             0.9762288806481026, 0.9762288806481026])
-    ops.mass(1984, *[0.9762288806481026,
-             0.9762288806481026, 0.9762288806481026])
-    ops.mass(1985, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
+    ops.mass(1979, *[0.32540962688270086, 0.32540962688270086, 0.32540962688270086])
+    ops.mass(1980, *[2.6032770150616007, 2.6032770150616007, 2.6032770150616007])
+    ops.mass(1981, *[2.6032770150616034, 2.6032770150616034, 2.6032770150616034])
+    ops.mass(1982, *[0.32540962688270086, 0.32540962688270086, 0.32540962688270086])
+    ops.mass(1983, *[0.9762288806481026, 0.9762288806481026, 0.9762288806481026])
+    ops.mass(1984, *[0.9762288806481026, 0.9762288806481026, 0.9762288806481026])
+    ops.mass(1985, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
     ops.mass(1986, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
-    ops.mass(1987, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(1988, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1989, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(1990, *[2.6032770150618116,
-             2.6032770150618116, 2.6032770150618116])
-    ops.mass(1991, *[0.3254096268827269,
-             0.3254096268827269, 0.3254096268827269])
+    ops.mass(1987, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(1988, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1989, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(1990, *[2.6032770150618116, 2.6032770150618116, 2.6032770150618116])
+    ops.mass(1991, *[0.3254096268827269, 0.3254096268827269, 0.3254096268827269])
     ops.mass(1992, *[2.603277015061809, 2.603277015061809, 2.603277015061809])
-    ops.mass(1993, *[2.6032770150618116,
-             2.6032770150618116, 2.6032770150618116])
-    ops.mass(1994, *[0.3254096268827269,
-             0.3254096268827269, 0.3254096268827269])
-    ops.mass(1995, *[0.9762288806481807,
-             0.9762288806481807, 0.9762288806481807])
-    ops.mass(1996, *[0.9762288806481807,
-             0.9762288806481807, 0.9762288806481807])
+    ops.mass(1993, *[2.6032770150618116, 2.6032770150618116, 2.6032770150618116])
+    ops.mass(1994, *[0.3254096268827269, 0.3254096268827269, 0.3254096268827269])
+    ops.mass(1995, *[0.9762288806481807, 0.9762288806481807, 0.9762288806481807])
+    ops.mass(1996, *[0.9762288806481807, 0.9762288806481807, 0.9762288806481807])
     ops.mass(1997, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(1998, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(1999, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(2000, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(2001, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(1998, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(1999, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(2000, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(2001, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(2002, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(2003, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
-    ops.mass(2004, *[2.6032770150615927,
-             2.6032770150615927, 2.6032770150615927])
-    ops.mass(2005, *[0.32540962688269937,
-                     0.32540962688269937, 0.32540962688269937])
-    ops.mass(2006, *[2.6032770150615914,
-             2.6032770150615914, 2.6032770150615914])
-    ops.mass(2007, *[2.6032770150615927,
-             2.6032770150615927, 2.6032770150615927])
-    ops.mass(2008, *[0.32540962688269937,
-                     0.32540962688269937, 0.32540962688269937])
-    ops.mass(2009, *[0.9762288806480981,
-             0.9762288806480981, 0.9762288806480981])
-    ops.mass(2010, *[0.9762288806480981,
-             0.9762288806480981, 0.9762288806480981])
-    ops.mass(2011, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(2012, *[2.6032770150617077,
-             2.6032770150617077, 2.6032770150617077])
-    ops.mass(2013, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(2014, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(2015, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
+    ops.mass(2004, *[2.6032770150615927, 2.6032770150615927, 2.6032770150615927])
+    ops.mass(2005, *[0.32540962688269937, 0.32540962688269937, 0.32540962688269937])
+    ops.mass(2006, *[2.6032770150615914, 2.6032770150615914, 2.6032770150615914])
+    ops.mass(2007, *[2.6032770150615927, 2.6032770150615927, 2.6032770150615927])
+    ops.mass(2008, *[0.32540962688269937, 0.32540962688269937, 0.32540962688269937])
+    ops.mass(2009, *[0.9762288806480981, 0.9762288806480981, 0.9762288806480981])
+    ops.mass(2010, *[0.9762288806480981, 0.9762288806480981, 0.9762288806480981])
+    ops.mass(2011, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(2012, *[2.6032770150617077, 2.6032770150617077, 2.6032770150617077])
+    ops.mass(2013, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(2014, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(2015, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
     ops.mass(2016, *[2.603277015061824, 2.603277015061824, 2.603277015061824])
-    ops.mass(2017, *[0.32540962688272845,
-                     0.32540962688272845, 0.32540962688272845])
-    ops.mass(2018, *[2.6032770150618214,
-             2.6032770150618214, 2.6032770150618214])
+    ops.mass(2017, *[0.32540962688272845, 0.32540962688272845, 0.32540962688272845])
+    ops.mass(2018, *[2.6032770150618214, 2.6032770150618214, 2.6032770150618214])
     ops.mass(2019, *[2.603277015061824, 2.603277015061824, 2.603277015061824])
-    ops.mass(2020, *[0.32540962688272845,
-                     0.32540962688272845, 0.32540962688272845])
-    ops.mass(2021, *[0.9762288806481852,
-             0.9762288806481852, 0.9762288806481852])
-    ops.mass(2022, *[0.9762288806481852,
-             0.9762288806481852, 0.9762288806481852])
+    ops.mass(2020, *[0.32540962688272845, 0.32540962688272845, 0.32540962688272845])
+    ops.mass(2021, *[0.9762288806481852, 0.9762288806481852, 0.9762288806481852])
+    ops.mass(2022, *[0.9762288806481852, 0.9762288806481852, 0.9762288806481852])
     ops.mass(2023, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(2024, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(2025, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(2026, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(2027, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(2024, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(2025, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(2026, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(2027, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(2028, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(2029, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(2030, *[2.603277015061457, 2.603277015061457, 2.603277015061457])
-    ops.mass(2031, *[0.3254096268826825,
-             0.3254096268826825, 0.3254096268826825])
-    ops.mass(2032, *[2.6032770150614537,
-             2.6032770150614537, 2.6032770150614537])
+    ops.mass(2031, *[0.3254096268826825, 0.3254096268826825, 0.3254096268826825])
+    ops.mass(2032, *[2.6032770150614537, 2.6032770150614537, 2.6032770150614537])
     ops.mass(2033, *[2.603277015061457, 2.603277015061457, 2.603277015061457])
-    ops.mass(2034, *[0.3254096268826825,
-             0.3254096268826825, 0.3254096268826825])
-    ops.mass(2035, *[0.9762288806480475,
-             0.9762288806480475, 0.9762288806480475])
-    ops.mass(2036, *[0.9762288806480475,
-             0.9762288806480475, 0.9762288806480475])
+    ops.mass(2034, *[0.3254096268826825, 0.3254096268826825, 0.3254096268826825])
+    ops.mass(2035, *[0.9762288806480475, 0.9762288806480475, 0.9762288806480475])
+    ops.mass(2036, *[0.9762288806480475, 0.9762288806480475, 0.9762288806480475])
     ops.mass(2037, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(2038, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(2039, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(2040, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(2041, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(2038, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(2039, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(2040, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(2041, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(2042, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(2043, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(2044, *[2.029024732327504, 2.029024732327504, 2.029024732327504])
-    ops.mass(2045, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(2045, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(2046, *[1.454772449593291, 1.454772449593291, 1.454772449593291])
     ops.mass(2047, *[2.029024732327504, 2.029024732327504, 2.029024732327504])
-    ops.mass(2048, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(2048, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(2049, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(2050, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
-    ops.mass(2051, *[2.5267100440304815,
-             2.5267100440304815, 2.5267100440304815])
-    ops.mass(2052, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(2053, *[2.4501430729992584,
-             2.4501430729992584, 2.4501430729992584])
-    ops.mass(2054, *[2.5267100440304815,
-             2.5267100440304815, 2.5267100440304815])
-    ops.mass(2055, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(2056, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(2057, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(2058, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
+    ops.mass(2051, *[2.5267100440304815, 2.5267100440304815, 2.5267100440304815])
+    ops.mass(2052, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(2053, *[2.4501430729992584, 2.4501430729992584, 2.4501430729992584])
+    ops.mass(2054, *[2.5267100440304815, 2.5267100440304815, 2.5267100440304815])
+    ops.mass(2055, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(2056, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(2057, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(2058, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
     ops.mass(2059, *[2.603277015061708, 2.603277015061708, 2.603277015061708])
-    ops.mass(2060, *[0.32540962688271313,
-                     0.32540962688271313, 0.32540962688271313])
-    ops.mass(2061, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
-    ops.mass(2062, *[0.9762288806481394,
-             0.9762288806481394, 0.9762288806481394])
+    ops.mass(2060, *[0.32540962688271313, 0.32540962688271313, 0.32540962688271313])
+    ops.mass(2061, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
+    ops.mass(2062, *[0.9762288806481394, 0.9762288806481394, 0.9762288806481394])
     ops.mass(2063, *[2.603277015061717, 2.603277015061717, 2.603277015061717])
-    ops.mass(2064, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(2064, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(2065, *[2.603277015061717, 2.603277015061717, 2.603277015061717])
-    ops.mass(2066, *[2.6032770150617166,
-             2.6032770150617166, 2.6032770150617166])
-    ops.mass(2067, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(2066, *[2.6032770150617166, 2.6032770150617166, 2.6032770150617166])
+    ops.mass(2067, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(2068, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(2069, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(2070, *[2.603277015061711, 2.603277015061711, 2.603277015061711])
-    ops.mass(2071, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(2072, *[2.6032770150617046,
-             2.6032770150617046, 2.6032770150617046])
-    ops.mass(2073, *[2.6032770150617104,
-             2.6032770150617104, 2.6032770150617104])
-    ops.mass(2074, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(2071, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(2072, *[2.6032770150617046, 2.6032770150617046, 2.6032770150617046])
+    ops.mass(2073, *[2.6032770150617104, 2.6032770150617104, 2.6032770150617104])
+    ops.mass(2074, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(2075, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(2076, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(2077, *[2.603277015061677, 2.603277015061677, 2.603277015061677])
@@ -9337,516 +16971,304 @@ def CableStayedBridge():
     ops.mass(2079, *[2.603277015061674, 2.603277015061674, 2.603277015061674])
     ops.mass(2080, *[2.603277015061677, 2.603277015061677, 2.603277015061677])
     ops.mass(2081, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(2082, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(2083, *[0.9762288806481301,
-             0.9762288806481301, 0.9762288806481301])
-    ops.mass(2084, *[0.3254096268827131,
-             0.3254096268827131, 0.3254096268827131])
-    ops.mass(2085, *[2.6032770150617077,
-             2.6032770150617077, 2.6032770150617077])
-    ops.mass(2086, *[0.3254096268827131,
-             0.3254096268827131, 0.3254096268827131])
-    ops.mass(2087, *[0.9762288806481392,
-             0.9762288806481392, 0.9762288806481392])
-    ops.mass(2088, *[0.9762288806481392,
-             0.9762288806481392, 0.9762288806481392])
-    ops.mass(2089, *[2.6032770150617397,
-             2.6032770150617397, 2.6032770150617397])
-    ops.mass(2090, *[0.3254096268827177,
-             0.3254096268827177, 0.3254096268827177])
-    ops.mass(2091, *[2.6032770150617384,
-             2.6032770150617384, 2.6032770150617384])
-    ops.mass(2092, *[2.6032770150617397,
-             2.6032770150617397, 2.6032770150617397])
-    ops.mass(2093, *[0.3254096268827177,
-             0.3254096268827177, 0.3254096268827177])
+    ops.mass(2082, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(2083, *[0.9762288806481301, 0.9762288806481301, 0.9762288806481301])
+    ops.mass(2084, *[0.3254096268827131, 0.3254096268827131, 0.3254096268827131])
+    ops.mass(2085, *[2.6032770150617077, 2.6032770150617077, 2.6032770150617077])
+    ops.mass(2086, *[0.3254096268827131, 0.3254096268827131, 0.3254096268827131])
+    ops.mass(2087, *[0.9762288806481392, 0.9762288806481392, 0.9762288806481392])
+    ops.mass(2088, *[0.9762288806481392, 0.9762288806481392, 0.9762288806481392])
+    ops.mass(2089, *[2.6032770150617397, 2.6032770150617397, 2.6032770150617397])
+    ops.mass(2090, *[0.3254096268827177, 0.3254096268827177, 0.3254096268827177])
+    ops.mass(2091, *[2.6032770150617384, 2.6032770150617384, 2.6032770150617384])
+    ops.mass(2092, *[2.6032770150617397, 2.6032770150617397, 2.6032770150617397])
+    ops.mass(2093, *[0.3254096268827177, 0.3254096268827177, 0.3254096268827177])
     ops.mass(2094, *[0.976228880648153, 0.976228880648153, 0.976228880648153])
     ops.mass(2095, *[0.976228880648153, 0.976228880648153, 0.976228880648153])
     ops.mass(2096, *[2.335292616452381, 2.335292616452381, 2.335292616452381])
-    ops.mass(2097, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
-    ops.mass(2098, *[2.0673082178430446,
-             2.0673082178430446, 2.0673082178430446])
+    ops.mass(2097, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
+    ops.mass(2098, *[2.0673082178430446, 2.0673082178430446, 2.0673082178430446])
     ops.mass(2099, *[2.335292616452381, 2.335292616452381, 2.335292616452381])
-    ops.mass(2100, *[0.32540962688271463,
-                     0.32540962688271463, 0.32540962688271463])
+    ops.mass(2100, *[0.32540962688271463, 0.32540962688271463, 0.32540962688271463])
     ops.mass(2101, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
     ops.mass(2102, *[0.976228880648144, 0.976228880648144, 0.976228880648144])
-    ops.mass(2103, *[2.2204421599055673,
-             2.2204421599055673, 2.2204421599055673])
+    ops.mass(2103, *[2.2204421599055673, 2.2204421599055673, 2.2204421599055673])
     ops.mass(2104, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
-    ops.mass(2105, *[1.8376073047494728,
-             1.8376073047494728, 1.8376073047494728])
-    ops.mass(2106, *[2.2204421599055673,
-             2.2204421599055673, 2.2204421599055673])
+    ops.mass(2105, *[1.8376073047494728, 1.8376073047494728, 1.8376073047494728])
+    ops.mass(2106, *[2.2204421599055673, 2.2204421599055673, 2.2204421599055673])
     ops.mass(2107, *[0.32540962688271, 0.32540962688271, 0.32540962688271])
     ops.mass(2108, *[0.976228880648121, 0.976228880648121, 0.976228880648121])
     ops.mass(2109, *[0.976228880648121, 0.976228880648121, 0.976228880648121])
-    ops.mass(2110, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(2111, *[2.6032770150616864,
-             2.6032770150616864, 2.6032770150616864])
-    ops.mass(2112, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(2113, *[0.9762288806481255,
-             0.9762288806481255, 0.9762288806481255])
-    ops.mass(2114, *[0.9762288806481255,
-             0.9762288806481255, 0.9762288806481255])
+    ops.mass(2110, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(2111, *[2.6032770150616864, 2.6032770150616864, 2.6032770150616864])
+    ops.mass(2112, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(2113, *[0.9762288806481255, 0.9762288806481255, 0.9762288806481255])
+    ops.mass(2114, *[0.9762288806481255, 0.9762288806481255, 0.9762288806481255])
     ops.mass(2115, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
-    ops.mass(2116, *[0.3254096268827131,
-             0.3254096268827131, 0.3254096268827131])
+    ops.mass(2116, *[0.3254096268827131, 0.3254096268827131, 0.3254096268827131])
     ops.mass(2117, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
     ops.mass(2118, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
-    ops.mass(2119, *[0.3254096268827131,
-             0.3254096268827131, 0.3254096268827131])
-    ops.mass(2120, *[0.9762288806481392,
-             0.9762288806481392, 0.9762288806481392])
-    ops.mass(2121, *[0.9762288806481392,
-             0.9762288806481392, 0.9762288806481392])
+    ops.mass(2119, *[0.3254096268827131, 0.3254096268827131, 0.3254096268827131])
+    ops.mass(2120, *[0.9762288806481392, 0.9762288806481392, 0.9762288806481392])
+    ops.mass(2121, *[0.9762288806481392, 0.9762288806481392, 0.9762288806481392])
     ops.mass(2122, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2123, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
+    ops.mass(2123, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
     ops.mass(2124, *[2.603277015061662, 2.603277015061662, 2.603277015061662])
     ops.mass(2125, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2126, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
-    ops.mass(2127, *[0.9762288806481254,
-             0.9762288806481254, 0.9762288806481254])
-    ops.mass(2128, *[0.9762288806481254,
-             0.9762288806481254, 0.9762288806481254])
-    ops.mass(2129, *[2.6032770150616433,
-             2.6032770150616433, 2.6032770150616433])
-    ops.mass(2130, *[0.32540962688270547,
-                     0.32540962688270547, 0.32540962688270547])
-    ops.mass(2131, *[2.6032770150616433,
-             2.6032770150616433, 2.6032770150616433])
-    ops.mass(2132, *[2.6032770150616438,
-             2.6032770150616438, 2.6032770150616438])
-    ops.mass(2133, *[0.32540962688270547,
-                     0.32540962688270547, 0.32540962688270547])
-    ops.mass(2134, *[0.9762288806481163,
-             0.9762288806481163, 0.9762288806481163])
-    ops.mass(2135, *[0.9762288806481163,
-             0.9762288806481163, 0.9762288806481163])
-    ops.mass(2136, *[0.3254096268827085,
-             0.3254096268827085, 0.3254096268827085])
-    ops.mass(2137, *[2.6032770150616646,
-             2.6032770150616646, 2.6032770150616646])
-    ops.mass(2138, *[0.3254096268827085,
-             0.3254096268827085, 0.3254096268827085])
-    ops.mass(2139, *[0.9762288806481256,
-             0.9762288806481256, 0.9762288806481256])
-    ops.mass(2140, *[0.9762288806481256,
-             0.9762288806481256, 0.9762288806481256])
+    ops.mass(2126, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
+    ops.mass(2127, *[0.9762288806481254, 0.9762288806481254, 0.9762288806481254])
+    ops.mass(2128, *[0.9762288806481254, 0.9762288806481254, 0.9762288806481254])
+    ops.mass(2129, *[2.6032770150616433, 2.6032770150616433, 2.6032770150616433])
+    ops.mass(2130, *[0.32540962688270547, 0.32540962688270547, 0.32540962688270547])
+    ops.mass(2131, *[2.6032770150616433, 2.6032770150616433, 2.6032770150616433])
+    ops.mass(2132, *[2.6032770150616438, 2.6032770150616438, 2.6032770150616438])
+    ops.mass(2133, *[0.32540962688270547, 0.32540962688270547, 0.32540962688270547])
+    ops.mass(2134, *[0.9762288806481163, 0.9762288806481163, 0.9762288806481163])
+    ops.mass(2135, *[0.9762288806481163, 0.9762288806481163, 0.9762288806481163])
+    ops.mass(2136, *[0.3254096268827085, 0.3254096268827085, 0.3254096268827085])
+    ops.mass(2137, *[2.6032770150616646, 2.6032770150616646, 2.6032770150616646])
+    ops.mass(2138, *[0.3254096268827085, 0.3254096268827085, 0.3254096268827085])
+    ops.mass(2139, *[0.9762288806481256, 0.9762288806481256, 0.9762288806481256])
+    ops.mass(2140, *[0.9762288806481256, 0.9762288806481256, 0.9762288806481256])
     ops.mass(2141, *[2.603277015061688, 2.603277015061688, 2.603277015061688])
-    ops.mass(2142, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(2143, *[2.6032770150616833,
-             2.6032770150616833, 2.6032770150616833])
+    ops.mass(2142, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(2143, *[2.6032770150616833, 2.6032770150616833, 2.6032770150616833])
     ops.mass(2144, *[2.603277015061688, 2.603277015061688, 2.603277015061688])
-    ops.mass(2145, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(2146, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(2147, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
+    ops.mass(2145, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(2146, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(2147, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
     ops.mass(2148, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2149, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
+    ops.mass(2149, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
     ops.mass(2150, *[2.603277015061662, 2.603277015061662, 2.603277015061662])
     ops.mass(2151, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2152, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
-    ops.mass(2153, *[0.9762288806481254,
-             0.9762288806481254, 0.9762288806481254])
-    ops.mass(2154, *[0.9762288806481254,
-             0.9762288806481254, 0.9762288806481254])
+    ops.mass(2152, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
+    ops.mass(2153, *[0.9762288806481254, 0.9762288806481254, 0.9762288806481254])
+    ops.mass(2154, *[0.9762288806481254, 0.9762288806481254, 0.9762288806481254])
     ops.mass(2155, *[1.990741246811882, 1.990741246811882, 1.990741246811882])
-    ops.mass(2156, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
+    ops.mass(2156, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
     ops.mass(2157, *[1.378205478562071, 1.378205478562071, 1.378205478562071])
     ops.mass(2158, *[1.990741246811882, 1.990741246811882, 1.990741246811882])
-    ops.mass(2159, *[0.3254096268827116,
-             0.3254096268827116, 0.3254096268827116])
-    ops.mass(2160, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(2161, *[0.9762288806481347,
-             0.9762288806481347, 0.9762288806481347])
-    ops.mass(2162, *[0.3254096268827085,
-             0.3254096268827085, 0.3254096268827085])
+    ops.mass(2159, *[0.3254096268827116, 0.3254096268827116, 0.3254096268827116])
+    ops.mass(2160, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(2161, *[0.9762288806481347, 0.9762288806481347, 0.9762288806481347])
+    ops.mass(2162, *[0.3254096268827085, 0.3254096268827085, 0.3254096268827085])
     ops.mass(2163, *[2.526710044030426, 2.526710044030426, 2.526710044030426])
-    ops.mass(2164, *[0.3254096268827085,
-             0.3254096268827085, 0.3254096268827085])
-    ops.mass(2165, *[0.9762288806481256,
-             0.9762288806481256, 0.9762288806481256])
-    ops.mass(2166, *[0.9762288806481256,
-             0.9762288806481256, 0.9762288806481256])
-    ops.mass(2167, *[2.6032770150616438,
-             2.6032770150616438, 2.6032770150616438])
-    ops.mass(2168, *[0.32540962688270547,
-                     0.32540962688270547, 0.32540962688270547])
-    ops.mass(2169, *[2.6032770150616433,
-             2.6032770150616433, 2.6032770150616433])
-    ops.mass(2170, *[2.6032770150616438,
-             2.6032770150616438, 2.6032770150616438])
-    ops.mass(2171, *[0.32540962688270547,
-                     0.32540962688270547, 0.32540962688270547])
-    ops.mass(2172, *[0.9762288806481163,
-             0.9762288806481163, 0.9762288806481163])
-    ops.mass(2173, *[0.9762288806481163,
-             0.9762288806481163, 0.9762288806481163])
+    ops.mass(2164, *[0.3254096268827085, 0.3254096268827085, 0.3254096268827085])
+    ops.mass(2165, *[0.9762288806481256, 0.9762288806481256, 0.9762288806481256])
+    ops.mass(2166, *[0.9762288806481256, 0.9762288806481256, 0.9762288806481256])
+    ops.mass(2167, *[2.6032770150616438, 2.6032770150616438, 2.6032770150616438])
+    ops.mass(2168, *[0.32540962688270547, 0.32540962688270547, 0.32540962688270547])
+    ops.mass(2169, *[2.6032770150616433, 2.6032770150616433, 2.6032770150616433])
+    ops.mass(2170, *[2.6032770150616438, 2.6032770150616438, 2.6032770150616438])
+    ops.mass(2171, *[0.32540962688270547, 0.32540962688270547, 0.32540962688270547])
+    ops.mass(2172, *[0.9762288806481163, 0.9762288806481163, 0.9762288806481163])
+    ops.mass(2173, *[0.9762288806481163, 0.9762288806481163, 0.9762288806481163])
     ops.mass(2174, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2175, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
+    ops.mass(2175, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
     ops.mass(2176, *[2.603277015061662, 2.603277015061662, 2.603277015061662])
     ops.mass(2177, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2178, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
-    ops.mass(2179, *[0.9762288806481254,
-             0.9762288806481254, 0.9762288806481254])
-    ops.mass(2180, *[0.9762288806481254,
-             0.9762288806481254, 0.9762288806481254])
+    ops.mass(2178, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
+    ops.mass(2179, *[0.9762288806481254, 0.9762288806481254, 0.9762288806481254])
+    ops.mass(2180, *[0.9762288806481254, 0.9762288806481254, 0.9762288806481254])
     ops.mass(2181, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
-    ops.mass(2182, *[0.3254096268827131,
-             0.3254096268827131, 0.3254096268827131])
+    ops.mass(2182, *[0.3254096268827131, 0.3254096268827131, 0.3254096268827131])
     ops.mass(2183, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
     ops.mass(2184, *[2.603277015061705, 2.603277015061705, 2.603277015061705])
-    ops.mass(2185, *[0.3254096268827131,
-             0.3254096268827131, 0.3254096268827131])
-    ops.mass(2186, *[0.9762288806481392,
-             0.9762288806481392, 0.9762288806481392])
-    ops.mass(2187, *[0.9762288806481392,
-             0.9762288806481392, 0.9762288806481392])
-    ops.mass(2188, *[0.32540962688270697,
-                     0.32540962688270697, 0.32540962688270697])
+    ops.mass(2185, *[0.3254096268827131, 0.3254096268827131, 0.3254096268827131])
+    ops.mass(2186, *[0.9762288806481392, 0.9762288806481392, 0.9762288806481392])
+    ops.mass(2187, *[0.9762288806481392, 0.9762288806481392, 0.9762288806481392])
+    ops.mass(2188, *[0.32540962688270697, 0.32540962688270697, 0.32540962688270697])
     ops.mass(2189, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2190, *[0.32540962688270697,
-                     0.32540962688270697, 0.32540962688270697])
+    ops.mass(2190, *[0.32540962688270697, 0.32540962688270697, 0.32540962688270697])
     ops.mass(2191, *[0.976228880648121, 0.976228880648121, 0.976228880648121])
     ops.mass(2192, *[0.976228880648121, 0.976228880648121, 0.976228880648121])
-    ops.mass(2193, *[2.6032770150616207,
-             2.6032770150616207, 2.6032770150616207])
-    ops.mass(2194, *[0.32540962688270236,
-                     0.32540962688270236, 0.32540962688270236])
+    ops.mass(2193, *[2.6032770150616207, 2.6032770150616207, 2.6032770150616207])
+    ops.mass(2194, *[0.32540962688270236, 0.32540962688270236, 0.32540962688270236])
     ops.mass(2195, *[2.603277015061622, 2.603277015061622, 2.603277015061622])
-    ops.mass(2196, *[2.6032770150616207,
-             2.6032770150616207, 2.6032770150616207])
-    ops.mass(2197, *[0.32540962688270236,
-                     0.32540962688270236, 0.32540962688270236])
-    ops.mass(2198, *[0.9762288806481072,
-             0.9762288806481072, 0.9762288806481072])
-    ops.mass(2199, *[0.9762288806481072,
-             0.9762288806481072, 0.9762288806481072])
+    ops.mass(2196, *[2.6032770150616207, 2.6032770150616207, 2.6032770150616207])
+    ops.mass(2197, *[0.32540962688270236, 0.32540962688270236, 0.32540962688270236])
+    ops.mass(2198, *[0.9762288806481072, 0.9762288806481072, 0.9762288806481072])
+    ops.mass(2199, *[0.9762288806481072, 0.9762288806481072, 0.9762288806481072])
     ops.mass(2200, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2201, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
+    ops.mass(2201, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
     ops.mass(2202, *[2.603277015061662, 2.603277015061662, 2.603277015061662])
     ops.mass(2203, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2204, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
-    ops.mass(2205, *[0.9762288806481254,
-             0.9762288806481254, 0.9762288806481254])
-    ops.mass(2206, *[0.9762288806481254,
-             0.9762288806481254, 0.9762288806481254])
-    ops.mass(2207, *[2.2970091309368614,
-             2.2970091309368614, 2.2970091309368614])
-    ops.mass(2208, *[0.32540962688271613,
-                     0.32540962688271613, 0.32540962688271613])
+    ops.mass(2204, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
+    ops.mass(2205, *[0.9762288806481254, 0.9762288806481254, 0.9762288806481254])
+    ops.mass(2206, *[0.9762288806481254, 0.9762288806481254, 0.9762288806481254])
+    ops.mass(2207, *[2.2970091309368614, 2.2970091309368614, 2.2970091309368614])
+    ops.mass(2208, *[0.32540962688271613, 0.32540962688271613, 0.32540962688271613])
     ops.mass(2209, *[1.990741246811993, 1.990741246811993, 1.990741246811993])
-    ops.mass(2210, *[2.2970091309368614,
-             2.2970091309368614, 2.2970091309368614])
-    ops.mass(2211, *[0.32540962688271613,
-                     0.32540962688271613, 0.32540962688271613])
-    ops.mass(2212, *[0.9762288806481485,
-             0.9762288806481485, 0.9762288806481485])
-    ops.mass(2213, *[0.9762288806481485,
-             0.9762288806481485, 0.9762288806481485])
-    ops.mass(2214, *[0.3254096268827085,
-             0.3254096268827085, 0.3254096268827085])
+    ops.mass(2210, *[2.2970091309368614, 2.2970091309368614, 2.2970091309368614])
+    ops.mass(2211, *[0.32540962688271613, 0.32540962688271613, 0.32540962688271613])
+    ops.mass(2212, *[0.9762288806481485, 0.9762288806481485, 0.9762288806481485])
+    ops.mass(2213, *[0.9762288806481485, 0.9762288806481485, 0.9762288806481485])
+    ops.mass(2214, *[0.3254096268827085, 0.3254096268827085, 0.3254096268827085])
     ops.mass(2215, *[1.914174275780503, 1.914174275780503, 1.914174275780503])
-    ops.mass(2216, *[0.3254096268827085,
-             0.3254096268827085, 0.3254096268827085])
-    ops.mass(2217, *[0.9762288806481255,
-             0.9762288806481255, 0.9762288806481255])
-    ops.mass(2218, *[0.9762288806481255,
-             0.9762288806481255, 0.9762288806481255])
+    ops.mass(2216, *[0.3254096268827085, 0.3254096268827085, 0.3254096268827085])
+    ops.mass(2217, *[0.9762288806481255, 0.9762288806481255, 0.9762288806481255])
+    ops.mass(2218, *[0.9762288806481255, 0.9762288806481255, 0.9762288806481255])
     ops.mass(2219, *[2.603277015061604, 2.603277015061604, 2.603277015061604])
-    ops.mass(2220, *[0.3254096268827008,
-             0.3254096268827008, 0.3254096268827008])
-    ops.mass(2221, *[2.6032770150616007,
-             2.6032770150616007, 2.6032770150616007])
+    ops.mass(2220, *[0.3254096268827008, 0.3254096268827008, 0.3254096268827008])
+    ops.mass(2221, *[2.6032770150616007, 2.6032770150616007, 2.6032770150616007])
     ops.mass(2222, *[2.603277015061604, 2.603277015061604, 2.603277015061604])
-    ops.mass(2223, *[0.3254096268827008,
-             0.3254096268827008, 0.3254096268827008])
-    ops.mass(2224, *[0.9762288806481025,
-             0.9762288806481025, 0.9762288806481025])
-    ops.mass(2225, *[0.9762288806481025,
-             0.9762288806481025, 0.9762288806481025])
+    ops.mass(2223, *[0.3254096268827008, 0.3254096268827008, 0.3254096268827008])
+    ops.mass(2224, *[0.9762288806481025, 0.9762288806481025, 0.9762288806481025])
+    ops.mass(2225, *[0.9762288806481025, 0.9762288806481025, 0.9762288806481025])
     ops.mass(2226, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2227, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
+    ops.mass(2227, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
     ops.mass(2228, *[2.603277015061662, 2.603277015061662, 2.603277015061662])
     ops.mass(2229, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2230, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
-    ops.mass(2231, *[0.9762288806481254,
-             0.9762288806481254, 0.9762288806481254])
-    ops.mass(2232, *[0.9762288806481254,
-             0.9762288806481254, 0.9762288806481254])
+    ops.mass(2230, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
+    ops.mass(2231, *[0.9762288806481254, 0.9762288806481254, 0.9762288806481254])
+    ops.mass(2232, *[0.9762288806481254, 0.9762288806481254, 0.9762288806481254])
     ops.mass(2233, *[2.603277015061751, 2.603277015061751, 2.603277015061751])
-    ops.mass(2234, *[0.32540962688271924,
-                     0.32540962688271924, 0.32540962688271924])
-    ops.mass(2235, *[2.6032770150617477,
-             2.6032770150617477, 2.6032770150617477])
+    ops.mass(2234, *[0.32540962688271924, 0.32540962688271924, 0.32540962688271924])
+    ops.mass(2235, *[2.6032770150617477, 2.6032770150617477, 2.6032770150617477])
     ops.mass(2236, *[2.603277015061751, 2.603277015061751, 2.603277015061751])
-    ops.mass(2237, *[0.32540962688271924,
-                     0.32540962688271924, 0.32540962688271924])
-    ops.mass(2238, *[0.9762288806481576,
-             0.9762288806481576, 0.9762288806481576])
-    ops.mass(2239, *[0.9762288806481576,
-             0.9762288806481576, 0.9762288806481576])
-    ops.mass(2240, *[0.3254096268827085,
-             0.3254096268827085, 0.3254096268827085])
+    ops.mass(2237, *[0.32540962688271924, 0.32540962688271924, 0.32540962688271924])
+    ops.mass(2238, *[0.9762288806481576, 0.9762288806481576, 0.9762288806481576])
+    ops.mass(2239, *[0.9762288806481576, 0.9762288806481576, 0.9762288806481576])
+    ops.mass(2240, *[0.3254096268827085, 0.3254096268827085, 0.3254096268827085])
     ops.mass(2241, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2242, *[0.3254096268827085,
-             0.3254096268827085, 0.3254096268827085])
-    ops.mass(2243, *[0.9762288806481256,
-             0.9762288806481256, 0.9762288806481256])
-    ops.mass(2244, *[0.9762288806481256,
-             0.9762288806481256, 0.9762288806481256])
-    ops.mass(2245, *[2.6032770150615807,
-             2.6032770150615807, 2.6032770150615807])
-    ops.mass(2246, *[0.3254096268826978,
-             0.3254096268826978, 0.3254096268826978])
-    ops.mass(2247, *[2.6032770150615794,
-             2.6032770150615794, 2.6032770150615794])
-    ops.mass(2248, *[2.6032770150615807,
-             2.6032770150615807, 2.6032770150615807])
-    ops.mass(2249, *[0.3254096268826978,
-             0.3254096268826978, 0.3254096268826978])
-    ops.mass(2250, *[0.9762288806480934,
-             0.9762288806480934, 0.9762288806480934])
-    ops.mass(2251, *[0.9762288806480934,
-             0.9762288806480934, 0.9762288806480934])
+    ops.mass(2242, *[0.3254096268827085, 0.3254096268827085, 0.3254096268827085])
+    ops.mass(2243, *[0.9762288806481256, 0.9762288806481256, 0.9762288806481256])
+    ops.mass(2244, *[0.9762288806481256, 0.9762288806481256, 0.9762288806481256])
+    ops.mass(2245, *[2.6032770150615807, 2.6032770150615807, 2.6032770150615807])
+    ops.mass(2246, *[0.3254096268826978, 0.3254096268826978, 0.3254096268826978])
+    ops.mass(2247, *[2.6032770150615794, 2.6032770150615794, 2.6032770150615794])
+    ops.mass(2248, *[2.6032770150615807, 2.6032770150615807, 2.6032770150615807])
+    ops.mass(2249, *[0.3254096268826978, 0.3254096268826978, 0.3254096268826978])
+    ops.mass(2250, *[0.9762288806480934, 0.9762288806480934, 0.9762288806480934])
+    ops.mass(2251, *[0.9762288806480934, 0.9762288806480934, 0.9762288806480934])
     ops.mass(2252, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2253, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
+    ops.mass(2253, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
     ops.mass(2254, *[2.603277015061662, 2.603277015061662, 2.603277015061662])
     ops.mass(2255, *[2.603277015061665, 2.603277015061665, 2.603277015061665])
-    ops.mass(2256, *[0.32540962688270847,
-                     0.32540962688270847, 0.32540962688270847])
-    ops.mass(2257, *[0.9762288806481254,
-             0.9762288806481254, 0.9762288806481254])
-    ops.mass(2258, *[0.9762288806481254,
-             0.9762288806481254, 0.9762288806481254])
-    ops.mass(2259, *[2.6032770150618516,
-             2.6032770150618516, 2.6032770150618516])
-    ops.mass(2260, *[0.3254096268827238,
-             0.3254096268827238, 0.3254096268827238])
+    ops.mass(2256, *[0.32540962688270847, 0.32540962688270847, 0.32540962688270847])
+    ops.mass(2257, *[0.9762288806481254, 0.9762288806481254, 0.9762288806481254])
+    ops.mass(2258, *[0.9762288806481254, 0.9762288806481254, 0.9762288806481254])
+    ops.mass(2259, *[2.6032770150618516, 2.6032770150618516, 2.6032770150618516])
+    ops.mass(2260, *[0.3254096268827238, 0.3254096268827238, 0.3254096268827238])
     ops.mass(2261, *[2.603277015061913, 2.603277015061913, 2.603277015061913])
-    ops.mass(2262, *[2.6032770150618516,
-             2.6032770150618516, 2.6032770150618516])
-    ops.mass(2263, *[0.3254096268827238,
-             0.3254096268827238, 0.3254096268827238])
-    ops.mass(2264, *[0.9762288806481714,
-             0.9762288806481714, 0.9762288806481714])
-    ops.mass(2265, *[0.9762288806481714,
-             0.9762288806481714, 0.9762288806481714])
-    ops.mass(2266, *[0.16270481344136956,
-                     0.16270481344136956, 0.16270481344136956])
-    ops.mass(2267, *[0.16270481344136956,
-                     0.16270481344136956, 0.16270481344136956])
-    ops.mass(2268, *[0.48811444032410867,
-                     0.48811444032410867, 0.48811444032410867])
-    ops.mass(2269, *[0.48811444032410867,
-                     0.48811444032410867, 0.48811444032410867])
-    ops.mass(2270, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2271, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2272, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2273, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2274, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2275, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2276, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2277, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2278, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2279, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2280, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2281, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2282, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2283, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2284, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2285, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
+    ops.mass(2262, *[2.6032770150618516, 2.6032770150618516, 2.6032770150618516])
+    ops.mass(2263, *[0.3254096268827238, 0.3254096268827238, 0.3254096268827238])
+    ops.mass(2264, *[0.9762288806481714, 0.9762288806481714, 0.9762288806481714])
+    ops.mass(2265, *[0.9762288806481714, 0.9762288806481714, 0.9762288806481714])
+    ops.mass(2266, *[0.16270481344136956, 0.16270481344136956, 0.16270481344136956])
+    ops.mass(2267, *[0.16270481344136956, 0.16270481344136956, 0.16270481344136956])
+    ops.mass(2268, *[0.48811444032410867, 0.48811444032410867, 0.48811444032410867])
+    ops.mass(2269, *[0.48811444032410867, 0.48811444032410867, 0.48811444032410867])
+    ops.mass(2270, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2271, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2272, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2273, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2274, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2275, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2276, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2277, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2278, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2279, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2280, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2281, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2282, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2283, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2284, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2285, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
     ops.mass(2286, *[14.98487354796014, 14.98487354796014, 14.98487354796014])
     ops.mass(2287, *[14.98487354796012, 14.98487354796012, 14.98487354796012])
-    ops.mass(2288, *[14.984873547960028,
-             14.984873547960028, 14.984873547960028])
-    ops.mass(2289, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2290, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2291, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2292, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2293, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2294, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2295, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2296, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2297, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2298, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2299, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2300, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2301, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2302, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2303, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2304, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
+    ops.mass(2288, *[14.984873547960028, 14.984873547960028, 14.984873547960028])
+    ops.mass(2289, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2290, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2291, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2292, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2293, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2294, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2295, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2296, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2297, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2298, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2299, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2300, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2301, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2302, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2303, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2304, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
     ops.mass(2305, *[14.98487354796014, 14.98487354796014, 14.98487354796014])
     ops.mass(2306, *[14.98487354796012, 14.98487354796012, 14.98487354796012])
-    ops.mass(2307, *[14.984873547960028,
-             14.984873547960028, 14.984873547960028])
-    ops.mass(2308, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2309, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2310, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2311, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2312, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2313, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2314, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2315, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2316, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2317, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2318, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2319, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2320, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2321, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2322, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2323, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
+    ops.mass(2307, *[14.984873547960028, 14.984873547960028, 14.984873547960028])
+    ops.mass(2308, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2309, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2310, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2311, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2312, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2313, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2314, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2315, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2316, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2317, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2318, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2319, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2320, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2321, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2322, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2323, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
     ops.mass(2324, *[14.98487354796014, 14.98487354796014, 14.98487354796014])
     ops.mass(2325, *[14.98487354796012, 14.98487354796012, 14.98487354796012])
-    ops.mass(2326, *[14.984873547960028,
-             14.984873547960028, 14.984873547960028])
-    ops.mass(2327, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2328, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2329, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2330, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2331, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2332, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2333, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2334, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2335, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2336, *[14.984873547960065,
-             14.984873547960065, 14.984873547960065])
-    ops.mass(2337, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2338, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2339, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2340, *[14.984873547960103,
-             14.984873547960103, 14.984873547960103])
-    ops.mass(2341, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
-    ops.mass(2342, *[14.984873547960085,
-             14.984873547960085, 14.984873547960085])
+    ops.mass(2326, *[14.984873547960028, 14.984873547960028, 14.984873547960028])
+    ops.mass(2327, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2328, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2329, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2330, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2331, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2332, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2333, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2334, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2335, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2336, *[14.984873547960065, 14.984873547960065, 14.984873547960065])
+    ops.mass(2337, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2338, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2339, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2340, *[14.984873547960103, 14.984873547960103, 14.984873547960103])
+    ops.mass(2341, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
+    ops.mass(2342, *[14.984873547960085, 14.984873547960085, 14.984873547960085])
     ops.mass(2343, *[14.98487354796014, 14.98487354796014, 14.98487354796014])
     ops.mass(2344, *[14.98487354796012, 14.98487354796012, 14.98487354796012])
-    ops.mass(2345, *[14.984873547960028,
-             14.984873547960028, 14.984873547960028])
+    ops.mass(2345, *[14.984873547960028, 14.984873547960028, 14.984873547960028])
     ops.mass(2346, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
     ops.mass(2347, *[12.72233059416436, 12.72233059416436, 12.72233059416436])
     ops.mass(2348, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
-    ops.mass(2349, *[12.722330594164323,
-             12.722330594164323, 12.722330594164323])
+    ops.mass(2349, *[12.722330594164323, 12.722330594164323, 12.722330594164323])
     ops.mass(2350, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
     ops.mass(2351, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
-    ops.mass(2352, *[12.722330594164323,
-             12.722330594164323, 12.722330594164323])
+    ops.mass(2352, *[12.722330594164323, 12.722330594164323, 12.722330594164323])
     ops.mass(2353, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
     ops.mass(2354, *[12.72233059416436, 12.72233059416436, 12.72233059416436])
     ops.mass(2355, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
     ops.mass(2356, *[12.72233059416436, 12.72233059416436, 12.72233059416436])
     ops.mass(2357, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
-    ops.mass(2358, *[12.722330594164323,
-             12.722330594164323, 12.722330594164323])
+    ops.mass(2358, *[12.722330594164323, 12.722330594164323, 12.722330594164323])
     ops.mass(2359, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
     ops.mass(2360, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
-    ops.mass(2361, *[12.722330594164323,
-             12.722330594164323, 12.722330594164323])
+    ops.mass(2361, *[12.722330594164323, 12.722330594164323, 12.722330594164323])
     ops.mass(2362, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
     ops.mass(2363, *[12.72233059416436, 12.72233059416436, 12.72233059416436])
     ops.mass(2364, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
     ops.mass(2365, *[12.72233059416436, 12.72233059416436, 12.72233059416436])
     ops.mass(2366, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
-    ops.mass(2367, *[12.722330594164323,
-             12.722330594164323, 12.722330594164323])
+    ops.mass(2367, *[12.722330594164323, 12.722330594164323, 12.722330594164323])
     ops.mass(2368, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
     ops.mass(2369, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
-    ops.mass(2370, *[12.722330594164323,
-             12.722330594164323, 12.722330594164323])
+    ops.mass(2370, *[12.722330594164323, 12.722330594164323, 12.722330594164323])
     ops.mass(2371, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
     ops.mass(2372, *[12.72233059416436, 12.72233059416436, 12.72233059416436])
     ops.mass(2373, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
     ops.mass(2374, *[12.72233059416436, 12.72233059416436, 12.72233059416436])
     ops.mass(2375, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
-    ops.mass(2376, *[12.722330594164323,
-             12.722330594164323, 12.722330594164323])
+    ops.mass(2376, *[12.722330594164323, 12.722330594164323, 12.722330594164323])
     ops.mass(2377, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
     ops.mass(2378, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
-    ops.mass(2379, *[12.722330594164323,
-             12.722330594164323, 12.722330594164323])
+    ops.mass(2379, *[12.722330594164323, 12.722330594164323, 12.722330594164323])
     ops.mass(2380, *[12.72233059416434, 12.72233059416434, 12.72233059416434])
     ops.mass(2381, *[12.72233059416436, 12.72233059416436, 12.72233059416436])
     ops.mass(2382, *[4.851283284538495, 4.851283284538495, 4.851283284538495])
@@ -9894,96 +17316,51 @@ def CableStayedBridge():
     ops.mass(2424, *[4.851283284538495, 4.851283284538495, 4.851283284538495])
     ops.mass(2425, *[4.851283284538495, 4.851283284538495, 4.851283284538495])
     ops.mass(2426, *[4.851283284538495, 4.851283284538495, 4.851283284538495])
-    ops.mass(2427, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2428, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2429, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2430, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2431, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2432, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2433, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2434, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2435, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2436, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2437, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2438, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2439, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2440, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2441, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2442, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2443, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2444, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2445, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2446, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2447, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2448, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2449, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2450, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2451, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2452, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2453, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2454, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2455, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2456, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2457, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2458, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2459, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2460, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2461, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2462, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2463, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2464, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2465, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2466, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2467, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2468, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2469, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2470, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
-    ops.mass(2471, *[3.8712260553387994,
-             3.8712260553387994, 3.8712260553387994])
+    ops.mass(2427, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2428, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2429, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2430, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2431, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2432, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2433, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2434, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2435, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2436, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2437, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2438, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2439, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2440, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2441, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2442, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2443, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2444, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2445, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2446, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2447, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2448, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2449, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2450, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2451, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2452, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2453, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2454, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2455, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2456, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2457, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2458, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2459, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2460, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2461, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2462, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2463, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2464, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2465, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2466, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2467, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2468, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2469, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2470, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
+    ops.mass(2471, *[3.8712260553387994, 3.8712260553387994, 3.8712260553387994])
     ops.mass(2472, *[6.618142708055072, 6.618142708055072, 6.618142708055072])
     ops.mass(2473, *[6.618142708055072, 6.618142708055072, 6.618142708055072])
     ops.mass(2474, *[6.618142708055072, 6.618142708055072, 6.618142708055072])

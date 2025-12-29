@@ -7,6 +7,7 @@ from ._util_funcs import (
     get_color_rich,
     get_cycle_color,
     get_cycle_color_rich,
+    get_opensees_module,
     get_random_color,
     get_random_color_rich,
     gram_schmidt,
@@ -15,6 +16,7 @@ from ._util_funcs import (
     print_version,
     set_odb_format,
     set_odb_path,
+    set_opensees_module,
     suppress_ops_print,
 )
 from .consts import CONFIGS
@@ -39,6 +41,7 @@ __all__ = [
     "get_color_rich",
     "get_cycle_color",
     "get_cycle_color_rich",
+    "get_opensees_module",
     "get_random_color",
     "get_random_color_rich",
     "gram_schmidt",
@@ -49,6 +52,7 @@ __all__ = [
     "run_model",
     "set_odb_format",
     "set_odb_path",
+    "set_opensees_module",
     "suppress_ops_print",
 ]
 

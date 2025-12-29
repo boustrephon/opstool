@@ -1,14 +1,15 @@
 from typing import Optional, Union
 
 import numpy as np
-import openseespy.opensees as ops
 import scipy.linalg as slin
 import scipy.sparse as sp
 import xarray as xr
 
-from ..utils import CONFIGS, get_random_color
+from ..utils import CONFIGS, get_opensees_module, get_random_color
 from ._post_utils import generate_chunk_encoding_for_datatree
 from .model_data import GetFEMData
+
+ops = get_opensees_module()
 
 
 def _is_symmetric(a, tol=1e-10):
