@@ -149,17 +149,18 @@ class PlotFrameResponse(PlotFrameResponseBase, PlotResponsePyvistaBase):
             "time": time,
         }
         lines = [
-            f"* {info['title']} Responses",
-            f"* {info['resp_type']}",
-            f"* {info['dof']} (DOF)",
-            f"{info['min']:.3E} (min)",
-            f"{info['max']:.3E} (max)",
             f"{info['step']} (step)",
             f"{info['time']:.3f} (time)",
+            f"{info['min']:.3E} (min)",
+            f"{info['max']:.3E} (max)",
+            "",
+            f"{info['title']} Responses",
+            f"{info['resp_type']}",
+            f"{info['dof']} (DOF)",
         ]
         if self.unit_symbol:
             info["unit"] = self.unit_symbol
-            lines.insert(3, f"{info['unit']} (unit)")
+            lines.append(f"{info['unit']} (unit)")
         max_len = max(len(line) for line in lines)
         padded_lines = [line.rjust(max_len) for line in lines]
         text = "\n".join(padded_lines)

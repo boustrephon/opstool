@@ -36,17 +36,17 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
             "time": time,
         }
         lines = [
-            f"* {info['title']}",
-            f"* {info['resp_type']}",
-            f"* {info['dof']} (DOF)",
-            f"{info['min']:.3E} ({size_symbol[0]})",
-            f"{info['max']:.3E} ({size_symbol[1]})",
             f"{info['step']} (step)",
             f"{info['time']:.3f} (time)",
+            f"{info['min']:.3E} ({size_symbol[0]})",
+            f"{info['max']:.3E} ({size_symbol[1]})",
+            "",
+            f"{info['title']}",
+            f"{info['resp_type']}",
+            f"{info['dof']} (DOF)",
         ]
         if self.unit_symbol:
-            info["unit"] = self.unit_symbol
-            lines.insert(3, f"{info['unit']} (unit)")
+            lines.append(f"{self.unit_symbol} (unit)")
 
         max_len = max(len(line) for line in lines)
         padded_lines = [line.rjust(max_len) for line in lines]

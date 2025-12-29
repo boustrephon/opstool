@@ -38,20 +38,21 @@ class PlotUnstruResponse(PlotUnstruResponseBase, PlotResponsePyvistaBase):
             "time": time,
         }
         lines = [
-            f"* {info['title']} Responses",
-            f"* {info['resp_type']}",
-            f"* {info['dof']} (DOF)",
-            f"{info['min']:.3E} (min)",
-            f"{info['max']:.3E} (max)",
             f"{info['step']} (step)",
             f"{info['time']:.3f} (time)",
+            f"{info['min']:.3E} (min)",
+            f"{info['max']:.3E} (max)",
+            "",
+            f"{info['title']} Responses",
+            f"{info['resp_type']}",
+            f"{info['dof']} (DOF)",
         ]
-        if self.unit_symbol:
-            info["unit"] = self.unit_symbol
-            lines.insert(3, f"{info['unit']} (unit)")
         if self.fiber_point and "Sec" not in resp_type and self.ele_type.lower() == "shell":
             info["fiber_point"] = self.fiber_point
-            lines.insert(3, f"* {info['fiber_point']} (Fiber)")
+            lines.append(f"{info['fiber_point']} (Fiber)")
+        if self.unit_symbol:
+            info["unit"] = self.unit_symbol
+            lines.append(f"{info['unit']} (unit)")
 
         max_len = max(len(line) for line in lines)
         padded_lines = [line.rjust(max_len) for line in lines]
