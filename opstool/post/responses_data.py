@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import os
+import shutil
+import time
 import warnings
 from types import SimpleNamespace
 from typing import Literal, TypedDict
@@ -76,6 +79,37 @@ _ELE_RESP_READERS = {
 }
 
 _UNIT_SYSTEM = SimpleNamespace(unit_factors=None, unit_symbols=None)
+
+_POST_ARGS_DEFAULT = {
+    "elastic_frame_sec_points": 7,
+    "interpolate_beam_disp": False,
+    "section_response_dof": None,
+    "compute_mechanical_measures": "All",
+    "project_gauss_to_nodes": "copy",
+    # ------------------------------
+    "save_nodal_resp": True,
+    "save_frame_resp": True,
+    "save_truss_resp": True,
+    "save_link_resp": True,
+    "save_shell_resp": True,
+    "save_fiber_sec_resp": False,
+    "save_plane_resp": True,
+    "save_brick_resp": True,
+    "save_contact_resp": True,
+    "save_sensitivity_resp": False,
+    # ----------------------------------
+    "node_tags": None,
+    "frame_tags": None,
+    "truss_tags": None,
+    "link_tags": None,
+    "shell_tags": None,
+    "fiber_ele_tags": None,
+    "plane_tags": None,
+    "brick_tags": None,
+    "contact_tags": None,
+    "sensitivity_para_tags": None,
+    # -----------------------------------
+}
 
 
 class CreateODB:
@@ -245,37 +279,6 @@ class CreateODB:
                 Otherwise, unexpected behavior may occur.
     """
 
-    _POST_ARGS = SimpleNamespace(
-        elastic_frame_sec_points=7,
-        interpolate_beam_disp=False,
-        section_response_dof=None,
-        compute_mechanical_measures="All",
-        project_gauss_to_nodes="copy",
-        # ------------------------------
-        save_nodal_resp=True,
-        save_frame_resp=True,
-        save_truss_resp=True,
-        save_link_resp=True,
-        save_shell_resp=True,
-        save_fiber_sec_resp=False,
-        save_plane_resp=True,
-        save_brick_resp=True,
-        save_contact_resp=True,
-        save_sensitivity_resp=False,
-        # ----------------------------------
-        node_tags=None,
-        frame_tags=None,
-        truss_tags=None,
-        link_tags=None,
-        shell_tags=None,
-        fiber_ele_tags=None,
-        plane_tags=None,
-        brick_tags=None,
-        contact_tags=None,
-        sensitivity_para_tags=None,
-        # -----------------------------------
-    )
-
     def __init__(
         self,
         odb_tag: int | str = 1,
@@ -299,6 +302,7 @@ class CreateODB:
 
         self.resp_kargs = {"model_update": model_update, "dtype": dtype}
 
+        self._POST_ARGS = SimpleNamespace(**_POST_ARGS_DEFAULT)
         for key, value in kwargs.items():
             if key not in list(vars(self._POST_ARGS).keys()):
                 raise KeyError(f"Incorrect parameter {key}, should be one of {list(vars(self._POST_ARGS).keys())}!")  # noqa: TRY003
@@ -352,7 +356,6 @@ class CreateODB:
         return self._RESPS
 
     def _init_path(self):
-        import shutil
         from pathlib import Path
 
         path = Path(self._store_path)
@@ -646,7 +649,28 @@ class CreateODB:
                     resp.add_resp_data_to_datatree(dt)
             # Generate encoding
             encoding = generate_chunk_encoding_for_datatree(dt, target_chunk_mb=20.0)
-            dt.to_zarr(filename, mode="w", consolidated=True, encoding=encoding, zarr_format=2)
+            max_retries = 5
+            retry_delay = 1
+
+            for attempt in range(max_retries + 1):
+                try:
+                    # try to remove existing directory before writing
+                    if attempt > 0 and os.path.exists(filename):
+                        shutil.rmtree(filename)
+                        # Windows may take some time to release file locks
+                        time.sleep(0.5)
+
+                    dt.to_zarr(filename, mode="w", consolidated=True, encoding=encoding, zarr_format=2)
+                    break
+
+                except PermissionError:
+                    if attempt < max_retries:
+                        # Wait and retry
+                        time.sleep(retry_delay)
+                        retry_delay *= 1.5
+                    else:
+                        raise
+
             dt.close()
             del dt
 
@@ -673,7 +697,28 @@ class CreateODB:
             else:
                 encoding = None
 
-            dt.to_netcdf(filename, mode="w", engine="netcdf4", encoding=encoding)
+            max_retries = 5
+            retry_delay = 1
+
+            for attempt in range(max_retries + 1):
+                try:
+                    # try to remove existing file before writing
+                    if attempt > 0 and os.path.exists(filename):
+                        os.remove(filename)
+                        # Windows may take some time to release file locks
+                        time.sleep(0.5)
+
+                    dt.to_netcdf(filename, mode="w", engine="netcdf4", encoding=encoding)
+                    break
+
+                except PermissionError:
+                    if attempt < max_retries:
+                        # Wait and retry
+                        time.sleep(retry_delay)
+                        retry_delay *= 1.5
+                    else:
+                        raise
+
             dt.close()
             del dt
 
