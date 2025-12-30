@@ -27,6 +27,23 @@ def _reset_configs_for_doc(gallery_conf, fname):
 
 
 def set_opensees_module(module: ModuleType | str):
+    """Set the OpenSeesPy module to be used.
+    Added since version 1.0.25.
+
+    Parameters
+    ----------
+    module : ModuleType | str
+        The OpenSeesPy module or the module name as a string.
+        If you have a custom build of OpenSeesPy, you can pass the module directly.
+
+    Example
+    -------
+    >>> # if you have a custom build of OpenSeesPy, called `opensees`
+    >>> import opensees as ops
+    >>> opstool.set_opensees_module(ops)
+    >>> # Or using module name
+    >>> opstool.set_opensees_module("opensees")
+    """
     CONFIGS.set_ops_module(module)
 
 
