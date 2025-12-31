@@ -928,6 +928,9 @@ def get_nodal_responses(
 ) -> xr.Dataset:
     """Read nodal responses data from a file.
 
+    .. important::
+        You can use :func:`opstool.post.get_nodal_responses_info` to get valid response types and DOFs.
+
     Parameters
     ----------
     odb_tag: Union[int, str], default: one
@@ -1009,6 +1012,9 @@ def get_element_responses(
     print_info: bool = True,
 ) -> xr.Dataset:
     """Read nodal responses data from a file.
+
+    .. important::
+        You can use :func:`opstool.post.get_element_responses_info` to get valid response types and DOFs for each element type.
 
     Parameters
     ------------
