@@ -1,0 +1,1649 @@
+{
+ "A": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "E": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "G": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "GMSH_MODEL": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS"
+  }
+ ],
+ "GMSH_MODEL.create_element_cmds": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_element_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_element_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_element_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.create_element_cmds"
+  }
+ ],
+ "GMSH_MODEL.create_node_cmds": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_node_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_node_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_node_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.create_node_cmds"
+  }
+ ],
+ "GMSH_MODEL.get_boundary_dim_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_boundary_dim_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_boundary_dim_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_boundary_dim_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.get_boundary_dim_tags"
+  }
+ ],
+ "GMSH_MODEL.get_node_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_node_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_node_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_node_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.get_node_tags"
+  }
+ ],
+ "GMSH_MODEL.read_gmsh_file": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.read_gmsh_file"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.read_gmsh_file"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.read_gmsh_file"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.read_gmsh_file"
+  }
+ ],
+ "Iy": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "Iz": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "J": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "M": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "MODEL_MASS": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre._model_mass",
+   "module_short": "opstool.pre",
+   "name": "ModelMass"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "ModelMass"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "ModelMass"
+  }
+ ],
+ "MODEL_MASS.add_mass_from_line": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre._model_mass",
+   "module_short": "opstool.pre",
+   "name": "ModelMass.add_mass_from_line"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "ModelMass.add_mass_from_line"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "ModelMass.add_mass_from_line"
+  }
+ ],
+ "MODEL_MASS.generate_ops_gravity_load": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre._model_mass",
+   "module_short": "opstool.pre",
+   "name": "ModelMass.generate_ops_gravity_load"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "ModelMass.generate_ops_gravity_load"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "ModelMass.generate_ops_gravity_load"
+  }
+ ],
+ "MODEL_MASS.generate_ops_node_mass": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre._model_mass",
+   "module_short": "opstool.pre",
+   "name": "ModelMass.generate_ops_node_mass"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "ModelMass.generate_ops_node_mass"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "ModelMass.generate_ops_node_mass"
+  }
+ ],
+ "N": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "ODB": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post.responses_data",
+   "module_short": "opstool.post",
+   "name": "CreateODB"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "CreateODB"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "CreateODB"
+  }
+ ],
+ "ODB.fetch_response_step": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post.responses_data",
+   "module_short": "opstool.post",
+   "name": "CreateODB.fetch_response_step"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "CreateODB.fetch_response_step"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "CreateODB.fetch_response_step"
+  }
+ ],
+ "ODB.save_response": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post.responses_data",
+   "module_short": "opstool.post",
+   "name": "CreateODB.save_response"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "CreateODB.save_response"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "CreateODB.save_response"
+  }
+ ],
+ "_": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "a": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "all_lines": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "all_lines.append": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  }
+ ],
+ "beam_args": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "beam_resp": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.datatree",
+   "module_short": "xarray.core.datatree",
+   "name": "DatasetView"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DatasetView"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DatasetView"
+  }
+ ],
+ "d": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "ele_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "entity": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "tuple"
+  }
+ ],
+ "fig": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista",
+   "name": "Plotter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista",
+   "name": "Plotter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "Plotter"
+  }
+ ],
+ "fig.show": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista",
+   "name": "Plotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista",
+   "name": "Plotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "Plotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities.misc",
+   "module_short": "pyvista.core.utilities.misc",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities",
+   "module_short": "pyvista.core.utilities",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core",
+   "module_short": "pyvista.core",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista.plotting.plotter",
+   "name": "BasePlotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "BasePlotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "BasePlotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities.misc",
+   "module_short": "pyvista.core.utilities.misc",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities",
+   "module_short": "pyvista.core.utilities",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core",
+   "module_short": "pyvista.core",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.widgets",
+   "module_short": "pyvista.plotting.widgets",
+   "name": "WidgetHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "WidgetHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "WidgetHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingMethods.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingMethods.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingMethods.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingInterface.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingInterface.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingInterface.show"
+  }
+ ],
+ "fix_node_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "fix_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "fixed_lines": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "fixed_lines.append": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  }
+ ],
+ "g": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "gmsh.finalize": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh",
+   "module_short": "gmsh",
+   "name": "finalize"
+  }
+ ],
+ "gmsh.initialize": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh",
+   "module_short": "gmsh",
+   "name": "initialize"
+  }
+ ],
+ "gmsh.model.add": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model",
+   "module_short": "gmsh.model",
+   "name": "add"
+  }
+ ],
+ "gmsh.model.addPhysicalGroup": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model",
+   "module_short": "gmsh.model",
+   "name": "addPhysicalGroup"
+  }
+ ],
+ "gmsh.model.getBoundary": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model",
+   "module_short": "gmsh.model",
+   "name": "getBoundary"
+  }
+ ],
+ "gmsh.model.getValue": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model",
+   "module_short": "gmsh.model",
+   "name": "getValue"
+  }
+ ],
+ "gmsh.model.mesh.generate": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.mesh",
+   "module_short": "gmsh.model.mesh",
+   "name": "generate"
+  }
+ ],
+ "gmsh.model.occ.addLine": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.occ",
+   "module_short": "gmsh.model.occ",
+   "name": "addLine"
+  }
+ ],
+ "gmsh.model.occ.addPoint": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.occ",
+   "module_short": "gmsh.model.occ",
+   "name": "addPoint"
+  }
+ ],
+ "gmsh.model.occ.getEntities": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.occ",
+   "module_short": "gmsh.model.occ",
+   "name": "getEntities"
+  }
+ ],
+ "gmsh.model.occ.remove_all_duplicates": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.occ",
+   "module_short": "gmsh.model.occ",
+   "name": "remove_all_duplicates"
+  }
+ ],
+ "gmsh.model.occ.revolve": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.occ",
+   "module_short": "gmsh.model.occ",
+   "name": "revolve"
+  }
+ ],
+ "gmsh.model.occ.synchronize": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.occ",
+   "module_short": "gmsh.model.occ",
+   "name": "synchronize"
+  }
+ ],
+ "gmsh.option.setNumber": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.option",
+   "module_short": "gmsh.option",
+   "name": "setNumber"
+  }
+ ],
+ "h": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "i": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "in_lines": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "j": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "kappa": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "line_entities": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "line_tag": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "lines": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "lines.append": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  }
+ ],
+ "ll": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "node_coords": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "node_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "np.cos": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ufunc"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "cos"
+  }
+ ],
+ "np.pi": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "pi"
+  }
+ ],
+ "np.sin": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ufunc"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "sin"
+  }
+ ],
+ "ntag": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "nu": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "ops.algorithm": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "algorithm"
+  }
+ ],
+ "ops.analysis": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "analysis"
+  }
+ ],
+ "ops.analyze": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "analyze"
+  }
+ ],
+ "ops.constraints": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "constraints"
+  }
+ ],
+ "ops.fix": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "fix"
+  }
+ ],
+ "ops.geomTransf": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "geomTransf"
+  }
+ ],
+ "ops.integrator": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "integrator"
+  }
+ ],
+ "ops.model": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "model"
+  }
+ ],
+ "ops.numberer": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "numberer"
+  }
+ ],
+ "ops.pattern": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "pattern"
+  }
+ ],
+ "ops.system": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "system"
+  }
+ ],
+ "ops.test": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "test"
+  }
+ ],
+ "ops.timeSeries": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "timeSeries"
+  }
+ ],
+ "ops.wipe": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "wipe"
+  }
+ ],
+ "ops.wipeAnalysis": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "wipeAnalysis"
+  }
+ ],
+ "opst.post.CreateODB": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.post.responses_data",
+   "module_short": "opstool.post",
+   "name": "CreateODB"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "CreateODB"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "CreateODB"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "CreateODB"
+  }
+ ],
+ "opst.post.get_element_responses": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "get_element_responses"
+  }
+ ],
+ "opst.pre.Gmsh2OPS": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  }
+ ],
+ "opst.pre.ModelMass": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre._model_mass",
+   "module_short": "opstool.pre",
+   "name": "ModelMass"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "ModelMass"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "ModelMass"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "ModelMass"
+  }
+ ],
+ "opst.vis.pyvista.plot_eigen": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "plot_eigen"
+  }
+ ],
+ "opst.vis.pyvista.plot_model": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "plot_model"
+  }
+ ],
+ "opst.vis.pyvista.plot_nodal_responses": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "plot_nodal_responses"
+  }
+ ],
+ "opst.vis.pyvista.set_plot_props": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "set_plot_props"
+  }
+ ],
+ "out": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "p0": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "p1": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "rho": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "thick": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "transfTag": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "width": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "z_coords": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ]
+}

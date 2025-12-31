@@ -58,6 +58,12 @@ If you use `opstool` in your work, please cite the following publication:
 Yexiang Yan and Yazhou Xie. *"opstool: A Python library for OpenSeesPy analysis automation, streamlined pre-and post-processing, and enhanced data visualization."* SoftwareX 30 (2025): 102126.
 DOI: [https://doi.org/10.1016/j.softx.2025.102126](https://www.sciencedirect.com/science/article/pii/S2352711025000937)
 
+## Acknowledgements
+
+I sincerely thank [EOS](https://www.eurasianopensees.com/) for the *Honorable Mention* in *Pre/Post-processing & Implementations* at the 1st EOS OpenSees Research and Innovation Awards.
+
+[🎉 Announcing the Winners of the 1st EOS OpenSees Research and Innovation Awards! 🎉](https://www.linkedin.com/feed/update/urn:li:activity:7398770387381219328/)
+
 ## Key Features
 
 1. **Preprocessing Tools**:

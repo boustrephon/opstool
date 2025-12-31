@@ -239,6 +239,12 @@ Contents
    :maxdepth: 1
    :caption: Theory Reference
 
-   src/theory/index.rst                                                                                                                 
+   src/theory/index.rst        
 
-:octicon:`copilot;1.25em;sd-mr-1 fill-primary` This document theme is adapted from `sphinx-needs <https://github.com/useblocks/sphinx-needs/>`__ with modifications. We sincerely thank the original author(s) for their contribution.`
+Acknowledgements
+-----------------
+I sincerely thank `EOS <https://www.eurasianopensees.com/>`_ for the *Honorable Mention* in *Pre/Post-processing & Implementations* at the *1st EOS OpenSees Research and Innovation Awards*.
+
+`🎉 Announcing the Winners of the 1st EOS OpenSees Research and Innovation Awards! 🎉 <https://www.linkedin.com/feed/update/urn:li:activity:7398770387381219328/>`_
+
+.. :octicon:`copilot;1.25em;sd-mr-1 fill-primary` This document theme is adapted from `sphinx-needs <https://github.com/useblocks/sphinx-needs/>`__ with modifications. We sincerely thank the original author(s) for their contribution.`
