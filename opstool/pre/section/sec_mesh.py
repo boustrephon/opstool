@@ -8,7 +8,6 @@ from typing import Optional, Union
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 import numpy as np
-import openseespy.opensees as ops
 from matplotlib.cm import ScalarMappable
 from matplotlib.collections import PatchCollection
 from rich.table import Table
@@ -17,7 +16,9 @@ from sectionproperties.pre.geometry import CompoundGeometry, Geometry
 from sectionproperties.pre.pre import DEFAULT_MATERIAL, Material
 from shapely.geometry import LineString, Polygon
 
-from ...utils import CONFIGS, get_random_color, get_random_color_rich
+from ...utils import CONFIGS, get_opensees_module, get_random_color, get_random_color_rich
+
+ops = get_opensees_module()
 
 CONSOLE = CONFIGS.CONSOLE
 PKG_PREFIX = CONFIGS.PKG_PREFIX

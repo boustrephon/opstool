@@ -3,7 +3,13 @@
 .. role:: blue
 .. role:: blue-bold
 
-.. include:: auto_examples/quick-start/index.rst
+.. include:: _sphinx_gallery_examples/quick-start/index.rst
+
+.. nbgallery::
+    :caption: Performance testing of megatall building model
+    :name: vis-megatall
+
+    quick-start/vis-megatall.ipynb
 
 **opstool** is a powerful and user-friendly library designed to simplify and enhance structural analysis workflows 
 with **OpenSees** and **OpenSeesPy**. 

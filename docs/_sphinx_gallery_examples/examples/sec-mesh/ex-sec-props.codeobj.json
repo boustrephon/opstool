@@ -1,0 +1,987 @@
+{
+ "Material": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Material"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Material"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Material"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Material"
+  }
+ ],
+ "SEC_MESH": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh"
+  }
+ ],
+ "SEC_MESH.add_patch_group": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.add_patch_group"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.add_patch_group"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.add_patch_group"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.add_patch_group"
+  }
+ ],
+ "SEC_MESH.get_frame_props": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.get_frame_props"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.get_frame_props"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.get_frame_props"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.get_frame_props"
+  }
+ ],
+ "SEC_MESH.mesh": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.mesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.mesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.mesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.mesh"
+  }
+ ],
+ "SEC_MESH.rotate": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.rotate"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.rotate"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.rotate"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.rotate"
+  }
+ ],
+ "SEC_MESH.set_mesh_color": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.set_mesh_color"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.set_mesh_color"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.set_mesh_color"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.set_mesh_color"
+  }
+ ],
+ "SEC_MESH.set_mesh_size": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.set_mesh_size"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.set_mesh_size"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.set_mesh_size"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.set_mesh_size"
+  }
+ ],
+ "SEC_MESH.set_ops_mat_tag": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.set_ops_mat_tag"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.set_ops_mat_tag"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.set_ops_mat_tag"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.set_ops_mat_tag"
+  }
+ ],
+ "SEC_MESH.view": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.view"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.view"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.view"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.view"
+  }
+ ],
+ "ax": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes"
+  }
+ ],
+ "ax.set_aspect": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.set_aspect"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.set_aspect"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes.set_aspect"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._base",
+   "module_short": "matplotlib.axes._base",
+   "name": "_AxesBase.set_aspect"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "_AxesBase.set_aspect"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "_AxesBase.set_aspect"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.set_aspect"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.set_aspect"
+  }
+ ],
+ "beam": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry"
+  }
+ ],
+ "circular_section": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.library",
+   "module_short": "sectionproperties.pre.library",
+   "name": "circular_section"
+  }
+ ],
+ "concrete": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry"
+  }
+ ],
+ "concrete.plot_geometry": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry.plot_geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry.plot_geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry.plot_geometry"
+  }
+ ],
+ "concrete_rectangular_section": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.library",
+   "module_short": "sectionproperties.pre.library",
+   "name": "concrete_rectangular_section"
+  }
+ ],
+ "fig": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "Figure"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Figure"
+  }
+ ],
+ "frame_props": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "frame_props90": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "geom": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "CompoundGeometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "CompoundGeometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "CompoundGeometry"
+  }
+ ],
+ "geom.geoms": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "geom.plot_geometry": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "CompoundGeometry.plot_geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "CompoundGeometry.plot_geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "CompoundGeometry.plot_geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry.plot_geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry.plot_geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry.plot_geometry"
+  }
+ ],
+ "opst.pre.section.FiberSecMesh": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh"
+  }
+ ],
+ "plate": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "CompoundGeometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "CompoundGeometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "CompoundGeometry"
+  }
+ ],
+ "plate1": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry"
+  }
+ ],
+ "plate1.align_to": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry.align_to"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry.align_to"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry.align_to"
+  }
+ ],
+ "plate2": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry"
+  }
+ ],
+ "plate2.align_to": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry.align_to"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry.align_to"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry.align_to"
+  }
+ ],
+ "plate_left": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry"
+  }
+ ],
+ "plate_right": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry"
+  }
+ ],
+ "plt.show": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "show"
+  }
+ ],
+ "plt.subplots": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "subplots"
+  }
+ ],
+ "rectangular_section": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.library",
+   "module_short": "sectionproperties.pre.library",
+   "name": "rectangular_section"
+  }
+ ],
+ "slab": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry"
+  }
+ ],
+ "steel": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Material"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Material"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Material"
+  }
+ ],
+ "steel.plot_geometry": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Material"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Material"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Material"
+  }
+ ],
+ "super_t": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry"
+  }
+ ],
+ "super_t_girder_section": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.library",
+   "module_short": "sectionproperties.pre.library",
+   "name": "super_t_girder_section"
+  }
+ ],
+ "tapered_flange_channel": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.library",
+   "module_short": "sectionproperties.pre.library",
+   "name": "tapered_flange_channel"
+  }
+ ],
+ "timber": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Material"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Material"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Material"
+  }
+ ]
+}

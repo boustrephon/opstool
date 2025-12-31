@@ -1,14 +1,16 @@
 import numpy as np
 
+from ..post import get_element_responses
 from ._plot_resp_base import PlotResponseBase
 
 
 class PlotFrameResponseBase(PlotResponseBase):
-    def __init__(self, model_info_steps, beam_resp_step, model_update, nodal_resp_steps=None):
-        super().__init__(model_info_steps, beam_resp_step, model_update, nodal_resp_steps=nodal_resp_steps)
+    def __init__(self, odb_tag, lazy_load=True):
+        super().__init__(odb_tag, lazy_load=lazy_load)
         self.plot_axis = None
         self.plot_axis_sign = 1.0
         self.sec_locs = None  # section locations
+        self.secLocsData = None  # section locations data, dataset
 
         self.component_type = None  # component type to display text
 
@@ -39,6 +41,17 @@ class PlotFrameResponseBase(PlotResponseBase):
             self._set_comp_type_basic(component)
         else:
             self._set_comp_type_section(component)
+
+        # set response data
+        resp_data = get_element_responses(
+            self.odb_tag, ele_type="Frame", resp_type=self.resp_type, lazy_load=self.lazy_load, print_info=False
+        )
+        self.set_resp_step_data(resp_data)
+        # section locations
+        resp_data = get_element_responses(
+            self.odb_tag, ele_type="Frame", resp_type="sectionLocs", lazy_load=self.lazy_load, print_info=False
+        )
+        self.secLocsData = resp_data.sel({resp_data.dims[-1]: "alpha"})
 
     def _set_comp_type_local(self, comp_type):
         if comp_type.upper() == "FX":
@@ -140,7 +153,7 @@ class PlotFrameResponseBase(PlotResponseBase):
         return beam_tags, beam_node_coords, beam_cells, yaxis, zaxis
 
     def _get_sec_loc(self, step):
-        sec_loc = self._get_resp_da(step, "sectionLocs", "alpha")
+        sec_loc = self.secLocsData.isel(time=step)
         return sec_loc
 
     def refactor_resp_data(self, ele_tags, resp_type, component):
@@ -149,20 +162,20 @@ class PlotFrameResponseBase(PlotResponseBase):
         if self.ModelUpdate or ele_tags is not None:
             for i in range(self.num_steps):
                 beam_tags, _, _, _, _ = self._make_frame_info(ele_tags, i)
-                da = self._get_resp_da(i, self.resp_type, self.component)
+                da = self._get_resp_da(i, self.component)
                 da = da.sel(eleTags=beam_tags)
                 resps.append(da)
                 sec_da = self._get_sec_loc(i)
                 sec_locs.append(sec_da.sel(eleTags=beam_tags))
         else:
             for i in range(self.num_steps):
-                da = self._get_resp_da(i, self.resp_type, self.component)
+                da = self._get_resp_da(i, self.component)
                 resps.append(da)
                 sec_da = self._get_sec_loc(i)
                 sec_locs.append(sec_da)
 
         self.resp_step = resps
-        self.sec_locs = [loc / self.unit_factor for loc in sec_locs] if self.unit_factor else sec_locs
+        self.sec_locs = sec_locs
 
     def _get_resp_scale_factor(self, idx=None):
         if isinstance(idx, str):

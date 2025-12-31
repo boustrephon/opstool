@@ -1,4 +1,6 @@
-import openseespy.opensees as ops
+from ..utils import get_opensees_module
+
+ops = get_opensees_module()
 
 
 def find_void_nodes(remove: bool = False):

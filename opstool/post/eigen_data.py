@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 import os
+import shutil
+import time
 from typing import Literal
 
 import numpy as np
-import openseespy.opensees as ops
 import xarray as xr
 
-from ..utils import CONFIGS, get_random_color
+from ..utils import CONFIGS, get_opensees_module, get_random_color
 from ._post_utils import Beam3DDispInterpolator, generate_chunk_encoding_for_datatree
 from .model_data import GetFEMData
+
+ops = get_opensees_module()
 
 
 def _get_modal_properties(mode_tag: int = 1, solver: str = "-genBandArpack"):
@@ -224,11 +227,33 @@ def save_eigen_data(
     else:
         eigen_data["Eigen/InterpolatedEigenVectors"] = xr.Dataset()
     dt = xr.DataTree.from_dict(eigen_data, name=f"{EIGEN_FILE_NAME}")
-    if odb_format.lower() == "zarr":
-        encoding = generate_chunk_encoding_for_datatree(dt, target_chunk_mb=10.0)
-        dt.to_zarr(output_filename, mode="w", consolidated=True, encoding=encoding, zarr_format=2)
-    else:
-        dt.to_netcdf(output_filename, mode="w", engine="netcdf4")
+
+    max_retries = 5
+    retry_delay = 1
+
+    for attempt in range(max_retries + 1):
+        try:
+            # try to remove existing directory before writing
+            if attempt > 0 and os.path.exists(output_filename):
+                shutil.rmtree(output_filename)
+                # Windows may take some time to release file locks
+                time.sleep(0.5)
+            if odb_format.lower() == "zarr":
+                encoding = generate_chunk_encoding_for_datatree(dt, target_chunk_mb=10.0)
+                dt.to_zarr(output_filename, mode="w", consolidated=True, encoding=encoding, zarr_format=2)
+            else:
+                dt.to_netcdf(output_filename, mode="w", engine="netcdf4")
+            break
+
+        except PermissionError:
+            if attempt < max_retries:
+                # Wait and retry
+                time.sleep(retry_delay)
+                retry_delay *= 1.5
+            else:
+                raise
+    dt.close()
+    del dt
     # -----------------------------------------------------------------
     color = get_random_color()
     CONSOLE.print(f"{PKG_PREFIX} Eigen data has been saved to [bold {color}]{output_filename}[/]!")

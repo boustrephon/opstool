@@ -1,0 +1,1254 @@
+{
+ "E": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "GmshModel": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS"
+  }
+ ],
+ "GmshModel.create_element_cmds": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_element_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_element_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_element_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.create_element_cmds"
+  }
+ ],
+ "GmshModel.create_node_cmds": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_node_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_node_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_node_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.create_node_cmds"
+  }
+ ],
+ "GmshModel.get_boundary_dim_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_boundary_dim_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_boundary_dim_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_boundary_dim_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.get_boundary_dim_tags"
+  }
+ ],
+ "GmshModel.get_node_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_node_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_node_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_node_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.get_node_tags"
+  }
+ ],
+ "GmshModel.get_physical_groups": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_physical_groups"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_physical_groups"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_physical_groups"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.get_physical_groups"
+  }
+ ],
+ "GmshModel.read_gmsh_file": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.read_gmsh_file"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.read_gmsh_file"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.read_gmsh_file"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.read_gmsh_file"
+  }
+ ],
+ "L": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "R": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "float64"
+  }
+ ],
+ "args": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "bottom_flange": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "bottom_points": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "end": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "end.append": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  }
+ ],
+ "end_bottom_flange": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "end_section": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "end_top_flange": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "end_web": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "f": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "float64"
+  }
+ ],
+ "fig": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista",
+   "name": "Plotter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista",
+   "name": "Plotter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "Plotter"
+  }
+ ],
+ "fig.show": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista",
+   "name": "Plotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista",
+   "name": "Plotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "Plotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities.misc",
+   "module_short": "pyvista.core.utilities.misc",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities",
+   "module_short": "pyvista.core.utilities",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core",
+   "module_short": "pyvista.core",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista.plotting.plotter",
+   "name": "BasePlotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "BasePlotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "BasePlotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities.misc",
+   "module_short": "pyvista.core.utilities.misc",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities",
+   "module_short": "pyvista.core.utilities",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core",
+   "module_short": "pyvista.core",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.widgets",
+   "module_short": "pyvista.plotting.widgets",
+   "name": "WidgetHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "WidgetHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "WidgetHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingMethods.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingMethods.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingMethods.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingInterface.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingInterface.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingInterface.show"
+  }
+ ],
+ "filename": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "str"
+  }
+ ],
+ "fixed_node_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "fixed_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "geom": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "gmsh.model",
+   "module_short": "gmsh.model",
+   "name": "geo"
+  }
+ ],
+ "geom.addLine": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  }
+ ],
+ "geom.addPoint": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  }
+ ],
+ "geom.revolve": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  }
+ ],
+ "geom.synchronize": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  }
+ ],
+ "gmsh.finalize": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh",
+   "module_short": "gmsh",
+   "name": "finalize"
+  }
+ ],
+ "gmsh.initialize": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh",
+   "module_short": "gmsh",
+   "name": "initialize"
+  }
+ ],
+ "gmsh.model.add": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model",
+   "module_short": "gmsh.model",
+   "name": "add"
+  }
+ ],
+ "gmsh.model.add_physical_group": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model",
+   "module_short": "gmsh.model",
+   "name": "add_physical_group"
+  }
+ ],
+ "gmsh.model.geo": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "gmsh.model",
+   "module_short": "gmsh.model",
+   "name": "geo"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model",
+   "module_short": "gmsh.model",
+   "name": "geo"
+  }
+ ],
+ "gmsh.model.get_entities": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model",
+   "module_short": "gmsh.model",
+   "name": "get_entities"
+  }
+ ],
+ "gmsh.model.mesh.generate": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.mesh",
+   "module_short": "gmsh.model.mesh",
+   "name": "generate"
+  }
+ ],
+ "gmsh.option.setNumber": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.option",
+   "module_short": "gmsh.option",
+   "name": "setNumber"
+  }
+ ],
+ "h": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "ini": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "l": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "lcar": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "matTag": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "n_layers": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "node_masses": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "node_tag": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "node_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "np.pi": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "pi"
+  }
+ ],
+ "np.sin": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ufunc"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "sin"
+  }
+ ],
+ "np.tan": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ufunc"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "tan"
+  }
+ ],
+ "nu": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "ops.fix": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "fix"
+  }
+ ],
+ "ops.model": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "model"
+  }
+ ],
+ "ops.nDMaterial": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "nDMaterial"
+  }
+ ],
+ "ops.pattern": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "pattern"
+  }
+ ],
+ "ops.section": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "section"
+  }
+ ],
+ "ops.timeSeries": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "timeSeries"
+  }
+ ],
+ "ops.wipe": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "wipe"
+  }
+ ],
+ "opst.pre.Gmsh2OPS": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  }
+ ],
+ "opst.pre.create_gravity_load": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "create_gravity_load"
+  }
+ ],
+ "opst.pre.get_node_mass": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "get_node_mass"
+  }
+ ],
+ "opst.pre.remove_void_nodes": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "remove_void_nodes"
+  }
+ ],
+ "opst.vis.pyvista.plot_eigen": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "plot_eigen"
+  }
+ ],
+ "opst.vis.pyvista.plot_model": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "plot_model"
+  }
+ ],
+ "opst.vis.pyvista.set_plot_props": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "set_plot_props"
+  }
+ ],
+ "outDimTags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "plane_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "rho": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "secTag": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "shell_ele_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "start_section": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "surfaces": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "surfaces.append": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  }
+ ],
+ "theta": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "thick": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "top_flange": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "top_points": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "wb": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "web": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "wt": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ]
+}

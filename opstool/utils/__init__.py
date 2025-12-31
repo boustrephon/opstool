@@ -1,12 +1,14 @@
 from ._load_ops_examples import load_ops_examples, run_model
 from ._util_funcs import (
     _check_odb_path,
+    _reset_configs_for_doc,
     add_ops_hints_file,
     check_file_type,
     get_bounds,
     get_color_rich,
     get_cycle_color,
     get_cycle_color_rich,
+    get_opensees_module,
     get_random_color,
     get_random_color_rich,
     gram_schmidt,
@@ -15,6 +17,7 @@ from ._util_funcs import (
     print_version,
     set_odb_format,
     set_odb_path,
+    set_opensees_module,
     suppress_ops_print,
 )
 from .consts import CONFIGS
@@ -32,6 +35,7 @@ __all__ = [
     "OPS_ELE_TAGS",
     "OPS_ELE_TYPES",
     "_check_odb_path",
+    "_reset_configs_for_doc",
     "add_ops_hints_file",
     # -----------------------
     "check_file_type",
@@ -39,6 +43,7 @@ __all__ = [
     "get_color_rich",
     "get_cycle_color",
     "get_cycle_color_rich",
+    "get_opensees_module",
     "get_random_color",
     "get_random_color_rich",
     "gram_schmidt",
@@ -49,6 +54,7 @@ __all__ = [
     "run_model",
     "set_odb_format",
     "set_odb_path",
+    "set_opensees_module",
     "suppress_ops_print",
 ]
 

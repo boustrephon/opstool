@@ -3,15 +3,14 @@ from typing import Optional, Union
 import numpy as np
 import plotly.graph_objs as go
 
-from ...post import loadODB
 from .._plot_unstru_resp_base import PlotUnstruResponseBase
 from .plot_resp_base import PlotResponsePlotlyBase
 from .plot_utils import _plot_points_cmap, _plot_unstru_cmap
 
 
 class PlotUnstruResponse(PlotUnstruResponseBase, PlotResponsePlotlyBase):
-    def __init__(self, model_info_steps, resp_step, model_update, nodal_resp_steps=None):
-        super().__init__(model_info_steps, resp_step, model_update, nodal_resp_steps=nodal_resp_steps)
+    def __init__(self, odb_tag, lazy_load=True):
+        super().__init__(odb_tag, lazy_load=lazy_load)
         self.ele_type = "Shell"
         self.fiber_point = None  # fiber point for shell fiber response
         self.title = None
@@ -320,6 +319,7 @@ def plot_unstruct_responses(
     show_mp_constraint: bool = False,
     show_model: bool = False,
     show_max_min: bool = False,
+    lazy_load: bool = False,
 ) -> go.Figure:
     """Visualizing unstructured element (Shell, Plane, Brick) Response.
 
@@ -445,6 +445,12 @@ def plot_unstruct_responses(
         Set to False can improve the performance of the visualization.
     show_max_min: bool, default: False
         Whether to show the maximum and minimum response values in the plot.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -453,9 +459,7 @@ def plot_unstruct_responses(
         You can also use `fig.write_html("path/to/file.html")` to save as an HTML file, see
         `Interactive HTML Export in Python <https://plotly.com/python/interactive-html-export/>`_
     """
-    model_info_steps, model_update, resp_step = loadODB(odb_tag, resp_type=ele_type)
-    _, _, node_resp_steps = loadODB(odb_tag, resp_type="Nodal", verbose=False)
-    plotbase = PlotUnstruResponse(model_info_steps, resp_step, model_update, nodal_resp_steps=node_resp_steps)
+    plotbase = PlotUnstruResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.refactor_resp_step(
         ele_tags=ele_tags, ele_type=ele_type, resp_type=resp_type, component=resp_dof, fiber_point=shell_fiber_loc
@@ -510,6 +514,7 @@ def plot_unstruct_responses_animation(
     show_mp_constraint: bool = False,
     show_model: bool = True,
     show_max_min: bool = False,
+    lazy_load: bool = False,
 ) -> go.Figure:
     """Unstructured element (Shell, Plane, Brick) response animation.
 
@@ -629,6 +634,12 @@ def plot_unstruct_responses_animation(
         Set to False can improve the performance of the visualization.
     show_max_min: bool, default: False
         Whether to show the maximum and minimum response values in the plot.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -637,9 +648,7 @@ def plot_unstruct_responses_animation(
         You can also use `fig.write_html("path/to/file.html")` to save as an HTML file, see
         `Interactive HTML Export in Python <https://plotly.com/python/interactive-html-export/>`_
     """
-    model_info_steps, model_update, resp_step = loadODB(odb_tag, resp_type=ele_type)
-    _, _, node_resp_steps = loadODB(odb_tag, resp_type="Nodal", verbose=False)
-    plotbase = PlotUnstruResponse(model_info_steps, resp_step, model_update, nodal_resp_steps=node_resp_steps)
+    plotbase = PlotUnstruResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.refactor_resp_step(
         ele_tags=ele_tags, ele_type=ele_type, resp_type=resp_type, component=resp_dof, fiber_point=shell_fiber_loc

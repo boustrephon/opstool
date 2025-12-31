@@ -3,15 +3,14 @@ from typing import Optional, Union
 import numpy as np
 import plotly.graph_objs as go
 
-from ...post import loadODB
 from .._plot_frame_resp_base import PlotFrameResponseBase
 from .plot_resp_base import PlotResponsePlotlyBase
 from .plot_utils import _plot_lines, _plot_points_cmap, _plot_unstru_cmap
 
 
 class PlotFrameResponse(PlotFrameResponseBase, PlotResponsePlotlyBase):
-    def __init__(self, model_info_steps, beam_resp_step, model_update):
-        super().__init__(model_info_steps, beam_resp_step, model_update)
+    def __init__(self, odb_tag, lazy_load=True):
+        super().__init__(odb_tag, lazy_load=lazy_load)
 
         title = f"{self.PKG_NAME} :: Frame Responses 3D Viewer</span></b><br><br>"
         self.title = {"text": title, "font": {"size": self.pargs.title_font_size}}
@@ -389,6 +388,7 @@ def plot_frame_responses(
     bc_scale: float = 1.0,
     show_mp_constraint: bool = False,
     show_model: bool = False,
+    lazy_load: bool = False,
 ) -> go.Figure:
     """Plot the responses of the frame element.
 
@@ -466,7 +466,12 @@ def plot_frame_responses(
     show_model: bool, default: False
         Whether to plot the all model or not.
         Set to False can improve the performance of the visualization.
-
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -475,8 +480,7 @@ def plot_frame_responses(
         You can also use `fig.write_html("path/to/file.html")` to save as an HTML file, see
         `Interactive HTML Export in Python <https://plotly.com/python/interactive-html-export/>`_
     """
-    model_info_steps, model_update, beam_resp_steps = loadODB(odb_tag, resp_type="Frame")
-    plotbase = PlotFrameResponse(model_info_steps, beam_resp_steps, model_update)
+    plotbase = PlotFrameResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     if slides:
         plotbase.plot_slide(
@@ -533,6 +537,7 @@ def plot_frame_responses_animation(
     bc_scale: float = 1.0,
     show_mp_constraint: bool = False,
     show_model: bool = False,
+    lazy_load: bool = False,
 ) -> go.Figure:
     """Animate the responses of frame elements.
 
@@ -605,6 +610,12 @@ def plot_frame_responses_animation(
     show_model: bool, default: False
         Whether to plot the all model or not.
         Set to False can improve the performance of the visualization.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -613,8 +624,7 @@ def plot_frame_responses_animation(
         You can also use `fig.write_html("path/to/file.html")` to save as an HTML file, see
         `Interactive HTML Export in Python <https://plotly.com/python/interactive-html-export/>`_
     """
-    model_info_steps, model_update, beam_resp_steps = loadODB(odb_tag, resp_type="Frame")
-    plotbase = PlotFrameResponse(model_info_steps, beam_resp_steps, model_update)
+    plotbase = PlotFrameResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.plot_anim(
         ele_tags=ele_tags,

@@ -1,5 +1,6 @@
-import os
-import openseespy.opensees as ops
+from .._util_funcs import get_opensees_module
+
+ops = get_opensees_module()
 
 
 def DamBreak():
@@ -11,7 +12,7 @@ def DamBreak():
     ops.wipe()
 
     # set modelbuilder
-    ops.model('basic', '-ndm', 2, '-ndf', 2)
+    ops.model("basic", "-ndm", 2, "-ndf", 2)
 
     # geometric
     L = 0.146
@@ -55,18 +56,18 @@ def DamBreak():
     # wall mesh
     wall_tag = 3
     ndf = 2
-    ops.mesh('line', 1, 9, 4, 5, 8, 9, 10, 11, 7, 6, 2, wall_id, ndf, h)
-    ops.mesh('line', 2, 3, 2, 1, 4, wall_id, ndf, h)
-    ops.nDMaterial('ElasticIsotropic', 10, 3.45E7, 0.2)
-    eleArgs = ['tri31', 1., 'PlaneStrain', 10, 0., 0., 0., 0.]
-    ops.mesh('tri', wall_tag, 2, 1, 2, wall_id, ndf, h, *eleArgs)
+    ops.mesh("line", 1, 9, 4, 5, 8, 9, 10, 11, 7, 6, 2, wall_id, ndf, h)
+    ops.mesh("line", 2, 3, 2, 1, 4, wall_id, ndf, h)
+    ops.nDMaterial("ElasticIsotropic", 10, 3.45e7, 0.2)
+    eleArgs = ["tri31", 1.0, "PlaneStrain", 10, 0.0, 0.0, 0.0, 0.0]
+    ops.mesh("tri", wall_tag, 2, 1, 2, wall_id, ndf, h, *eleArgs)
 
     # fluid mesh
     fluid_tag = 4
-    ops.mesh('line', 5, 3, 2, 3, 4, water_bound_id, ndf, h)
+    ops.mesh("line", 5, 3, 2, 3, 4, water_bound_id, ndf, h)
 
-    eleArgs = ['PFEMElementBubble', rho, mu, b1, b2, thk, kappa]
-    ops.mesh('tri', fluid_tag, 2, 2, 5, water_body_id, ndf, h, *eleArgs)
+    eleArgs = ["PFEMElementBubble", rho, mu, b1, b2, thk, kappa]
+    ops.mesh("tri", fluid_tag, 2, 2, 5, water_body_id, ndf, h, *eleArgs)
 
-    for nd in ops.getNodeTags('-mesh', wall_tag):
+    for nd in ops.getNodeTags("-mesh", wall_tag):
         ops.fix(nd, 1, 1)

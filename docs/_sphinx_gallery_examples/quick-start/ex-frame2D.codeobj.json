@@ -1,0 +1,6582 @@
+{
+ "FEModel": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  }
+ ],
+ "KcommSwitch": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "KcurrSwitch": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "KinitSwitch": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "ListedColormap": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib.colors",
+   "module_short": "matplotlib.colors",
+   "name": "ListedColormap"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "ListedColormap"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib.colors",
+   "module_short": "matplotlib.colors",
+   "name": "Colormap"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Colormap"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.colors",
+   "module_short": "matplotlib.colors",
+   "name": "ListedColormap"
+  }
+ ],
+ "MpropSwitch": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "_": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "accel": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "alphaM": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "float64"
+  }
+ ],
+ "ax": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes"
+  }
+ ],
+ "ax.grid": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._base",
+   "module_short": "matplotlib.axes._base",
+   "name": "_AxesBase.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "_AxesBase.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "_AxesBase.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.grid"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.grid"
+  }
+ ],
+ "ax.tick_params": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.tick_params"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "Axes.tick_params"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axes.tick_params"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes._base",
+   "module_short": "matplotlib.axes._base",
+   "name": "_AxesBase.tick_params"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axes",
+   "module_short": "matplotlib.axes",
+   "name": "_AxesBase.tick_params"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "_AxesBase.tick_params"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.tick_params"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.tick_params"
+  }
+ ],
+ "ax.xaxis.set_major_formatter": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axis",
+   "module_short": "matplotlib.axis",
+   "name": "XAxis.set_major_formatter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "XAxis.set_major_formatter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.axis",
+   "module_short": "matplotlib.axis",
+   "name": "Axis.set_major_formatter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Axis.set_major_formatter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.set_major_formatter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.set_major_formatter"
+  }
+ ],
+ "axes": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "betaKcomm": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "float64"
+  }
+ ],
+ "betaKcurr": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "float64"
+  }
+ ],
+ "betaKinit": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "float64"
+  }
+ ],
+ "cmap": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.colors",
+   "module_short": "matplotlib.colors",
+   "name": "ListedColormap"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "ListedColormap"
+  }
+ ],
+ "colors": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "dt": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "eigen_vectors": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "ele_forces": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "ele_forces.sel": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.sel"
+  }
+ ],
+ "ele_resp": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "ele_resp.data_vars": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "ele_resp.sel": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.sel"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.sel"
+  }
+ ],
+ "fig": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "Figure"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Figure"
+  }
+ ],
+ "fig.show": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "Figure.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Figure.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "FigureBase.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "FigureBase.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.show"
+  }
+ ],
+ "fig.subplots_adjust": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "Figure.subplots_adjust"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Figure.subplots_adjust"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.figure",
+   "module_short": "matplotlib.figure",
+   "name": "FigureBase.subplots_adjust"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "FigureBase.subplots_adjust"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.artist",
+   "module_short": "matplotlib.artist",
+   "name": "Artist.subplots_adjust"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Artist.subplots_adjust"
+  }
+ ],
+ "frame1Mz": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "frame1Mz.data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "frame1Mz.data.max": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "frame1Mz.data.min": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "frame1Mz.time": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "frame1N": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "frame1N.data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "frame1N.data.max": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "frame1N.data.min": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "frame1Vy": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "frame1Vy.data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "frame1Vy.data.max": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "frame1Vy.data.min": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "gmdata": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
+ "lambdaI": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "lambdaJ": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "lambdaN": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "line_styles": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "model_props": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "model_props.to_pandas": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.to_pandas"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.to_pandas"
+  }
+ ],
+ "model_props_df": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pandas.core.frame",
+   "module_short": "pandas.core.frame",
+   "name": "DataFrame"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pandas.core",
+   "module_short": "pandas.core",
+   "name": "DataFrame"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pandas",
+   "module_short": "pandas",
+   "name": "DataFrame"
+  }
+ ],
+ "model_props_df.columns": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pandas.core.indexes.base",
+   "module_short": "pandas.core.indexes.base",
+   "name": "Index"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pandas.core.indexes",
+   "module_short": "pandas.core.indexes",
+   "name": "Index"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pandas.core",
+   "module_short": "pandas.core",
+   "name": "Index"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pandas",
+   "module_short": "pandas",
+   "name": "Index"
+  }
+ ],
+ "nEigenI": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "nEigenJ": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "n_steps": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "node_accel22": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "node_accel22.data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "node_accel22.data.max": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "node_accel22.data.min": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "node_disp22": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "node_disp22.data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "node_disp22.data.max": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "node_disp22.data.min": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "node_disp22.time": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "node_resp": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.datatree",
+   "module_short": "xarray.core.datatree",
+   "name": "DatasetView"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DatasetView"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DatasetView"
+  }
+ ],
+ "node_vel22": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "node_vel22.data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "node_vel22.data.max": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "node_vel22.data.min": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AbstractArray.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataWithCoords.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._aggregations",
+   "module_short": "xarray.core._aggregations",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayAggregations.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "AttrAccessMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.common",
+   "module_short": "xarray.core.common",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "ImplementsArrayReduce.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.ops",
+   "module_short": "xarray.computation.ops",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "IncludeNumpySameMethods.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation.arithmetic",
+   "module_short": "xarray.computation.arithmetic",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.computation",
+   "module_short": "xarray.computation",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "SupportsArithmetic.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core._typed_ops",
+   "module_short": "xarray.core._typed_ops",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArrayOpsMixin.data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArrayOpsMixin.data"
+  }
+ ],
+ "np.loadtxt": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "loadtxt"
+  }
+ ],
+ "np.sqrt": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ufunc"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "sqrt"
+  }
+ ],
+ "odb": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post.responses_data",
+   "module_short": "opstool.post",
+   "name": "CreateODB"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "CreateODB"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "CreateODB"
+  }
+ ],
+ "odb.fetch_response_step": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post.responses_data",
+   "module_short": "opstool.post",
+   "name": "CreateODB.fetch_response_step"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "CreateODB.fetch_response_step"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "CreateODB.fetch_response_step"
+  }
+ ],
+ "odb.save_response": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post.responses_data",
+   "module_short": "opstool.post",
+   "name": "CreateODB.save_response"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "CreateODB.save_response"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "CreateODB.save_response"
+  }
+ ],
+ "omegaI": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "float64"
+  }
+ ],
+ "omegaJ": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "float64"
+  }
+ ],
+ "ops.algorithm": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "algorithm"
+  }
+ ],
+ "ops.analysis": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "analysis"
+  }
+ ],
+ "ops.analyze": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "analyze"
+  }
+ ],
+ "ops.constraints": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "constraints"
+  }
+ ],
+ "ops.eigen": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "eigen"
+  }
+ ],
+ "ops.element": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "element"
+  }
+ ],
+ "ops.fix": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "fix"
+  }
+ ],
+ "ops.geomTransf": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "geomTransf"
+  }
+ ],
+ "ops.integrator": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "integrator"
+  }
+ ],
+ "ops.load": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "load"
+  }
+ ],
+ "ops.mass": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "mass"
+  }
+ ],
+ "ops.model": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "model"
+  }
+ ],
+ "ops.node": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "node"
+  }
+ ],
+ "ops.numberer": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "numberer"
+  }
+ ],
+ "ops.pattern": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "pattern"
+  }
+ ],
+ "ops.rayleigh": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "rayleigh"
+  }
+ ],
+ "ops.rigidDiaphragm": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "rigidDiaphragm"
+  }
+ ],
+ "ops.system": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "system"
+  }
+ ],
+ "ops.test": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "test"
+  }
+ ],
+ "ops.timeSeries": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "timeSeries"
+  }
+ ],
+ "ops.wipe": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "wipe"
+  }
+ ],
+ "ops.wipeAnalysis": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "wipeAnalysis"
+  }
+ ],
+ "opst.post.CreateODB": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.post.responses_data",
+   "module_short": "opstool.post",
+   "name": "CreateODB"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "CreateODB"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "CreateODB"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "CreateODB"
+  }
+ ],
+ "opst.post.get_eigen_data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "get_eigen_data"
+  }
+ ],
+ "opst.post.get_element_responses": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "get_element_responses"
+  }
+ ],
+ "opst.post.get_nodal_responses": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "get_nodal_responses"
+  }
+ ],
+ "opst.post.save_eigen_data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "save_eigen_data"
+  }
+ ],
+ "opst.vis.plotly.plot_model": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.plotly",
+   "module_short": "opstool.vis.plotly",
+   "name": "plot_model"
+  }
+ ],
+ "opst.vis.plotly.set_plot_props": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.plotly",
+   "module_short": "opstool.vis.plotly",
+   "name": "set_plot_props"
+  }
+ ],
+ "opsvis.plot_eigen": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "plot_eigen"
+  }
+ ],
+ "opsvis.plot_frame_responses": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "plot_frame_responses"
+  }
+ ],
+ "opsvis.plot_model": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "plot_model"
+  }
+ ],
+ "opsvis.plot_nodal_responses": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "plot_nodal_responses"
+  }
+ ],
+ "opsvis.plot_nodal_responses_animation": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "plot_nodal_responses_animation"
+  }
+ ],
+ "opsvis.set_plot_props": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "set_plot_props"
+  }
+ ],
+ "plotter": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista",
+   "name": "Plotter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista",
+   "name": "Plotter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "Plotter"
+  }
+ ],
+ "plotter.close": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista",
+   "name": "Plotter.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista",
+   "name": "Plotter.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "Plotter.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities.misc",
+   "module_short": "pyvista.core.utilities.misc",
+   "name": "_NoNewAttrMixin.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities",
+   "module_short": "pyvista.core.utilities",
+   "name": "_NoNewAttrMixin.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core",
+   "module_short": "pyvista.core",
+   "name": "_NoNewAttrMixin.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "_NoNewAttrMixin.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista",
+   "name": "BasePlotter.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista",
+   "name": "BasePlotter.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "BasePlotter.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities.misc",
+   "module_short": "pyvista.core.utilities.misc",
+   "name": "_BoundsSizeMixin.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities",
+   "module_short": "pyvista.core.utilities",
+   "name": "_BoundsSizeMixin.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core",
+   "module_short": "pyvista.core",
+   "name": "_BoundsSizeMixin.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "_BoundsSizeMixin.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingHelper.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingHelper.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingHelper.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.widgets",
+   "module_short": "pyvista",
+   "name": "WidgetHelper.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista",
+   "name": "WidgetHelper.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "WidgetHelper.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingMethods.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingMethods.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingMethods.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingInterface.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingInterface.close"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingInterface.close"
+  }
+ ],
+ "plotter.show": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista",
+   "name": "Plotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista",
+   "name": "Plotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "Plotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities.misc",
+   "module_short": "pyvista.core.utilities.misc",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities",
+   "module_short": "pyvista.core.utilities",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core",
+   "module_short": "pyvista.core",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista.plotting.plotter",
+   "name": "BasePlotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "BasePlotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "BasePlotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities.misc",
+   "module_short": "pyvista.core.utilities.misc",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities",
+   "module_short": "pyvista.core.utilities",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core",
+   "module_short": "pyvista.core",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.widgets",
+   "module_short": "pyvista.plotting.widgets",
+   "name": "WidgetHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "WidgetHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "WidgetHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingMethods.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingMethods.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingMethods.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingInterface.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingInterface.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingInterface.show"
+  }
+ ],
+ "plt.plot": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "plot"
+  }
+ ],
+ "plt.show": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "show"
+  }
+ ],
+ "plt.subplots": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.pyplot",
+   "module_short": "matplotlib.pyplot",
+   "name": "subplots"
+  }
+ ],
+ "ticker.FormatStrFormatter": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib.ticker",
+   "module_short": "matplotlib.ticker",
+   "name": "FormatStrFormatter"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "FormatStrFormatter"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib.ticker",
+   "module_short": "matplotlib.ticker",
+   "name": "Formatter"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "Formatter"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib.ticker",
+   "module_short": "matplotlib.ticker",
+   "name": "TickHelper"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "matplotlib",
+   "module_short": "matplotlib",
+   "name": "TickHelper"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "matplotlib.ticker",
+   "module_short": "matplotlib.ticker",
+   "name": "FormatStrFormatter"
+  }
+ ],
+ "time": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core.dataarray",
+   "module_short": "xarray.core.dataarray",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray.core",
+   "module_short": "xarray.core",
+   "name": "DataArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "xarray",
+   "module_short": "xarray",
+   "name": "DataArray"
+  }
+ ],
+ "xDamp": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ]
+}

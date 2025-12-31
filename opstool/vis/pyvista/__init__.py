@@ -28,8 +28,9 @@ if not find_spec("pyvista"):
     )
     set_plot_colors = make_dependency_missing("pyvista.set_plot_colors", "pyvista", extra=extra)
     set_plot_props = make_dependency_missing("pyvista.set_plot_props", "pyvista", extra=extra)
+    reset_plot_props = make_dependency_missing("pyvista.reset_plot_props", "pyvista", extra=extra)
 else:
-    from .plot_utils import set_plot_colors, set_plot_props
+    from .plot_utils import reset_plot_props, set_plot_colors, set_plot_props
     from .vis_eigen import plot_eigen, plot_eigen_animation
     from .vis_frame_resp import plot_frame_responses, plot_frame_responses_animation
     from .vis_model import plot_model
@@ -40,6 +41,8 @@ else:
         plot_unstruct_responses,
         plot_unstruct_responses_animation,
     )
+
+reset_plot_props()
 
 __all__ = [
     "get_nodal_responses_dataset",
@@ -61,6 +64,7 @@ __all__ = [
     # --------------------------------
     "plot_unstruct_responses",
     "plot_unstruct_responses_animation",
+    "reset_plot_props",
     # --------------------------------
     "set_plot_colors",
     "set_plot_props",

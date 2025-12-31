@@ -1,8 +1,9 @@
 from typing import Optional
 
-import openseespy.opensees as ops
-
+from ...utils import get_opensees_module
 from .._model_data import get_node_mass
+
+ops = get_opensees_module()
 
 
 def create_gravity_load(

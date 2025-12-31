@@ -26,6 +26,7 @@
       ~Gmsh2OPS.get_physical_groups
       ~Gmsh2OPS.read_gmsh_data
       ~Gmsh2OPS.read_gmsh_file
+      ~Gmsh2OPS.set_node_element_tags_offset
       ~Gmsh2OPS.set_output_file
       ~Gmsh2OPS.write_element_file
       ~Gmsh2OPS.write_fix_file

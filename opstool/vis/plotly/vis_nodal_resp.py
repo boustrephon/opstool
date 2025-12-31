@@ -3,20 +3,14 @@ from typing import Optional, Union
 import numpy as np
 import plotly.graph_objs as go
 
-from ...post import loadODB
 from .._plot_nodal_resp_base import PlotNodalResponseBase
 from .plot_resp_base import PlotResponsePlotlyBase
 from .plot_utils import _plot_lines_cmap, _plot_points_cmap, _plot_unstru_cmap
 
 
 class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePlotlyBase):
-    def __init__(
-        self,
-        model_info_steps,
-        node_resp_steps,
-        model_update,
-    ):
-        super().__init__(model_info_steps, node_resp_steps, model_update)
+    def __init__(self, odb_tag: Union[int, str], lazy_load=True):
+        super().__init__(odb_tag, lazy_load=lazy_load)
         self.FIGURE = go.Figure()
 
         self.resps_norm = None
@@ -26,7 +20,7 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePlotlyBase):
         self.title = {"text": title, "font": {"size": self.pargs.title_font_size}}
 
     def _make_title(self, step, add_title=False):
-        max_norm, min_norm = np.nanmax(self.resps_norm[step]), np.nanmin(self.resps_norm[step])
+        max_norm, min_norm = np.nanmax(self._get_step_norm(step)), np.nanmin(self._get_step_norm(step))
         title = "Nodal Responses"
         if self.resp_type == "disp":
             resp_type = "Displacement"
@@ -79,9 +73,9 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePlotlyBase):
         line_cells, _ = self._get_line_cells(self._get_line_da(step))
         _, unstru_cell_types, unstru_cells = self._get_unstru_cells(self._get_unstru_da(step))
         node_defo_coords = np.array(self._get_defo_coord_da(step, alpha))
-        node_resp = np.array(self._get_resp_da(step, self.resp_type, self.component))
+        node_resp = np.array(self._get_resp_da(step, self.component))
         if self.resps_norm is not None:
-            scalars = self.resps_norm[step]
+            scalars = self._get_step_norm(step)
         else:
             scalars = node_resp if node_resp.ndim == 1 else np.linalg.norm(node_resp, axis=1)
 
@@ -131,6 +125,20 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePlotlyBase):
                 scalars=line_scalars,
                 coloraxis=coloraxis,
                 clim=clim,
+                width=self.pargs.line_width,
+            )
+        if self.interp_beam_disp_on:
+            points_origin_interp, points_defo_interp, cells_interp, scalars_interp = self.get_interp_beam_data(
+                step, alpha
+            )
+            line_points_interp, _, line_scalars_interp = self._get_plotly_line_data(
+                points_defo_interp, cells_interp, scalars_interp
+            )
+            _plot_lines_cmap(
+                plotter,
+                line_points_interp,
+                scalars=line_scalars_interp,
+                coloraxis=coloraxis,
                 width=self.pargs.line_width,
             )
         _plot_points_cmap(
@@ -302,6 +310,7 @@ def plot_nodal_responses(
     step: Union[int, str] = "absMax",
     defo_scale: Union[float, int, bool] = 1.0,
     show_defo: bool = True,
+    interpolate_beam_disp: bool = False,
     resp_type: str = "disp",
     resp_dof: Union[list, tuple, str] = ("UX", "UY", "UZ"),
     unit_symbol: Optional[str] = None,
@@ -313,6 +322,7 @@ def plot_nodal_responses(
     style: str = "surface",
     show_outline: bool = False,
     show_max_min: bool = False,
+    lazy_load: bool = False,
 ) -> go.Figure:
     """Visualizing Node Responses.
 
@@ -334,6 +344,12 @@ def plot_nodal_responses(
         If set to a float or int, it will scale the deformed shape by that factor.
     show_defo: bool, default: True
         Whether to display the deformed shape.
+    interpolate_beam_disp: bool, default: False, added since version 1.0.25.
+        Whether to interpolate beam displacements.
+        Shape functions will be used to interpolate the displacements of beam elements for a smoother visualization.
+        If you have a large number of beam elements, enabling this option may slow down the plotting process, and it is recommended to disable it.
+        If True, You need to ensure that the data has been saved in ``CreateODB`` with ``interpolate_beam_disp=True`` for this option to take effect.
+
     resp_type: str, default: disp
         Type of response to be visualized.
         Optional: "disp", "vel", "accel", "reaction", "reactionIncInertia", "rayleighForces", "pressure".
@@ -373,6 +389,12 @@ def plot_nodal_responses(
         Defaults to 'surface'. Note that 'wireframe' only shows a wireframe of the outer geometry.
     show_max_min: bool, default: False
         Whether to show the maximum and minimum response value annotations in the plot.
+    lazy_load: bool, default: False, added since version 1.0.25.
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -381,10 +403,10 @@ def plot_nodal_responses(
         You can also use `fig.write_html("path/to/file.html")` to save as an HTML file, see
         `Interactive HTML Export in Python <https://plotly.com/python/interactive-html-export/>`_
     """
-    model_info_steps, model_update, node_resp_steps = loadODB(odb_tag, resp_type="Nodal")
-    plotbase = PlotNodalResponse(model_info_steps, node_resp_steps, model_update)
+    plotbase = PlotNodalResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
+    plotbase.set_interp_beam_on(interpolate_beam_disp)
     if slides:
         plotbase.plot_slide(
             alpha=defo_scale,
@@ -416,6 +438,7 @@ def plot_nodal_responses_animation(
     framerate: Optional[int] = None,
     defo_scale: Union[float, int, bool] = 1.0,
     show_defo: bool = True,
+    interpolate_beam_disp: bool = False,
     resp_type: str = "disp",
     resp_dof: Union[list, tuple, str] = ("UX", "UY", "UZ"),
     unit_symbol: Optional[str] = None,
@@ -427,6 +450,7 @@ def plot_nodal_responses_animation(
     style: str = "surface",
     show_outline: bool = False,
     show_max_min: bool = False,
+    lazy_load: bool = False,
 ) -> go.Figure:
     """Visualize node response animation.
 
@@ -444,6 +468,11 @@ def plot_nodal_responses_animation(
         If set to a float or int, it will scale the deformed shape by that factor.
     show_defo: bool, default: True
         Whether to display the deformed shape.
+    interpolate_beam_disp: bool, default: False, added since version 1.0.25.
+        Whether to interpolate beam displacements.
+        Shape functions will be used to interpolate the displacements of beam elements for a smoother visualization.
+        If you have a large number of beam elements, enabling this option may slow down the plotting process, and it is recommended to disable it.
+        If True, You need to ensure that the data has been saved in ``CreateODB`` with ``interpolate_beam_disp=True`` for this option to take effect.
     resp_type: str, default: disp
         Type of response to be visualized.
         Optional: "disp", "vel", "accel", "reaction", "reactionIncInertia", "rayleighForces", "pressure".
@@ -477,6 +506,12 @@ def plot_nodal_responses_animation(
         Defaults to 'surface'. Note that 'wireframe' only shows a wireframe of the outer geometry.
     show_max_min: bool, default: False
         Whether to show the maximum and minimum response value annotations in the plot.
+    lazy_load: bool, default: False, added since version 1.0.25.
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -485,10 +520,10 @@ def plot_nodal_responses_animation(
         You can also use `fig.write_html("path/to/file.html")` to save as an HTML file, see
         `Interactive HTML Export in Python <https://plotly.com/python/interactive-html-export/>`_
     """
-    model_info_steps, model_update, node_resp_steps = loadODB(odb_tag, resp_type="Nodal")
-    plotbase = PlotNodalResponse(model_info_steps, node_resp_steps, model_update)
+    plotbase = PlotNodalResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
+    plotbase.set_interp_beam_on(interpolate_beam_disp)
     plotbase.plot_anim(
         alpha=defo_scale,
         show_defo=show_defo,

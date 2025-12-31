@@ -1,7 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import openseespy.opensees as ops
 import scipy.sparse as sp
+
+from ..utils import get_opensees_module
+
+ops = get_opensees_module()
 
 
 def get_spy_matrix(numberer: str = "RCM", plot: bool = True) -> tuple:

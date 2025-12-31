@@ -1,46 +1,36 @@
+from __future__ import annotations
+
 from collections import defaultdict
-from typing import Optional
 
 import numpy as np
-import openseespy.opensees as ops
 import xarray as xr
 
-from ...utils import get_gp2node_func
-from ._response_base import ResponseBase, _expand_to_uniform_array
+from ...utils import get_gp2node_func, get_opensees_module
+from ._response_base import ResponseBase, expand_to_uniform_array
+
+ops = get_opensees_module()
+
+RESP_NAME = "SolidResponses"
 
 
 class BrickRespStepData(ResponseBase):
-    def __init__(
-        self,
-        ele_tags=None,
-        compute_measures: bool = True,
-        compute_nodal_resp: Optional[str] = None,
-        model_update: bool = False,
-        dtype: Optional[dict] = None,
-    ):
-        self.resp_names = [
+    def __init__(self, ele_tags, compute_measures: bool = True, compute_nodal_resp: str | None = None, **kargs):
+        super().__init__(**kargs)
+        self.resp_name = RESP_NAME
+        self.resp_types = [
             "Stresses",
             "Strains",
             "StressesAtNodes",
             "StressAtNodesErr",
             "StrainsAtNodes",
             "StrainsAtNodesErr",
+            "PorePressureAtNodes",
         ]
-        self.resp_steps = None
-        self.resp_steps_list = []  # for model update
-        self.resp_steps_dict = {}  # for non-update
-        self.step_track = 0
         self.ele_tags = ele_tags
-        self.times = []
 
         self.compute_measures = compute_measures
         self.compute_nodal_resp = compute_nodal_resp
         self.nodal_resp_method = compute_nodal_resp
-        self.node_tags = None
-        self.model_update = model_update
-        self.dtype = {"int": np.int32, "float": np.float32}
-        if isinstance(dtype, dict):
-            self.dtype.update(dtype)
         self.include_pore_pressure = bool(compute_nodal_resp)
         if compute_measures in [True, "All", "all", "ALL"]:
             self.measures = {"principal": [], "von_mises": [], "octahedral": [], "tau_max": []}
@@ -74,26 +64,15 @@ class BrickRespStepData(ResponseBase):
         ]
         self.strainDOFs = ["eps11", "eps22", "eps33", "eps12", "eps23", "eps13"] + [f"para#{i + 1}" for i in range(100)]
 
-        self.initialize()
+        self.add_resp_data_one_step(ele_tags)
 
-    def initialize(self):
-        self.resp_steps = None
-        self.resp_steps_list = []
-        for name in self.resp_names:
-            self.resp_steps_dict[name] = []
-        if self.include_pore_pressure:
-            self.resp_steps_dict["PorePressureAtNodes"] = []
-        self.add_data_one_step(self.ele_tags)
-        self.times = [0.0]
-        self.step_track = 0
-
-    def reset(self):
-        self.initialize()
-
-    def add_data_one_step(self, ele_tags):
+    def add_resp_data_one_step(self, ele_tags):
         stresses, strains = _get_gauss_resp(ele_tags, dtype=self.dtype)  # shape: (num_eles, num_gps, num_dofs)
         self.stressDOFs = self.stressDOFs[: stresses.shape[2]]
         self.strainDOFs = self.strainDOFs[: strains.shape[2]]
+        GaussPointsNo = np.arange(stresses.shape[1]) + 1
+        if self.GaussPointsNo is None:
+            self.GaussPointsNo = GaussPointsNo
 
         if self.compute_nodal_resp:
             node_stress_avg, node_stress_rel_error, node_tags = _get_nodal_resp(
@@ -107,9 +86,6 @@ class BrickRespStepData(ResponseBase):
                 self.compute_nodal_resp = False
             if self.include_pore_pressure:
                 pore_pressure = _get_nodal_pore_pressure(node_tags)
-
-        if self.GaussPointsNo is None:
-            self.GaussPointsNo = np.arange(stresses.shape[1]) + 1
 
         if self.model_update:
             data_vars = {}
@@ -130,30 +106,36 @@ class BrickRespStepData(ResponseBase):
                 if self.include_pore_pressure:
                     data_vars["PorePressureAtNodes"] = (["nodeTags"], pore_pressure)
             ds = xr.Dataset(data_vars=data_vars, coords=coords, attrs=self.attrs)
-            self.resp_steps_list.append(ds)
+            self.resp_step_data_list.append(ds)
         else:
-            self.resp_steps_dict["Stresses"].append(stresses)
-            self.resp_steps_dict["Strains"].append(strains)
+            self.resp_step_data_dict["Stresses"].append(stresses)
+            self.resp_step_data_dict["Strains"].append(strains)
             if self.compute_nodal_resp:
-                self.resp_steps_dict["StressesAtNodes"].append(node_stress_avg)
-                self.resp_steps_dict["StrainsAtNodes"].append(node_strain_avg)
-                self.resp_steps_dict["StressAtNodesErr"].append(node_stress_rel_error)
-                self.resp_steps_dict["StrainsAtNodesErr"].append(node_strain_rel_error)
+                self.resp_step_data_dict["StressesAtNodes"].append(node_stress_avg)
+                self.resp_step_data_dict["StrainsAtNodes"].append(node_strain_avg)
+                self.resp_step_data_dict["StressAtNodesErr"].append(node_stress_rel_error)
+                self.resp_step_data_dict["StrainsAtNodesErr"].append(node_strain_rel_error)
                 if self.include_pore_pressure:
-                    self.resp_steps_dict["PorePressureAtNodes"].append(pore_pressure)
+                    self.resp_step_data_dict["PorePressureAtNodes"].append(pore_pressure)
 
-        self.times.append(ops.getTime())
-        self.step_track += 1
+        self.move_one_step(time_value=ops.getTime())
 
-    def _to_xarray(self):
+    def add_resp_data_to_dataset(self):
+
         self.times = np.array(self.times, dtype=self.dtype["float"])
         if self.model_update:
-            self.resp_steps = xr.concat(self.resp_steps_list, dim="time", join="outer")
-            self.resp_steps.coords["time"] = self.times
+            self.resp_step_data = xr.concat(self.resp_step_data_list, dim="time", join="outer")
+            self.resp_step_data.coords["time"] = self.times
         else:
             data_vars = {}
-            data_vars["Stresses"] = (["time", "eleTags", "GaussPoints", "stressDOFs"], self.resp_steps_dict["Stresses"])
-            data_vars["Strains"] = (["time", "eleTags", "GaussPoints", "strainDOFs"], self.resp_steps_dict["Strains"])
+            data_vars["Stresses"] = (
+                ["time", "eleTags", "GaussPoints", "stressDOFs"],
+                self.resp_step_data_dict["Stresses"],
+            )
+            data_vars["Strains"] = (
+                ["time", "eleTags", "GaussPoints", "strainDOFs"],
+                self.resp_step_data_dict["Strains"],
+            )
             coords = {
                 "time": self.times,
                 "eleTags": self.ele_tags,
@@ -164,42 +146,36 @@ class BrickRespStepData(ResponseBase):
             if self.compute_nodal_resp:
                 data_vars["StressesAtNodes"] = (
                     ["time", "nodeTags", "stressDOFs"],
-                    self.resp_steps_dict["StressesAtNodes"],
+                    self.resp_step_data_dict["StressesAtNodes"],
                 )
                 data_vars["StrainsAtNodes"] = (
                     ["time", "nodeTags", "strainDOFs"],
-                    self.resp_steps_dict["StrainsAtNodes"],
+                    self.resp_step_data_dict["StrainsAtNodes"],
                 )
                 data_vars["StressAtNodesErr"] = (
                     ["time", "nodeTags", "stressDOFs"],
-                    self.resp_steps_dict["StressAtNodesErr"],
+                    self.resp_step_data_dict["StressAtNodesErr"],
                 )
                 data_vars["StrainsAtNodesErr"] = (
                     ["time", "nodeTags", "strainDOFs"],
-                    self.resp_steps_dict["StrainsAtNodesErr"],
+                    self.resp_step_data_dict["StrainsAtNodesErr"],
                 )
                 if self.include_pore_pressure:
                     data_vars["PorePressureAtNodes"] = (
                         ["time", "nodeTags"],
-                        self.resp_steps_dict["PorePressureAtNodes"],
+                        self.resp_step_data_dict["PorePressureAtNodes"],
                     )
                 coords["nodeTags"] = self.node_tags
-            self.resp_steps = xr.Dataset(data_vars=data_vars, coords=coords, attrs=self.attrs)
-
-        if (
-            "PorePressureAtNodes" in self.resp_steps
-            and np.abs(self.resp_steps["PorePressureAtNodes"].data).sum() < 1e-10
-        ):
-            self.resp_steps = self.resp_steps.drop_vars("PorePressureAtNodes")
+            self.resp_step_data = xr.Dataset(data_vars=data_vars, coords=coords, attrs=self.attrs)
 
         if self.compute_measures:
             self._compute_measures_()
 
     def _compute_measures_(self):
-        stresses = self.resp_steps["Stresses"]
+        stresses = self.resp_step_data["Stresses"]
 
         if stresses.shape[-1] >= 6:
-            stress_measures, measureStressDOFs = _calculate_stresses_measures_4D(
+            stress_measures, measureStressDOFs = _calculate_stresses_measures(
                 stresses.data, dtype=self.dtype, measures=self.measures
             )
 
@@ -211,81 +187,100 @@ class BrickRespStepData(ResponseBase):
                 "measures": measureStressDOFs,
             }
 
-            self.resp_steps["StressMeasures"] = xr.DataArray(
+            self.resp_step_data["StressMeasures"] = xr.DataArray(
                 stress_measures,
                 dims=dims,
                 coords=coords,
                 name="StressMeasures",
             )
             if self.compute_nodal_resp:
-                node_stress_measures, measureStressDOFs = _calculate_stresses_measures_4D(
-                    self.resp_steps["StressesAtNodes"].data, dtype=self.dtype, measures=self.measures
+                node_stress_measures, measureStressDOFs = _calculate_stresses_measures(
+                    self.resp_step_data["StressesAtNodes"].data, dtype=self.dtype, measures=self.measures
                 )
                 dims = ["time", "nodeTags", "measures"]
                 coords = {
                     "time": stresses.coords["time"],
-                    "nodeTags": self.resp_steps["StressesAtNodes"].coords["nodeTags"],
+                    "nodeTags": self.resp_step_data["StressesAtNodes"].coords["nodeTags"],
                     "measures": measureStressDOFs,
                 }
-                self.resp_steps["StressMeasuresAtNodes"] = xr.DataArray(
+                self.resp_step_data["StressMeasuresAtNodes"] = xr.DataArray(
                     node_stress_measures, dims=dims, coords=coords, name="StressMeasuresAtNodes"
                 )
 
-    def get_data(self):
-        if self.resp_steps is None:
-            self._to_xarray()
-        return self.resp_steps
-
-    def update_data(self, data):
-        self.resp_steps = data
-
-    def get_track(self):
-        return self.step_track
-
-    def add_to_datatree(self, dt: xr.DataTree):
-        resp_steps = self.get_data()
-        dt["/SolidResponses"] = resp_steps
-        return dt
-
-    @staticmethod
-    def read_datatree(dt: xr.DataTree, unit_factors: Optional[dict] = None):
-        resp_steps = dt["/SolidResponses"].to_dataset()
-        if unit_factors is not None:
-            resp_steps = BrickRespStepData._unit_transform(resp_steps, unit_factors)
-        return resp_steps
-
-    @staticmethod
-    def _unit_transform(resp_steps, unit_factors):
-        stress_factor = unit_factors["stress"]
-
-        resp_steps["Stresses"].loc[
-            {"stressDOFs": ["sigma11", "sigma22", "sigma33", "sigma12", "sigma23", "sigma13"]}
-        ] *= stress_factor
-
-        if "StressMeasures" in resp_steps.data_vars:
-            resp_steps["StressMeasures"] *= stress_factor
-        if "StressMeasuresAtNodes" in resp_steps.data_vars:
-            resp_steps["StressMeasuresAtNodes"] *= stress_factor
-
-        return resp_steps
-
     @staticmethod
     def read_response(
-        dt: xr.DataTree, resp_type: Optional[str] = None, ele_tags=None, unit_factors: Optional[dict] = None
+        dt: xr.DataTree | list[xr.DataTree],
+        resp_type: str | None = None,
+        ele_tags=None,
+        unit_factors: dict | None = None,
+        lazy: bool = True,
     ):
-        ds = BrickRespStepData.read_datatree(dt, unit_factors=unit_factors)
-        if resp_type is None:
-            if ele_tags is None:
-                return ds
-            else:
-                return ds.sel(eleTags=ele_tags)
+        dts = dt if isinstance(dt, (list, tuple)) else [dt]
+        if not dts:
+            return xr.Dataset()
+
+        dss: list[xr.Dataset] = []
+        for t in dts:
+            if RESP_NAME not in t:
+                continue
+            ds = t[f"/{RESP_NAME}"].ds
+            if ds is None:
+                continue
+
+            # 1) preselect variable(s)
+            if resp_type is not None:
+                if resp_type not in ds.data_vars:
+                    continue
+                ds = ds[[resp_type]]
+
+            # 2) early nodeTags selection
+            ds = BrickRespStepData._select_ele_tags(ds, ele_tags=ele_tags)
+
+            # 3) if not lazy, load per-part to avoid lazy-concat instability
+            if not lazy:
+                ds = ds.load()
+
+            dss.append(ds)
+
+        if not dss:
+            return xr.Dataset()
+
+        resp_steps = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer", fill_value=np.nan)
+
+        resp_steps = _unit_transform(resp_steps, unit_factors)
+
+        if resp_type is not None and resp_type in resp_steps:
+            return resp_steps[resp_type]
+        return resp_steps
+
+
+def _unit_transform(resp_steps: xr.Dataset, unit_factors: dict | None) -> xr.Dataset:
+    if not unit_factors:
+        return resp_steps
+    stress_factor = unit_factors["stress"]
+
+    updates: dict[str, xr.DataArray] = {}
+    stress_keys = ["sigma11", "sigma22", "sigma33", "sigma12", "sigma23", "sigma13"]
+
+    # ---- Stresses: selective scaling if stressDOFs exists ----
+    if "Stresses" in resp_steps.data_vars:
+        da = resp_steps["Stresses"]
+        c = da.coords.get("stressDOFs", None)
+
+        if c is not None:
+            m = c.isin(stress_keys)
+            updates["Stresses"] = da.where(~m, da * stress_factor)
         else:
-            if resp_type not in list(ds.keys()):
-                raise ValueError(f"resp_type {resp_type} not found in {list(ds.keys())}")  # noqa: TRY003
-            if ele_tags is not None:
-                return ds[resp_type].sel(eleTags=ele_tags)
-            else:
-                return ds[resp_type]
+            updates["Stresses"] = da * stress_factor  # no coord -> scale all
+
+    # ---- Optional stress-derived measures ----
+    if "StressMeasures" in resp_steps.data_vars:
+        updates["StressMeasures"] = resp_steps["StressMeasures"] * stress_factor
+
+    if "StressMeasuresAtNodes" in resp_steps.data_vars:
+        updates["StressMeasuresAtNodes"] = resp_steps["StressMeasuresAtNodes"] * stress_factor
+
+    return resp_steps if not updates else resp_steps.assign(**updates)
 
 
 gp2node_type = {4: "tet", 10: "tet", 8: "brick", 20: "brick", 27: "brick"}
@@ -361,8 +356,8 @@ def _get_gauss_resp(ele_tags, dtype: dict):
 
         all_stresses.append(np.array(integr_point_stress))
         all_strains.append(np.array(integr_point_strain))
-    stresses = _expand_to_uniform_array(all_stresses, dtype=dtype["float"])
-    strains = _expand_to_uniform_array(all_strains, dtype=dtype["float"])
+    stresses = expand_to_uniform_array(all_stresses, dtype=dtype["float"])
+    strains = expand_to_uniform_array(all_strains, dtype=dtype["float"])
     return stresses, strains
 
 
@@ -378,7 +373,7 @@ def _get_gp_resp_by_one(etag, i):
     return stress_, strain_
 
 
-def _calculate_stresses_measures_4D(stress_array, dtype, measures=None):
+def _calculate_stresses_measures(stress_array, dtype, measures=None):
     p1, p2, p3 = _principal_stresses(stress_array)
 
     # output containers
@@ -451,7 +446,7 @@ def _principal_stresses(stress_array):
     """
     # Calculate principal stresses
     # Using the stress tensor to calculate eigenvalues
-    stress_tensor = _assemble_stress_tensor_4D(stress_array)
+    stress_tensor = _assemble_stress_tensor(stress_array)
     # Calculate principal stresses (eigenvalues)
     principal_stresses = np.linalg.eigvalsh(stress_tensor)  # Returns sorted eigenvalues
     p1 = principal_stresses[..., 2]  # Maximum principal stress
@@ -552,63 +547,39 @@ def _sig_drucker_prager_c_phi(p1, p2, p3, c, phi, kind):
     return sigma_eq, sigma_y
 
 
-def _assemble_stress_tensor_4D(stress_array):
+def _assemble_stress_tensor(stress_array):
     """
-    Assemble a 4D stress array [time, eleTags, GaussPoints, 6]
-    into a 5D stress tensor array [time, eleTags, GaussPoints, 3, 3].
-    Handles NaNs safely (returns 0.0 where data is missing).
+    Assemble stress components (..., 6) = [s11,s22,s33,s12,s23,s13]
+    into symmetric stress tensor (..., 3, 3).
 
-    Parameters:
-        stress_array (np.ndarray): shape (time, eleTags, GaussPoints, 6)
+    Accepts shapes:
+        (time, eleTags, GaussPoints, 6)
+        (time, nodeTags, 6)
+        (eleTags, GaussPoints, 6)
+        (nodeTags, 6)
+        and any other (..., 6)
 
     Returns:
-        np.ndarray: shape (time, eleTags, GaussPoints, 3, 3)
+        (..., 3, 3), with NaNs filled as 0.0.
     """
-    if stress_array.ndim == 4:
-        num_time, num_elements, num_gauss_points, _ = stress_array.shape
-        stress_tensor = np.full((num_time, num_elements, num_gauss_points, 3, 3), np.nan)
+    a = np.asarray(stress_array)
+    if a.ndim < 2 or a.shape[-1] < 6:
+        raise ValueError(f"Expected shape (..., 6), got {a.shape}")  # noqa: TRY003
 
-        for t in range(num_time):
-            for i in range(num_elements):
-                for j in range(num_gauss_points):
-                    sig11 = stress_array[t, i, j, 0]
-                    sig22 = stress_array[t, i, j, 1]
-                    sig33 = stress_array[t, i, j, 2]
-                    tau12 = stress_array[t, i, j, 3]
-                    tau23 = stress_array[t, i, j, 4]
-                    tau13 = stress_array[t, i, j, 5]
+    # unpack
+    s11, s22, s33, s12, s23, s13 = (a[..., i] for i in range(6))
 
-                    if np.any(np.isnan([sig11, sig22, sig33, tau12, tau23, tau13])):
-                        continue  # skip invalid tensor
+    # build tensor (vectorized)
+    out = np.empty((*a.shape[:-1], 3, 3), dtype=a.dtype)
+    out[..., 0, 0] = s11
+    out[..., 1, 1] = s22
+    out[..., 2, 2] = s33
+    out[..., 0, 1] = out[..., 1, 0] = s12
+    out[..., 1, 2] = out[..., 2, 1] = s23
+    out[..., 0, 2] = out[..., 2, 0] = s13
 
-                    stress_tensor[t, i, j, ...] = np.array([
-                        [sig11, tau12, tau13],
-                        [tau12, sig22, tau23],
-                        [tau13, tau23, sig33],
-                    ])
-    elif stress_array.ndim == 3:
-        num_time, num_nodes, _ = stress_array.shape
-        stress_tensor = np.full((num_time, num_nodes, 3, 3), np.nan)
-        for t in range(num_time):
-            for i in range(num_nodes):
-                sig11 = stress_array[t, i, 0]
-                sig22 = stress_array[t, i, 1]
-                sig33 = stress_array[t, i, 2]
-                tau12 = stress_array[t, i, 3]
-                tau23 = stress_array[t, i, 4]
-                tau13 = stress_array[t, i, 5]
-
-                if np.any(np.isnan([sig11, sig22, sig33, tau12, tau23, tau13])):
-                    continue
-                stress_tensor[t, i, ...] = np.array([
-                    [sig11, tau12, tau13],
-                    [tau12, sig22, tau23],
-                    [tau13, tau23, sig33],
-                ])
-    else:
-        raise ValueError(f"Invalid stress_array shape: {stress_array.shape}. Expected 3D or 4D array.")  # noqa: TRY003
-
-    return np.nan_to_num(stress_tensor, nan=0.0)
+    # match your behavior: any NaNs -> 0
+    return np.nan_to_num(out, nan=0.0)
 
 
 def _get_nodal_pore_pressure(node_tags):

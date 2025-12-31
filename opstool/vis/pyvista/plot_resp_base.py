@@ -1,8 +1,5 @@
-from typing import Optional
-
 import numpy as np
 import pyvista as pv
-import xarray as xr
 
 from .._plot_resp_base import PlotResponseBase
 from .plot_utils import PLOT_ARGS, _plot_all_mesh, _plot_lines
@@ -21,14 +18,8 @@ slider_widget_args = {
 
 
 class PlotResponsePyvistaBase(PlotResponseBase):
-    def __init__(
-        self,
-        model_info_steps: dict[str, xr.DataArray],
-        resp_step: xr.Dataset,
-        model_update: bool,
-        nodal_resp_steps: Optional[xr.Dataset] = None,
-    ):
-        super().__init__(model_info_steps, resp_step, model_update, nodal_resp_steps)
+    def __init__(self, odb_tag, lazy_load=True):
+        super().__init__(odb_tag, lazy_load=lazy_load)
 
         self.slider_widget_args = slider_widget_args
         self.pargs = PLOT_ARGS
@@ -116,7 +107,7 @@ class PlotResponsePyvistaBase(PlotResponseBase):
     def _plot_all_mesh(self, plotter, color="gray", step=0):
         if self.ModelUpdate or step == 0:
             pos = self._get_node_da(step).to_numpy()
-            line_cells, _ = self._get_line_cells(self._get_line_da(step))
+            line_cells, _ = self._get_line_cells(self._get_line_da(step, enforce=True))
             _, unstru_cell_types, unstru_cells = self._get_unstru_cells(self._get_unstru_da(step))
 
             _plot_all_mesh(
