@@ -139,6 +139,7 @@ class PlotUnstruResponse(PlotUnstruResponseBase, PlotResponsePyvistaBase):
                 max_min_label_grid = plotter.add_point_labels(
                     ps,
                     labels,
+                    show_points=False,
                     point_size=self.pargs.point_size + 10,
                     font_size=self.pargs.font_size + 5,
                     shape_color="#c0fb2d",
