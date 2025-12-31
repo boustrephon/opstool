@@ -10,10 +10,23 @@ Utilities
    :template: custom-function-template.rst
    :recursive:
 
+   opstool.post.get_nodal_responses_info
+   opstool.post.get_element_responses_info
    opstool.post.set_odb_path
    opstool.post.set_odb_format
    opstool.post.update_unit_system
    opstool.post.reset_unit_system
+
+Plotting
+*************
+
+.. autosummary::
+   :toctree: _autosummary
+   :template: custom-function-template.rst
+   :recursive:
+
+   opstool.post.plot_nodal_responses
+   opstool.post.plot_element_responses
 
 Data Saving
 ------------
@@ -40,6 +53,20 @@ The built-in step response data by opstool is saved
 Result Reading
 --------------
 Retrive the response data:
+**********************************************************************
+
+.. autosummary::
+   :toctree: _autosummary
+   :template: custom-function-template.rst
+   :recursive:
+
+   opstool.post.get_nodal_responses
+   opstool.post.get_element_responses
+   opstool.post.get_sensitivity_responses
+
+
+Retrive the other data:
+**********************************************************************
 
 .. autosummary::
    :toctree: _autosummary
@@ -49,6 +76,3 @@ Retrive the response data:
    opstool.post.get_model_data
    opstool.post.get_eigen_data
    opstool.post.get_linear_buckling_data
-   opstool.post.get_nodal_responses
-   opstool.post.get_element_responses
-   opstool.post.get_sensitivity_responses

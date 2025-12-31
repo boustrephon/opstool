@@ -1,34 +1,59 @@
-from typing import Optional
+from __future__ import annotations
 
 import numpy as np
-import openseespy.opensees as ops
 import xarray as xr
 
+from ...utils import get_opensees_module
+from .._post_utils import Beam3DDispInterpolator
 from ._response_base import ResponseBase
+
+ops = get_opensees_module()
+
+RESP_NAME = "NodalResponses"
 
 
 class NodalRespStepData(ResponseBase):
-    def __init__(self, node_tags=None, model_update: bool = False, dtype: Optional[dict] = None):
-        self.resp_names = [
-            "disp",
-            "vel",
-            "accel",
-            "reaction",
-            "reactionIncInertia",
-            "rayleighForces",
-            "pressure",
-        ]
-        self.node_tags = node_tags if node_tags is not None else ops.getNodeTags()
-        self.resp_steps = None
-        self.resp_steps_list = []  # for model update
-        self.resp_steps_dict = {}  # for non-update
-        self.times = []
-        self.step_track = 0
+    def __init__(self, node_tags, interpolate_beam=False, model_info=None, **kwargs):
+        super().__init__(**kwargs)
 
-        self.model_update = model_update
-        self.dtype = {"int": np.int32, "float": np.float32}
-        if isinstance(dtype, dict):
-            self.dtype.update(dtype)
+        self.resp_name = RESP_NAME
+
+        self.node_tags = node_tags if node_tags is not None else ops.getNodeTags()
+
+        if isinstance(interpolate_beam, int) and not isinstance(interpolate_beam, bool):
+            self.interpolate_beam = True
+            self.npts_per_ele = interpolate_beam
+        else:
+            self.interpolate_beam = interpolate_beam
+            self.npts_per_ele = 6
+        if self.interpolate_beam and model_info is None:
+            raise ValueError("model_info must be provided when interpolate_beam is True")  # noqa: TRY003
+        self.model_info = model_info
+        self.interpolate_beam_coords = None
+
+        if self.interpolate_beam:
+            self.resp_types = [
+                "disp",
+                "vel",
+                "accel",
+                "reaction",
+                "reactionIncInertia",
+                "rayleighForces",
+                "pressure",
+                "interpolate_points",
+                "interpolate_disp",
+                "interpolate_cells",
+            ]
+        else:
+            self.resp_types = [
+                "disp",
+                "vel",
+                "accel",
+                "reaction",
+                "reactionIncInertia",
+                "rayleighForces",
+                "pressure",
+            ]
 
         self.attrs = {
             "UX": "Displacement in X direction",
@@ -39,28 +64,17 @@ class NodalRespStepData(ResponseBase):
             "RZ": "Rotation about Z axis",
         }
 
-        self.initialize()
+        self.add_resp_data_one_step(node_tags=node_tags, model_info=model_info)
 
-    def initialize(self):
-        self.resp_steps = None
-        self.resp_steps_list = []
-        for name in self.resp_names:
-            self.resp_steps_dict[name] = []
-        self.add_data_one_step(self.node_tags)
-        self.times = [0.0]
-        self.step_track = 0
-
-    def reset(self):
-        self.initialize()
-
-    def add_data_one_step(self, node_tags):
+    def add_resp_data_one_step(self, node_tags, model_info=None):
         # node_tags = ops.getNodeTags()
         disp, vel, accel, pressure = _get_nodal_resp(node_tags, dtype=self.dtype)
         reacts, reacts_inertia, rayleigh_forces = _get_nodal_react(node_tags, dtype=self.dtype)
+
         if self.model_update:
             datas = [disp, vel, accel, reacts, reacts_inertia, rayleigh_forces]
             data_vars = {}
-            for name, data_ in zip(self.resp_names, datas):
+            for name, data_ in zip(self.resp_types, datas):
                 data_vars[name] = (["nodeTags", "DOFs"], data_)
             data_vars["pressure"] = (["nodeTags"], pressure)
             # can have different dimensions and coordinates
@@ -72,102 +86,178 @@ class NodalRespStepData(ResponseBase):
                 },
                 attrs=self.attrs,
             )
-            self.resp_steps_list.append(ds)
-        else:  # non-update
+            if self.interpolate_beam:
+                interp_ds = self._interpolate_beam_disp(model_info=model_info, disp_vectors=disp, node_tags=node_tags)
+                if interp_ds is not None:
+                    ds = xr.merge([ds, interp_ds], compat="override")
+            self.resp_step_data_list.append(ds)
+        else:
             datas = [disp, vel, accel, reacts, reacts_inertia, rayleigh_forces, pressure]
-            for name, data_ in zip(self.resp_names, datas):
-                self.resp_steps_dict[name].append(data_)
-        self.times.append(ops.getTime())
-        self.step_track += 1
+            for name, data_ in zip(self.resp_types, datas):
+                self.resp_step_data_dict[name].append(data_)
+            if self.interpolate_beam:
+                self._interpolate_beam_disp(model_info=model_info, disp_vectors=disp, node_tags=node_tags)
 
-    def get_data(self):
-        if self.resp_steps is None:
-            self._to_xarray()
-        return self.resp_steps
+        self.move_one_step(time_value=ops.getTime())
 
-    def update_data(self, data):
-        self.resp_steps = data
+    def _interpolate_beam_disp(self, model_info, disp_vectors, node_tags):
+        points, response, cells = _interpolator_nodal_disp(
+            model_info=model_info, disp_vectors=disp_vectors, npts_per_ele=self.npts_per_ele, node_tags=node_tags
+        )
+        if len(points) == 0 and len(response) == 0 and len(cells) == 0:
+            return None
+        coords = {
+            "interpolate_pointID": np.linspace(0, 1, points.shape[0]),
+            "interpolate_coords": ["x", "y", "z"],
+            "interpolate_DOFs": ["UX", "UY", "UZ"],
+            "interpolate_lineID": np.arange(cells.shape[0]),
+            "interpolate_cellInfo": ["numNodes", "nodeI", "nodeJ"],
+        }
+        if self.model_update:
+            ds = xr.Dataset(
+                {
+                    "interpolate_points": (("interpolate_pointID", "interpolate_coords"), points),
+                    "interpolate_disp": (("interpolate_pointID", "interpolate_DOFs"), response),
+                    "interpolate_cells": (("interpolate_lineID", "interpolate_cellInfo"), cells),
+                },
+                coords=coords,
+            )
+            return ds
+        else:
+            self.resp_step_data_dict["interpolate_points"].append(points)
+            self.resp_step_data_dict["interpolate_disp"].append(response)
+            self.resp_step_data_dict["interpolate_cells"].append(cells)
+            if self.interpolate_beam_coords is None:
+                self.interpolate_beam_coords = coords
+            return None
 
-    def get_track(self):
-        return self.step_track
+    def add_resp_data_to_dataset(self):
 
-    def _to_xarray(self):
         self.times = np.array(self.times, dtype=self.dtype["float"])
         if self.model_update:
-            self.resp_steps = xr.concat(self.resp_steps_list, dim="time", join="outer")
-            self.resp_steps.coords["time"] = self.times
+            self.resp_step_data = xr.concat(self.resp_step_data_list, dim="time", join="outer", fill_value=np.nan)
+            self.resp_step_data.coords["time"] = self.times
         else:
             data_vars = {}
-            for name in self.resp_names[:-1]:
-                data_vars[name] = (["time", "nodeTags", "DOFs"], self.resp_steps_dict[name])
-            data_vars["pressure"] = (["time", "nodeTags"], self.resp_steps_dict["pressure"])
-            self.resp_steps = xr.Dataset(
-                data_vars=data_vars,
-                coords={
-                    "time": self.times,
-                    "nodeTags": self.node_tags,
-                    "DOFs": ["UX", "UY", "UZ", "RX", "RY", "RZ"],
-                },
-                attrs=self.attrs,
-            )
+            for name in ["disp", "vel", "accel", "reaction", "reactionIncInertia", "rayleighForces"]:
+                data_vars[name] = (["time", "nodeTags", "DOFs"], self.resp_step_data_dict[name])
+            data_vars["pressure"] = (["time", "nodeTags"], self.resp_step_data_dict["pressure"])
+            coords = {
+                "time": self.times,
+                "nodeTags": self.node_tags,
+                "DOFs": ["UX", "UY", "UZ", "RX", "RY", "RZ"],
+            }
+            if self.interpolate_beam:
+                data_vars["interpolate_points"] = (
+                    ["time", "interpolate_pointID", "interpolate_coords"],
+                    self.resp_step_data_dict["interpolate_points"],
+                )
+                data_vars["interpolate_disp"] = (
+                    ["time", "interpolate_pointID", "interpolate_DOFs"],
+                    self.resp_step_data_dict["interpolate_disp"],
+                )
+                data_vars["interpolate_cells"] = (
+                    ["time", "interpolate_lineID", "interpolate_cellInfo"],
+                    self.resp_step_data_dict["interpolate_cells"],
+                )
+                coords.update(self.interpolate_beam_coords)
 
-    def add_to_datatree(self, dt: xr.DataTree):
-        resp_steps = self.get_data()
-        dt["/NodalResponses"] = resp_steps
-        return dt
-
-    @staticmethod
-    def read_datatree(dt: xr.DataTree, unit_factors: Optional[dict] = None):
-        # (eleTag, steps, resp_type)
-        resp_steps = dt["/NodalResponses"].to_dataset()
-        if unit_factors is not None:
-            resp_steps = NodalRespStepData._unit_transform(resp_steps, unit_factors)
-        return resp_steps
-
-    @staticmethod
-    def _unit_transform(resp_steps, unit_factors):
-        disp_factor = unit_factors["disp"]
-        vel_factor = unit_factors["vel"]
-        accel_factor = unit_factors["accel"]
-        angular_vel_fact = unit_factors["angular_vel"]
-        angular_accel_fact = unit_factors["angular_accel"]
-        force_factor = unit_factors["force"]
-        moment_factor = unit_factors["moment"]
-        stress_factor = unit_factors["stress"]
-
-        resp_steps["disp"].loc[{"DOFs": ["UX", "UY", "UZ"]}] *= disp_factor
-        resp_steps["vel"].loc[{"DOFs": ["UX", "UY", "UZ"]}] *= vel_factor
-        resp_steps["vel"].loc[{"DOFs": ["RX", "RY", "RZ"]}] *= angular_vel_fact
-        resp_steps["accel"].loc[{"DOFs": ["UX", "UY", "UZ"]}] *= accel_factor
-        resp_steps["accel"].loc[{"DOFs": ["RX", "RY", "RZ"]}] *= angular_accel_fact
-
-        resp_steps["reaction"].loc[{"DOFs": ["UX", "UY", "UZ"]}] *= force_factor
-        resp_steps["reaction"].loc[{"DOFs": ["RX", "RY", "RZ"]}] *= moment_factor
-        resp_steps["reactionIncInertia"].loc[{"DOFs": ["UX", "UY", "UZ"]}] *= force_factor
-        resp_steps["reactionIncInertia"].loc[{"DOFs": ["RX", "RY", "RZ"]}] *= moment_factor
-        resp_steps["rayleighForces"].loc[{"DOFs": ["UX", "UY", "UZ"]}] *= force_factor
-        resp_steps["rayleighForces"].loc[{"DOFs": ["RX", "RY", "RZ"]}] *= moment_factor
-        resp_steps["pressure"] *= stress_factor
-
-        return resp_steps
+            self.resp_step_data = xr.Dataset(data_vars=data_vars, coords=coords, attrs=self.attrs)
 
     @staticmethod
     def read_response(
-        dt: xr.DataTree, resp_type: Optional[str] = None, node_tags=None, unit_factors: Optional[dict] = None
-    ):
-        ds = NodalRespStepData.read_datatree(dt, unit_factors=unit_factors)
-        if resp_type is None:
-            if node_tags is None:
-                return ds
-            else:
-                return ds.sel(nodeTags=node_tags)
-        else:
-            if resp_type not in list(ds.keys()):
-                raise ValueError(f"resp_type {resp_type} not found in {list(ds.keys())}")  # noqa: TRY003
-            if node_tags is not None:
-                return ds[resp_type].sel(nodeTags=node_tags)
-            else:
-                return ds[resp_type]
+        dt: xr.DataTree | list[xr.DataTree],
+        resp_type: str | None = None,
+        node_tags=None,
+        unit_factors: dict | None = None,
+        lazy: bool = True,
+    ) -> xr.Dataset | xr.DataArray:
+        dts = dt if isinstance(dt, (list, tuple)) else [dt]
+        if not dts:
+            return xr.DataArray()
+
+        dss: list[xr.Dataset] = []
+        for t in dts:
+            if RESP_NAME not in t:
+                continue
+            ds = t[f"/{RESP_NAME}"].ds
+            if ds is None:
+                continue
+
+            # 1) preselect variable(s)
+            if resp_type is not None:
+                if resp_type not in ds.data_vars:
+                    continue
+                ds = ds[[resp_type]]
+
+            # 2) early nodeTags selection
+            ds = NodalRespStepData._select_node_tags(ds, node_tags=node_tags)
+
+            # 3) if not lazy, load per-part to avoid lazy-concat instability
+            if not lazy:
+                ds = ds.load()
+
+            dss.append(ds)
+
+        if not dss:
+            return xr.DataArray()
+
+        resp_steps = dss[0] if len(dss) == 1 else xr.concat(dss, dim="time", join="outer", fill_value=np.nan)
+
+        resp_steps = _unit_transform(resp_steps, unit_factors)
+
+        if resp_type is not None and resp_type in resp_steps:
+            return resp_steps[resp_type]
+        return resp_steps
+
+
+def _unit_transform(resp_steps: xr.Dataset, unit_factors: dict[str, float] | None) -> xr.Dataset:
+    if not unit_factors:
+        return resp_steps
+
+    d = resp_steps
+    dofs = d.get("DOFs") or d.coords.get("DOFs")
+    if dofs is None:
+        raise KeyError("DOFs coordinate not found")  # noqa: TRY003
+
+    trans = ["UX", "UY", "UZ"]
+    rot = ["RX", "RY", "RZ"]
+
+    m_trans = dofs.isin(trans)
+    m_rot = dofs.isin(rot)
+
+    def _scale_trans(var: str, factor: float) -> xr.DataArray:
+        da = d[var]
+        return da.where(~m_trans, da * factor)
+
+    def _scale_force_moment(var: str) -> xr.DataArray:
+        da = d[var]
+        return da.where(~m_trans, da * unit_factors["force"]).where(~m_rot, da * unit_factors["moment"])
+
+    def _scale_vel_acc(var: str, ang_key: str) -> xr.DataArray:
+        da = d[var]
+        da = da.where(~m_trans, da * unit_factors[var])  # linear part
+        return da.where(~m_rot, d[var] * unit_factors[ang_key])  # angular part
+
+    updates = {}
+
+    if "disp" in d:
+        updates["disp"] = _scale_trans("disp", unit_factors["disp"])
+
+    if "vel" in d:
+        updates["vel"] = _scale_vel_acc("vel", "angular_vel")
+
+    if "accel" in d:
+        updates["accel"] = _scale_vel_acc("accel", "angular_accel")
+
+    for v in ("reaction", "reactionIncInertia", "rayleighForces"):
+        if v in d:
+            updates[v] = _scale_force_moment(v)
+
+    if "pressure" in d:
+        updates["pressure"] = d["pressure"] * unit_factors["stress"]
+
+    return d.assign(**updates) if updates else d
 
 
 def handle_1d(disp, vel, accel):
@@ -294,3 +384,50 @@ def _get_nodal_react(node_tags, dtype: dict):
     ops.reactions("-dynamic")
     reacts_inertia = np.array(_get_react(node_tags), dtype=dtype["float"])
     return reacts, reacts_inertia, rayleigh_forces
+
+
+def _interpolator_nodal_disp(
+    model_info: dict | None = None,
+    node_tags: list[int] | None = None,
+    disp_vectors: np.ndarray | None = None,
+    npts_per_ele: int = 6,
+) -> xr.Dataset:
+    # -------------------------------------------------
+    if node_tags is not None:
+        node_coord = model_info["NodalData"].sel(nodeTags=node_tags).values
+    else:
+        node_coord = model_info["NodalData"].values
+    axs, ays, azs, cells = [], [], [], []
+    beam_data = model_info.get("BeamData", [])
+    if len(beam_data) == 0:
+        return [], [], []
+    link_data = model_info.get("LinkData", [])
+    for data in [beam_data, link_data]:
+        if len(data) > 0:
+            cell = data.sel(info=["nodeI", "nodeJ"]).values
+            ax = data.sel(info=["xaxis-x", "xaxis-y", "xaxis-z"]).values
+            ay = data.sel(info=["yaxis-x", "yaxis-y", "yaxis-z"]).values
+            az = data.sel(info=["zaxis-x", "zaxis-y", "zaxis-z"]).values
+            cells.append(cell)
+            axs.append(ax)
+            ays.append(ay)
+            azs.append(az)
+    truss_data = model_info.get("TrussData", [])
+    if len(truss_data) > 0:
+        cell = truss_data.sel(cells=["nodeI", "nodeJ"]).values
+        ax = np.zeros((cell.shape[0], 3))
+        ay = np.zeros((cell.shape[0], 3))
+        az = np.zeros((cell.shape[0], 3))
+        cells.append(cell)
+        axs.append(ax)
+        ays.append(ay)
+        azs.append(az)
+    cells = np.vstack(cells)
+    axs = np.vstack(axs)
+    ays = np.vstack(ays)
+    azs = np.vstack(azs)
+    #
+    interp = Beam3DDispInterpolator(node_coord, cells, axs, ays, azs, one_based_node_id=False)
+    local_vec = interp.global_to_local_ends(disp_vectors)
+    points, response, cells = interp.interpolate(local_vec, npts_per_ele=npts_per_ele)
+    return points, response, cells

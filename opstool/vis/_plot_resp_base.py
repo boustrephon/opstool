@@ -3,30 +3,21 @@ from typing import Optional
 import numpy as np
 import xarray as xr
 
-from ..utils import CONFIGS, get_bounds
+from ..post import get_model_data, get_nodal_responses
+from ..utils import CONFIGS, get_bounds, get_random_color
 
 
 class PlotResponseBase:
-    def __init__(
-        self,
-        model_info_steps: dict[str, xr.DataArray],
-        resp_step: xr.Dataset,
-        model_update: bool,
-        nodal_resp_steps: Optional[xr.Dataset] = None,
-    ):
-        self.ModelInfoSteps = model_info_steps
-        self.RespSteps = resp_step
-        self.ModelUpdate = model_update
-        self.nodal_resp_steps = nodal_resp_steps
-        self.time = self.RespSteps.coords["time"].values
-        self.num_steps = len(self.time)
+    def __init__(self, odb_tag, lazy_load=True):
+        self.odb_tag = odb_tag
+        self.lazy_load = lazy_load
 
-        self.points_origin = self._get_node_da(0).to_numpy()
-        self.points = self.points_origin.copy()
-        self.bounds, self.min_bound_size, self.max_bound_size = get_bounds(self.points)
-        model_dims = self._get_node_da(0).attrs["ndims"]
-        # # show z-axis in 3d view
-        self.show_zaxis = not np.max(model_dims) <= 2
+        self.ModelInfoSteps = None
+        self.ModelUpdate = False
+        self.RespSteps = None
+        self.nodal_disp_steps = None
+        self.interp_beam_disp_on = False
+        self.interp_beam_disp_steps = None
         # ------------------------------------------------------------
         self.pargs = None
         self.resp_step = None  # response data
@@ -37,10 +28,47 @@ class PlotResponseBase:
         self.unit_factor = 1.0
         self.clim = (0, 1)  # color limits
 
-        self.defo_scale_factor = None
-        self.defo_coords = None  # deformed coordinates
+        self.defo_scale_factor = None  # deformation scale factor
 
         self.PKG_NAME = self.pkg_name = CONFIGS.get_pkg_name()
+
+        self.set_model_info_step_data()
+        self.check_interp_beam_disp()
+
+        self._print_loading_info()
+
+    def _print_loading_info(self):
+        # Print loading info
+        RESULTS_DIR = CONFIGS.get_output_dir()
+        CONSOLE = CONFIGS.get_console()
+        PKG_PREFIX = CONFIGS.get_pkg_prefix()
+        RESP_FILE_NAME = CONFIGS.get_resp_filename()
+        store_path = f"{RESULTS_DIR}\\" + f"{RESP_FILE_NAME}-{self.odb_tag}.odb"
+        color = get_random_color()
+        CONSOLE.print(f"{PKG_PREFIX} Loading responses data from [bold {color}]{store_path}[/] ...")
+
+    def set_model_info_step_data(self):
+        self.ModelInfoSteps = get_model_data(
+            self.odb_tag, data_type=None, from_responses=True, lazy_load=self.lazy_load, print_info=False
+        )
+        self.ModelUpdate = self.ModelInfoSteps.get("ModelUpdate", False)
+        self.points_origin = self._get_node_da(0).to_numpy()
+        self.points = self.points_origin.copy()
+        self.bounds, self.min_bound_size, self.max_bound_size = get_bounds(self.points)
+        model_dims = self._get_node_da(0).attrs["ndims"]
+        # # show z-axis in 3d view
+        self.show_zaxis = not np.max(model_dims) <= 2
+
+    def set_resp_step_data(self, resp_steps):
+        self.RespSteps = resp_steps
+        self.time = self.RespSteps.coords["time"].values
+        self.num_steps = len(self.time)
+
+    def set_nodal_disp_step_data(self):
+        if self.nodal_disp_steps is None:
+            self.nodal_disp_steps = get_nodal_responses(
+                self.odb_tag, resp_type="disp", lazy_load=self.lazy_load, print_info=False
+            )
 
     def set_unit(self, symbol: Optional[str] = None, factor: Optional[float] = None):
         # unit
@@ -50,27 +78,31 @@ class PlotResponseBase:
             self.unit_factor = factor
 
     def _get_model_da(self, key, idx):
-        if key in self.ModelInfoSteps:
-            dims = self.ModelInfoSteps[key].dims
-            if self.ModelUpdate:
-                da = self.ModelInfoSteps[key].isel(time=idx)
-                da = da.dropna(dim=dims[1], how="any")  # drop nodes/eles that do not exist in this step
-            else:
-                da = self.ModelInfoSteps[key].isel(time=0)
-            # tags = da.coords[dims[1]].values
-            return da.copy()
-        return xr.DataArray([], name=key)
+        da = self.ModelInfoSteps.get(key)
+        if da is None:
+            return xr.DataArray([], name=key)
+
+        t = idx if self.ModelUpdate else 0
+        da = da.isel(time=t)
+
+        # drop nodes/eles that do not exist in this step (2nd dim is tag dim)
+        if self.ModelUpdate:
+            if "nodeTags" in da.dims:
+                da = da.dropna(dim="nodeTags", how="all")
+            if "eleTags" in da.dims:
+                da = da.dropna(dim="eleTags", how="all")
+
+        return da
 
     def _get_node_da(self, idx):
         nodal_data = self._get_model_da("NodalData", idx)
-        if len(nodal_data) > 0:
-            unused_node_tags = nodal_data.attrs["unusedNodeTags"]
-            if len(unused_node_tags) > 0:
-                nodal_data = nodal_data.where(~nodal_data.coords["nodeTags"].isin(unused_node_tags), drop=True)
-        return nodal_data
+        return nodal_data.sel(coords=["x", "y", "z"])
 
-    def _get_line_da(self, idx):
-        return self._get_model_da("AllLineElesData", idx)
+    def _get_line_da(self, idx, enforce=False):
+        if enforce or not self.interp_beam_disp_on:
+            return self._get_model_da("AllLineElesData", idx)
+        else:
+            return xr.DataArray([], name="AllLineElesData")
 
     def _get_unstru_da(self, idx):
         return self._get_model_da("UnstructuralData", idx)
@@ -81,74 +113,116 @@ class PlotResponseBase:
     def _get_mp_constraint_da(self, idx):
         return self._get_model_da("MPConstraintData", idx)
 
-    def _get_resp_da(self, time_idx, resp_type, component=None):
-        dims = self.RespSteps[resp_type].dims
-        da = self.RespSteps[resp_type].isel(time=time_idx).copy()
+    def _get_resp_da(self, time_idx, component=None):
+        da = self.RespSteps.isel(time=time_idx)
+
+        # drop nodes/eles that do not exist in this step
         if self.ModelUpdate:
-            da = da.dropna(dim=dims[1], how="all")
-        if da.ndim == 1 or component is None:
+            if "nodeTags" in da.dims:
+                da = da.dropna(dim="nodeTags", how="all")
+            if "eleTags" in da.dims:
+                da = da.dropna(dim="eleTags", how="all")
+
+        # no component selection
+        if component is None or da.ndim == 1:
             return da * self.unit_factor
-        elif da.ndim == 2:
-            return da.loc[:, component] * self.unit_factor
-        elif da.ndim == 3:
-            return da.loc[:, :, component] * self.unit_factor
-        return None
+
+        # component dimension: assume last dim
+        comp_dim = da.dims[-1]
+
+        # choose sel vs isel deterministically
+        da = da.isel({comp_dim: component}) if isinstance(component, (int, slice)) else da.sel({comp_dim: component})
+
+        return da * self.unit_factor
 
     def _get_disp_da(self, idx):
-        if self.nodal_resp_steps is None:
-            data = self._get_resp_da(idx, "disp", ["UX", "UY", "UZ"])
-        else:
-            data = self.nodal_resp_steps["disp"].isel(time=idx).copy()
-            if self.ModelUpdate:
-                data = data.dropna(dim="nodeTags", how="all")
-            data = data.sel(DOFs=["UX", "UY", "UZ"])
-        return data / self.unit_factor  # come back to original unit
+        self.set_nodal_disp_step_data()
+        data = self.nodal_disp_steps.isel(time=idx).sel(DOFs=["UX", "UY", "UZ"])
+        # if self.nodal_resp_steps is None:
+        #     data = self._get_resp_da(idx, "disp", ["UX", "UY", "UZ"])
+        #     data = data / self.unit_factor  # come back to original unit
+        # else:
+        #     data = self.nodal_disp_steps["disp"].isel(time=idx).sel(DOFs=["UX", "UY", "UZ"])
+        if self.ModelUpdate:
+            data = data.dropna(dim="nodeTags", how="all")
+        return data
 
     def _set_defo_scale_factor(self, alpha=1.0):
         if self.defo_scale_factor is not None:
             return
 
-        defos, poss = [], []
-        for i in range(self.num_steps):
-            defo = self._get_disp_da(i)
-            pos = self._get_node_da(i)
-            pos.coords["time"] = defo.coords["time"]
-            defos.append(defo)
-            poss.append(pos)
+        self.set_nodal_disp_step_data()
 
+        defos_da = self.nodal_disp_steps.sel(DOFs=["UX", "UY", "UZ"])
+
+        # ---- compute alpha_ ----
         if isinstance(alpha, str) or alpha is True:
-            if self.ModelUpdate:
-                scalars = [np.linalg.norm(resp, axis=-1) for resp in defos]
-                scalars = [np.nanmax(scalar) for scalar in scalars]
-            else:
-                scalars = np.linalg.norm(defos, axis=-1)
-            maxv = np.nanmax(scalars)
-            alpha_ = 0.0 if maxv == 0 else self.max_bound_size * self.pargs.scale_factor / maxv
-            alpha_ = alpha_
+            comp_dim = defos_da.dims[-1]
+
+            # magnitude = sqrt(sum(x^2)) over comp_dim
+            mag = (defos_da * defos_da).sum(dim=comp_dim, skipna=True) ** 0.5
+
+            # scalar max
+            maxv = float(mag.max(skipna=True).item())
+            alpha_ = 0.0 if maxv == 0.0 else (self.max_bound_size * self.pargs.scale_factor / maxv)
+
         elif alpha is False or alpha is None:
             alpha_ = 1.0
-        elif isinstance(alpha, (int, float)):
-            alpha_ = alpha
-        self.defo_scale_factor = alpha_
-
-        if self.ModelUpdate:
-            defo_coords = [alpha_ * np.array(defo) + np.array(pos) for defo, pos in zip(defos, poss)]
-            defo_coords = [
-                xr.DataArray(coords, dims=pos.dims, coords=pos.coords) for coords, pos in zip(defo_coords, poss)
-            ]
         else:
-            poss_da = xr.concat(poss, dim="time")
-            defo_coords = alpha_ * np.array(defos) + np.array(poss)
-            defo_coords = xr.DataArray(defo_coords, dims=poss_da.dims, coords=poss_da.coords)
-        self.defo_coords = defo_coords
+            alpha_ = float(alpha)
+
+        self.defo_scale_factor = alpha_
 
     def _get_defo_coord_da(self, step, alpha):
         if not isinstance(alpha, bool) and alpha == 0.0:
             original_coords_da = self._get_node_da(step)
             return original_coords_da
         self._set_defo_scale_factor(alpha=alpha)
-        node_deform_coords = self.defo_coords[step] if self.ModelUpdate else self.defo_coords.isel(time=step)
+        defo = self._get_disp_da(step)
+        pos_origin = self._get_node_da(step)
+        coords = self.defo_scale_factor * np.asanyarray(defo) + np.asanyarray(pos_origin)
+        node_deform_coords = xr.DataArray(coords, dims=pos_origin.dims, coords=pos_origin.coords)
         return node_deform_coords
+
+    def check_interp_beam_disp(self):
+        if self.interp_beam_disp_on:
+            interp_beam_disp_steps = get_nodal_responses(
+                self.odb_tag, resp_type="interpolate_disp", lazy_load=self.lazy_load, print_info=False
+            )
+            if len(interp_beam_disp_steps) == 0:
+                self.interp_beam_disp_on = False
+
+    def set_interp_beam_on(self, on: bool):
+        self.interp_beam_disp_on = on
+
+    def set_interp_beam_disp_step_data(self):
+        if self.interp_beam_disp_on and self.interp_beam_disp_steps is None:
+            self.interp_beam_disp_steps = get_nodal_responses(
+                self.odb_tag, resp_type="interpolate_disp", lazy_load=self.lazy_load, print_info=False
+            )
+            self.interp_beam_points = get_nodal_responses(
+                self.odb_tag, resp_type="interpolate_points", lazy_load=self.lazy_load, print_info=False
+            )
+            self.interp_beam_cells = get_nodal_responses(
+                self.odb_tag, resp_type="interpolate_cells", lazy_load=self.lazy_load, print_info=False
+            )
+
+    def get_interp_beam_data(self, idx, alpha):
+        self.set_interp_beam_disp_step_data()
+        points_data = self.interp_beam_points.isel(time=idx)
+        cells_data = self.interp_beam_cells.isel(time=idx)
+        disp_data = self.interp_beam_disp_steps.isel(time=idx)
+        if self.ModelUpdate:
+            points_data = points_data.dropna(dim="interpolate_pointID", how="all")
+            disp_data = disp_data.dropna(dim="interpolate_pointID", how="all")
+            cells_data = cells_data.dropna(dim="interpolate_lineID", how="all")
+        points_origin = np.array(points_data)
+        cells_data = np.array(cells_data)
+        disp_data = np.array(disp_data)
+        scalars = np.sqrt(np.sum(disp_data**2, axis=1))
+        self._set_defo_scale_factor(alpha=alpha)
+        points_defo = points_origin + self.defo_scale_factor * disp_data
+        return points_origin, points_defo, cells_data, scalars
 
     @staticmethod
     def _get_line_cells(line_data):
@@ -163,8 +237,8 @@ class PlotResponseBase:
     def _get_unstru_cells(unstru_data):
         if len(unstru_data) > 0:
             unstru_tags = unstru_data.coords["eleTags"]
-            unstru_cell_types = np.array(unstru_data[:, -1], dtype=int)
             unstru_cells = unstru_data.to_numpy()
+            unstru_cell_types = np.array(unstru_cells[:, -1], dtype=int)
             if not np.any(np.isnan(unstru_cells)):
                 unstru_cells_new = unstru_cells[:, :-1].astype(int)
             else:

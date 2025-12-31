@@ -1,0 +1,151 @@
+{
+ "fig": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "plotly.graph_objs._figure",
+   "module_short": "plotly.graph_objs",
+   "name": "Figure"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "plotly.graph_objs",
+   "module_short": "plotly.graph_objs",
+   "name": "Figure"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "plotly",
+   "module_short": "plotly",
+   "name": "Figure"
+  }
+ ],
+ "opst.load_ops_examples": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "load_ops_examples"
+  }
+ ],
+ "opst.post.save_model_data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "save_model_data"
+  }
+ ],
+ "opstool.post.save_model_data": [
+  {
+   "is_class": false,
+   "is_explicit": true,
+   "module": "opstool.post",
+   "module_short": "opstool.post",
+   "name": "save_model_data"
+  }
+ ],
+ "opstool.vis.plotly.plot_model": [
+  {
+   "is_class": false,
+   "is_explicit": true,
+   "module": "opstool.vis.plotly",
+   "module_short": "opstool.vis.plotly",
+   "name": "plot_model"
+  },
+  {
+   "is_class": false,
+   "is_explicit": true,
+   "module": "opstool.vis.plotly",
+   "module_short": "opstool.vis.plotly",
+   "name": "plot_model"
+  },
+  {
+   "is_class": false,
+   "is_explicit": true,
+   "module": "opstool.vis.plotly",
+   "module_short": "opstool.vis.plotly",
+   "name": "plot_model"
+  },
+  {
+   "is_class": false,
+   "is_explicit": true,
+   "module": "opstool.vis.plotly",
+   "module_short": "opstool.vis.plotly",
+   "name": "plot_model"
+  },
+  {
+   "is_class": false,
+   "is_explicit": true,
+   "module": "opstool.vis.plotly",
+   "module_short": "opstool.vis.plotly",
+   "name": "plot_model"
+  },
+  {
+   "is_class": false,
+   "is_explicit": true,
+   "module": "opstool.vis.plotly",
+   "module_short": "opstool.vis.plotly",
+   "name": "plot_model"
+  }
+ ],
+ "opstool.vis.plotly.set_plot_props": [
+  {
+   "is_class": false,
+   "is_explicit": true,
+   "module": "opstool.vis.plotly",
+   "module_short": "opstool.vis.plotly",
+   "name": "set_plot_props"
+  }
+ ],
+ "opsvis.plot_model": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.plotly",
+   "module_short": "opstool.vis.plotly",
+   "name": "plot_model"
+  }
+ ],
+ "opsvis.set_plot_props": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.plotly",
+   "module_short": "opstool.vis.plotly",
+   "name": "set_plot_props"
+  }
+ ]
+}

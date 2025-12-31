@@ -2,7 +2,10 @@ from collections import defaultdict
 from typing import Optional, Union
 
 import numpy as np
-import openseespy.opensees as ops
+
+from ..utils import get_opensees_module
+
+ops = get_opensees_module()
 
 
 class ModelMass:

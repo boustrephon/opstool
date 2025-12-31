@@ -4,15 +4,14 @@ from typing import Optional, Union
 import numpy as np
 import pyvista as pv
 
-from ...post import loadODB
 from .._plot_nodal_resp_base import PlotNodalResponseBase
 from .plot_resp_base import PlotResponsePyvistaBase
-from .plot_utils import PLOT_ARGS, _plot_all_mesh_cmap, _update_point_label_actor
+from .plot_utils import PLOT_ARGS, _plot_all_mesh_cmap, _plot_lines, _plot_lines_cmap, _update_point_label_actor
 
 
 class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
-    def __init__(self, model_info_steps, node_resp_steps, model_update):
-        super().__init__(model_info_steps, node_resp_steps, model_update)
+    def __init__(self, odb_tag, lazy_load=True):
+        super().__init__(odb_tag, lazy_load=lazy_load)
 
     def _make_title(self, step, time):
         max_norm, min_norm = np.nanmax(self.resps_norm[step]), np.nanmin(self.resps_norm[step])
@@ -37,39 +36,30 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
             "time": time,
         }
         lines = [
-            f"* {info['title']}",
-            f"* {info['resp_type']}",
-            f"* {info['dof']} (DOF)",
-            f"{info['min']:.3E} ({size_symbol[0]})",
-            f"{info['max']:.3E} ({size_symbol[1]})",
             f"{info['step']} (step)",
             f"{info['time']:.3f} (time)",
+            f"{info['min']:.3E} ({size_symbol[0]})",
+            f"{info['max']:.3E} ({size_symbol[1]})",
+            "",
+            f"{info['title']}",
+            f"{info['resp_type']}",
+            f"{info['dof']} (DOF)",
         ]
         if self.unit_symbol:
-            info["unit"] = self.unit_symbol
-            lines.insert(3, f"{info['unit']} (unit)")
+            lines.append(f"{self.unit_symbol} (unit)")
 
         max_len = max(len(line) for line in lines)
         padded_lines = [line.rjust(max_len) for line in lines]
         text = "\n".join(padded_lines)
         return text + "\n"
 
-    def _get_mesh_data(self, step, alpha):
-        node_defo_coords = np.array(self._get_defo_coord_da(step, alpha))
-        if self.resps_norm is not None:
-            scalars = self.resps_norm[step]
-        else:
-            node_resp = np.array(self._get_resp_da(step, self.resp_type, self.component))
-            scalars = node_resp if node_resp.ndim == 1 else np.linalg.norm(node_resp, axis=1)
-        return node_defo_coords, scalars
-
     def get_dataset(self, step, defo_scale=1.0):
         cmin, cmax, step = self._get_resp_clim_peak(idx=step)
         if self.resps_norm is not None:
-            scalars = self.resps_norm[step]
+            scalars = self._get_step_norm(step)
         else:
             node_resp = np.array(self._get_resp_da(step, self.resp_type, self.component))
-            scalars = node_resp if node_resp.ndim == 1 else np.linalg.norm(node_resp, axis=1)
+            scalars = node_resp if node_resp.ndim == 1 else np.linalg.norm(node_resp, axis=-1)
         # ----------------------------------
         pos = np.array(self._get_defo_coord_da(step, defo_scale))
         line_cells, _ = self._get_line_cells(self._get_line_da(step))
@@ -143,6 +133,33 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
             # title_prop.SetJustificationToRight()
             title_prop.BoldOn()
 
+        if self.interp_beam_disp_on:
+            points_origin_interp, points_defo_interp, cells_interp, scalars_interp = self.get_interp_beam_data(
+                step, alpha
+            )
+            line_interp_grid = _plot_lines_cmap(
+                plotter=plotter,
+                pos=points_defo_interp,
+                cells=cells_interp,
+                scalars=scalars_interp,
+                cmap=self.pargs.cmap,
+                width=self.pargs.line_width,
+                render_lines_as_tubes=self.pargs.render_lines_as_tubes,
+                clim=None,
+                show_scalar_bar=False,
+            )
+            if show_origin:
+                _plot_lines(
+                    plotter=plotter,
+                    pos=points_origin_interp,
+                    cells=cells_interp,
+                    color="gray",
+                    width=self.pargs.mesh_edge_width,
+                    render_lines_as_tubes=self.pargs.render_lines_as_tubes,
+                )
+        else:
+            line_interp_grid = None
+
         # Max Min Labels
         if show_max_min:
             idxs = [np.argmax(scalars), np.argmin(scalars)]
@@ -150,6 +167,7 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
             max_min_label_grid = plotter.add_point_labels(
                 node_defo_coords[idxs],
                 labels,
+                show_points=False,
                 point_size=self.pargs.point_size + 10,
                 font_size=self.pargs.font_size + 5,
                 shape_color="#c0fb2d",
@@ -166,7 +184,7 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
         if show_mp_constraint:
             mp_grid = self._plot_mp_constraint(plotter, step, defo_scale=alpha)
         self._update_plotter(plotter, cpos=cpos)
-        return point_grid, line_grid, solid_grid, scalar_bar, bc_grid, mp_grid, max_min_label_grid
+        return point_grid, line_grid, solid_grid, scalar_bar, bc_grid, mp_grid, max_min_label_grid, line_interp_grid
 
     def _update_mesh(
         self,
@@ -178,6 +196,7 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
         bc_grid=None,
         mp_grid=None,
         max_min_label_grid=None,
+        line_interp_grid=None,
         alpha=1.0,
         bc_scale: float = 1.0,
         plotter=None,
@@ -219,6 +238,10 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
                 shape_opacity=100.0,
                 always_visible=True,
             )
+        if line_interp_grid:
+            _, points_defo, _, scalars = self.get_interp_beam_data(step, alpha)
+            line_interp_grid["scalars"] = scalars
+            line_interp_grid.points = points_defo
 
     def plot_slide(
         self,
@@ -254,19 +277,21 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
                 show_max_min=show_max_min,
             )
         else:
-            point_grid, line_grid, solid_grid, cbar, bc_grid, mp_grid, max_min_label_grid = self._create_mesh(
-                plotter,
-                self.num_steps - 1,
-                alpha=alpha_,
-                clim=clim,
-                show_bc=show_bc,
-                bc_scale=bc_scale,
-                show_mp_constraint=show_mp_constraint,
-                style=style,
-                show_outline=show_outline,
-                show_origin=show_origin,
-                cpos=cpos,
-                show_max_min=show_max_min,
+            point_grid, line_grid, solid_grid, cbar, bc_grid, mp_grid, max_min_label_grid, line_interp_grid = (
+                self._create_mesh(
+                    plotter,
+                    self.num_steps - 1,
+                    alpha=alpha_,
+                    clim=clim,
+                    show_bc=show_bc,
+                    bc_scale=bc_scale,
+                    show_mp_constraint=show_mp_constraint,
+                    style=style,
+                    show_outline=show_outline,
+                    show_origin=show_origin,
+                    cpos=cpos,
+                    show_max_min=show_max_min,
+                )
             )
             func = partial(
                 self._update_mesh,
@@ -279,6 +304,7 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
                 alpha=alpha_,
                 bc_scale=bc_scale,
                 max_min_label_grid=max_min_label_grid,
+                line_interp_grid=line_interp_grid,
                 plotter=plotter,
                 **kargs,
             )
@@ -361,18 +387,20 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
                 )
                 plotter.write_frame()
         else:
-            point_grid, line_grid, solid_grid, scalar_bar, bc_grid, mp_grid, max_min_label_grid = self._create_mesh(
-                plotter,
-                self.num_steps - 1,
-                alpha=alpha_,
-                show_bc=show_bc,
-                bc_scale=bc_scale,
-                show_mp_constraint=show_mp_constraint,
-                style=style,
-                show_outline=show_outline,
-                show_origin=show_origin,
-                cpos=cpos,
-                show_max_min=show_max_min,
+            point_grid, line_grid, solid_grid, scalar_bar, bc_grid, mp_grid, max_min_label_grid, line_interp_grid = (
+                self._create_mesh(
+                    plotter,
+                    self.num_steps - 1,
+                    alpha=alpha_,
+                    show_bc=show_bc,
+                    bc_scale=bc_scale,
+                    show_mp_constraint=show_mp_constraint,
+                    style=style,
+                    show_outline=show_outline,
+                    show_origin=show_origin,
+                    cpos=cpos,
+                    show_max_min=show_max_min,
+                )
             )
             plotter.write_frame()
             for step in range(self.num_steps):
@@ -387,6 +415,7 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
                     alpha=alpha_,
                     bc_scale=bc_scale,
                     max_min_label_grid=max_min_label_grid,
+                    line_interp_grid=line_interp_grid,
                     plotter=plotter,
                 )
                 plotter.write_frame()
@@ -397,6 +426,7 @@ def plot_nodal_responses(
     slides: bool = False,
     step: Union[int, str] = "absMax",
     show_defo: bool = True,
+    interpolate_beam_disp: bool = False,
     defo_scale: Union[float, int, bool] = 1.0,
     resp_type: str = "disp",
     resp_dof: Union[list, tuple, str] = ("UX", "UY", "UZ"),
@@ -410,6 +440,7 @@ def plot_nodal_responses(
     show_undeformed: bool = False,
     style: str = "surface",
     show_outline: bool = False,
+    lazy_load: bool = False,
 ) -> pv.Plotter:
     """Visualizing Node Responses.
 
@@ -431,6 +462,11 @@ def plot_nodal_responses(
         If set to a float or int, it will scale the deformed shape by that factor.
     show_defo: bool, default: True
         Whether to display the deformed shape.
+    interpolate_beam_disp: bool, default: False, added since version 1.0.25.
+        Whether to interpolate beam displacements.
+        Shape functions will be used to interpolate the displacements of beam elements for a smoother visualization.
+        If you have a large number of beam elements, enabling this option may slow down the plotting process, and it is recommended to disable it.
+        If True, You need to ensure that the data has been saved in ``CreateODB`` with ``interpolate_beam_disp=True`` for this option to take effect.
     resp_type: str, default: disp
         Type of response to be visualized.
         Optional: "disp", "vel", "accel", "reaction", "reactionIncInertia", "rayleighForces", "pressure".
@@ -470,6 +506,12 @@ def plot_nodal_responses(
         Visualization mesh style of surfaces and solids.
         One of the following: style='surface', style='wireframe', style='points', style='points_gaussian'.
         Defaults to 'surface'. Note that 'wireframe' only shows a wireframe of the outer geometry.
+    lazy_load: bool, default: False, added since version 1.0.25.
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -484,16 +526,16 @@ def plot_nodal_responses(
     `Plotter.export_html <https://docs.pyvista.org/api/plotting/_autosummary/pyvista.plotter.export_html#pyvista.Plotter.export_html>`_.
     to export this plotter as an interactive scene to an HTML file.
     """
-    model_info_steps, model_update, node_resp_steps = loadODB(odb_tag, resp_type="Nodal")
     plotter = pv.Plotter(
         notebook=PLOT_ARGS.notebook,
         line_smoothing=PLOT_ARGS.line_smoothing,
         polygon_smoothing=PLOT_ARGS.polygon_smoothing,
         off_screen=PLOT_ARGS.off_screen,
     )
-    plotbase = PlotNodalResponse(model_info_steps, node_resp_steps, model_update)
+    plotbase = PlotNodalResponse(odb_tag=odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
+    plotbase.set_interp_beam_on(interpolate_beam_disp)
     if slides:
         plotbase.plot_slide(
             plotter,
@@ -535,6 +577,7 @@ def plot_nodal_responses_animation(
     off_screen: bool = True,
     defo_scale: Union[float, int, bool] = 1.0,
     show_defo: bool = True,
+    interpolate_beam_disp: bool = False,
     resp_type: str = "disp",
     resp_dof: Union[list, tuple, str] = ("UX", "UY", "UZ"),
     unit_symbol: Optional[str] = None,
@@ -547,6 +590,7 @@ def plot_nodal_responses_animation(
     show_undeformed: bool = False,
     style: str = "surface",
     show_outline: bool = False,
+    lazy_load: bool = False,
 ) -> pv.Plotter:
     """Visualize node response animation.
 
@@ -566,6 +610,11 @@ def plot_nodal_responses_animation(
         If set to False, the deformed shape will not be scaled (original deformation).
         If set to True or "auto", the deformed shape will be scaled by the default scale (i.e., 1/20 of the maximum model dimensions).
         If set to a float or int, it will scale the deformed shape by that factor.
+    interpolate_beam_disp: bool, default: False, added since version 1.0.25.
+        Whether to interpolate beam displacements.
+        Shape functions will be used to interpolate the displacements of beam elements for a smoother visualization.
+        If you have a large number of beam elements, enabling this option may slow down the plotting process, and it is recommended to disable it.
+        If True, You need to ensure that the data has been saved in ``CreateODB`` with ``interpolate_beam_disp=True`` for this option to take effect.
     show_defo: bool, default: True
         Whether to display the deformed shape.
     resp_type: str, default: disp
@@ -601,6 +650,12 @@ def plot_nodal_responses_animation(
         Visualization mesh style of surfaces and solids.
         One of the following: style='surface', style='wireframe', style='points', style='points_gaussian'.
         Defaults to 'surface'. Note that 'wireframe' only shows a wireframe of the outer geometry.
+    lazy_load: bool, default: False, added since version 1.0.25.
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -615,16 +670,16 @@ def plot_nodal_responses_animation(
     `Plotter.export_html <https://docs.pyvista.org/api/plotting/_autosummary/pyvista.plotter.export_html#pyvista.Plotter.export_html>`_.
     to export this plotter as an interactive scene to an HTML file.
     """
-    model_info_steps, model_update, node_resp_steps = loadODB(odb_tag, resp_type="Nodal")
     plotter = pv.Plotter(
         notebook=PLOT_ARGS.notebook,
         line_smoothing=PLOT_ARGS.line_smoothing,
         polygon_smoothing=PLOT_ARGS.polygon_smoothing,
         off_screen=off_screen,
     )
-    plotbase = PlotNodalResponse(model_info_steps, node_resp_steps, model_update)
+    plotbase = PlotNodalResponse(odb_tag=odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
+    plotbase.set_interp_beam_on(interpolate_beam_disp)
     plotbase.plot_anim(
         plotter,
         alpha=defo_scale,
@@ -654,6 +709,7 @@ def get_nodal_responses_dataset(
     resp_type: str = "disp",
     resp_dof: Union[list, tuple, str] = ("UX", "UY", "UZ"),
     defo_scale: Union[float, int, bool] = 1.0,
+    lazy_load: bool = False,
 ) -> pv.UnstructuredGrid:
     """Get nodal responses dataset.
     Scalars are stored in the ``resp_type`` field of the dataset.
@@ -688,14 +744,19 @@ def get_nodal_responses_dataset(
         If set to False, the deformed shape will not be scaled (original deformation).
         If set to True or "auto", the deformed shape will be scaled by the default scale (i.e., 1/20 of the maximum model dimensions).
         If set to a float or int, it will scale the deformed shape by that factor.
+    lazy_load: bool, default: False, added since version 1.0.25.
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
     unstru_grid: `pyvista.UnstructuredGrid <https://docs.pyvista.org/api/core/_autosummary/pyvista.unstructuredgrid#pyvista.UnstructuredGrid>`_.
         Unstructured grid with unstructured cells and response scalars.
     """
-    model_info_steps, model_update, node_resp_steps = loadODB(odb_tag, resp_type="Nodal")
-    plotbase = PlotNodalResponse(model_info_steps, node_resp_steps, model_update)
+    plotbase = PlotNodalResponse(odb_tag=odb_tag, lazy_load=lazy_load)
     plotbase.set_comp_resp_type(resp_type=resp_type, component=resp_dof)
     unstru_grid = plotbase.get_dataset(step, defo_scale=defo_scale)
     return unstru_grid

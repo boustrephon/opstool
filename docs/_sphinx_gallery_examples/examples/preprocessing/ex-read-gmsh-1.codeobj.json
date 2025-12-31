@@ -1,0 +1,829 @@
+{
+ "GMSH2OPS": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS"
+  }
+ ],
+ "GMSH2OPS.create_element_cmds": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_element_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_element_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_element_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.create_element_cmds"
+  }
+ ],
+ "GMSH2OPS.create_fix_cmds": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_fix_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_fix_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_fix_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.create_fix_cmds"
+  }
+ ],
+ "GMSH2OPS.create_node_cmds": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_node_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_node_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.create_node_cmds"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.create_node_cmds"
+  }
+ ],
+ "GMSH2OPS.get_boundary_dim_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_boundary_dim_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_boundary_dim_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.get_boundary_dim_tags"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.get_boundary_dim_tags"
+  }
+ ],
+ "GMSH2OPS.read_gmsh_data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.read_gmsh_data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.read_gmsh_data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS.read_gmsh_data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS.read_gmsh_data"
+  }
+ ],
+ "boundary_dim_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "boundary_dim_tags.remove": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  }
+ ],
+ "ele_tags_n4": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "ele_tags_n9": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "fix_node_tags": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "gmsh.finalize": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh",
+   "module_short": "gmsh",
+   "name": "finalize"
+  }
+ ],
+ "gmsh.initialize": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh",
+   "module_short": "gmsh",
+   "name": "initialize"
+  }
+ ],
+ "gmsh.model.getBoundary": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model",
+   "module_short": "gmsh.model",
+   "name": "getBoundary"
+  }
+ ],
+ "gmsh.model.mesh.generate": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.mesh",
+   "module_short": "gmsh.model.mesh",
+   "name": "generate"
+  }
+ ],
+ "gmsh.model.mesh.setOrder": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.mesh",
+   "module_short": "gmsh.model.mesh",
+   "name": "setOrder"
+  }
+ ],
+ "gmsh.model.mesh.setTransfiniteCurve": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.mesh",
+   "module_short": "gmsh.model.mesh",
+   "name": "setTransfiniteCurve"
+  }
+ ],
+ "gmsh.model.mesh.setTransfiniteSurface": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.mesh",
+   "module_short": "gmsh.model.mesh",
+   "name": "setTransfiniteSurface"
+  }
+ ],
+ "gmsh.model.occ.addRectangle": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.occ",
+   "module_short": "gmsh.model.occ",
+   "name": "addRectangle"
+  }
+ ],
+ "gmsh.model.occ.removeAllDuplicates": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.occ",
+   "module_short": "gmsh.model.occ",
+   "name": "removeAllDuplicates"
+  }
+ ],
+ "gmsh.model.occ.synchronize": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model.occ",
+   "module_short": "gmsh.model.occ",
+   "name": "synchronize"
+  }
+ ],
+ "gmsh.model.setVisibility": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.model",
+   "module_short": "gmsh.model",
+   "name": "setVisibility"
+  }
+ ],
+ "gmsh.option.setNumber": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "gmsh.option",
+   "module_short": "gmsh.option",
+   "name": "setNumber"
+  }
+ ],
+ "l": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "tuple"
+  }
+ ],
+ "lines1": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "lines2": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "ops.model": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "model"
+  }
+ ],
+ "ops.nDMaterial": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "nDMaterial"
+  }
+ ],
+ "ops.section": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "section"
+  }
+ ],
+ "ops.wipe": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "builtin_function_or_method"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "openseespy.opensees",
+   "module_short": "openseespy.opensees",
+   "name": "wipe"
+  }
+ ],
+ "opst.pre.Gmsh2OPS": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre.io._read_gmsh",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre.io",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "Gmsh2OPS"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "Gmsh2OPS"
+  }
+ ],
+ "opst.vis.pyvista.plot_eigen": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "plot_eigen"
+  }
+ ],
+ "opst.vis.pyvista.plot_model": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "plot_model"
+  }
+ ],
+ "opst.vis.pyvista.set_plot_props": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.vis.pyvista",
+   "module_short": "opstool.vis.pyvista",
+   "name": "set_plot_props"
+  }
+ ],
+ "plotter": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista",
+   "name": "Plotter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista",
+   "name": "Plotter"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "Plotter"
+  }
+ ],
+ "plotter.show": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista",
+   "name": "Plotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista",
+   "name": "Plotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "Plotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities.misc",
+   "module_short": "pyvista.core.utilities.misc",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities",
+   "module_short": "pyvista.core.utilities",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core",
+   "module_short": "pyvista.core",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "_NoNewAttrMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.plotter",
+   "module_short": "pyvista.plotting.plotter",
+   "name": "BasePlotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "BasePlotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "BasePlotter.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities.misc",
+   "module_short": "pyvista.core.utilities.misc",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core.utilities",
+   "module_short": "pyvista.core.utilities",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.core",
+   "module_short": "pyvista.core",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "_BoundsSizeMixin.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.widgets",
+   "module_short": "pyvista.plotting.widgets",
+   "name": "WidgetHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "WidgetHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "WidgetHelper.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingMethods.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingMethods.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingMethods.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting.picking",
+   "module_short": "pyvista.plotting.picking",
+   "name": "PickingInterface.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista.plotting",
+   "module_short": "pyvista.plotting",
+   "name": "PickingInterface.show"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyvista",
+   "module_short": "pyvista",
+   "name": "PickingInterface.show"
+  }
+ ],
+ "rect1": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "rect2": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "secTag": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ]
+}

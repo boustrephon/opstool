@@ -1,9 +1,11 @@
+import importlib
 import os
 import shutil
 import sys
 from contextlib import contextmanager
 from itertools import cycle
 from pathlib import Path
+from types import ModuleType
 from typing import Union
 
 import numpy as np
@@ -15,6 +17,38 @@ PKG_PREFIX = CONFIGS.get_pkg_prefix()
 
 
 RESULTS_DIR = CONFIGS.get_output_dir()
+
+
+def _reset_configs_for_doc(gallery_conf, fname):
+    from ..vis import plotly, pyvista
+
+    plotly.reset_plot_props()
+    pyvista.reset_plot_props()
+
+
+def set_opensees_module(module: ModuleType | str):
+    """Set the OpenSeesPy module to be used.
+    Added since version 1.0.25.
+
+    Parameters
+    ----------
+    module : ModuleType | str
+        The OpenSeesPy module or the module name as a string.
+        If you have a custom build of OpenSeesPy, you can pass the module directly.
+
+    Example
+    -------
+    >>> # if you have a custom build of OpenSeesPy, called `opensees`
+    >>> import opensees as ops
+    >>> opstool.set_opensees_module(ops)
+    >>> # Or using module name
+    >>> opstool.set_opensees_module("opensees")
+    """
+    CONFIGS.set_ops_module(module)
+
+
+def get_opensees_module() -> ModuleType:
+    return CONFIGS.get_ops_module()
 
 
 def _check_odb_path():
@@ -101,16 +135,13 @@ def add_ops_hints_file():
     """
     src_file = Path(__file__).resolve().parent / "opensees.pyi"
     if sys.platform.startswith("linux"):
-        import openseespylinux.opensees as ops
-
+        ops = importlib.import_module("openseespylinux.opensees")
         tar_file = Path(ops.__file__).resolve().parent / "opensees.pyi"
     elif sys.platform.startswith("win"):
-        import openseespywin.opensees as ops
-
+        ops = importlib.import_module("openseespywin.opensees")
         tar_file = Path(ops.__file__).resolve().parent / "opensees.pyi"
     elif sys.platform.startswith("darwin"):
-        import openseespymac.opensees as ops
-
+        ops = importlib.import_module("openseespymac.opensees")
         tar_file = Path(ops.__file__).resolve().parent / "opensees.pyi"
     else:
         raise RuntimeError(sys.platform + " is not supported yet")

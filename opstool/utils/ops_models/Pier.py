@@ -1,12 +1,15 @@
 import numpy as np
-import openseespy.opensees as ops
+
+from .._util_funcs import get_opensees_module
+
+ops = get_opensees_module()
 
 
 def Pier():
     ops.wipe()
-    ops.model('basic', '-ndm', 3, '-ndf', 3)
-    matTag, E, nu, rho = 1, 3.E7, 0.2, 2.55
-    ops.nDMaterial('ElasticIsotropic', matTag, E, nu)
+    ops.model("basic", "-ndm", 3, "-ndf", 3)
+    matTag, E, nu, rho = 1, 3.0e7, 0.2, 2.55
+    ops.nDMaterial("ElasticIsotropic", matTag, E, nu)
 
     ele_mass = {}
     node_mass = {}
@@ -36,27 +39,22 @@ def Pier():
     for k in range(nH - 1):
         for j in range(nL - 1):
             for i in range(nB - 1):
-                node1, node2 = int(nodeTags[k][j][i]), int(
-                    nodeTags[k][j][i + 1])
-                node3, node4 = int(nodeTags[k][j + 1]
-                                   [i + 1]), int(nodeTags[k][j + 1][i])
-                node5, node6 = int(nodeTags[k + 1][j][i]
-                                   ), int(nodeTags[k + 1][j][i + 1])
-                node7, node8 = int(nodeTags[k + 1][j + 1]
-                                   [i + 1]), int(nodeTags[k + 1][j + 1][i])
-                eleNodes = [node1, node2, node3,
-                            node4, node5, node6, node7, node8]
+                node1, node2 = int(nodeTags[k][j][i]), int(nodeTags[k][j][i + 1])
+                node3, node4 = int(nodeTags[k][j + 1][i + 1]), int(nodeTags[k][j + 1][i])
+                node5, node6 = int(nodeTags[k + 1][j][i]), int(nodeTags[k + 1][j][i + 1])
+                node7, node8 = int(nodeTags[k + 1][j + 1][i + 1]), int(nodeTags[k + 1][j + 1][i])
+                eleNodes = [node1, node2, node3, node4, node5, node6, node7, node8]
                 tag += 1
-                ops.element('stdBrick', tag, *eleNodes, matTag)
+                ops.element("stdBrick", tag, *eleNodes, matTag)
                 ele_mass[tag] = (dB * dL * dH) * rho
 
-    for tag in ele_mass.keys():
+    for tag in ele_mass:
         nodeTags = ops.eleNodes(tag)
         mass = ele_mass[tag]
         for tag_ in nodeTags:
-            if tag_ in node_mass.keys():
+            if tag_ in node_mass:
                 node_mass[tag_] += mass / 8
             else:
                 node_mass[tag_] = mass / 8
-    for tag in node_mass.keys():
+    for tag in node_mass:
         ops.mass(tag, node_mass[tag], node_mass[tag], node_mass[tag])
