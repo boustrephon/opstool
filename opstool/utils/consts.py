@@ -16,7 +16,7 @@ class CONFIGS:
 
     CONSOLE = Console()
 
-    PKG_NAME = "OPSTOOL"
+    PKG_NAME = "OPSTOOL™"
     # RESULTS_DIR = ".opstool.output"  # _OPSTOOL_ODB
     RESULTS_DIR = Path(os.getcwd()) / ".opstool.output"
     RESULTS_DIR.mkdir(exist_ok=True)
