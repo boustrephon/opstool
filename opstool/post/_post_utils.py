@@ -14,48 +14,27 @@ NaNPolicy = Literal["ignore", "propagate"]
 
 @dataclass
 class Beam3DDispInterpolator:
-    """
-    Efficient 3D beam/frame batch eigenvector/displacement post-processor.
+    """Interpolate 3D beam element displacements from nodal/global to element/local and interior points."""
 
-    Special handling for invalid local axes
-    ---------------------------------------
-    If an element has ex=ey=ez≈0 (all zero axes), it is treated as "invalid".
-    For invalid elements:
-      - global_to_local_ends(): DO NOT rotate. Store global translations (UX,UY,UZ)
-        directly into the "local" translational slots (ux,uy,uz) for both ends.
-      - interpolate_to_lines(): DO NOT interpolate. Output only two end points and
-        one segment cell [2, idx_i, idx_j], and response is the global XYZ
-        translations at the ends.
-
-    Returns
-    -------
-    points   : (N, 3)
-    response : (..., N, 3)  # preserves all batch dims
-    cells    : (M, 3) each row [2, idx_i, idx_j]
-    """
-
-    node_coords: np.ndarray  # (nNodes, 3)
-    conn: np.ndarray  # (nEles, 2)
-    ex: np.ndarray  # (nEles, 3)
-    ey: np.ndarray  # (nEles, 3)
-    ez: np.ndarray  # (nEles, 3)
+    node_coords: np.ndarray
+    conn: np.ndarray
+    ex: np.ndarray
+    ey: np.ndarray
+    ez: np.ndarray
     one_based_node_id: bool = False
 
-    # cached (built once)
     _conn0: np.ndarray | None = None
     _Xi: np.ndarray | None = None
     _dX: np.ndarray | None = None
     _L: np.ndarray | None = None
     _R: np.ndarray | None = None
 
-    # invalid axes mask (built once)
     _invalid_axes: np.ndarray | None = None
+    _zero_length: np.ndarray | None = None  # zero-length elements mask
 
-    # grid cache (per npts_per_ele): s, L1, L2, N1..N4
     _grid_cache: (
         dict[int, tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]] | None
     ) = None
-    # s, L1, L2, N1, N2, N3, N4
 
     def __post_init__(self) -> None:
         self.node_coords = np.asarray(self.node_coords, dtype=float)
@@ -85,18 +64,6 @@ class Beam3DDispInterpolator:
         *,
         nan_policy: NaNPolicy = "ignore",
     ) -> np.ndarray:
-        """
-        Convert nodal global vectors to element-end local vectors.
-
-        NOTE (smart handling):
-        - valid axes: rotate to local using R
-        - invalid axes (ex=ey=ez≈0): DO NOT rotate; store global XYZ translations into ux,uy,uz.
-
-        Returns
-        -------
-        end_local : (..., nEles, 12)
-            Local end vectors [ui(6), uj(6)] per element.
-        """
         g = np.asarray(nodal_global, dtype=float)
         if g.shape[-1] < 6:
             raise ValueError("nodal_global last dim must be >= 6.")  # noqa: TRY003
@@ -116,22 +83,25 @@ class Beam3DDispInterpolator:
             raise ValueError("nan_policy must be 'ignore' or 'propagate'.")  # noqa: TRY003
 
         invalid = self._invalid_axes  # (nEles,)
+        valid = ~invalid
+
+        # ---- Fast path: all valid
         if not np.any(invalid):
-            di_l = self._rot6(di_g)
-            dj_l = self._rot6(dj_g)
+            di_l = self._rot6(di_g, R=self._R)
+            dj_l = self._rot6(dj_g, R=self._R)
             return np.concatenate([di_l, dj_l], axis=-1)
 
         # allocate outputs
         di_l = np.empty_like(di_g)
         dj_l = np.empty_like(dj_g)
 
-        # valid rotate
-        valid = ~invalid
+        # ---- valid rotate (only if any valid)
         if np.any(valid):
-            di_l[..., valid, :] = self._rot6(di_g[..., valid, :])
-            dj_l[..., valid, :] = self._rot6(dj_g[..., valid, :])
+            Rv = self._R[valid]  # (nValid, 3, 3)
+            di_l[..., valid, :] = self._rot6(di_g[..., valid, :], R=Rv)
+            dj_l[..., valid, :] = self._rot6(dj_g[..., valid, :], R=Rv)
 
-        # invalid: store global translations directly; rotations set to 0 (unused for endpoints-only)
+        # ---- invalid: store global translations directly; rotations set to 0
         if np.any(invalid):
             di_l[..., invalid, 0:3] = di_g[..., invalid, 0:3]
             dj_l[..., invalid, 0:3] = dj_g[..., invalid, 0:3]
@@ -283,7 +253,7 @@ class Beam3DDispInterpolator:
     # --------------------------
     # Geometry cache
     # --------------------------
-    def _build_geometry_cache(self) -> None:
+    def _build_geometry_cache(self, tol_len: float = 1e-14) -> None:
         self._conn0 = self.conn - 1 if self.one_based_node_id else self.conn.copy()
 
         ni = self._conn0[:, 0]
@@ -292,8 +262,10 @@ class Beam3DDispInterpolator:
         Xj = self.node_coords[nj]
         dX = Xj - Xi
         L = np.linalg.norm(dX, axis=1)
-        if np.any(L <= 0):
-            raise ValueError("Found zero-length element(s).")  # noqa: TRY003
+
+        # ZERO LENGTH CHECK
+        #    RECORD which elements are zero-length for later use in invalid axes mask
+        self._zero_length = tol_len >= L
 
         self._Xi = Xi
         self._dX = dX
@@ -305,11 +277,19 @@ class Beam3DDispInterpolator:
         R[:, 2, :] = self.ez
         self._R = R
 
-    def _build_invalid_axes_mask(self, tol: float = 1e-14) -> None:
+    def _build_invalid_axes_mask(self, tol_axis: float = 1e-14) -> None:
         exn = np.linalg.norm(self.ex, axis=1)
         eyn = np.linalg.norm(self.ey, axis=1)
         ezn = np.linalg.norm(self.ez, axis=1)
-        self._invalid_axes = (exn < tol) & (eyn < tol) & (ezn < tol)
+
+        invalid_axis = (exn < tol_axis) & (eyn < tol_axis) & (ezn < tol_axis)
+
+        # key fix: also treat zero-length elements as invalid
+        zl = self._zero_length
+        if zl is None:
+            self._invalid_axes = invalid_axis
+        else:
+            self._invalid_axes = invalid_axis | zl
 
     # --------------------------
     # Shapes cache (only shapes; points/cells built per valid/invalid)
@@ -421,9 +401,10 @@ class Beam3DDispInterpolator:
     # --------------------------
     # Rotation (global -> local)
     # --------------------------
-    def _rot6(self, d6: np.ndarray) -> np.ndarray:
-        u = np.einsum("eab,...eb->...ea", self._R, d6[..., 0:3], optimize=True)
-        r = np.einsum("eab,...eb->...ea", self._R, d6[..., 3:6], optimize=True)
+    def _rot6(self, d6: np.ndarray, R: np.ndarray | None = None) -> np.ndarray:
+        Ruse = self._R if R is None else R
+        u = np.einsum("eab,...eb->...ea", Ruse, d6[..., 0:3], optimize=True)
+        r = np.einsum("eab,...eb->...ea", Ruse, d6[..., 3:6], optimize=True)
         return np.concatenate([u, r], axis=-1)
 
     @staticmethod
@@ -500,7 +481,6 @@ class Beam3DDispInterpolator:
         out = np.full((*u_i.shape, N1.size), np.nan, dtype=float)
 
         if np.any(full):
-            # 关键修复点：L 只做广播，不做布尔索引
             Lb = L.reshape((1,) * (u_i.ndim - 1) + (-1,))
 
             out[full] = (
