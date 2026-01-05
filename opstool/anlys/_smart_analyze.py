@@ -3,7 +3,6 @@ from contextlib import contextmanager
 from typing import Optional, TypedDict, Union
 
 import numpy as np
-import openseespy.opensees as ops
 import warnings
 from rich import print as rprint
 from rich.console import Console
