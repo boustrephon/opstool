@@ -1,13 +1,22 @@
+from __future__ import annotations
+
+import importlib
 import os
 from pathlib import Path
+from types import ModuleType
 
 from rich.console import Console
 
 
 class CONFIGS:
+    try:
+        OPS: ModuleType | None = importlib.import_module("openseespy.opensees")
+    except Exception:
+        OPS = None
+
     CONSOLE = Console()
 
-    PKG_NAME = "OPSTOOL"
+    PKG_NAME = "OPSTOOL™"
     # RESULTS_DIR = ".opstool.output"  # _OPSTOOL_ODB
     RESULTS_DIR = Path(os.getcwd()) / ".opstool.output"
     RESULTS_DIR.mkdir(exist_ok=True)
@@ -130,3 +139,18 @@ class CONFIGS:
     @classmethod
     def get_shape_map(cls):
         return cls.SHAPE_MAP
+
+    @classmethod
+    def set_ops_module(cls, module: ModuleType | str):
+        if isinstance(module, str):
+            cls.OPS = importlib.import_module(module)
+        else:
+            cls.OPS = module
+
+    @classmethod
+    def get_ops_module(cls) -> ModuleType:
+        if cls.OPS is None:
+            raise ImportError(  # noqa: TRY003
+                "OpenSeesPy is not installed or failed to import. Please install OpenSeesPy to use this feature."
+            )
+        return cls.OPS

@@ -79,11 +79,11 @@ extensions = [
 exclude_patterns = [
     "_build/**",
     "**/.ipynb_checkpoints/**",
-    "auto_examples/**/*.ipynb",
-    "auto_examples/**/*.py",
-    "auto_examples/**/*.py.md5",
-    "auto_examples/**/*.zip",
-    "auto_examples/**/*.codeobj.json",
+    "_sphinx_gallery_examples/**/*.ipynb",
+    "_sphinx_gallery_examples/**/*.py",
+    "_sphinx_gallery_examples/**/*.py.md5",
+    "_sphinx_gallery_examples/**/*.zip",
+    "_sphinx_gallery_examples/**/*.codeobj.json",
     "Thumbs.db",
     ".DS_Store",
 ]
@@ -129,9 +129,14 @@ plot_formats = ["png"]
 # pyvista plot directive
 pyvista_plot_include_source = True
 
+
 sphinx_gallery_conf = {
     "examples_dirs": ["quick-start", "../examples", "src/vis"],
-    "gallery_dirs": ["auto_examples/quick-start", "auto_examples/examples", "auto_examples/vis-guide"],
+    "gallery_dirs": [
+        "_sphinx_gallery_examples/quick-start",
+        "_sphinx_gallery_examples/examples",
+        "_sphinx_gallery_examples/vis-guide",
+    ],
     "image_scrapers": (DynamicScraper(), plotly_sg_scraper, "matplotlib"),
     "download_all_examples": False,
     "remove_config_comments": True,
@@ -143,6 +148,7 @@ sphinx_gallery_conf = {
     "capture_repr": ("_repr_html_",),
     "within_subsection_order": FileNameSortKey,
     "nested_sections": True,
+    "reset_modules": ("opstool.utils._reset_configs_for_doc",),
 }
 
 # -- Options for HTML output -------------------------------------------------
@@ -164,6 +170,11 @@ html_theme_options = {
     "source_branch": "master",
     "source_directory": "docs/",
     "top_of_page_buttons": ["view", "edit"],
+    "light_css_variables": {
+        # "font-stack": "Arial, sans-serif",
+        "font-stack--monospace": "Monaco, monospace",
+        # "font-stack--headings": "Georgia, serif",
+    },
 }
 templates_path = ["_static/_templates/furo", "_static/_templates"]
 html_sidebars = {
@@ -181,5 +192,5 @@ html_sidebars = {
 html_context = {"repository": "yexiang92/opstool"}
 
 
-pygments_style = "gruvbox-light"
+pygments_style = "tango"
 pygments_dark_style = "lightbulb"

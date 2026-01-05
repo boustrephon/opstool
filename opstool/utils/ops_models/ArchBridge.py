@@ -1,38 +1,37 @@
-# !-*- coding:utf-8 -*-
-
 # This document was created from Midas2OPS version 0.01
 
 from collections import namedtuple
-import openseespy.opensees as ops
+
+from .._util_funcs import get_opensees_module
+
+ops = get_opensees_module()
 
 
 def ArchBridge():
     ops.wipe()
     # Set the default model dimensions and number of dofs.
-    ops.model('basic', '-ndm', 3, '-ndf', 6)
+    ops.model("basic", "-ndm", 3, "-ndf", 6)
 
     # Mechanical properties of material
     # E-Elastic Modulus; G-Shear Modulus; v-Poisson's ratio; rho-Mass Density;
     # gamma-unit weight; r: expansion coefficient
-    mat_props = namedtuple('mat_props', ['mat_name', 'E', 'v', 'G', 'r', 'gamma', 'rho'])
+    mat_props = namedtuple("mat_props", ["mat_name", "E", "v", "G", "r", "gamma", "rho"])
     MatProps = dict()
     MatProps[1] = mat_props._make((40.0, 33057000.0, 0.167, 14163239.074550128, 1e-05, 25.0, 2.5493))
 
-
     # Mechanical properties of Sections
-    # A-Area; Asy-Shear area along y; Asz-Shear area along z; 
+    # A-Area; Asy-Shear area along y; Asz-Shear area along z;
     # Ixx-torsional; Iyy-inertia moment about y; Izz-inertia moment about z;
-    sec_props = namedtuple('sec_props', ['sec_name', 'A', 'Asy', 'Asz', 'Ixx', 'Iyy', 'Izz'])
+    sec_props = namedtuple("sec_props", ["sec_name", "A", "Asy", "Asz", "Ixx", "Iyy", "Izz"])
     SecProps = dict()
-    SecProps[1] = sec_props._make(('拱肋', 1.9776, 1.248, 0.96, 2.01, 1.1129, 1.7224))
-    SecProps[2] = sec_props._make(('立柱1.2*1.2', 1.44, 1.2, 1.2, 0.2916, 0.1728, 0.1728))
-    SecProps[3] = sec_props._make(('立柱0.9*1.2', 1.08, 0.9, 0.9, 0.1575, 0.0729, 0.1296))
-    SecProps[4] = sec_props._make(('立柱0.7*1.2', 0.84, 0.7, 0.7, 0.0873, 0.0343, 0.1008))
-    SecProps[5] = sec_props._make(('盖梁', 1.2, 1.0, 1.0, 0.1984, 0.1, 0.144))
-    SecProps[6] = sec_props._make(('板梁', 0.4, 0.3333, 0.3333, 0.016, 0.0053, 0.0333))
-    SecProps[7] = sec_props._make(('拱肋横系梁', 0.8, 0.48, 0.48, 0.2, 0.1387, 0.1387))
-    SecProps[8] = sec_props._make(('立柱横系梁', 0.25, 0.2083, 0.2083, 0.0088, 0.0052, 0.0052))
-
+    SecProps[1] = sec_props._make(("拱肋", 1.9776, 1.248, 0.96, 2.01, 1.1129, 1.7224))
+    SecProps[2] = sec_props._make(("立柱1.2*1.2", 1.44, 1.2, 1.2, 0.2916, 0.1728, 0.1728))
+    SecProps[3] = sec_props._make(("立柱0.9*1.2", 1.08, 0.9, 0.9, 0.1575, 0.0729, 0.1296))
+    SecProps[4] = sec_props._make(("立柱0.7*1.2", 0.84, 0.7, 0.7, 0.0873, 0.0343, 0.1008))
+    SecProps[5] = sec_props._make(("盖梁", 1.2, 1.0, 1.0, 0.1984, 0.1, 0.144))
+    SecProps[6] = sec_props._make(("板梁", 0.4, 0.3333, 0.3333, 0.016, 0.0053, 0.0333))
+    SecProps[7] = sec_props._make(("拱肋横系梁", 0.8, 0.48, 0.48, 0.2, 0.1387, 0.1387))
+    SecProps[8] = sec_props._make(("立柱横系梁", 0.25, 0.2083, 0.2083, 0.0088, 0.0052, 0.0052))
 
     # Create OpenSees node.
     ops.node(1, -64.6, -2.75, -20.2)
@@ -1179,2328 +1178,15099 @@ def ArchBridge():
     ops.node(1305, 63.08, 4.0, 3.95)
 
     # Create OpenSees elastic elements.
-    ops.geomTransf('Linear', 1, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1, *[2, 9], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 1)
-    ops.geomTransf('Linear', 2, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 2, *[10, 3], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 2)
-    ops.geomTransf('Linear', 3, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 3, *[6, 11], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 3)
-    ops.geomTransf('Linear', 4, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 4, *[12, 7], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 4)
-    ops.geomTransf('Linear', 5, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 5, *[9, 13], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 5)
-    ops.geomTransf('Linear', 6, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 6, *[14, 10], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 6)
-    ops.geomTransf('Linear', 7, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 7, *[11, 15], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 7)
-    ops.geomTransf('Linear', 8, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 8, *[16, 12], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 8)
-    ops.geomTransf('Linear', 9, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 9, *[13, 17], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 9)
-    ops.geomTransf('Linear', 10, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 10, *[18, 14], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 10)
-    ops.geomTransf('Linear', 11, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 11, *[15, 19], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 11)
-    ops.geomTransf('Linear', 12, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 12, *[20, 16], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 12)
-    ops.geomTransf('Linear', 13, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 13, *[17, 21], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 13)
-    ops.geomTransf('Linear', 14, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 14, *[22, 18], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 14)
-    ops.geomTransf('Linear', 15, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 15, *[19, 23], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 15)
-    ops.geomTransf('Linear', 16, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 16, *[24, 20], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 16)
-    ops.geomTransf('Linear', 17, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 17, *[45, 1], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 17)
-    ops.geomTransf('Linear', 18, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 18, *[4, 46], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 18)
-    ops.geomTransf('Linear', 19, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 19, *[47, 5], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 19)
-    ops.geomTransf('Linear', 20, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 20, *[8, 48], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 20)
-    ops.geomTransf('Linear', 21, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 21, *[21, 25], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 21)
-    ops.geomTransf('Linear', 22, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 22, *[26, 22], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 22)
-    ops.geomTransf('Linear', 23, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 23, *[23, 27], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 23)
-    ops.geomTransf('Linear', 24, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 24, *[28, 24], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 24)
-    ops.geomTransf('Linear', 25, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 25, *[25, 27], SecProps[7].A, MatProps[1].E, MatProps[1].G, SecProps[7].Ixx, SecProps[7].Iyy, SecProps[7].Izz, 25)
-    ops.geomTransf('Linear', 26, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 26, *[28, 26], SecProps[7].A, MatProps[1].E, MatProps[1].G, SecProps[7].Ixx, SecProps[7].Iyy, SecProps[7].Izz, 26)
-    ops.geomTransf('Linear', 27, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 27, *[25, 29], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 27)
-    ops.geomTransf('Linear', 28, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 28, *[30, 26], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 28)
-    ops.geomTransf('Linear', 29, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 29, *[27, 31], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 29)
-    ops.geomTransf('Linear', 30, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 30, *[32, 28], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 30)
-    ops.geomTransf('Linear', 31, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 31, *[53, 13], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 31)
-    ops.geomTransf('Linear', 32, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 32, *[14, 54], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 32)
-    ops.geomTransf('Linear', 33, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 33, *[55, 15], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 33)
-    ops.geomTransf('Linear', 34, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 34, *[16, 56], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 34)
-    ops.geomTransf('Linear', 35, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 35, *[29, 33], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 35)
-    ops.geomTransf('Linear', 36, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 36, *[34, 30], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 36)
-    ops.geomTransf('Linear', 37, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 37, *[31, 35], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 37)
-    ops.geomTransf('Linear', 38, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 38, *[36, 32], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 38)
-    ops.geomTransf('Linear', 39, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 39, *[33, 37], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 39)
-    ops.geomTransf('Linear', 40, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 40, *[38, 34], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 40)
-    ops.geomTransf('Linear', 41, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 41, *[35, 39], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 41)
-    ops.geomTransf('Linear', 42, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 42, *[40, 36], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 42)
-    ops.geomTransf('Linear', 43, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 43, *[37, 41], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 43)
-    ops.geomTransf('Linear', 44, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 44, *[42, 38], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 44)
-    ops.geomTransf('Linear', 45, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 45, *[39, 43], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 45)
-    ops.geomTransf('Linear', 46, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 46, *[44, 40], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 46)
-    ops.geomTransf('Linear', 47, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 47, *[69, 25], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 47)
-    ops.geomTransf('Linear', 48, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 48, *[26, 70], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 48)
-    ops.geomTransf('Linear', 49, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 49, *[71, 27], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 49)
-    ops.geomTransf('Linear', 50, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 50, *[28, 72], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 50)
-    ops.geomTransf('Linear', 51, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 51, *[41, 49], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 51)
-    ops.geomTransf('Linear', 52, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 52, *[50, 42], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 52)
-    ops.geomTransf('Linear', 53, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 53, *[43, 51], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 53)
-    ops.geomTransf('Linear', 54, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 54, *[52, 44], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 54)
-    ops.geomTransf('Linear', 55, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 55, *[47, 45], SecProps[8].A, MatProps[1].E, MatProps[1].G, SecProps[8].Ixx, SecProps[8].Iyy, SecProps[8].Izz, 55)
-    ops.geomTransf('Linear', 56, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 56, *[46, 48], SecProps[8].A, MatProps[1].E, MatProps[1].G, SecProps[8].Ixx, SecProps[8].Iyy, SecProps[8].Izz, 56)
-    ops.geomTransf('Linear', 57, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 57, *[49, 57], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 57)
-    ops.geomTransf('Linear', 58, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 58, *[58, 50], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 58)
-    ops.geomTransf('Linear', 59, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 59, *[51, 59], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 59)
-    ops.geomTransf('Linear', 60, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 60, *[60, 52], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 60)
-    ops.geomTransf('Linear', 61, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 61, *[55, 53], SecProps[8].A, MatProps[1].E, MatProps[1].G, SecProps[8].Ixx, SecProps[8].Iyy, SecProps[8].Izz, 61)
-    ops.geomTransf('Linear', 62, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 62, *[54, 56], SecProps[8].A, MatProps[1].E, MatProps[1].G, SecProps[8].Ixx, SecProps[8].Iyy, SecProps[8].Izz, 62)
-    ops.geomTransf('Linear', 63, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 63, *[57, 61], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 63)
-    ops.geomTransf('Linear', 64, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 64, *[62, 58], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 64)
-    ops.geomTransf('Linear', 65, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 65, *[59, 63], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 65)
-    ops.geomTransf('Linear', 66, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 66, *[64, 60], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 66)
-    ops.geomTransf('Linear', 67, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 67, *[89, 41], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 67)
-    ops.geomTransf('Linear', 68, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 68, *[42, 90], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 68)
-    ops.geomTransf('Linear', 69, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 69, *[91, 43], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 69)
-    ops.geomTransf('Linear', 70, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 70, *[44, 92], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 70)
-    ops.geomTransf('Linear', 71, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 71, *[61, 63], SecProps[7].A, MatProps[1].E, MatProps[1].G, SecProps[7].Ixx, SecProps[7].Iyy, SecProps[7].Izz, 71)
-    ops.geomTransf('Linear', 72, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 72, *[64, 62], SecProps[7].A, MatProps[1].E, MatProps[1].G, SecProps[7].Ixx, SecProps[7].Iyy, SecProps[7].Izz, 72)
-    ops.geomTransf('Linear', 73, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 73, *[61, 65], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 73)
-    ops.geomTransf('Linear', 74, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 74, *[66, 62], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 74)
-    ops.geomTransf('Linear', 75, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 75, *[63, 67], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 75)
-    ops.geomTransf('Linear', 76, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 76, *[68, 64], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 76)
-    ops.geomTransf('Linear', 77, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 77, *[65, 73], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 77)
-    ops.geomTransf('Linear', 78, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 78, *[74, 66], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 78)
-    ops.geomTransf('Linear', 79, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 79, *[67, 75], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 79)
-    ops.geomTransf('Linear', 80, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 80, *[76, 68], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 80)
-    ops.geomTransf('Linear', 81, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 81, *[71, 69], SecProps[8].A, MatProps[1].E, MatProps[1].G, SecProps[8].Ixx, SecProps[8].Iyy, SecProps[8].Izz, 81)
-    ops.geomTransf('Linear', 82, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 82, *[70, 72], SecProps[8].A, MatProps[1].E, MatProps[1].G, SecProps[8].Ixx, SecProps[8].Iyy, SecProps[8].Izz, 82)
-    ops.geomTransf('Linear', 83, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 83, *[73, 77], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 83)
-    ops.geomTransf('Linear', 84, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 84, *[78, 74], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 84)
-    ops.geomTransf('Linear', 85, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 85, *[75, 79], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 85)
-    ops.geomTransf('Linear', 86, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 86, *[80, 76], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 86)
-    ops.geomTransf('Linear', 87, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 87, *[77, 81], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 87)
-    ops.geomTransf('Linear', 88, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 88, *[82, 78], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 88)
-    ops.geomTransf('Linear', 89, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 89, *[79, 83], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 89)
-    ops.geomTransf('Linear', 90, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 90, *[84, 80], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 90)
-    ops.geomTransf('Linear', 91, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 91, *[81, 85], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 91)
-    ops.geomTransf('Linear', 92, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 92, *[86, 82], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 92)
-    ops.geomTransf('Linear', 93, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 93, *[83, 87], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 93)
-    ops.geomTransf('Linear', 94, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 94, *[88, 84], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 94)
-    ops.geomTransf('Linear', 95, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 95, *[91, 89], SecProps[8].A, MatProps[1].E, MatProps[1].G, SecProps[8].Ixx, SecProps[8].Iyy, SecProps[8].Izz, 95)
-    ops.geomTransf('Linear', 96, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 96, *[90, 92], SecProps[8].A, MatProps[1].E, MatProps[1].G, SecProps[8].Ixx, SecProps[8].Iyy, SecProps[8].Izz, 96)
-    ops.geomTransf('Linear', 97, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 97, *[190, 45], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 97)
-    ops.geomTransf('Linear', 98, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 98, *[46, 207], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 98)
-    ops.geomTransf('Linear', 99, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 99, *[298, 47], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 99)
-    ops.geomTransf('Linear', 100, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 100, *[48, 315], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 100)
-    ops.geomTransf('Linear', 101, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 101, *[85, 93], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 101)
-    ops.geomTransf('Linear', 102, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 102, *[94, 86], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 102)
-    ops.geomTransf('Linear', 103, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 103, *[87, 95], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 103)
-    ops.geomTransf('Linear', 104, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 104, *[96, 88], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 104)
-    ops.geomTransf('Linear', 105, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 105, *[93, 97], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 105)
-    ops.geomTransf('Linear', 106, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 106, *[98, 94], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 106)
-    ops.geomTransf('Linear', 107, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 107, *[95, 99], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 107)
-    ops.geomTransf('Linear', 108, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 108, *[100, 96], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 108)
-    ops.geomTransf('Linear', 109, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 109, *[191, 53], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 109)
-    ops.geomTransf('Linear', 110, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 110, *[54, 206], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 110)
-    ops.geomTransf('Linear', 111, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 111, *[299, 55], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 111)
-    ops.geomTransf('Linear', 112, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 112, *[56, 314], SecProps[2].A, MatProps[1].E, MatProps[1].G, SecProps[2].Ixx, SecProps[2].Iyy, SecProps[2].Izz, 112)
-    ops.geomTransf('Linear', 113, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 113, *[97, 99], SecProps[7].A, MatProps[1].E, MatProps[1].G, SecProps[7].Ixx, SecProps[7].Iyy, SecProps[7].Izz, 113)
-    ops.geomTransf('Linear', 114, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 114, *[100, 98], SecProps[7].A, MatProps[1].E, MatProps[1].G, SecProps[7].Ixx, SecProps[7].Iyy, SecProps[7].Izz, 114)
-    ops.geomTransf('Linear', 115, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 115, *[97, 101], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 115)
-    ops.geomTransf('Linear', 116, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 116, *[102, 98], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 116)
-    ops.geomTransf('Linear', 117, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 117, *[99, 103], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 117)
-    ops.geomTransf('Linear', 118, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 118, *[104, 100], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 118)
-    ops.geomTransf('Linear', 119, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 119, *[101, 105], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 119)
-    ops.geomTransf('Linear', 120, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 120, *[106, 102], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 120)
-    ops.geomTransf('Linear', 121, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 121, *[103, 107], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 121)
-    ops.geomTransf('Linear', 122, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 122, *[108, 104], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 122)
-    ops.geomTransf('Linear', 123, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 123, *[194, 61], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 123)
-    ops.geomTransf('Linear', 124, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 124, *[62, 203], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 124)
-    ops.geomTransf('Linear', 125, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 125, *[302, 63], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 125)
-    ops.geomTransf('Linear', 126, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 126, *[64, 311], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 126)
-    ops.geomTransf('Linear', 127, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 127, *[105, 109], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 127)
-    ops.geomTransf('Linear', 128, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 128, *[110, 106], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 128)
-    ops.geomTransf('Linear', 129, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 129, *[107, 111], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 129)
-    ops.geomTransf('Linear', 130, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 130, *[112, 108], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 130)
-    ops.geomTransf('Linear', 131, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 131, *[192, 69], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 131)
-    ops.geomTransf('Linear', 132, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 132, *[70, 205], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 132)
-    ops.geomTransf('Linear', 133, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 133, *[300, 71], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 133)
-    ops.geomTransf('Linear', 134, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 134, *[72, 313], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 134)
-    ops.geomTransf('Linear', 135, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 135, *[109, 113], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 135)
-    ops.geomTransf('Linear', 136, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 136, *[114, 110], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 136)
-    ops.geomTransf('Linear', 137, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 137, *[111, 115], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 137)
-    ops.geomTransf('Linear', 138, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 138, *[116, 112], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 138)
-    ops.geomTransf('Linear', 139, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 139, *[113, 117], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 139)
-    ops.geomTransf('Linear', 140, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 140, *[118, 114], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 140)
-    ops.geomTransf('Linear', 141, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 141, *[115, 119], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 141)
-    ops.geomTransf('Linear', 142, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 142, *[120, 116], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 142)
-    ops.geomTransf('Linear', 143, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 143, *[117, 121], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 143)
-    ops.geomTransf('Linear', 144, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 144, *[122, 118], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 144)
-    ops.geomTransf('Linear', 145, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 145, *[119, 123], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 145)
-    ops.geomTransf('Linear', 146, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 146, *[124, 120], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 146)
-    ops.geomTransf('Linear', 147, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 147, *[195, 81], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 147)
-    ops.geomTransf('Linear', 148, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 148, *[82, 202], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 148)
-    ops.geomTransf('Linear', 149, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 149, *[303, 83], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 149)
-    ops.geomTransf('Linear', 150, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 150, *[84, 310], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 150)
-    ops.geomTransf('Linear', 151, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 151, *[121, 125], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 151)
-    ops.geomTransf('Linear', 152, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 152, *[126, 122], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 152)
-    ops.geomTransf('Linear', 153, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 153, *[123, 127], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 153)
-    ops.geomTransf('Linear', 154, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 154, *[128, 124], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 154)
-    ops.geomTransf('Linear', 155, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 155, *[125, 127], SecProps[7].A, MatProps[1].E, MatProps[1].G, SecProps[7].Ixx, SecProps[7].Iyy, SecProps[7].Izz, 155)
-    ops.geomTransf('Linear', 156, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 156, *[128, 126], SecProps[7].A, MatProps[1].E, MatProps[1].G, SecProps[7].Ixx, SecProps[7].Iyy, SecProps[7].Izz, 156)
-    ops.geomTransf('Linear', 157, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 157, *[125, 129], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 157)
-    ops.geomTransf('Linear', 158, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 158, *[130, 126], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 158)
-    ops.geomTransf('Linear', 159, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 159, *[127, 131], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 159)
-    ops.geomTransf('Linear', 160, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 160, *[132, 128], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 160)
-    ops.geomTransf('Linear', 161, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 161, *[129, 133], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 161)
-    ops.geomTransf('Linear', 162, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 162, *[133, 130], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 162)
-    ops.geomTransf('Linear', 163, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 163, *[131, 135], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 163)
-    ops.geomTransf('Linear', 164, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 164, *[135, 132], SecProps[1].A, MatProps[1].E, MatProps[1].G, SecProps[1].Ixx, SecProps[1].Iyy, SecProps[1].Izz, 164)
-    ops.geomTransf('Linear', 165, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 165, *[193, 89], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 165)
-    ops.geomTransf('Linear', 166, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 166, *[90, 204], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 166)
-    ops.geomTransf('Linear', 167, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 167, *[301, 91], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 167)
-    ops.geomTransf('Linear', 168, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 168, *[92, 312], SecProps[3].A, MatProps[1].E, MatProps[1].G, SecProps[3].Ixx, SecProps[3].Iyy, SecProps[3].Izz, 168)
-    ops.geomTransf('Linear', 169, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 169, *[196, 97], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 169)
-    ops.geomTransf('Linear', 170, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 170, *[98, 201], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 170)
-    ops.geomTransf('Linear', 171, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 171, *[304, 99], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 171)
-    ops.geomTransf('Linear', 172, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 172, *[100, 309], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 172)
-    ops.geomTransf('Linear', 173, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 173, *[197, 113], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 173)
-    ops.geomTransf('Linear', 174, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 174, *[114, 200], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 174)
-    ops.geomTransf('Linear', 175, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 175, *[305, 115], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 175)
-    ops.geomTransf('Linear', 176, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 176, *[116, 308], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 176)
-    ops.geomTransf('Linear', 177, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 177, *[198, 125], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 177)
-    ops.geomTransf('Linear', 178, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 178, *[126, 199], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 178)
-    ops.geomTransf('Linear', 179, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 179, *[306, 127], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 179)
-    ops.geomTransf('Linear', 180, *[1.0, 0.0, 0.0])
-    ops.element('elasticBeamColumn', 180, *[128, 307], SecProps[4].A, MatProps[1].E, MatProps[1].G, SecProps[4].Ixx, SecProps[4].Iyy, SecProps[4].Izz, 180)
-    ops.geomTransf('Linear', 181, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 181, *[154, 136], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 181)
-    ops.geomTransf('Linear', 182, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 182, *[155, 137], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 182)
-    ops.geomTransf('Linear', 183, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 183, *[156, 138], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 183)
-    ops.geomTransf('Linear', 184, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 184, *[157, 139], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 184)
-    ops.geomTransf('Linear', 185, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 185, *[158, 140], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 185)
-    ops.geomTransf('Linear', 186, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 186, *[159, 141], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 186)
-    ops.geomTransf('Linear', 187, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 187, *[160, 142], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 187)
-    ops.geomTransf('Linear', 188, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 188, *[161, 143], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 188)
-    ops.geomTransf('Linear', 189, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 189, *[162, 144], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 189)
-    ops.geomTransf('Linear', 190, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 190, *[145, 163], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 190)
-    ops.geomTransf('Linear', 191, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 191, *[146, 164], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 191)
-    ops.geomTransf('Linear', 192, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 192, *[147, 165], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 192)
-    ops.geomTransf('Linear', 193, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 193, *[148, 166], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 193)
-    ops.geomTransf('Linear', 194, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 194, *[149, 167], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 194)
-    ops.geomTransf('Linear', 195, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 195, *[150, 168], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 195)
-    ops.geomTransf('Linear', 196, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 196, *[151, 169], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 196)
-    ops.geomTransf('Linear', 197, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 197, *[152, 170], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 197)
-    ops.geomTransf('Linear', 198, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 198, *[153, 171], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 198)
-    ops.geomTransf('Linear', 199, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 199, *[172, 154], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 199)
-    ops.geomTransf('Linear', 200, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 200, *[173, 155], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 200)
-    ops.geomTransf('Linear', 201, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 201, *[174, 156], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 201)
-    ops.geomTransf('Linear', 202, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 202, *[175, 157], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 202)
-    ops.geomTransf('Linear', 203, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 203, *[176, 158], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 203)
-    ops.geomTransf('Linear', 204, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 204, *[177, 159], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 204)
-    ops.geomTransf('Linear', 205, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 205, *[178, 160], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 205)
-    ops.geomTransf('Linear', 206, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 206, *[179, 161], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 206)
-    ops.geomTransf('Linear', 207, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 207, *[180, 162], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 207)
-    ops.geomTransf('Linear', 208, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 208, *[163, 181], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 208)
-    ops.geomTransf('Linear', 209, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 209, *[164, 182], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 209)
-    ops.geomTransf('Linear', 210, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 210, *[165, 183], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 210)
-    ops.geomTransf('Linear', 211, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 211, *[166, 184], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 211)
-    ops.geomTransf('Linear', 212, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 212, *[167, 185], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 212)
-    ops.geomTransf('Linear', 213, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 213, *[168, 186], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 213)
-    ops.geomTransf('Linear', 214, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 214, *[169, 187], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 214)
-    ops.geomTransf('Linear', 215, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 215, *[170, 188], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 215)
-    ops.geomTransf('Linear', 216, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 216, *[171, 189], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 216)
-    ops.geomTransf('Linear', 217, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 217, *[190, 172], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 217)
-    ops.geomTransf('Linear', 218, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 218, *[191, 173], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 218)
-    ops.geomTransf('Linear', 219, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 219, *[192, 174], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 219)
-    ops.geomTransf('Linear', 220, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 220, *[193, 175], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 220)
-    ops.geomTransf('Linear', 221, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 221, *[194, 176], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 221)
-    ops.geomTransf('Linear', 222, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 222, *[195, 177], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 222)
-    ops.geomTransf('Linear', 223, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 223, *[196, 178], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 223)
-    ops.geomTransf('Linear', 224, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 224, *[197, 179], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 224)
-    ops.geomTransf('Linear', 225, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 225, *[198, 180], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 225)
-    ops.geomTransf('Linear', 226, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 226, *[181, 199], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 226)
-    ops.geomTransf('Linear', 227, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 227, *[182, 200], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 227)
-    ops.geomTransf('Linear', 228, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 228, *[183, 201], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 228)
-    ops.geomTransf('Linear', 229, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 229, *[184, 202], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 229)
-    ops.geomTransf('Linear', 230, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 230, *[185, 203], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 230)
-    ops.geomTransf('Linear', 231, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 231, *[186, 204], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 231)
-    ops.geomTransf('Linear', 232, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 232, *[187, 205], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 232)
-    ops.geomTransf('Linear', 233, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 233, *[188, 206], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 233)
-    ops.geomTransf('Linear', 234, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 234, *[189, 207], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 234)
-    ops.geomTransf('Linear', 235, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 235, *[208, 190], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 235)
-    ops.geomTransf('Linear', 236, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 236, *[209, 191], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 236)
-    ops.geomTransf('Linear', 237, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 237, *[210, 192], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 237)
-    ops.geomTransf('Linear', 238, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 238, *[211, 193], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 238)
-    ops.geomTransf('Linear', 239, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 239, *[212, 194], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 239)
-    ops.geomTransf('Linear', 240, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 240, *[213, 195], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 240)
-    ops.geomTransf('Linear', 241, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 241, *[214, 196], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 241)
-    ops.geomTransf('Linear', 242, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 242, *[215, 197], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 242)
-    ops.geomTransf('Linear', 243, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 243, *[216, 198], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 243)
-    ops.geomTransf('Linear', 244, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 244, *[199, 217], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 244)
-    ops.geomTransf('Linear', 245, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 245, *[200, 218], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 245)
-    ops.geomTransf('Linear', 246, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 246, *[201, 219], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 246)
-    ops.geomTransf('Linear', 247, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 247, *[202, 220], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 247)
-    ops.geomTransf('Linear', 248, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 248, *[203, 221], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 248)
-    ops.geomTransf('Linear', 249, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 249, *[204, 222], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 249)
-    ops.geomTransf('Linear', 250, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 250, *[205, 223], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 250)
-    ops.geomTransf('Linear', 251, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 251, *[206, 224], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 251)
-    ops.geomTransf('Linear', 252, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 252, *[207, 225], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 252)
-    ops.geomTransf('Linear', 253, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 253, *[226, 208], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 253)
-    ops.geomTransf('Linear', 254, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 254, *[227, 209], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 254)
-    ops.geomTransf('Linear', 255, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 255, *[228, 210], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 255)
-    ops.geomTransf('Linear', 256, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 256, *[229, 211], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 256)
-    ops.geomTransf('Linear', 257, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 257, *[230, 212], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 257)
-    ops.geomTransf('Linear', 258, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 258, *[231, 213], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 258)
-    ops.geomTransf('Linear', 259, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 259, *[232, 214], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 259)
-    ops.geomTransf('Linear', 260, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 260, *[233, 215], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 260)
-    ops.geomTransf('Linear', 261, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 261, *[234, 216], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 261)
-    ops.geomTransf('Linear', 262, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 262, *[217, 235], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 262)
-    ops.geomTransf('Linear', 263, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 263, *[218, 236], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 263)
-    ops.geomTransf('Linear', 264, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 264, *[219, 237], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 264)
-    ops.geomTransf('Linear', 265, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 265, *[220, 238], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 265)
-    ops.geomTransf('Linear', 266, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 266, *[221, 239], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 266)
-    ops.geomTransf('Linear', 267, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 267, *[222, 240], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 267)
-    ops.geomTransf('Linear', 268, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 268, *[223, 241], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 268)
-    ops.geomTransf('Linear', 269, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 269, *[224, 242], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 269)
-    ops.geomTransf('Linear', 270, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 270, *[225, 243], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 270)
-    ops.geomTransf('Linear', 271, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 271, *[244, 226], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 271)
-    ops.geomTransf('Linear', 272, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 272, *[245, 227], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 272)
-    ops.geomTransf('Linear', 273, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 273, *[246, 228], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 273)
-    ops.geomTransf('Linear', 274, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 274, *[247, 229], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 274)
-    ops.geomTransf('Linear', 275, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 275, *[248, 230], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 275)
-    ops.geomTransf('Linear', 276, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 276, *[249, 231], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 276)
-    ops.geomTransf('Linear', 277, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 277, *[250, 232], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 277)
-    ops.geomTransf('Linear', 278, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 278, *[251, 233], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 278)
-    ops.geomTransf('Linear', 279, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 279, *[252, 234], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 279)
-    ops.geomTransf('Linear', 280, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 280, *[235, 253], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 280)
-    ops.geomTransf('Linear', 281, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 281, *[236, 254], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 281)
-    ops.geomTransf('Linear', 282, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 282, *[237, 255], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 282)
-    ops.geomTransf('Linear', 283, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 283, *[238, 256], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 283)
-    ops.geomTransf('Linear', 284, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 284, *[239, 257], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 284)
-    ops.geomTransf('Linear', 285, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 285, *[240, 258], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 285)
-    ops.geomTransf('Linear', 286, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 286, *[241, 259], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 286)
-    ops.geomTransf('Linear', 287, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 287, *[242, 260], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 287)
-    ops.geomTransf('Linear', 288, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 288, *[243, 261], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 288)
-    ops.geomTransf('Linear', 289, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 289, *[262, 244], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 289)
-    ops.geomTransf('Linear', 290, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 290, *[263, 245], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 290)
-    ops.geomTransf('Linear', 291, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 291, *[264, 246], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 291)
-    ops.geomTransf('Linear', 292, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 292, *[265, 247], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 292)
-    ops.geomTransf('Linear', 293, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 293, *[266, 248], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 293)
-    ops.geomTransf('Linear', 294, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 294, *[267, 249], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 294)
-    ops.geomTransf('Linear', 295, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 295, *[268, 250], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 295)
-    ops.geomTransf('Linear', 296, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 296, *[269, 251], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 296)
-    ops.geomTransf('Linear', 297, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 297, *[270, 252], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 297)
-    ops.geomTransf('Linear', 298, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 298, *[253, 271], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 298)
-    ops.geomTransf('Linear', 299, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 299, *[254, 272], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 299)
-    ops.geomTransf('Linear', 300, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 300, *[255, 273], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 300)
-    ops.geomTransf('Linear', 301, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 301, *[256, 274], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 301)
-    ops.geomTransf('Linear', 302, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 302, *[257, 275], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 302)
-    ops.geomTransf('Linear', 303, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 303, *[258, 276], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 303)
-    ops.geomTransf('Linear', 304, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 304, *[259, 277], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 304)
-    ops.geomTransf('Linear', 305, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 305, *[260, 278], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 305)
-    ops.geomTransf('Linear', 306, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 306, *[261, 279], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 306)
-    ops.geomTransf('Linear', 307, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 307, *[280, 262], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 307)
-    ops.geomTransf('Linear', 308, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 308, *[281, 263], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 308)
-    ops.geomTransf('Linear', 309, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 309, *[282, 264], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 309)
-    ops.geomTransf('Linear', 310, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 310, *[283, 265], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 310)
-    ops.geomTransf('Linear', 311, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 311, *[284, 266], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 311)
-    ops.geomTransf('Linear', 312, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 312, *[285, 267], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 312)
-    ops.geomTransf('Linear', 313, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 313, *[286, 268], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 313)
-    ops.geomTransf('Linear', 314, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 314, *[287, 269], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 314)
-    ops.geomTransf('Linear', 315, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 315, *[288, 270], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 315)
-    ops.geomTransf('Linear', 316, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 316, *[271, 289], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 316)
-    ops.geomTransf('Linear', 317, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 317, *[272, 290], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 317)
-    ops.geomTransf('Linear', 318, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 318, *[273, 291], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 318)
-    ops.geomTransf('Linear', 319, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 319, *[274, 292], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 319)
-    ops.geomTransf('Linear', 320, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 320, *[275, 293], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 320)
-    ops.geomTransf('Linear', 321, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 321, *[276, 294], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 321)
-    ops.geomTransf('Linear', 322, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 322, *[277, 295], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 322)
-    ops.geomTransf('Linear', 323, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 323, *[278, 296], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 323)
-    ops.geomTransf('Linear', 324, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 324, *[279, 297], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 324)
-    ops.geomTransf('Linear', 325, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 325, *[298, 280], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 325)
-    ops.geomTransf('Linear', 326, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 326, *[299, 281], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 326)
-    ops.geomTransf('Linear', 327, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 327, *[300, 282], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 327)
-    ops.geomTransf('Linear', 328, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 328, *[301, 283], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 328)
-    ops.geomTransf('Linear', 329, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 329, *[302, 284], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 329)
-    ops.geomTransf('Linear', 330, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 330, *[303, 285], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 330)
-    ops.geomTransf('Linear', 331, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 331, *[304, 286], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 331)
-    ops.geomTransf('Linear', 332, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 332, *[305, 287], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 332)
-    ops.geomTransf('Linear', 333, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 333, *[306, 288], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 333)
-    ops.geomTransf('Linear', 334, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 334, *[289, 307], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 334)
-    ops.geomTransf('Linear', 335, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 335, *[290, 308], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 335)
-    ops.geomTransf('Linear', 336, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 336, *[291, 309], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 336)
-    ops.geomTransf('Linear', 337, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 337, *[292, 310], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 337)
-    ops.geomTransf('Linear', 338, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 338, *[293, 311], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 338)
-    ops.geomTransf('Linear', 339, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 339, *[294, 312], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 339)
-    ops.geomTransf('Linear', 340, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 340, *[295, 313], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 340)
-    ops.geomTransf('Linear', 341, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 341, *[296, 314], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 341)
-    ops.geomTransf('Linear', 342, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 342, *[297, 315], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 342)
-    ops.geomTransf('Linear', 343, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 343, *[298, 316], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 343)
-    ops.geomTransf('Linear', 344, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 344, *[299, 317], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 344)
-    ops.geomTransf('Linear', 345, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 345, *[300, 318], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 345)
-    ops.geomTransf('Linear', 346, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 346, *[301, 319], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 346)
-    ops.geomTransf('Linear', 347, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 347, *[302, 320], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 347)
-    ops.geomTransf('Linear', 348, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 348, *[303, 321], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 348)
-    ops.geomTransf('Linear', 349, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 349, *[304, 322], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 349)
-    ops.geomTransf('Linear', 350, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 350, *[305, 323], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 350)
-    ops.geomTransf('Linear', 351, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 351, *[306, 324], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 351)
-    ops.geomTransf('Linear', 352, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 352, *[325, 307], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 352)
-    ops.geomTransf('Linear', 353, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 353, *[326, 308], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 353)
-    ops.geomTransf('Linear', 354, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 354, *[327, 309], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 354)
-    ops.geomTransf('Linear', 355, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 355, *[328, 310], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 355)
-    ops.geomTransf('Linear', 356, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 356, *[329, 311], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 356)
-    ops.geomTransf('Linear', 357, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 357, *[330, 312], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 357)
-    ops.geomTransf('Linear', 358, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 358, *[331, 313], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 358)
-    ops.geomTransf('Linear', 359, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 359, *[332, 314], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 359)
-    ops.geomTransf('Linear', 360, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 360, *[333, 315], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 360)
-    ops.geomTransf('Linear', 361, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 361, *[316, 334], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 361)
-    ops.geomTransf('Linear', 362, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 362, *[317, 335], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 362)
-    ops.geomTransf('Linear', 363, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 363, *[318, 336], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 363)
-    ops.geomTransf('Linear', 364, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 364, *[319, 337], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 364)
-    ops.geomTransf('Linear', 365, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 365, *[320, 338], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 365)
-    ops.geomTransf('Linear', 366, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 366, *[321, 339], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 366)
-    ops.geomTransf('Linear', 367, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 367, *[322, 340], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 367)
-    ops.geomTransf('Linear', 368, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 368, *[323, 341], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 368)
-    ops.geomTransf('Linear', 369, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 369, *[324, 342], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 369)
-    ops.geomTransf('Linear', 370, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 370, *[343, 325], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 370)
-    ops.geomTransf('Linear', 371, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 371, *[344, 326], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 371)
-    ops.geomTransf('Linear', 372, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 372, *[345, 327], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 372)
-    ops.geomTransf('Linear', 373, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 373, *[346, 328], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 373)
-    ops.geomTransf('Linear', 374, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 374, *[347, 329], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 374)
-    ops.geomTransf('Linear', 375, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 375, *[348, 330], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 375)
-    ops.geomTransf('Linear', 376, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 376, *[349, 331], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 376)
-    ops.geomTransf('Linear', 377, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 377, *[350, 332], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 377)
-    ops.geomTransf('Linear', 378, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 378, *[351, 333], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 378)
-    ops.geomTransf('Linear', 379, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 379, *[334, 352], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 379)
-    ops.geomTransf('Linear', 380, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 380, *[335, 353], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 380)
-    ops.geomTransf('Linear', 381, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 381, *[336, 354], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 381)
-    ops.geomTransf('Linear', 382, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 382, *[337, 355], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 382)
-    ops.geomTransf('Linear', 383, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 383, *[338, 356], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 383)
-    ops.geomTransf('Linear', 384, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 384, *[339, 357], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 384)
-    ops.geomTransf('Linear', 385, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 385, *[340, 358], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 385)
-    ops.geomTransf('Linear', 386, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 386, *[341, 359], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 386)
-    ops.geomTransf('Linear', 387, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 387, *[342, 360], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 387)
-    ops.geomTransf('Linear', 388, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 388, *[361, 343], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 388)
-    ops.geomTransf('Linear', 389, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 389, *[362, 344], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 389)
-    ops.geomTransf('Linear', 390, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 390, *[363, 345], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 390)
-    ops.geomTransf('Linear', 391, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 391, *[364, 346], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 391)
-    ops.geomTransf('Linear', 392, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 392, *[365, 347], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 392)
-    ops.geomTransf('Linear', 393, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 393, *[366, 348], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 393)
-    ops.geomTransf('Linear', 394, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 394, *[367, 349], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 394)
-    ops.geomTransf('Linear', 395, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 395, *[368, 350], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 395)
-    ops.geomTransf('Linear', 396, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 396, *[369, 351], SecProps[5].A, MatProps[1].E, MatProps[1].G, SecProps[5].Ixx, SecProps[5].Iyy, SecProps[5].Izz, 396)
-    ops.geomTransf('Linear', 397, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 397, *[370, 694], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 397)
-    ops.geomTransf('Linear', 398, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 398, *[371, 698], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 398)
-    ops.geomTransf('Linear', 399, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 399, *[372, 702], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 399)
-    ops.geomTransf('Linear', 400, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 400, *[373, 706], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 400)
-    ops.geomTransf('Linear', 401, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 401, *[374, 710], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 401)
-    ops.geomTransf('Linear', 402, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 402, *[375, 714], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 402)
-    ops.geomTransf('Linear', 403, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 403, *[376, 718], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 403)
-    ops.geomTransf('Linear', 404, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 404, *[377, 722], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 404)
-    ops.geomTransf('Linear', 405, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 405, *[378, 726], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 405)
-    ops.geomTransf('Linear', 406, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 406, *[379, 730], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 406)
-    ops.geomTransf('Linear', 407, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 407, *[380, 734], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 407)
-    ops.geomTransf('Linear', 408, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 408, *[381, 738], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 408)
-    ops.geomTransf('Linear', 409, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 409, *[382, 742], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 409)
-    ops.geomTransf('Linear', 410, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 410, *[383, 746], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 410)
-    ops.geomTransf('Linear', 411, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 411, *[384, 750], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 411)
-    ops.geomTransf('Linear', 412, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 412, *[385, 754], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 412)
-    ops.geomTransf('Linear', 413, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 413, *[386, 758], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 413)
-    ops.geomTransf('Linear', 414, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 414, *[388, 762], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 414)
-    ops.geomTransf('Linear', 415, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 415, *[389, 766], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 415)
-    ops.geomTransf('Linear', 416, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 416, *[390, 770], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 416)
-    ops.geomTransf('Linear', 417, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 417, *[391, 774], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 417)
-    ops.geomTransf('Linear', 418, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 418, *[392, 778], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 418)
-    ops.geomTransf('Linear', 419, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 419, *[393, 782], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 419)
-    ops.geomTransf('Linear', 420, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 420, *[394, 786], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 420)
-    ops.geomTransf('Linear', 421, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 421, *[395, 790], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 421)
-    ops.geomTransf('Linear', 422, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 422, *[396, 794], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 422)
-    ops.geomTransf('Linear', 423, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 423, *[397, 798], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 423)
-    ops.geomTransf('Linear', 424, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 424, *[398, 802], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 424)
-    ops.geomTransf('Linear', 425, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 425, *[399, 806], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 425)
-    ops.geomTransf('Linear', 426, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 426, *[400, 810], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 426)
-    ops.geomTransf('Linear', 427, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 427, *[401, 814], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 427)
-    ops.geomTransf('Linear', 428, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 428, *[402, 818], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 428)
-    ops.geomTransf('Linear', 429, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 429, *[403, 822], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 429)
-    ops.geomTransf('Linear', 430, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 430, *[404, 826], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 430)
-    ops.geomTransf('Linear', 431, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 431, *[406, 830], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 431)
-    ops.geomTransf('Linear', 432, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 432, *[407, 834], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 432)
-    ops.geomTransf('Linear', 433, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 433, *[408, 838], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 433)
-    ops.geomTransf('Linear', 434, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 434, *[409, 842], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 434)
-    ops.geomTransf('Linear', 435, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 435, *[410, 846], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 435)
-    ops.geomTransf('Linear', 436, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 436, *[411, 850], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 436)
-    ops.geomTransf('Linear', 437, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 437, *[412, 854], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 437)
-    ops.geomTransf('Linear', 438, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 438, *[413, 858], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 438)
-    ops.geomTransf('Linear', 439, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 439, *[414, 862], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 439)
-    ops.geomTransf('Linear', 440, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 440, *[415, 866], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 440)
-    ops.geomTransf('Linear', 441, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 441, *[416, 870], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 441)
-    ops.geomTransf('Linear', 442, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 442, *[417, 874], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 442)
-    ops.geomTransf('Linear', 443, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 443, *[418, 878], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 443)
-    ops.geomTransf('Linear', 444, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 444, *[419, 882], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 444)
-    ops.geomTransf('Linear', 445, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 445, *[420, 886], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 445)
-    ops.geomTransf('Linear', 446, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 446, *[421, 890], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 446)
-    ops.geomTransf('Linear', 447, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 447, *[422, 894], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 447)
-    ops.geomTransf('Linear', 448, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 448, *[424, 898], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 448)
-    ops.geomTransf('Linear', 449, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 449, *[425, 902], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 449)
-    ops.geomTransf('Linear', 450, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 450, *[426, 906], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 450)
-    ops.geomTransf('Linear', 451, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 451, *[427, 910], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 451)
-    ops.geomTransf('Linear', 452, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 452, *[428, 914], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 452)
-    ops.geomTransf('Linear', 453, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 453, *[429, 918], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 453)
-    ops.geomTransf('Linear', 454, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 454, *[430, 922], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 454)
-    ops.geomTransf('Linear', 455, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 455, *[431, 926], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 455)
-    ops.geomTransf('Linear', 456, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 456, *[432, 930], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 456)
-    ops.geomTransf('Linear', 457, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 457, *[433, 934], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 457)
-    ops.geomTransf('Linear', 458, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 458, *[434, 938], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 458)
-    ops.geomTransf('Linear', 459, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 459, *[435, 942], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 459)
-    ops.geomTransf('Linear', 460, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 460, *[436, 946], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 460)
-    ops.geomTransf('Linear', 461, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 461, *[437, 950], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 461)
-    ops.geomTransf('Linear', 462, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 462, *[438, 954], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 462)
-    ops.geomTransf('Linear', 463, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 463, *[439, 958], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 463)
-    ops.geomTransf('Linear', 464, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 464, *[440, 962], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 464)
-    ops.geomTransf('Linear', 465, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 465, *[442, 966], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 465)
-    ops.geomTransf('Linear', 466, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 466, *[443, 970], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 466)
-    ops.geomTransf('Linear', 467, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 467, *[444, 974], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 467)
-    ops.geomTransf('Linear', 468, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 468, *[445, 978], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 468)
-    ops.geomTransf('Linear', 469, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 469, *[446, 982], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 469)
-    ops.geomTransf('Linear', 470, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 470, *[447, 986], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 470)
-    ops.geomTransf('Linear', 471, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 471, *[448, 990], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 471)
-    ops.geomTransf('Linear', 472, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 472, *[449, 994], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 472)
-    ops.geomTransf('Linear', 473, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 473, *[450, 998], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 473)
-    ops.geomTransf('Linear', 474, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 474, *[451, 1002], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 474)
-    ops.geomTransf('Linear', 475, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 475, *[452, 1006], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 475)
-    ops.geomTransf('Linear', 476, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 476, *[453, 1010], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 476)
-    ops.geomTransf('Linear', 477, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 477, *[454, 1014], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 477)
-    ops.geomTransf('Linear', 478, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 478, *[455, 1018], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 478)
-    ops.geomTransf('Linear', 479, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 479, *[456, 1022], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 479)
-    ops.geomTransf('Linear', 480, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 480, *[457, 1026], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 480)
-    ops.geomTransf('Linear', 481, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 481, *[458, 1030], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 481)
-    ops.geomTransf('Linear', 482, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 482, *[460, 1034], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 482)
-    ops.geomTransf('Linear', 483, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 483, *[461, 1038], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 483)
-    ops.geomTransf('Linear', 484, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 484, *[462, 1042], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 484)
-    ops.geomTransf('Linear', 485, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 485, *[463, 1046], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 485)
-    ops.geomTransf('Linear', 486, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 486, *[464, 1050], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 486)
-    ops.geomTransf('Linear', 487, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 487, *[465, 1054], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 487)
-    ops.geomTransf('Linear', 488, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 488, *[466, 1058], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 488)
-    ops.geomTransf('Linear', 489, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 489, *[467, 1062], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 489)
-    ops.geomTransf('Linear', 490, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 490, *[468, 1066], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 490)
-    ops.geomTransf('Linear', 491, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 491, *[469, 1070], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 491)
-    ops.geomTransf('Linear', 492, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 492, *[470, 1074], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 492)
-    ops.geomTransf('Linear', 493, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 493, *[471, 1078], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 493)
-    ops.geomTransf('Linear', 494, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 494, *[472, 1082], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 494)
-    ops.geomTransf('Linear', 495, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 495, *[473, 1086], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 495)
-    ops.geomTransf('Linear', 496, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 496, *[474, 1090], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 496)
-    ops.geomTransf('Linear', 497, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 497, *[475, 1094], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 497)
-    ops.geomTransf('Linear', 498, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 498, *[476, 1098], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 498)
-    ops.geomTransf('Linear', 499, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 499, *[478, 1102], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 499)
-    ops.geomTransf('Linear', 500, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 500, *[479, 1106], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 500)
-    ops.geomTransf('Linear', 501, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 501, *[480, 1110], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 501)
-    ops.geomTransf('Linear', 502, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 502, *[481, 1114], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 502)
-    ops.geomTransf('Linear', 503, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 503, *[482, 1118], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 503)
-    ops.geomTransf('Linear', 504, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 504, *[483, 1122], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 504)
-    ops.geomTransf('Linear', 505, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 505, *[484, 1126], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 505)
-    ops.geomTransf('Linear', 506, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 506, *[485, 1130], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 506)
-    ops.geomTransf('Linear', 507, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 507, *[486, 1134], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 507)
-    ops.geomTransf('Linear', 508, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 508, *[487, 1138], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 508)
-    ops.geomTransf('Linear', 509, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 509, *[488, 1142], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 509)
-    ops.geomTransf('Linear', 510, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 510, *[489, 1146], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 510)
-    ops.geomTransf('Linear', 511, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 511, *[490, 1150], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 511)
-    ops.geomTransf('Linear', 512, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 512, *[491, 1154], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 512)
-    ops.geomTransf('Linear', 513, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 513, *[492, 1158], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 513)
-    ops.geomTransf('Linear', 514, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 514, *[493, 1162], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 514)
-    ops.geomTransf('Linear', 515, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 515, *[494, 1166], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 515)
-    ops.geomTransf('Linear', 516, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 516, *[496, 1170], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 516)
-    ops.geomTransf('Linear', 517, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 517, *[497, 1174], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 517)
-    ops.geomTransf('Linear', 518, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 518, *[498, 1178], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 518)
-    ops.geomTransf('Linear', 519, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 519, *[499, 1182], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 519)
-    ops.geomTransf('Linear', 520, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 520, *[500, 1186], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 520)
-    ops.geomTransf('Linear', 521, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 521, *[501, 1190], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 521)
-    ops.geomTransf('Linear', 522, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 522, *[502, 1194], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 522)
-    ops.geomTransf('Linear', 523, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 523, *[503, 1198], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 523)
-    ops.geomTransf('Linear', 524, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 524, *[504, 1202], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 524)
-    ops.geomTransf('Linear', 525, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 525, *[505, 1206], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 525)
-    ops.geomTransf('Linear', 526, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 526, *[506, 1210], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 526)
-    ops.geomTransf('Linear', 527, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 527, *[507, 1214], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 527)
-    ops.geomTransf('Linear', 528, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 528, *[508, 1218], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 528)
-    ops.geomTransf('Linear', 529, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 529, *[509, 1222], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 529)
-    ops.geomTransf('Linear', 530, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 530, *[510, 1226], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 530)
-    ops.geomTransf('Linear', 531, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 531, *[511, 1230], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 531)
-    ops.geomTransf('Linear', 532, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 532, *[512, 1234], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 532)
-    ops.geomTransf('Linear', 533, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 533, *[514, 1238], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 533)
-    ops.geomTransf('Linear', 534, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 534, *[515, 1242], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 534)
-    ops.geomTransf('Linear', 535, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 535, *[516, 1246], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 535)
-    ops.geomTransf('Linear', 536, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 536, *[517, 1250], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 536)
-    ops.geomTransf('Linear', 537, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 537, *[518, 1254], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 537)
-    ops.geomTransf('Linear', 538, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 538, *[519, 1258], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 538)
-    ops.geomTransf('Linear', 539, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 539, *[520, 1262], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 539)
-    ops.geomTransf('Linear', 540, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 540, *[521, 1266], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 540)
-    ops.geomTransf('Linear', 541, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 541, *[522, 1270], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 541)
-    ops.geomTransf('Linear', 542, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 542, *[523, 1274], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 542)
-    ops.geomTransf('Linear', 543, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 543, *[524, 1278], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 543)
-    ops.geomTransf('Linear', 544, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 544, *[525, 1282], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 544)
-    ops.geomTransf('Linear', 545, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 545, *[526, 1286], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 545)
-    ops.geomTransf('Linear', 546, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 546, *[527, 1290], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 546)
-    ops.geomTransf('Linear', 547, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 547, *[528, 1294], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 547)
-    ops.geomTransf('Linear', 548, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 548, *[529, 1298], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 548)
-    ops.geomTransf('Linear', 549, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 549, *[530, 1302], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 549)
-    ops.geomTransf('Linear', 550, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 686, *[694, 695], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 550)
-    ops.geomTransf('Linear', 551, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 687, *[695, 696], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 551)
-    ops.geomTransf('Linear', 552, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 688, *[696, 697], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 552)
-    ops.geomTransf('Linear', 553, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 689, *[697, 371], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 553)
-    ops.geomTransf('Linear', 554, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 690, *[698, 699], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 554)
-    ops.geomTransf('Linear', 555, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 691, *[699, 700], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 555)
-    ops.geomTransf('Linear', 556, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 692, *[700, 701], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 556)
-    ops.geomTransf('Linear', 557, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 693, *[701, 372], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 557)
-    ops.geomTransf('Linear', 558, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 694, *[702, 703], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 558)
-    ops.geomTransf('Linear', 559, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 695, *[703, 704], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 559)
-    ops.geomTransf('Linear', 560, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 696, *[704, 705], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 560)
-    ops.geomTransf('Linear', 561, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 697, *[705, 373], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 561)
-    ops.geomTransf('Linear', 562, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 698, *[706, 707], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 562)
-    ops.geomTransf('Linear', 563, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 699, *[707, 708], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 563)
-    ops.geomTransf('Linear', 564, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 700, *[708, 709], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 564)
-    ops.geomTransf('Linear', 565, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 701, *[709, 374], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 565)
-    ops.geomTransf('Linear', 566, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 702, *[710, 711], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 566)
-    ops.geomTransf('Linear', 567, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 703, *[711, 712], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 567)
-    ops.geomTransf('Linear', 568, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 704, *[712, 713], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 568)
-    ops.geomTransf('Linear', 569, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 705, *[713, 375], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 569)
-    ops.geomTransf('Linear', 570, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 706, *[714, 715], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 570)
-    ops.geomTransf('Linear', 571, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 707, *[715, 716], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 571)
-    ops.geomTransf('Linear', 572, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 708, *[716, 717], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 572)
-    ops.geomTransf('Linear', 573, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 709, *[717, 376], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 573)
-    ops.geomTransf('Linear', 574, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 710, *[718, 719], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 574)
-    ops.geomTransf('Linear', 575, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 711, *[719, 720], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 575)
-    ops.geomTransf('Linear', 576, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 712, *[720, 721], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 576)
-    ops.geomTransf('Linear', 577, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 713, *[721, 377], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 577)
-    ops.geomTransf('Linear', 578, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 714, *[722, 723], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 578)
-    ops.geomTransf('Linear', 579, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 715, *[723, 724], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 579)
-    ops.geomTransf('Linear', 580, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 716, *[724, 725], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 580)
-    ops.geomTransf('Linear', 581, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 717, *[725, 378], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 581)
-    ops.geomTransf('Linear', 582, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 718, *[726, 727], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 582)
-    ops.geomTransf('Linear', 583, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 719, *[727, 728], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 583)
-    ops.geomTransf('Linear', 584, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 720, *[728, 729], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 584)
-    ops.geomTransf('Linear', 585, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 721, *[729, 379], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 585)
-    ops.geomTransf('Linear', 586, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 722, *[730, 731], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 586)
-    ops.geomTransf('Linear', 587, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 723, *[731, 732], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 587)
-    ops.geomTransf('Linear', 588, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 724, *[732, 733], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 588)
-    ops.geomTransf('Linear', 589, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 725, *[733, 380], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 589)
-    ops.geomTransf('Linear', 590, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 726, *[734, 735], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 590)
-    ops.geomTransf('Linear', 591, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 727, *[735, 736], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 591)
-    ops.geomTransf('Linear', 592, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 728, *[736, 737], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 592)
-    ops.geomTransf('Linear', 593, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 729, *[737, 381], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 593)
-    ops.geomTransf('Linear', 594, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 730, *[738, 739], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 594)
-    ops.geomTransf('Linear', 595, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 731, *[739, 740], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 595)
-    ops.geomTransf('Linear', 596, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 732, *[740, 741], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 596)
-    ops.geomTransf('Linear', 597, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 733, *[741, 382], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 597)
-    ops.geomTransf('Linear', 598, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 734, *[742, 743], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 598)
-    ops.geomTransf('Linear', 599, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 735, *[743, 744], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 599)
-    ops.geomTransf('Linear', 600, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 736, *[744, 745], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 600)
-    ops.geomTransf('Linear', 601, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 737, *[745, 383], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 601)
-    ops.geomTransf('Linear', 602, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 738, *[746, 747], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 602)
-    ops.geomTransf('Linear', 603, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 739, *[747, 748], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 603)
-    ops.geomTransf('Linear', 604, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 740, *[748, 749], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 604)
-    ops.geomTransf('Linear', 605, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 741, *[749, 384], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 605)
-    ops.geomTransf('Linear', 606, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 742, *[750, 751], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 606)
-    ops.geomTransf('Linear', 607, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 743, *[751, 752], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 607)
-    ops.geomTransf('Linear', 608, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 744, *[752, 753], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 608)
-    ops.geomTransf('Linear', 609, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 745, *[753, 385], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 609)
-    ops.geomTransf('Linear', 610, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 746, *[754, 755], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 610)
-    ops.geomTransf('Linear', 611, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 747, *[755, 756], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 611)
-    ops.geomTransf('Linear', 612, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 748, *[756, 757], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 612)
-    ops.geomTransf('Linear', 613, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 749, *[757, 386], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 613)
-    ops.geomTransf('Linear', 614, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 750, *[758, 759], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 614)
-    ops.geomTransf('Linear', 615, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 751, *[759, 760], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 615)
-    ops.geomTransf('Linear', 616, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 752, *[760, 761], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 616)
-    ops.geomTransf('Linear', 617, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 753, *[761, 387], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 617)
-    ops.geomTransf('Linear', 618, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 754, *[762, 763], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 618)
-    ops.geomTransf('Linear', 619, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 755, *[763, 764], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 619)
-    ops.geomTransf('Linear', 620, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 756, *[764, 765], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 620)
-    ops.geomTransf('Linear', 621, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 757, *[765, 389], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 621)
-    ops.geomTransf('Linear', 622, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 758, *[766, 767], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 622)
-    ops.geomTransf('Linear', 623, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 759, *[767, 768], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 623)
-    ops.geomTransf('Linear', 624, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 760, *[768, 769], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 624)
-    ops.geomTransf('Linear', 625, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 761, *[769, 390], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 625)
-    ops.geomTransf('Linear', 626, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 762, *[770, 771], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 626)
-    ops.geomTransf('Linear', 627, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 763, *[771, 772], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 627)
-    ops.geomTransf('Linear', 628, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 764, *[772, 773], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 628)
-    ops.geomTransf('Linear', 629, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 765, *[773, 391], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 629)
-    ops.geomTransf('Linear', 630, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 766, *[774, 775], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 630)
-    ops.geomTransf('Linear', 631, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 767, *[775, 776], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 631)
-    ops.geomTransf('Linear', 632, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 768, *[776, 777], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 632)
-    ops.geomTransf('Linear', 633, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 769, *[777, 392], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 633)
-    ops.geomTransf('Linear', 634, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 770, *[778, 779], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 634)
-    ops.geomTransf('Linear', 635, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 771, *[779, 780], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 635)
-    ops.geomTransf('Linear', 636, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 772, *[780, 781], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 636)
-    ops.geomTransf('Linear', 637, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 773, *[781, 393], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 637)
-    ops.geomTransf('Linear', 638, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 774, *[782, 783], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 638)
-    ops.geomTransf('Linear', 639, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 775, *[783, 784], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 639)
-    ops.geomTransf('Linear', 640, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 776, *[784, 785], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 640)
-    ops.geomTransf('Linear', 641, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 777, *[785, 394], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 641)
-    ops.geomTransf('Linear', 642, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 778, *[786, 787], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 642)
-    ops.geomTransf('Linear', 643, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 779, *[787, 788], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 643)
-    ops.geomTransf('Linear', 644, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 780, *[788, 789], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 644)
-    ops.geomTransf('Linear', 645, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 781, *[789, 395], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 645)
-    ops.geomTransf('Linear', 646, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 782, *[790, 791], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 646)
-    ops.geomTransf('Linear', 647, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 783, *[791, 792], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 647)
-    ops.geomTransf('Linear', 648, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 784, *[792, 793], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 648)
-    ops.geomTransf('Linear', 649, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 785, *[793, 396], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 649)
-    ops.geomTransf('Linear', 650, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 786, *[794, 795], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 650)
-    ops.geomTransf('Linear', 651, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 787, *[795, 796], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 651)
-    ops.geomTransf('Linear', 652, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 788, *[796, 797], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 652)
-    ops.geomTransf('Linear', 653, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 789, *[797, 397], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 653)
-    ops.geomTransf('Linear', 654, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 790, *[798, 799], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 654)
-    ops.geomTransf('Linear', 655, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 791, *[799, 800], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 655)
-    ops.geomTransf('Linear', 656, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 792, *[800, 801], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 656)
-    ops.geomTransf('Linear', 657, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 793, *[801, 398], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 657)
-    ops.geomTransf('Linear', 658, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 794, *[802, 803], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 658)
-    ops.geomTransf('Linear', 659, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 795, *[803, 804], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 659)
-    ops.geomTransf('Linear', 660, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 796, *[804, 805], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 660)
-    ops.geomTransf('Linear', 661, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 797, *[805, 399], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 661)
-    ops.geomTransf('Linear', 662, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 798, *[806, 807], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 662)
-    ops.geomTransf('Linear', 663, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 799, *[807, 808], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 663)
-    ops.geomTransf('Linear', 664, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 800, *[808, 809], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 664)
-    ops.geomTransf('Linear', 665, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 801, *[809, 400], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 665)
-    ops.geomTransf('Linear', 666, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 802, *[810, 811], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 666)
-    ops.geomTransf('Linear', 667, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 803, *[811, 812], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 667)
-    ops.geomTransf('Linear', 668, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 804, *[812, 813], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 668)
-    ops.geomTransf('Linear', 669, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 805, *[813, 401], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 669)
-    ops.geomTransf('Linear', 670, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 806, *[814, 815], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 670)
-    ops.geomTransf('Linear', 671, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 807, *[815, 816], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 671)
-    ops.geomTransf('Linear', 672, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 808, *[816, 817], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 672)
-    ops.geomTransf('Linear', 673, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 809, *[817, 402], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 673)
-    ops.geomTransf('Linear', 674, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 810, *[818, 819], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 674)
-    ops.geomTransf('Linear', 675, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 811, *[819, 820], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 675)
-    ops.geomTransf('Linear', 676, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 812, *[820, 821], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 676)
-    ops.geomTransf('Linear', 677, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 813, *[821, 403], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 677)
-    ops.geomTransf('Linear', 678, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 814, *[822, 823], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 678)
-    ops.geomTransf('Linear', 679, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 815, *[823, 824], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 679)
-    ops.geomTransf('Linear', 680, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 816, *[824, 825], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 680)
-    ops.geomTransf('Linear', 681, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 817, *[825, 404], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 681)
-    ops.geomTransf('Linear', 682, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 818, *[826, 827], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 682)
-    ops.geomTransf('Linear', 683, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 819, *[827, 828], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 683)
-    ops.geomTransf('Linear', 684, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 820, *[828, 829], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 684)
-    ops.geomTransf('Linear', 685, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 821, *[829, 405], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 685)
-    ops.geomTransf('Linear', 686, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 822, *[830, 831], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 686)
-    ops.geomTransf('Linear', 687, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 823, *[831, 832], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 687)
-    ops.geomTransf('Linear', 688, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 824, *[832, 833], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 688)
-    ops.geomTransf('Linear', 689, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 825, *[833, 407], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 689)
-    ops.geomTransf('Linear', 690, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 826, *[834, 835], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 690)
-    ops.geomTransf('Linear', 691, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 827, *[835, 836], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 691)
-    ops.geomTransf('Linear', 692, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 828, *[836, 837], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 692)
-    ops.geomTransf('Linear', 693, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 829, *[837, 408], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 693)
-    ops.geomTransf('Linear', 694, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 830, *[838, 839], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 694)
-    ops.geomTransf('Linear', 695, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 831, *[839, 840], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 695)
-    ops.geomTransf('Linear', 696, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 832, *[840, 841], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 696)
-    ops.geomTransf('Linear', 697, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 833, *[841, 409], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 697)
-    ops.geomTransf('Linear', 698, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 834, *[842, 843], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 698)
-    ops.geomTransf('Linear', 699, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 835, *[843, 844], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 699)
-    ops.geomTransf('Linear', 700, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 836, *[844, 845], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 700)
-    ops.geomTransf('Linear', 701, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 837, *[845, 410], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 701)
-    ops.geomTransf('Linear', 702, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 838, *[846, 847], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 702)
-    ops.geomTransf('Linear', 703, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 839, *[847, 848], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 703)
-    ops.geomTransf('Linear', 704, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 840, *[848, 849], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 704)
-    ops.geomTransf('Linear', 705, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 841, *[849, 411], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 705)
-    ops.geomTransf('Linear', 706, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 842, *[850, 851], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 706)
-    ops.geomTransf('Linear', 707, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 843, *[851, 852], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 707)
-    ops.geomTransf('Linear', 708, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 844, *[852, 853], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 708)
-    ops.geomTransf('Linear', 709, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 845, *[853, 412], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 709)
-    ops.geomTransf('Linear', 710, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 846, *[854, 855], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 710)
-    ops.geomTransf('Linear', 711, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 847, *[855, 856], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 711)
-    ops.geomTransf('Linear', 712, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 848, *[856, 857], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 712)
-    ops.geomTransf('Linear', 713, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 849, *[857, 413], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 713)
-    ops.geomTransf('Linear', 714, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 850, *[858, 859], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 714)
-    ops.geomTransf('Linear', 715, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 851, *[859, 860], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 715)
-    ops.geomTransf('Linear', 716, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 852, *[860, 861], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 716)
-    ops.geomTransf('Linear', 717, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 853, *[861, 414], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 717)
-    ops.geomTransf('Linear', 718, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 854, *[862, 863], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 718)
-    ops.geomTransf('Linear', 719, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 855, *[863, 864], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 719)
-    ops.geomTransf('Linear', 720, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 856, *[864, 865], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 720)
-    ops.geomTransf('Linear', 721, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 857, *[865, 415], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 721)
-    ops.geomTransf('Linear', 722, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 858, *[866, 867], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 722)
-    ops.geomTransf('Linear', 723, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 859, *[867, 868], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 723)
-    ops.geomTransf('Linear', 724, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 860, *[868, 869], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 724)
-    ops.geomTransf('Linear', 725, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 861, *[869, 416], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 725)
-    ops.geomTransf('Linear', 726, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 862, *[870, 871], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 726)
-    ops.geomTransf('Linear', 727, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 863, *[871, 872], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 727)
-    ops.geomTransf('Linear', 728, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 864, *[872, 873], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 728)
-    ops.geomTransf('Linear', 729, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 865, *[873, 417], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 729)
-    ops.geomTransf('Linear', 730, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 866, *[874, 875], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 730)
-    ops.geomTransf('Linear', 731, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 867, *[875, 876], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 731)
-    ops.geomTransf('Linear', 732, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 868, *[876, 877], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 732)
-    ops.geomTransf('Linear', 733, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 869, *[877, 418], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 733)
-    ops.geomTransf('Linear', 734, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 870, *[878, 879], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 734)
-    ops.geomTransf('Linear', 735, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 871, *[879, 880], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 735)
-    ops.geomTransf('Linear', 736, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 872, *[880, 881], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 736)
-    ops.geomTransf('Linear', 737, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 873, *[881, 419], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 737)
-    ops.geomTransf('Linear', 738, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 874, *[882, 883], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 738)
-    ops.geomTransf('Linear', 739, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 875, *[883, 884], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 739)
-    ops.geomTransf('Linear', 740, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 876, *[884, 885], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 740)
-    ops.geomTransf('Linear', 741, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 877, *[885, 420], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 741)
-    ops.geomTransf('Linear', 742, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 878, *[886, 887], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 742)
-    ops.geomTransf('Linear', 743, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 879, *[887, 888], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 743)
-    ops.geomTransf('Linear', 744, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 880, *[888, 889], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 744)
-    ops.geomTransf('Linear', 745, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 881, *[889, 421], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 745)
-    ops.geomTransf('Linear', 746, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 882, *[890, 891], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 746)
-    ops.geomTransf('Linear', 747, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 883, *[891, 892], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 747)
-    ops.geomTransf('Linear', 748, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 884, *[892, 893], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 748)
-    ops.geomTransf('Linear', 749, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 885, *[893, 422], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 749)
-    ops.geomTransf('Linear', 750, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 886, *[894, 895], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 750)
-    ops.geomTransf('Linear', 751, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 887, *[895, 896], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 751)
-    ops.geomTransf('Linear', 752, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 888, *[896, 897], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 752)
-    ops.geomTransf('Linear', 753, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 889, *[897, 423], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 753)
-    ops.geomTransf('Linear', 754, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 890, *[898, 899], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 754)
-    ops.geomTransf('Linear', 755, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 891, *[899, 900], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 755)
-    ops.geomTransf('Linear', 756, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 892, *[900, 901], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 756)
-    ops.geomTransf('Linear', 757, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 893, *[901, 425], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 757)
-    ops.geomTransf('Linear', 758, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 894, *[902, 903], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 758)
-    ops.geomTransf('Linear', 759, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 895, *[903, 904], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 759)
-    ops.geomTransf('Linear', 760, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 896, *[904, 905], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 760)
-    ops.geomTransf('Linear', 761, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 897, *[905, 426], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 761)
-    ops.geomTransf('Linear', 762, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 898, *[906, 907], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 762)
-    ops.geomTransf('Linear', 763, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 899, *[907, 908], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 763)
-    ops.geomTransf('Linear', 764, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 900, *[908, 909], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 764)
-    ops.geomTransf('Linear', 765, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 901, *[909, 427], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 765)
-    ops.geomTransf('Linear', 766, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 902, *[910, 911], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 766)
-    ops.geomTransf('Linear', 767, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 903, *[911, 912], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 767)
-    ops.geomTransf('Linear', 768, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 904, *[912, 913], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 768)
-    ops.geomTransf('Linear', 769, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 905, *[913, 428], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 769)
-    ops.geomTransf('Linear', 770, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 906, *[914, 915], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 770)
-    ops.geomTransf('Linear', 771, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 907, *[915, 916], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 771)
-    ops.geomTransf('Linear', 772, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 908, *[916, 917], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 772)
-    ops.geomTransf('Linear', 773, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 909, *[917, 429], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 773)
-    ops.geomTransf('Linear', 774, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 910, *[918, 919], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 774)
-    ops.geomTransf('Linear', 775, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 911, *[919, 920], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 775)
-    ops.geomTransf('Linear', 776, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 912, *[920, 921], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 776)
-    ops.geomTransf('Linear', 777, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 913, *[921, 430], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 777)
-    ops.geomTransf('Linear', 778, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 914, *[922, 923], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 778)
-    ops.geomTransf('Linear', 779, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 915, *[923, 924], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 779)
-    ops.geomTransf('Linear', 780, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 916, *[924, 925], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 780)
-    ops.geomTransf('Linear', 781, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 917, *[925, 431], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 781)
-    ops.geomTransf('Linear', 782, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 918, *[926, 927], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 782)
-    ops.geomTransf('Linear', 783, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 919, *[927, 928], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 783)
-    ops.geomTransf('Linear', 784, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 920, *[928, 929], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 784)
-    ops.geomTransf('Linear', 785, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 921, *[929, 432], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 785)
-    ops.geomTransf('Linear', 786, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 922, *[930, 931], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 786)
-    ops.geomTransf('Linear', 787, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 923, *[931, 932], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 787)
-    ops.geomTransf('Linear', 788, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 924, *[932, 933], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 788)
-    ops.geomTransf('Linear', 789, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 925, *[933, 433], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 789)
-    ops.geomTransf('Linear', 790, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 926, *[934, 935], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 790)
-    ops.geomTransf('Linear', 791, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 927, *[935, 936], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 791)
-    ops.geomTransf('Linear', 792, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 928, *[936, 937], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 792)
-    ops.geomTransf('Linear', 793, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 929, *[937, 434], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 793)
-    ops.geomTransf('Linear', 794, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 930, *[938, 939], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 794)
-    ops.geomTransf('Linear', 795, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 931, *[939, 940], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 795)
-    ops.geomTransf('Linear', 796, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 932, *[940, 941], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 796)
-    ops.geomTransf('Linear', 797, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 933, *[941, 435], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 797)
-    ops.geomTransf('Linear', 798, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 934, *[942, 943], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 798)
-    ops.geomTransf('Linear', 799, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 935, *[943, 944], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 799)
-    ops.geomTransf('Linear', 800, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 936, *[944, 945], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 800)
-    ops.geomTransf('Linear', 801, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 937, *[945, 436], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 801)
-    ops.geomTransf('Linear', 802, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 938, *[946, 947], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 802)
-    ops.geomTransf('Linear', 803, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 939, *[947, 948], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 803)
-    ops.geomTransf('Linear', 804, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 940, *[948, 949], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 804)
-    ops.geomTransf('Linear', 805, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 941, *[949, 437], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 805)
-    ops.geomTransf('Linear', 806, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 942, *[950, 951], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 806)
-    ops.geomTransf('Linear', 807, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 943, *[951, 952], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 807)
-    ops.geomTransf('Linear', 808, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 944, *[952, 953], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 808)
-    ops.geomTransf('Linear', 809, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 945, *[953, 438], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 809)
-    ops.geomTransf('Linear', 810, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 946, *[954, 955], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 810)
-    ops.geomTransf('Linear', 811, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 947, *[955, 956], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 811)
-    ops.geomTransf('Linear', 812, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 948, *[956, 957], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 812)
-    ops.geomTransf('Linear', 813, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 949, *[957, 439], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 813)
-    ops.geomTransf('Linear', 814, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 950, *[958, 959], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 814)
-    ops.geomTransf('Linear', 815, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 951, *[959, 960], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 815)
-    ops.geomTransf('Linear', 816, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 952, *[960, 961], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 816)
-    ops.geomTransf('Linear', 817, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 953, *[961, 440], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 817)
-    ops.geomTransf('Linear', 818, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 954, *[962, 963], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 818)
-    ops.geomTransf('Linear', 819, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 955, *[963, 964], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 819)
-    ops.geomTransf('Linear', 820, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 956, *[964, 965], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 820)
-    ops.geomTransf('Linear', 821, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 957, *[965, 441], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 821)
-    ops.geomTransf('Linear', 822, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 958, *[966, 967], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 822)
-    ops.geomTransf('Linear', 823, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 959, *[967, 968], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 823)
-    ops.geomTransf('Linear', 824, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 960, *[968, 969], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 824)
-    ops.geomTransf('Linear', 825, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 961, *[969, 443], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 825)
-    ops.geomTransf('Linear', 826, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 962, *[970, 971], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 826)
-    ops.geomTransf('Linear', 827, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 963, *[971, 972], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 827)
-    ops.geomTransf('Linear', 828, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 964, *[972, 973], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 828)
-    ops.geomTransf('Linear', 829, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 965, *[973, 444], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 829)
-    ops.geomTransf('Linear', 830, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 966, *[974, 975], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 830)
-    ops.geomTransf('Linear', 831, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 967, *[975, 976], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 831)
-    ops.geomTransf('Linear', 832, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 968, *[976, 977], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 832)
-    ops.geomTransf('Linear', 833, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 969, *[977, 445], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 833)
-    ops.geomTransf('Linear', 834, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 970, *[978, 979], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 834)
-    ops.geomTransf('Linear', 835, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 971, *[979, 980], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 835)
-    ops.geomTransf('Linear', 836, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 972, *[980, 981], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 836)
-    ops.geomTransf('Linear', 837, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 973, *[981, 446], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 837)
-    ops.geomTransf('Linear', 838, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 974, *[982, 983], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 838)
-    ops.geomTransf('Linear', 839, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 975, *[983, 984], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 839)
-    ops.geomTransf('Linear', 840, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 976, *[984, 985], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 840)
-    ops.geomTransf('Linear', 841, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 977, *[985, 447], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 841)
-    ops.geomTransf('Linear', 842, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 978, *[986, 987], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 842)
-    ops.geomTransf('Linear', 843, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 979, *[987, 988], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 843)
-    ops.geomTransf('Linear', 844, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 980, *[988, 989], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 844)
-    ops.geomTransf('Linear', 845, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 981, *[989, 448], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 845)
-    ops.geomTransf('Linear', 846, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 982, *[990, 991], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 846)
-    ops.geomTransf('Linear', 847, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 983, *[991, 992], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 847)
-    ops.geomTransf('Linear', 848, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 984, *[992, 993], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 848)
-    ops.geomTransf('Linear', 849, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 985, *[993, 449], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 849)
-    ops.geomTransf('Linear', 850, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 986, *[994, 995], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 850)
-    ops.geomTransf('Linear', 851, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 987, *[995, 996], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 851)
-    ops.geomTransf('Linear', 852, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 988, *[996, 997], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 852)
-    ops.geomTransf('Linear', 853, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 989, *[997, 450], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 853)
-    ops.geomTransf('Linear', 854, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 990, *[998, 999], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 854)
-    ops.geomTransf('Linear', 855, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 991, *[999, 1000], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 855)
-    ops.geomTransf('Linear', 856, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 992, *[1000, 1001], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 856)
-    ops.geomTransf('Linear', 857, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 993, *[1001, 451], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 857)
-    ops.geomTransf('Linear', 858, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 994, *[1002, 1003], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 858)
-    ops.geomTransf('Linear', 859, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 995, *[1003, 1004], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 859)
-    ops.geomTransf('Linear', 860, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 996, *[1004, 1005], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 860)
-    ops.geomTransf('Linear', 861, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 997, *[1005, 452], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 861)
-    ops.geomTransf('Linear', 862, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 998, *[1006, 1007], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 862)
-    ops.geomTransf('Linear', 863, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 999, *[1007, 1008], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 863)
-    ops.geomTransf('Linear', 864, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1000, *[1008, 1009], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 864)
-    ops.geomTransf('Linear', 865, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1001, *[1009, 453], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 865)
-    ops.geomTransf('Linear', 866, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1002, *[1010, 1011], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 866)
-    ops.geomTransf('Linear', 867, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1003, *[1011, 1012], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 867)
-    ops.geomTransf('Linear', 868, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1004, *[1012, 1013], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 868)
-    ops.geomTransf('Linear', 869, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1005, *[1013, 454], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 869)
-    ops.geomTransf('Linear', 870, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1006, *[1014, 1015], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 870)
-    ops.geomTransf('Linear', 871, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1007, *[1015, 1016], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 871)
-    ops.geomTransf('Linear', 872, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1008, *[1016, 1017], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 872)
-    ops.geomTransf('Linear', 873, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1009, *[1017, 455], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 873)
-    ops.geomTransf('Linear', 874, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1010, *[1018, 1019], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 874)
-    ops.geomTransf('Linear', 875, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1011, *[1019, 1020], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 875)
-    ops.geomTransf('Linear', 876, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1012, *[1020, 1021], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 876)
-    ops.geomTransf('Linear', 877, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1013, *[1021, 456], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 877)
-    ops.geomTransf('Linear', 878, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1014, *[1022, 1023], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 878)
-    ops.geomTransf('Linear', 879, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1015, *[1023, 1024], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 879)
-    ops.geomTransf('Linear', 880, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1016, *[1024, 1025], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 880)
-    ops.geomTransf('Linear', 881, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1017, *[1025, 457], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 881)
-    ops.geomTransf('Linear', 882, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1018, *[1026, 1027], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 882)
-    ops.geomTransf('Linear', 883, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1019, *[1027, 1028], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 883)
-    ops.geomTransf('Linear', 884, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1020, *[1028, 1029], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 884)
-    ops.geomTransf('Linear', 885, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1021, *[1029, 458], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 885)
-    ops.geomTransf('Linear', 886, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1022, *[1030, 1031], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 886)
-    ops.geomTransf('Linear', 887, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1023, *[1031, 1032], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 887)
-    ops.geomTransf('Linear', 888, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1024, *[1032, 1033], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 888)
-    ops.geomTransf('Linear', 889, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1025, *[1033, 459], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 889)
-    ops.geomTransf('Linear', 890, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1026, *[1034, 1035], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 890)
-    ops.geomTransf('Linear', 891, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1027, *[1035, 1036], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 891)
-    ops.geomTransf('Linear', 892, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1028, *[1036, 1037], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 892)
-    ops.geomTransf('Linear', 893, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1029, *[1037, 461], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 893)
-    ops.geomTransf('Linear', 894, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1030, *[1038, 1039], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 894)
-    ops.geomTransf('Linear', 895, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1031, *[1039, 1040], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 895)
-    ops.geomTransf('Linear', 896, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1032, *[1040, 1041], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 896)
-    ops.geomTransf('Linear', 897, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1033, *[1041, 462], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 897)
-    ops.geomTransf('Linear', 898, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1034, *[1042, 1043], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 898)
-    ops.geomTransf('Linear', 899, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1035, *[1043, 1044], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 899)
-    ops.geomTransf('Linear', 900, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1036, *[1044, 1045], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 900)
-    ops.geomTransf('Linear', 901, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1037, *[1045, 463], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 901)
-    ops.geomTransf('Linear', 902, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1038, *[1046, 1047], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 902)
-    ops.geomTransf('Linear', 903, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1039, *[1047, 1048], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 903)
-    ops.geomTransf('Linear', 904, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1040, *[1048, 1049], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 904)
-    ops.geomTransf('Linear', 905, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1041, *[1049, 464], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 905)
-    ops.geomTransf('Linear', 906, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1042, *[1050, 1051], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 906)
-    ops.geomTransf('Linear', 907, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1043, *[1051, 1052], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 907)
-    ops.geomTransf('Linear', 908, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1044, *[1052, 1053], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 908)
-    ops.geomTransf('Linear', 909, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1045, *[1053, 465], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 909)
-    ops.geomTransf('Linear', 910, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1046, *[1054, 1055], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 910)
-    ops.geomTransf('Linear', 911, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1047, *[1055, 1056], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 911)
-    ops.geomTransf('Linear', 912, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1048, *[1056, 1057], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 912)
-    ops.geomTransf('Linear', 913, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1049, *[1057, 466], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 913)
-    ops.geomTransf('Linear', 914, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1050, *[1058, 1059], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 914)
-    ops.geomTransf('Linear', 915, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1051, *[1059, 1060], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 915)
-    ops.geomTransf('Linear', 916, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1052, *[1060, 1061], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 916)
-    ops.geomTransf('Linear', 917, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1053, *[1061, 467], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 917)
-    ops.geomTransf('Linear', 918, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1054, *[1062, 1063], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 918)
-    ops.geomTransf('Linear', 919, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1055, *[1063, 1064], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 919)
-    ops.geomTransf('Linear', 920, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1056, *[1064, 1065], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 920)
-    ops.geomTransf('Linear', 921, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1057, *[1065, 468], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 921)
-    ops.geomTransf('Linear', 922, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1058, *[1066, 1067], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 922)
-    ops.geomTransf('Linear', 923, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1059, *[1067, 1068], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 923)
-    ops.geomTransf('Linear', 924, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1060, *[1068, 1069], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 924)
-    ops.geomTransf('Linear', 925, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1061, *[1069, 469], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 925)
-    ops.geomTransf('Linear', 926, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1062, *[1070, 1071], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 926)
-    ops.geomTransf('Linear', 927, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1063, *[1071, 1072], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 927)
-    ops.geomTransf('Linear', 928, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1064, *[1072, 1073], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 928)
-    ops.geomTransf('Linear', 929, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1065, *[1073, 470], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 929)
-    ops.geomTransf('Linear', 930, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1066, *[1074, 1075], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 930)
-    ops.geomTransf('Linear', 931, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1067, *[1075, 1076], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 931)
-    ops.geomTransf('Linear', 932, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1068, *[1076, 1077], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 932)
-    ops.geomTransf('Linear', 933, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1069, *[1077, 471], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 933)
-    ops.geomTransf('Linear', 934, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1070, *[1078, 1079], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 934)
-    ops.geomTransf('Linear', 935, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1071, *[1079, 1080], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 935)
-    ops.geomTransf('Linear', 936, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1072, *[1080, 1081], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 936)
-    ops.geomTransf('Linear', 937, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1073, *[1081, 472], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 937)
-    ops.geomTransf('Linear', 938, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1074, *[1082, 1083], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 938)
-    ops.geomTransf('Linear', 939, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1075, *[1083, 1084], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 939)
-    ops.geomTransf('Linear', 940, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1076, *[1084, 1085], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 940)
-    ops.geomTransf('Linear', 941, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1077, *[1085, 473], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 941)
-    ops.geomTransf('Linear', 942, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1078, *[1086, 1087], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 942)
-    ops.geomTransf('Linear', 943, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1079, *[1087, 1088], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 943)
-    ops.geomTransf('Linear', 944, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1080, *[1088, 1089], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 944)
-    ops.geomTransf('Linear', 945, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1081, *[1089, 474], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 945)
-    ops.geomTransf('Linear', 946, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1082, *[1090, 1091], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 946)
-    ops.geomTransf('Linear', 947, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1083, *[1091, 1092], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 947)
-    ops.geomTransf('Linear', 948, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1084, *[1092, 1093], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 948)
-    ops.geomTransf('Linear', 949, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1085, *[1093, 475], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 949)
-    ops.geomTransf('Linear', 950, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1086, *[1094, 1095], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 950)
-    ops.geomTransf('Linear', 951, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1087, *[1095, 1096], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 951)
-    ops.geomTransf('Linear', 952, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1088, *[1096, 1097], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 952)
-    ops.geomTransf('Linear', 953, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1089, *[1097, 476], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 953)
-    ops.geomTransf('Linear', 954, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1090, *[1098, 1099], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 954)
-    ops.geomTransf('Linear', 955, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1091, *[1099, 1100], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 955)
-    ops.geomTransf('Linear', 956, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1092, *[1100, 1101], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 956)
-    ops.geomTransf('Linear', 957, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1093, *[1101, 477], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 957)
-    ops.geomTransf('Linear', 958, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1094, *[1102, 1103], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 958)
-    ops.geomTransf('Linear', 959, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1095, *[1103, 1104], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 959)
-    ops.geomTransf('Linear', 960, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1096, *[1104, 1105], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 960)
-    ops.geomTransf('Linear', 961, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1097, *[1105, 479], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 961)
-    ops.geomTransf('Linear', 962, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1098, *[1106, 1107], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 962)
-    ops.geomTransf('Linear', 963, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1099, *[1107, 1108], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 963)
-    ops.geomTransf('Linear', 964, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1100, *[1108, 1109], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 964)
-    ops.geomTransf('Linear', 965, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1101, *[1109, 480], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 965)
-    ops.geomTransf('Linear', 966, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1102, *[1110, 1111], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 966)
-    ops.geomTransf('Linear', 967, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1103, *[1111, 1112], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 967)
-    ops.geomTransf('Linear', 968, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1104, *[1112, 1113], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 968)
-    ops.geomTransf('Linear', 969, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1105, *[1113, 481], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 969)
-    ops.geomTransf('Linear', 970, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1106, *[1114, 1115], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 970)
-    ops.geomTransf('Linear', 971, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1107, *[1115, 1116], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 971)
-    ops.geomTransf('Linear', 972, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1108, *[1116, 1117], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 972)
-    ops.geomTransf('Linear', 973, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1109, *[1117, 482], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 973)
-    ops.geomTransf('Linear', 974, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1110, *[1118, 1119], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 974)
-    ops.geomTransf('Linear', 975, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1111, *[1119, 1120], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 975)
-    ops.geomTransf('Linear', 976, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1112, *[1120, 1121], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 976)
-    ops.geomTransf('Linear', 977, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1113, *[1121, 483], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 977)
-    ops.geomTransf('Linear', 978, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1114, *[1122, 1123], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 978)
-    ops.geomTransf('Linear', 979, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1115, *[1123, 1124], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 979)
-    ops.geomTransf('Linear', 980, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1116, *[1124, 1125], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 980)
-    ops.geomTransf('Linear', 981, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1117, *[1125, 484], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 981)
-    ops.geomTransf('Linear', 982, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1118, *[1126, 1127], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 982)
-    ops.geomTransf('Linear', 983, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1119, *[1127, 1128], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 983)
-    ops.geomTransf('Linear', 984, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1120, *[1128, 1129], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 984)
-    ops.geomTransf('Linear', 985, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1121, *[1129, 485], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 985)
-    ops.geomTransf('Linear', 986, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1122, *[1130, 1131], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 986)
-    ops.geomTransf('Linear', 987, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1123, *[1131, 1132], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 987)
-    ops.geomTransf('Linear', 988, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1124, *[1132, 1133], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 988)
-    ops.geomTransf('Linear', 989, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1125, *[1133, 486], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 989)
-    ops.geomTransf('Linear', 990, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1126, *[1134, 1135], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 990)
-    ops.geomTransf('Linear', 991, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1127, *[1135, 1136], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 991)
-    ops.geomTransf('Linear', 992, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1128, *[1136, 1137], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 992)
-    ops.geomTransf('Linear', 993, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1129, *[1137, 487], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 993)
-    ops.geomTransf('Linear', 994, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1130, *[1138, 1139], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 994)
-    ops.geomTransf('Linear', 995, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1131, *[1139, 1140], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 995)
-    ops.geomTransf('Linear', 996, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1132, *[1140, 1141], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 996)
-    ops.geomTransf('Linear', 997, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1133, *[1141, 488], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 997)
-    ops.geomTransf('Linear', 998, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1134, *[1142, 1143], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 998)
-    ops.geomTransf('Linear', 999, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1135, *[1143, 1144], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 999)
-    ops.geomTransf('Linear', 1000, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1136, *[1144, 1145], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1000)
-    ops.geomTransf('Linear', 1001, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1137, *[1145, 489], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1001)
-    ops.geomTransf('Linear', 1002, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1138, *[1146, 1147], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1002)
-    ops.geomTransf('Linear', 1003, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1139, *[1147, 1148], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1003)
-    ops.geomTransf('Linear', 1004, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1140, *[1148, 1149], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1004)
-    ops.geomTransf('Linear', 1005, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1141, *[1149, 490], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1005)
-    ops.geomTransf('Linear', 1006, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1142, *[1150, 1151], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1006)
-    ops.geomTransf('Linear', 1007, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1143, *[1151, 1152], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1007)
-    ops.geomTransf('Linear', 1008, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1144, *[1152, 1153], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1008)
-    ops.geomTransf('Linear', 1009, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1145, *[1153, 491], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1009)
-    ops.geomTransf('Linear', 1010, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1146, *[1154, 1155], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1010)
-    ops.geomTransf('Linear', 1011, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1147, *[1155, 1156], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1011)
-    ops.geomTransf('Linear', 1012, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1148, *[1156, 1157], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1012)
-    ops.geomTransf('Linear', 1013, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1149, *[1157, 492], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1013)
-    ops.geomTransf('Linear', 1014, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1150, *[1158, 1159], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1014)
-    ops.geomTransf('Linear', 1015, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1151, *[1159, 1160], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1015)
-    ops.geomTransf('Linear', 1016, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1152, *[1160, 1161], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1016)
-    ops.geomTransf('Linear', 1017, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1153, *[1161, 493], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1017)
-    ops.geomTransf('Linear', 1018, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1154, *[1162, 1163], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1018)
-    ops.geomTransf('Linear', 1019, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1155, *[1163, 1164], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1019)
-    ops.geomTransf('Linear', 1020, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1156, *[1164, 1165], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1020)
-    ops.geomTransf('Linear', 1021, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1157, *[1165, 494], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1021)
-    ops.geomTransf('Linear', 1022, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1158, *[1166, 1167], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1022)
-    ops.geomTransf('Linear', 1023, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1159, *[1167, 1168], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1023)
-    ops.geomTransf('Linear', 1024, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1160, *[1168, 1169], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1024)
-    ops.geomTransf('Linear', 1025, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1161, *[1169, 495], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1025)
-    ops.geomTransf('Linear', 1026, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1162, *[1170, 1171], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1026)
-    ops.geomTransf('Linear', 1027, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1163, *[1171, 1172], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1027)
-    ops.geomTransf('Linear', 1028, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1164, *[1172, 1173], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1028)
-    ops.geomTransf('Linear', 1029, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1165, *[1173, 497], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1029)
-    ops.geomTransf('Linear', 1030, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1166, *[1174, 1175], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1030)
-    ops.geomTransf('Linear', 1031, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1167, *[1175, 1176], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1031)
-    ops.geomTransf('Linear', 1032, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1168, *[1176, 1177], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1032)
-    ops.geomTransf('Linear', 1033, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1169, *[1177, 498], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1033)
-    ops.geomTransf('Linear', 1034, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1170, *[1178, 1179], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1034)
-    ops.geomTransf('Linear', 1035, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1171, *[1179, 1180], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1035)
-    ops.geomTransf('Linear', 1036, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1172, *[1180, 1181], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1036)
-    ops.geomTransf('Linear', 1037, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1173, *[1181, 499], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1037)
-    ops.geomTransf('Linear', 1038, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1174, *[1182, 1183], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1038)
-    ops.geomTransf('Linear', 1039, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1175, *[1183, 1184], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1039)
-    ops.geomTransf('Linear', 1040, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1176, *[1184, 1185], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1040)
-    ops.geomTransf('Linear', 1041, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1177, *[1185, 500], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1041)
-    ops.geomTransf('Linear', 1042, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1178, *[1186, 1187], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1042)
-    ops.geomTransf('Linear', 1043, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1179, *[1187, 1188], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1043)
-    ops.geomTransf('Linear', 1044, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1180, *[1188, 1189], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1044)
-    ops.geomTransf('Linear', 1045, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1181, *[1189, 501], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1045)
-    ops.geomTransf('Linear', 1046, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1182, *[1190, 1191], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1046)
-    ops.geomTransf('Linear', 1047, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1183, *[1191, 1192], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1047)
-    ops.geomTransf('Linear', 1048, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1184, *[1192, 1193], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1048)
-    ops.geomTransf('Linear', 1049, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1185, *[1193, 502], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1049)
-    ops.geomTransf('Linear', 1050, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1186, *[1194, 1195], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1050)
-    ops.geomTransf('Linear', 1051, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1187, *[1195, 1196], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1051)
-    ops.geomTransf('Linear', 1052, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1188, *[1196, 1197], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1052)
-    ops.geomTransf('Linear', 1053, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1189, *[1197, 503], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1053)
-    ops.geomTransf('Linear', 1054, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1190, *[1198, 1199], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1054)
-    ops.geomTransf('Linear', 1055, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1191, *[1199, 1200], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1055)
-    ops.geomTransf('Linear', 1056, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1192, *[1200, 1201], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1056)
-    ops.geomTransf('Linear', 1057, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1193, *[1201, 504], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1057)
-    ops.geomTransf('Linear', 1058, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1194, *[1202, 1203], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1058)
-    ops.geomTransf('Linear', 1059, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1195, *[1203, 1204], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1059)
-    ops.geomTransf('Linear', 1060, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1196, *[1204, 1205], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1060)
-    ops.geomTransf('Linear', 1061, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1197, *[1205, 505], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1061)
-    ops.geomTransf('Linear', 1062, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1198, *[1206, 1207], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1062)
-    ops.geomTransf('Linear', 1063, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1199, *[1207, 1208], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1063)
-    ops.geomTransf('Linear', 1064, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1200, *[1208, 1209], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1064)
-    ops.geomTransf('Linear', 1065, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1201, *[1209, 506], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1065)
-    ops.geomTransf('Linear', 1066, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1202, *[1210, 1211], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1066)
-    ops.geomTransf('Linear', 1067, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1203, *[1211, 1212], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1067)
-    ops.geomTransf('Linear', 1068, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1204, *[1212, 1213], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1068)
-    ops.geomTransf('Linear', 1069, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1205, *[1213, 507], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1069)
-    ops.geomTransf('Linear', 1070, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1206, *[1214, 1215], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1070)
-    ops.geomTransf('Linear', 1071, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1207, *[1215, 1216], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1071)
-    ops.geomTransf('Linear', 1072, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1208, *[1216, 1217], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1072)
-    ops.geomTransf('Linear', 1073, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1209, *[1217, 508], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1073)
-    ops.geomTransf('Linear', 1074, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1210, *[1218, 1219], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1074)
-    ops.geomTransf('Linear', 1075, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1211, *[1219, 1220], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1075)
-    ops.geomTransf('Linear', 1076, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1212, *[1220, 1221], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1076)
-    ops.geomTransf('Linear', 1077, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1213, *[1221, 509], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1077)
-    ops.geomTransf('Linear', 1078, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1214, *[1222, 1223], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1078)
-    ops.geomTransf('Linear', 1079, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1215, *[1223, 1224], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1079)
-    ops.geomTransf('Linear', 1080, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1216, *[1224, 1225], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1080)
-    ops.geomTransf('Linear', 1081, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1217, *[1225, 510], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1081)
-    ops.geomTransf('Linear', 1082, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1218, *[1226, 1227], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1082)
-    ops.geomTransf('Linear', 1083, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1219, *[1227, 1228], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1083)
-    ops.geomTransf('Linear', 1084, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1220, *[1228, 1229], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1084)
-    ops.geomTransf('Linear', 1085, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1221, *[1229, 511], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1085)
-    ops.geomTransf('Linear', 1086, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1222, *[1230, 1231], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1086)
-    ops.geomTransf('Linear', 1087, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1223, *[1231, 1232], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1087)
-    ops.geomTransf('Linear', 1088, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1224, *[1232, 1233], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1088)
-    ops.geomTransf('Linear', 1089, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1225, *[1233, 512], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1089)
-    ops.geomTransf('Linear', 1090, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1226, *[1234, 1235], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1090)
-    ops.geomTransf('Linear', 1091, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1227, *[1235, 1236], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1091)
-    ops.geomTransf('Linear', 1092, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1228, *[1236, 1237], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1092)
-    ops.geomTransf('Linear', 1093, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1229, *[1237, 513], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1093)
-    ops.geomTransf('Linear', 1094, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1230, *[1238, 1239], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1094)
-    ops.geomTransf('Linear', 1095, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1231, *[1239, 1240], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1095)
-    ops.geomTransf('Linear', 1096, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1232, *[1240, 1241], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1096)
-    ops.geomTransf('Linear', 1097, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1233, *[1241, 515], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1097)
-    ops.geomTransf('Linear', 1098, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1234, *[1242, 1243], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1098)
-    ops.geomTransf('Linear', 1099, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1235, *[1243, 1244], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1099)
-    ops.geomTransf('Linear', 1100, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1236, *[1244, 1245], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1100)
-    ops.geomTransf('Linear', 1101, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1237, *[1245, 516], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1101)
-    ops.geomTransf('Linear', 1102, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1238, *[1246, 1247], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1102)
-    ops.geomTransf('Linear', 1103, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1239, *[1247, 1248], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1103)
-    ops.geomTransf('Linear', 1104, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1240, *[1248, 1249], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1104)
-    ops.geomTransf('Linear', 1105, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1241, *[1249, 517], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1105)
-    ops.geomTransf('Linear', 1106, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1242, *[1250, 1251], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1106)
-    ops.geomTransf('Linear', 1107, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1243, *[1251, 1252], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1107)
-    ops.geomTransf('Linear', 1108, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1244, *[1252, 1253], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1108)
-    ops.geomTransf('Linear', 1109, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1245, *[1253, 518], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1109)
-    ops.geomTransf('Linear', 1110, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1246, *[1254, 1255], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1110)
-    ops.geomTransf('Linear', 1111, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1247, *[1255, 1256], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1111)
-    ops.geomTransf('Linear', 1112, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1248, *[1256, 1257], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1112)
-    ops.geomTransf('Linear', 1113, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1249, *[1257, 519], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1113)
-    ops.geomTransf('Linear', 1114, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1250, *[1258, 1259], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1114)
-    ops.geomTransf('Linear', 1115, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1251, *[1259, 1260], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1115)
-    ops.geomTransf('Linear', 1116, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1252, *[1260, 1261], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1116)
-    ops.geomTransf('Linear', 1117, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1253, *[1261, 520], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1117)
-    ops.geomTransf('Linear', 1118, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1254, *[1262, 1263], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1118)
-    ops.geomTransf('Linear', 1119, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1255, *[1263, 1264], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1119)
-    ops.geomTransf('Linear', 1120, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1256, *[1264, 1265], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1120)
-    ops.geomTransf('Linear', 1121, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1257, *[1265, 521], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1121)
-    ops.geomTransf('Linear', 1122, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1258, *[1266, 1267], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1122)
-    ops.geomTransf('Linear', 1123, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1259, *[1267, 1268], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1123)
-    ops.geomTransf('Linear', 1124, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1260, *[1268, 1269], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1124)
-    ops.geomTransf('Linear', 1125, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1261, *[1269, 522], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1125)
-    ops.geomTransf('Linear', 1126, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1262, *[1270, 1271], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1126)
-    ops.geomTransf('Linear', 1127, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1263, *[1271, 1272], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1127)
-    ops.geomTransf('Linear', 1128, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1264, *[1272, 1273], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1128)
-    ops.geomTransf('Linear', 1129, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1265, *[1273, 523], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1129)
-    ops.geomTransf('Linear', 1130, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1266, *[1274, 1275], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1130)
-    ops.geomTransf('Linear', 1131, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1267, *[1275, 1276], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1131)
-    ops.geomTransf('Linear', 1132, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1268, *[1276, 1277], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1132)
-    ops.geomTransf('Linear', 1133, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1269, *[1277, 524], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1133)
-    ops.geomTransf('Linear', 1134, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1270, *[1278, 1279], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1134)
-    ops.geomTransf('Linear', 1135, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1271, *[1279, 1280], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1135)
-    ops.geomTransf('Linear', 1136, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1272, *[1280, 1281], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1136)
-    ops.geomTransf('Linear', 1137, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1273, *[1281, 525], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1137)
-    ops.geomTransf('Linear', 1138, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1274, *[1282, 1283], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1138)
-    ops.geomTransf('Linear', 1139, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1275, *[1283, 1284], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1139)
-    ops.geomTransf('Linear', 1140, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1276, *[1284, 1285], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1140)
-    ops.geomTransf('Linear', 1141, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1277, *[1285, 526], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1141)
-    ops.geomTransf('Linear', 1142, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1278, *[1286, 1287], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1142)
-    ops.geomTransf('Linear', 1143, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1279, *[1287, 1288], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1143)
-    ops.geomTransf('Linear', 1144, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1280, *[1288, 1289], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1144)
-    ops.geomTransf('Linear', 1145, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1281, *[1289, 527], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1145)
-    ops.geomTransf('Linear', 1146, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1282, *[1290, 1291], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1146)
-    ops.geomTransf('Linear', 1147, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1283, *[1291, 1292], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1147)
-    ops.geomTransf('Linear', 1148, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1284, *[1292, 1293], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1148)
-    ops.geomTransf('Linear', 1149, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1285, *[1293, 528], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1149)
-    ops.geomTransf('Linear', 1150, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1286, *[1294, 1295], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1150)
-    ops.geomTransf('Linear', 1151, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1287, *[1295, 1296], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1151)
-    ops.geomTransf('Linear', 1152, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1288, *[1296, 1297], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1152)
-    ops.geomTransf('Linear', 1153, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1289, *[1297, 529], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1153)
-    ops.geomTransf('Linear', 1154, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1290, *[1298, 1299], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1154)
-    ops.geomTransf('Linear', 1155, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1291, *[1299, 1300], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1155)
-    ops.geomTransf('Linear', 1156, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1292, *[1300, 1301], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1156)
-    ops.geomTransf('Linear', 1157, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1293, *[1301, 530], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1157)
-    ops.geomTransf('Linear', 1158, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1294, *[1302, 1303], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1158)
-    ops.geomTransf('Linear', 1159, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1295, *[1303, 1304], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1159)
-    ops.geomTransf('Linear', 1160, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1296, *[1304, 1305], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1160)
-    ops.geomTransf('Linear', 1161, *[0.0, 0.0, 1.0])
-    ops.element('elasticBeamColumn', 1297, *[1305, 531], SecProps[6].A, MatProps[1].E, MatProps[1].G, SecProps[6].Ixx, SecProps[6].Iyy, SecProps[6].Izz, 1161)
+    ops.geomTransf("Linear", 1, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1,
+        *[2, 9],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        1,
+    )
+    ops.geomTransf("Linear", 2, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        2,
+        *[10, 3],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        2,
+    )
+    ops.geomTransf("Linear", 3, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        3,
+        *[6, 11],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        3,
+    )
+    ops.geomTransf("Linear", 4, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        4,
+        *[12, 7],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        4,
+    )
+    ops.geomTransf("Linear", 5, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        5,
+        *[9, 13],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        5,
+    )
+    ops.geomTransf("Linear", 6, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        6,
+        *[14, 10],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        6,
+    )
+    ops.geomTransf("Linear", 7, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        7,
+        *[11, 15],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        7,
+    )
+    ops.geomTransf("Linear", 8, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        8,
+        *[16, 12],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        8,
+    )
+    ops.geomTransf("Linear", 9, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        9,
+        *[13, 17],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        9,
+    )
+    ops.geomTransf("Linear", 10, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        10,
+        *[18, 14],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        10,
+    )
+    ops.geomTransf("Linear", 11, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        11,
+        *[15, 19],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        11,
+    )
+    ops.geomTransf("Linear", 12, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        12,
+        *[20, 16],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        12,
+    )
+    ops.geomTransf("Linear", 13, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        13,
+        *[17, 21],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        13,
+    )
+    ops.geomTransf("Linear", 14, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        14,
+        *[22, 18],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        14,
+    )
+    ops.geomTransf("Linear", 15, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        15,
+        *[19, 23],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        15,
+    )
+    ops.geomTransf("Linear", 16, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        16,
+        *[24, 20],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        16,
+    )
+    ops.geomTransf("Linear", 17, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        17,
+        *[45, 1],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        17,
+    )
+    ops.geomTransf("Linear", 18, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        18,
+        *[4, 46],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        18,
+    )
+    ops.geomTransf("Linear", 19, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        19,
+        *[47, 5],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        19,
+    )
+    ops.geomTransf("Linear", 20, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        20,
+        *[8, 48],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        20,
+    )
+    ops.geomTransf("Linear", 21, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        21,
+        *[21, 25],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        21,
+    )
+    ops.geomTransf("Linear", 22, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        22,
+        *[26, 22],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        22,
+    )
+    ops.geomTransf("Linear", 23, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        23,
+        *[23, 27],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        23,
+    )
+    ops.geomTransf("Linear", 24, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        24,
+        *[28, 24],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        24,
+    )
+    ops.geomTransf("Linear", 25, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        25,
+        *[25, 27],
+        SecProps[7].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[7].Ixx,
+        SecProps[7].Iyy,
+        SecProps[7].Izz,
+        25,
+    )
+    ops.geomTransf("Linear", 26, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        26,
+        *[28, 26],
+        SecProps[7].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[7].Ixx,
+        SecProps[7].Iyy,
+        SecProps[7].Izz,
+        26,
+    )
+    ops.geomTransf("Linear", 27, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        27,
+        *[25, 29],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        27,
+    )
+    ops.geomTransf("Linear", 28, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        28,
+        *[30, 26],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        28,
+    )
+    ops.geomTransf("Linear", 29, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        29,
+        *[27, 31],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        29,
+    )
+    ops.geomTransf("Linear", 30, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        30,
+        *[32, 28],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        30,
+    )
+    ops.geomTransf("Linear", 31, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        31,
+        *[53, 13],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        31,
+    )
+    ops.geomTransf("Linear", 32, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        32,
+        *[14, 54],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        32,
+    )
+    ops.geomTransf("Linear", 33, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        33,
+        *[55, 15],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        33,
+    )
+    ops.geomTransf("Linear", 34, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        34,
+        *[16, 56],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        34,
+    )
+    ops.geomTransf("Linear", 35, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        35,
+        *[29, 33],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        35,
+    )
+    ops.geomTransf("Linear", 36, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        36,
+        *[34, 30],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        36,
+    )
+    ops.geomTransf("Linear", 37, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        37,
+        *[31, 35],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        37,
+    )
+    ops.geomTransf("Linear", 38, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        38,
+        *[36, 32],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        38,
+    )
+    ops.geomTransf("Linear", 39, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        39,
+        *[33, 37],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        39,
+    )
+    ops.geomTransf("Linear", 40, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        40,
+        *[38, 34],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        40,
+    )
+    ops.geomTransf("Linear", 41, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        41,
+        *[35, 39],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        41,
+    )
+    ops.geomTransf("Linear", 42, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        42,
+        *[40, 36],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        42,
+    )
+    ops.geomTransf("Linear", 43, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        43,
+        *[37, 41],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        43,
+    )
+    ops.geomTransf("Linear", 44, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        44,
+        *[42, 38],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        44,
+    )
+    ops.geomTransf("Linear", 45, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        45,
+        *[39, 43],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        45,
+    )
+    ops.geomTransf("Linear", 46, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        46,
+        *[44, 40],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        46,
+    )
+    ops.geomTransf("Linear", 47, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        47,
+        *[69, 25],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        47,
+    )
+    ops.geomTransf("Linear", 48, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        48,
+        *[26, 70],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        48,
+    )
+    ops.geomTransf("Linear", 49, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        49,
+        *[71, 27],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        49,
+    )
+    ops.geomTransf("Linear", 50, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        50,
+        *[28, 72],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        50,
+    )
+    ops.geomTransf("Linear", 51, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        51,
+        *[41, 49],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        51,
+    )
+    ops.geomTransf("Linear", 52, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        52,
+        *[50, 42],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        52,
+    )
+    ops.geomTransf("Linear", 53, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        53,
+        *[43, 51],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        53,
+    )
+    ops.geomTransf("Linear", 54, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        54,
+        *[52, 44],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        54,
+    )
+    ops.geomTransf("Linear", 55, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        55,
+        *[47, 45],
+        SecProps[8].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[8].Ixx,
+        SecProps[8].Iyy,
+        SecProps[8].Izz,
+        55,
+    )
+    ops.geomTransf("Linear", 56, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        56,
+        *[46, 48],
+        SecProps[8].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[8].Ixx,
+        SecProps[8].Iyy,
+        SecProps[8].Izz,
+        56,
+    )
+    ops.geomTransf("Linear", 57, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        57,
+        *[49, 57],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        57,
+    )
+    ops.geomTransf("Linear", 58, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        58,
+        *[58, 50],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        58,
+    )
+    ops.geomTransf("Linear", 59, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        59,
+        *[51, 59],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        59,
+    )
+    ops.geomTransf("Linear", 60, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        60,
+        *[60, 52],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        60,
+    )
+    ops.geomTransf("Linear", 61, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        61,
+        *[55, 53],
+        SecProps[8].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[8].Ixx,
+        SecProps[8].Iyy,
+        SecProps[8].Izz,
+        61,
+    )
+    ops.geomTransf("Linear", 62, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        62,
+        *[54, 56],
+        SecProps[8].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[8].Ixx,
+        SecProps[8].Iyy,
+        SecProps[8].Izz,
+        62,
+    )
+    ops.geomTransf("Linear", 63, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        63,
+        *[57, 61],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        63,
+    )
+    ops.geomTransf("Linear", 64, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        64,
+        *[62, 58],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        64,
+    )
+    ops.geomTransf("Linear", 65, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        65,
+        *[59, 63],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        65,
+    )
+    ops.geomTransf("Linear", 66, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        66,
+        *[64, 60],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        66,
+    )
+    ops.geomTransf("Linear", 67, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        67,
+        *[89, 41],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        67,
+    )
+    ops.geomTransf("Linear", 68, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        68,
+        *[42, 90],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        68,
+    )
+    ops.geomTransf("Linear", 69, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        69,
+        *[91, 43],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        69,
+    )
+    ops.geomTransf("Linear", 70, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        70,
+        *[44, 92],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        70,
+    )
+    ops.geomTransf("Linear", 71, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        71,
+        *[61, 63],
+        SecProps[7].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[7].Ixx,
+        SecProps[7].Iyy,
+        SecProps[7].Izz,
+        71,
+    )
+    ops.geomTransf("Linear", 72, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        72,
+        *[64, 62],
+        SecProps[7].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[7].Ixx,
+        SecProps[7].Iyy,
+        SecProps[7].Izz,
+        72,
+    )
+    ops.geomTransf("Linear", 73, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        73,
+        *[61, 65],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        73,
+    )
+    ops.geomTransf("Linear", 74, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        74,
+        *[66, 62],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        74,
+    )
+    ops.geomTransf("Linear", 75, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        75,
+        *[63, 67],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        75,
+    )
+    ops.geomTransf("Linear", 76, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        76,
+        *[68, 64],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        76,
+    )
+    ops.geomTransf("Linear", 77, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        77,
+        *[65, 73],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        77,
+    )
+    ops.geomTransf("Linear", 78, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        78,
+        *[74, 66],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        78,
+    )
+    ops.geomTransf("Linear", 79, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        79,
+        *[67, 75],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        79,
+    )
+    ops.geomTransf("Linear", 80, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        80,
+        *[76, 68],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        80,
+    )
+    ops.geomTransf("Linear", 81, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        81,
+        *[71, 69],
+        SecProps[8].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[8].Ixx,
+        SecProps[8].Iyy,
+        SecProps[8].Izz,
+        81,
+    )
+    ops.geomTransf("Linear", 82, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        82,
+        *[70, 72],
+        SecProps[8].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[8].Ixx,
+        SecProps[8].Iyy,
+        SecProps[8].Izz,
+        82,
+    )
+    ops.geomTransf("Linear", 83, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        83,
+        *[73, 77],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        83,
+    )
+    ops.geomTransf("Linear", 84, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        84,
+        *[78, 74],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        84,
+    )
+    ops.geomTransf("Linear", 85, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        85,
+        *[75, 79],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        85,
+    )
+    ops.geomTransf("Linear", 86, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        86,
+        *[80, 76],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        86,
+    )
+    ops.geomTransf("Linear", 87, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        87,
+        *[77, 81],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        87,
+    )
+    ops.geomTransf("Linear", 88, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        88,
+        *[82, 78],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        88,
+    )
+    ops.geomTransf("Linear", 89, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        89,
+        *[79, 83],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        89,
+    )
+    ops.geomTransf("Linear", 90, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        90,
+        *[84, 80],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        90,
+    )
+    ops.geomTransf("Linear", 91, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        91,
+        *[81, 85],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        91,
+    )
+    ops.geomTransf("Linear", 92, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        92,
+        *[86, 82],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        92,
+    )
+    ops.geomTransf("Linear", 93, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        93,
+        *[83, 87],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        93,
+    )
+    ops.geomTransf("Linear", 94, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        94,
+        *[88, 84],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        94,
+    )
+    ops.geomTransf("Linear", 95, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        95,
+        *[91, 89],
+        SecProps[8].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[8].Ixx,
+        SecProps[8].Iyy,
+        SecProps[8].Izz,
+        95,
+    )
+    ops.geomTransf("Linear", 96, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        96,
+        *[90, 92],
+        SecProps[8].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[8].Ixx,
+        SecProps[8].Iyy,
+        SecProps[8].Izz,
+        96,
+    )
+    ops.geomTransf("Linear", 97, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        97,
+        *[190, 45],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        97,
+    )
+    ops.geomTransf("Linear", 98, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        98,
+        *[46, 207],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        98,
+    )
+    ops.geomTransf("Linear", 99, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        99,
+        *[298, 47],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        99,
+    )
+    ops.geomTransf("Linear", 100, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        100,
+        *[48, 315],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        100,
+    )
+    ops.geomTransf("Linear", 101, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        101,
+        *[85, 93],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        101,
+    )
+    ops.geomTransf("Linear", 102, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        102,
+        *[94, 86],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        102,
+    )
+    ops.geomTransf("Linear", 103, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        103,
+        *[87, 95],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        103,
+    )
+    ops.geomTransf("Linear", 104, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        104,
+        *[96, 88],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        104,
+    )
+    ops.geomTransf("Linear", 105, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        105,
+        *[93, 97],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        105,
+    )
+    ops.geomTransf("Linear", 106, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        106,
+        *[98, 94],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        106,
+    )
+    ops.geomTransf("Linear", 107, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        107,
+        *[95, 99],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        107,
+    )
+    ops.geomTransf("Linear", 108, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        108,
+        *[100, 96],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        108,
+    )
+    ops.geomTransf("Linear", 109, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        109,
+        *[191, 53],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        109,
+    )
+    ops.geomTransf("Linear", 110, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        110,
+        *[54, 206],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        110,
+    )
+    ops.geomTransf("Linear", 111, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        111,
+        *[299, 55],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        111,
+    )
+    ops.geomTransf("Linear", 112, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        112,
+        *[56, 314],
+        SecProps[2].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[2].Ixx,
+        SecProps[2].Iyy,
+        SecProps[2].Izz,
+        112,
+    )
+    ops.geomTransf("Linear", 113, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        113,
+        *[97, 99],
+        SecProps[7].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[7].Ixx,
+        SecProps[7].Iyy,
+        SecProps[7].Izz,
+        113,
+    )
+    ops.geomTransf("Linear", 114, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        114,
+        *[100, 98],
+        SecProps[7].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[7].Ixx,
+        SecProps[7].Iyy,
+        SecProps[7].Izz,
+        114,
+    )
+    ops.geomTransf("Linear", 115, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        115,
+        *[97, 101],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        115,
+    )
+    ops.geomTransf("Linear", 116, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        116,
+        *[102, 98],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        116,
+    )
+    ops.geomTransf("Linear", 117, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        117,
+        *[99, 103],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        117,
+    )
+    ops.geomTransf("Linear", 118, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        118,
+        *[104, 100],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        118,
+    )
+    ops.geomTransf("Linear", 119, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        119,
+        *[101, 105],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        119,
+    )
+    ops.geomTransf("Linear", 120, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        120,
+        *[106, 102],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        120,
+    )
+    ops.geomTransf("Linear", 121, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        121,
+        *[103, 107],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        121,
+    )
+    ops.geomTransf("Linear", 122, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        122,
+        *[108, 104],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        122,
+    )
+    ops.geomTransf("Linear", 123, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        123,
+        *[194, 61],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        123,
+    )
+    ops.geomTransf("Linear", 124, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        124,
+        *[62, 203],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        124,
+    )
+    ops.geomTransf("Linear", 125, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        125,
+        *[302, 63],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        125,
+    )
+    ops.geomTransf("Linear", 126, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        126,
+        *[64, 311],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        126,
+    )
+    ops.geomTransf("Linear", 127, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        127,
+        *[105, 109],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        127,
+    )
+    ops.geomTransf("Linear", 128, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        128,
+        *[110, 106],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        128,
+    )
+    ops.geomTransf("Linear", 129, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        129,
+        *[107, 111],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        129,
+    )
+    ops.geomTransf("Linear", 130, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        130,
+        *[112, 108],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        130,
+    )
+    ops.geomTransf("Linear", 131, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        131,
+        *[192, 69],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        131,
+    )
+    ops.geomTransf("Linear", 132, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        132,
+        *[70, 205],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        132,
+    )
+    ops.geomTransf("Linear", 133, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        133,
+        *[300, 71],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        133,
+    )
+    ops.geomTransf("Linear", 134, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        134,
+        *[72, 313],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        134,
+    )
+    ops.geomTransf("Linear", 135, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        135,
+        *[109, 113],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        135,
+    )
+    ops.geomTransf("Linear", 136, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        136,
+        *[114, 110],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        136,
+    )
+    ops.geomTransf("Linear", 137, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        137,
+        *[111, 115],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        137,
+    )
+    ops.geomTransf("Linear", 138, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        138,
+        *[116, 112],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        138,
+    )
+    ops.geomTransf("Linear", 139, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        139,
+        *[113, 117],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        139,
+    )
+    ops.geomTransf("Linear", 140, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        140,
+        *[118, 114],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        140,
+    )
+    ops.geomTransf("Linear", 141, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        141,
+        *[115, 119],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        141,
+    )
+    ops.geomTransf("Linear", 142, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        142,
+        *[120, 116],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        142,
+    )
+    ops.geomTransf("Linear", 143, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        143,
+        *[117, 121],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        143,
+    )
+    ops.geomTransf("Linear", 144, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        144,
+        *[122, 118],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        144,
+    )
+    ops.geomTransf("Linear", 145, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        145,
+        *[119, 123],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        145,
+    )
+    ops.geomTransf("Linear", 146, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        146,
+        *[124, 120],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        146,
+    )
+    ops.geomTransf("Linear", 147, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        147,
+        *[195, 81],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        147,
+    )
+    ops.geomTransf("Linear", 148, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        148,
+        *[82, 202],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        148,
+    )
+    ops.geomTransf("Linear", 149, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        149,
+        *[303, 83],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        149,
+    )
+    ops.geomTransf("Linear", 150, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        150,
+        *[84, 310],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        150,
+    )
+    ops.geomTransf("Linear", 151, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        151,
+        *[121, 125],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        151,
+    )
+    ops.geomTransf("Linear", 152, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        152,
+        *[126, 122],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        152,
+    )
+    ops.geomTransf("Linear", 153, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        153,
+        *[123, 127],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        153,
+    )
+    ops.geomTransf("Linear", 154, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        154,
+        *[128, 124],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        154,
+    )
+    ops.geomTransf("Linear", 155, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        155,
+        *[125, 127],
+        SecProps[7].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[7].Ixx,
+        SecProps[7].Iyy,
+        SecProps[7].Izz,
+        155,
+    )
+    ops.geomTransf("Linear", 156, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        156,
+        *[128, 126],
+        SecProps[7].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[7].Ixx,
+        SecProps[7].Iyy,
+        SecProps[7].Izz,
+        156,
+    )
+    ops.geomTransf("Linear", 157, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        157,
+        *[125, 129],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        157,
+    )
+    ops.geomTransf("Linear", 158, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        158,
+        *[130, 126],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        158,
+    )
+    ops.geomTransf("Linear", 159, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        159,
+        *[127, 131],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        159,
+    )
+    ops.geomTransf("Linear", 160, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        160,
+        *[132, 128],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        160,
+    )
+    ops.geomTransf("Linear", 161, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        161,
+        *[129, 133],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        161,
+    )
+    ops.geomTransf("Linear", 162, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        162,
+        *[133, 130],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        162,
+    )
+    ops.geomTransf("Linear", 163, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        163,
+        *[131, 135],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        163,
+    )
+    ops.geomTransf("Linear", 164, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        164,
+        *[135, 132],
+        SecProps[1].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[1].Ixx,
+        SecProps[1].Iyy,
+        SecProps[1].Izz,
+        164,
+    )
+    ops.geomTransf("Linear", 165, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        165,
+        *[193, 89],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        165,
+    )
+    ops.geomTransf("Linear", 166, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        166,
+        *[90, 204],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        166,
+    )
+    ops.geomTransf("Linear", 167, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        167,
+        *[301, 91],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        167,
+    )
+    ops.geomTransf("Linear", 168, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        168,
+        *[92, 312],
+        SecProps[3].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[3].Ixx,
+        SecProps[3].Iyy,
+        SecProps[3].Izz,
+        168,
+    )
+    ops.geomTransf("Linear", 169, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        169,
+        *[196, 97],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        169,
+    )
+    ops.geomTransf("Linear", 170, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        170,
+        *[98, 201],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        170,
+    )
+    ops.geomTransf("Linear", 171, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        171,
+        *[304, 99],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        171,
+    )
+    ops.geomTransf("Linear", 172, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        172,
+        *[100, 309],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        172,
+    )
+    ops.geomTransf("Linear", 173, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        173,
+        *[197, 113],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        173,
+    )
+    ops.geomTransf("Linear", 174, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        174,
+        *[114, 200],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        174,
+    )
+    ops.geomTransf("Linear", 175, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        175,
+        *[305, 115],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        175,
+    )
+    ops.geomTransf("Linear", 176, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        176,
+        *[116, 308],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        176,
+    )
+    ops.geomTransf("Linear", 177, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        177,
+        *[198, 125],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        177,
+    )
+    ops.geomTransf("Linear", 178, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        178,
+        *[126, 199],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        178,
+    )
+    ops.geomTransf("Linear", 179, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        179,
+        *[306, 127],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        179,
+    )
+    ops.geomTransf("Linear", 180, *[1.0, 0.0, 0.0])
+    ops.element(
+        "elasticBeamColumn",
+        180,
+        *[128, 307],
+        SecProps[4].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[4].Ixx,
+        SecProps[4].Iyy,
+        SecProps[4].Izz,
+        180,
+    )
+    ops.geomTransf("Linear", 181, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        181,
+        *[154, 136],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        181,
+    )
+    ops.geomTransf("Linear", 182, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        182,
+        *[155, 137],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        182,
+    )
+    ops.geomTransf("Linear", 183, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        183,
+        *[156, 138],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        183,
+    )
+    ops.geomTransf("Linear", 184, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        184,
+        *[157, 139],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        184,
+    )
+    ops.geomTransf("Linear", 185, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        185,
+        *[158, 140],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        185,
+    )
+    ops.geomTransf("Linear", 186, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        186,
+        *[159, 141],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        186,
+    )
+    ops.geomTransf("Linear", 187, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        187,
+        *[160, 142],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        187,
+    )
+    ops.geomTransf("Linear", 188, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        188,
+        *[161, 143],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        188,
+    )
+    ops.geomTransf("Linear", 189, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        189,
+        *[162, 144],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        189,
+    )
+    ops.geomTransf("Linear", 190, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        190,
+        *[145, 163],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        190,
+    )
+    ops.geomTransf("Linear", 191, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        191,
+        *[146, 164],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        191,
+    )
+    ops.geomTransf("Linear", 192, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        192,
+        *[147, 165],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        192,
+    )
+    ops.geomTransf("Linear", 193, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        193,
+        *[148, 166],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        193,
+    )
+    ops.geomTransf("Linear", 194, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        194,
+        *[149, 167],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        194,
+    )
+    ops.geomTransf("Linear", 195, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        195,
+        *[150, 168],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        195,
+    )
+    ops.geomTransf("Linear", 196, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        196,
+        *[151, 169],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        196,
+    )
+    ops.geomTransf("Linear", 197, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        197,
+        *[152, 170],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        197,
+    )
+    ops.geomTransf("Linear", 198, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        198,
+        *[153, 171],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        198,
+    )
+    ops.geomTransf("Linear", 199, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        199,
+        *[172, 154],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        199,
+    )
+    ops.geomTransf("Linear", 200, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        200,
+        *[173, 155],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        200,
+    )
+    ops.geomTransf("Linear", 201, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        201,
+        *[174, 156],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        201,
+    )
+    ops.geomTransf("Linear", 202, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        202,
+        *[175, 157],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        202,
+    )
+    ops.geomTransf("Linear", 203, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        203,
+        *[176, 158],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        203,
+    )
+    ops.geomTransf("Linear", 204, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        204,
+        *[177, 159],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        204,
+    )
+    ops.geomTransf("Linear", 205, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        205,
+        *[178, 160],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        205,
+    )
+    ops.geomTransf("Linear", 206, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        206,
+        *[179, 161],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        206,
+    )
+    ops.geomTransf("Linear", 207, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        207,
+        *[180, 162],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        207,
+    )
+    ops.geomTransf("Linear", 208, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        208,
+        *[163, 181],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        208,
+    )
+    ops.geomTransf("Linear", 209, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        209,
+        *[164, 182],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        209,
+    )
+    ops.geomTransf("Linear", 210, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        210,
+        *[165, 183],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        210,
+    )
+    ops.geomTransf("Linear", 211, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        211,
+        *[166, 184],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        211,
+    )
+    ops.geomTransf("Linear", 212, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        212,
+        *[167, 185],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        212,
+    )
+    ops.geomTransf("Linear", 213, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        213,
+        *[168, 186],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        213,
+    )
+    ops.geomTransf("Linear", 214, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        214,
+        *[169, 187],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        214,
+    )
+    ops.geomTransf("Linear", 215, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        215,
+        *[170, 188],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        215,
+    )
+    ops.geomTransf("Linear", 216, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        216,
+        *[171, 189],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        216,
+    )
+    ops.geomTransf("Linear", 217, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        217,
+        *[190, 172],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        217,
+    )
+    ops.geomTransf("Linear", 218, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        218,
+        *[191, 173],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        218,
+    )
+    ops.geomTransf("Linear", 219, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        219,
+        *[192, 174],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        219,
+    )
+    ops.geomTransf("Linear", 220, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        220,
+        *[193, 175],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        220,
+    )
+    ops.geomTransf("Linear", 221, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        221,
+        *[194, 176],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        221,
+    )
+    ops.geomTransf("Linear", 222, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        222,
+        *[195, 177],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        222,
+    )
+    ops.geomTransf("Linear", 223, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        223,
+        *[196, 178],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        223,
+    )
+    ops.geomTransf("Linear", 224, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        224,
+        *[197, 179],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        224,
+    )
+    ops.geomTransf("Linear", 225, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        225,
+        *[198, 180],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        225,
+    )
+    ops.geomTransf("Linear", 226, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        226,
+        *[181, 199],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        226,
+    )
+    ops.geomTransf("Linear", 227, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        227,
+        *[182, 200],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        227,
+    )
+    ops.geomTransf("Linear", 228, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        228,
+        *[183, 201],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        228,
+    )
+    ops.geomTransf("Linear", 229, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        229,
+        *[184, 202],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        229,
+    )
+    ops.geomTransf("Linear", 230, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        230,
+        *[185, 203],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        230,
+    )
+    ops.geomTransf("Linear", 231, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        231,
+        *[186, 204],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        231,
+    )
+    ops.geomTransf("Linear", 232, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        232,
+        *[187, 205],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        232,
+    )
+    ops.geomTransf("Linear", 233, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        233,
+        *[188, 206],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        233,
+    )
+    ops.geomTransf("Linear", 234, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        234,
+        *[189, 207],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        234,
+    )
+    ops.geomTransf("Linear", 235, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        235,
+        *[208, 190],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        235,
+    )
+    ops.geomTransf("Linear", 236, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        236,
+        *[209, 191],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        236,
+    )
+    ops.geomTransf("Linear", 237, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        237,
+        *[210, 192],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        237,
+    )
+    ops.geomTransf("Linear", 238, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        238,
+        *[211, 193],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        238,
+    )
+    ops.geomTransf("Linear", 239, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        239,
+        *[212, 194],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        239,
+    )
+    ops.geomTransf("Linear", 240, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        240,
+        *[213, 195],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        240,
+    )
+    ops.geomTransf("Linear", 241, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        241,
+        *[214, 196],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        241,
+    )
+    ops.geomTransf("Linear", 242, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        242,
+        *[215, 197],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        242,
+    )
+    ops.geomTransf("Linear", 243, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        243,
+        *[216, 198],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        243,
+    )
+    ops.geomTransf("Linear", 244, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        244,
+        *[199, 217],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        244,
+    )
+    ops.geomTransf("Linear", 245, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        245,
+        *[200, 218],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        245,
+    )
+    ops.geomTransf("Linear", 246, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        246,
+        *[201, 219],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        246,
+    )
+    ops.geomTransf("Linear", 247, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        247,
+        *[202, 220],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        247,
+    )
+    ops.geomTransf("Linear", 248, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        248,
+        *[203, 221],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        248,
+    )
+    ops.geomTransf("Linear", 249, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        249,
+        *[204, 222],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        249,
+    )
+    ops.geomTransf("Linear", 250, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        250,
+        *[205, 223],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        250,
+    )
+    ops.geomTransf("Linear", 251, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        251,
+        *[206, 224],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        251,
+    )
+    ops.geomTransf("Linear", 252, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        252,
+        *[207, 225],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        252,
+    )
+    ops.geomTransf("Linear", 253, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        253,
+        *[226, 208],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        253,
+    )
+    ops.geomTransf("Linear", 254, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        254,
+        *[227, 209],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        254,
+    )
+    ops.geomTransf("Linear", 255, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        255,
+        *[228, 210],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        255,
+    )
+    ops.geomTransf("Linear", 256, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        256,
+        *[229, 211],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        256,
+    )
+    ops.geomTransf("Linear", 257, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        257,
+        *[230, 212],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        257,
+    )
+    ops.geomTransf("Linear", 258, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        258,
+        *[231, 213],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        258,
+    )
+    ops.geomTransf("Linear", 259, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        259,
+        *[232, 214],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        259,
+    )
+    ops.geomTransf("Linear", 260, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        260,
+        *[233, 215],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        260,
+    )
+    ops.geomTransf("Linear", 261, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        261,
+        *[234, 216],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        261,
+    )
+    ops.geomTransf("Linear", 262, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        262,
+        *[217, 235],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        262,
+    )
+    ops.geomTransf("Linear", 263, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        263,
+        *[218, 236],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        263,
+    )
+    ops.geomTransf("Linear", 264, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        264,
+        *[219, 237],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        264,
+    )
+    ops.geomTransf("Linear", 265, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        265,
+        *[220, 238],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        265,
+    )
+    ops.geomTransf("Linear", 266, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        266,
+        *[221, 239],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        266,
+    )
+    ops.geomTransf("Linear", 267, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        267,
+        *[222, 240],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        267,
+    )
+    ops.geomTransf("Linear", 268, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        268,
+        *[223, 241],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        268,
+    )
+    ops.geomTransf("Linear", 269, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        269,
+        *[224, 242],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        269,
+    )
+    ops.geomTransf("Linear", 270, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        270,
+        *[225, 243],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        270,
+    )
+    ops.geomTransf("Linear", 271, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        271,
+        *[244, 226],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        271,
+    )
+    ops.geomTransf("Linear", 272, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        272,
+        *[245, 227],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        272,
+    )
+    ops.geomTransf("Linear", 273, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        273,
+        *[246, 228],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        273,
+    )
+    ops.geomTransf("Linear", 274, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        274,
+        *[247, 229],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        274,
+    )
+    ops.geomTransf("Linear", 275, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        275,
+        *[248, 230],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        275,
+    )
+    ops.geomTransf("Linear", 276, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        276,
+        *[249, 231],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        276,
+    )
+    ops.geomTransf("Linear", 277, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        277,
+        *[250, 232],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        277,
+    )
+    ops.geomTransf("Linear", 278, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        278,
+        *[251, 233],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        278,
+    )
+    ops.geomTransf("Linear", 279, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        279,
+        *[252, 234],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        279,
+    )
+    ops.geomTransf("Linear", 280, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        280,
+        *[235, 253],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        280,
+    )
+    ops.geomTransf("Linear", 281, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        281,
+        *[236, 254],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        281,
+    )
+    ops.geomTransf("Linear", 282, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        282,
+        *[237, 255],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        282,
+    )
+    ops.geomTransf("Linear", 283, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        283,
+        *[238, 256],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        283,
+    )
+    ops.geomTransf("Linear", 284, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        284,
+        *[239, 257],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        284,
+    )
+    ops.geomTransf("Linear", 285, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        285,
+        *[240, 258],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        285,
+    )
+    ops.geomTransf("Linear", 286, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        286,
+        *[241, 259],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        286,
+    )
+    ops.geomTransf("Linear", 287, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        287,
+        *[242, 260],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        287,
+    )
+    ops.geomTransf("Linear", 288, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        288,
+        *[243, 261],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        288,
+    )
+    ops.geomTransf("Linear", 289, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        289,
+        *[262, 244],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        289,
+    )
+    ops.geomTransf("Linear", 290, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        290,
+        *[263, 245],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        290,
+    )
+    ops.geomTransf("Linear", 291, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        291,
+        *[264, 246],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        291,
+    )
+    ops.geomTransf("Linear", 292, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        292,
+        *[265, 247],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        292,
+    )
+    ops.geomTransf("Linear", 293, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        293,
+        *[266, 248],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        293,
+    )
+    ops.geomTransf("Linear", 294, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        294,
+        *[267, 249],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        294,
+    )
+    ops.geomTransf("Linear", 295, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        295,
+        *[268, 250],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        295,
+    )
+    ops.geomTransf("Linear", 296, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        296,
+        *[269, 251],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        296,
+    )
+    ops.geomTransf("Linear", 297, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        297,
+        *[270, 252],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        297,
+    )
+    ops.geomTransf("Linear", 298, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        298,
+        *[253, 271],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        298,
+    )
+    ops.geomTransf("Linear", 299, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        299,
+        *[254, 272],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        299,
+    )
+    ops.geomTransf("Linear", 300, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        300,
+        *[255, 273],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        300,
+    )
+    ops.geomTransf("Linear", 301, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        301,
+        *[256, 274],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        301,
+    )
+    ops.geomTransf("Linear", 302, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        302,
+        *[257, 275],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        302,
+    )
+    ops.geomTransf("Linear", 303, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        303,
+        *[258, 276],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        303,
+    )
+    ops.geomTransf("Linear", 304, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        304,
+        *[259, 277],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        304,
+    )
+    ops.geomTransf("Linear", 305, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        305,
+        *[260, 278],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        305,
+    )
+    ops.geomTransf("Linear", 306, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        306,
+        *[261, 279],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        306,
+    )
+    ops.geomTransf("Linear", 307, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        307,
+        *[280, 262],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        307,
+    )
+    ops.geomTransf("Linear", 308, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        308,
+        *[281, 263],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        308,
+    )
+    ops.geomTransf("Linear", 309, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        309,
+        *[282, 264],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        309,
+    )
+    ops.geomTransf("Linear", 310, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        310,
+        *[283, 265],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        310,
+    )
+    ops.geomTransf("Linear", 311, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        311,
+        *[284, 266],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        311,
+    )
+    ops.geomTransf("Linear", 312, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        312,
+        *[285, 267],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        312,
+    )
+    ops.geomTransf("Linear", 313, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        313,
+        *[286, 268],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        313,
+    )
+    ops.geomTransf("Linear", 314, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        314,
+        *[287, 269],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        314,
+    )
+    ops.geomTransf("Linear", 315, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        315,
+        *[288, 270],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        315,
+    )
+    ops.geomTransf("Linear", 316, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        316,
+        *[271, 289],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        316,
+    )
+    ops.geomTransf("Linear", 317, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        317,
+        *[272, 290],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        317,
+    )
+    ops.geomTransf("Linear", 318, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        318,
+        *[273, 291],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        318,
+    )
+    ops.geomTransf("Linear", 319, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        319,
+        *[274, 292],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        319,
+    )
+    ops.geomTransf("Linear", 320, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        320,
+        *[275, 293],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        320,
+    )
+    ops.geomTransf("Linear", 321, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        321,
+        *[276, 294],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        321,
+    )
+    ops.geomTransf("Linear", 322, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        322,
+        *[277, 295],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        322,
+    )
+    ops.geomTransf("Linear", 323, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        323,
+        *[278, 296],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        323,
+    )
+    ops.geomTransf("Linear", 324, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        324,
+        *[279, 297],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        324,
+    )
+    ops.geomTransf("Linear", 325, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        325,
+        *[298, 280],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        325,
+    )
+    ops.geomTransf("Linear", 326, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        326,
+        *[299, 281],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        326,
+    )
+    ops.geomTransf("Linear", 327, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        327,
+        *[300, 282],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        327,
+    )
+    ops.geomTransf("Linear", 328, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        328,
+        *[301, 283],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        328,
+    )
+    ops.geomTransf("Linear", 329, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        329,
+        *[302, 284],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        329,
+    )
+    ops.geomTransf("Linear", 330, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        330,
+        *[303, 285],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        330,
+    )
+    ops.geomTransf("Linear", 331, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        331,
+        *[304, 286],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        331,
+    )
+    ops.geomTransf("Linear", 332, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        332,
+        *[305, 287],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        332,
+    )
+    ops.geomTransf("Linear", 333, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        333,
+        *[306, 288],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        333,
+    )
+    ops.geomTransf("Linear", 334, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        334,
+        *[289, 307],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        334,
+    )
+    ops.geomTransf("Linear", 335, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        335,
+        *[290, 308],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        335,
+    )
+    ops.geomTransf("Linear", 336, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        336,
+        *[291, 309],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        336,
+    )
+    ops.geomTransf("Linear", 337, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        337,
+        *[292, 310],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        337,
+    )
+    ops.geomTransf("Linear", 338, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        338,
+        *[293, 311],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        338,
+    )
+    ops.geomTransf("Linear", 339, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        339,
+        *[294, 312],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        339,
+    )
+    ops.geomTransf("Linear", 340, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        340,
+        *[295, 313],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        340,
+    )
+    ops.geomTransf("Linear", 341, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        341,
+        *[296, 314],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        341,
+    )
+    ops.geomTransf("Linear", 342, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        342,
+        *[297, 315],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        342,
+    )
+    ops.geomTransf("Linear", 343, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        343,
+        *[298, 316],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        343,
+    )
+    ops.geomTransf("Linear", 344, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        344,
+        *[299, 317],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        344,
+    )
+    ops.geomTransf("Linear", 345, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        345,
+        *[300, 318],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        345,
+    )
+    ops.geomTransf("Linear", 346, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        346,
+        *[301, 319],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        346,
+    )
+    ops.geomTransf("Linear", 347, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        347,
+        *[302, 320],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        347,
+    )
+    ops.geomTransf("Linear", 348, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        348,
+        *[303, 321],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        348,
+    )
+    ops.geomTransf("Linear", 349, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        349,
+        *[304, 322],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        349,
+    )
+    ops.geomTransf("Linear", 350, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        350,
+        *[305, 323],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        350,
+    )
+    ops.geomTransf("Linear", 351, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        351,
+        *[306, 324],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        351,
+    )
+    ops.geomTransf("Linear", 352, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        352,
+        *[325, 307],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        352,
+    )
+    ops.geomTransf("Linear", 353, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        353,
+        *[326, 308],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        353,
+    )
+    ops.geomTransf("Linear", 354, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        354,
+        *[327, 309],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        354,
+    )
+    ops.geomTransf("Linear", 355, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        355,
+        *[328, 310],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        355,
+    )
+    ops.geomTransf("Linear", 356, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        356,
+        *[329, 311],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        356,
+    )
+    ops.geomTransf("Linear", 357, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        357,
+        *[330, 312],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        357,
+    )
+    ops.geomTransf("Linear", 358, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        358,
+        *[331, 313],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        358,
+    )
+    ops.geomTransf("Linear", 359, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        359,
+        *[332, 314],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        359,
+    )
+    ops.geomTransf("Linear", 360, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        360,
+        *[333, 315],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        360,
+    )
+    ops.geomTransf("Linear", 361, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        361,
+        *[316, 334],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        361,
+    )
+    ops.geomTransf("Linear", 362, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        362,
+        *[317, 335],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        362,
+    )
+    ops.geomTransf("Linear", 363, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        363,
+        *[318, 336],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        363,
+    )
+    ops.geomTransf("Linear", 364, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        364,
+        *[319, 337],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        364,
+    )
+    ops.geomTransf("Linear", 365, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        365,
+        *[320, 338],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        365,
+    )
+    ops.geomTransf("Linear", 366, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        366,
+        *[321, 339],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        366,
+    )
+    ops.geomTransf("Linear", 367, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        367,
+        *[322, 340],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        367,
+    )
+    ops.geomTransf("Linear", 368, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        368,
+        *[323, 341],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        368,
+    )
+    ops.geomTransf("Linear", 369, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        369,
+        *[324, 342],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        369,
+    )
+    ops.geomTransf("Linear", 370, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        370,
+        *[343, 325],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        370,
+    )
+    ops.geomTransf("Linear", 371, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        371,
+        *[344, 326],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        371,
+    )
+    ops.geomTransf("Linear", 372, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        372,
+        *[345, 327],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        372,
+    )
+    ops.geomTransf("Linear", 373, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        373,
+        *[346, 328],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        373,
+    )
+    ops.geomTransf("Linear", 374, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        374,
+        *[347, 329],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        374,
+    )
+    ops.geomTransf("Linear", 375, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        375,
+        *[348, 330],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        375,
+    )
+    ops.geomTransf("Linear", 376, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        376,
+        *[349, 331],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        376,
+    )
+    ops.geomTransf("Linear", 377, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        377,
+        *[350, 332],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        377,
+    )
+    ops.geomTransf("Linear", 378, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        378,
+        *[351, 333],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        378,
+    )
+    ops.geomTransf("Linear", 379, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        379,
+        *[334, 352],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        379,
+    )
+    ops.geomTransf("Linear", 380, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        380,
+        *[335, 353],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        380,
+    )
+    ops.geomTransf("Linear", 381, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        381,
+        *[336, 354],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        381,
+    )
+    ops.geomTransf("Linear", 382, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        382,
+        *[337, 355],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        382,
+    )
+    ops.geomTransf("Linear", 383, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        383,
+        *[338, 356],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        383,
+    )
+    ops.geomTransf("Linear", 384, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        384,
+        *[339, 357],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        384,
+    )
+    ops.geomTransf("Linear", 385, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        385,
+        *[340, 358],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        385,
+    )
+    ops.geomTransf("Linear", 386, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        386,
+        *[341, 359],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        386,
+    )
+    ops.geomTransf("Linear", 387, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        387,
+        *[342, 360],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        387,
+    )
+    ops.geomTransf("Linear", 388, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        388,
+        *[361, 343],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        388,
+    )
+    ops.geomTransf("Linear", 389, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        389,
+        *[362, 344],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        389,
+    )
+    ops.geomTransf("Linear", 390, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        390,
+        *[363, 345],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        390,
+    )
+    ops.geomTransf("Linear", 391, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        391,
+        *[364, 346],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        391,
+    )
+    ops.geomTransf("Linear", 392, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        392,
+        *[365, 347],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        392,
+    )
+    ops.geomTransf("Linear", 393, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        393,
+        *[366, 348],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        393,
+    )
+    ops.geomTransf("Linear", 394, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        394,
+        *[367, 349],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        394,
+    )
+    ops.geomTransf("Linear", 395, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        395,
+        *[368, 350],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        395,
+    )
+    ops.geomTransf("Linear", 396, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        396,
+        *[369, 351],
+        SecProps[5].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[5].Ixx,
+        SecProps[5].Iyy,
+        SecProps[5].Izz,
+        396,
+    )
+    ops.geomTransf("Linear", 397, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        397,
+        *[370, 694],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        397,
+    )
+    ops.geomTransf("Linear", 398, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        398,
+        *[371, 698],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        398,
+    )
+    ops.geomTransf("Linear", 399, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        399,
+        *[372, 702],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        399,
+    )
+    ops.geomTransf("Linear", 400, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        400,
+        *[373, 706],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        400,
+    )
+    ops.geomTransf("Linear", 401, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        401,
+        *[374, 710],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        401,
+    )
+    ops.geomTransf("Linear", 402, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        402,
+        *[375, 714],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        402,
+    )
+    ops.geomTransf("Linear", 403, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        403,
+        *[376, 718],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        403,
+    )
+    ops.geomTransf("Linear", 404, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        404,
+        *[377, 722],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        404,
+    )
+    ops.geomTransf("Linear", 405, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        405,
+        *[378, 726],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        405,
+    )
+    ops.geomTransf("Linear", 406, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        406,
+        *[379, 730],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        406,
+    )
+    ops.geomTransf("Linear", 407, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        407,
+        *[380, 734],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        407,
+    )
+    ops.geomTransf("Linear", 408, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        408,
+        *[381, 738],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        408,
+    )
+    ops.geomTransf("Linear", 409, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        409,
+        *[382, 742],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        409,
+    )
+    ops.geomTransf("Linear", 410, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        410,
+        *[383, 746],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        410,
+    )
+    ops.geomTransf("Linear", 411, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        411,
+        *[384, 750],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        411,
+    )
+    ops.geomTransf("Linear", 412, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        412,
+        *[385, 754],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        412,
+    )
+    ops.geomTransf("Linear", 413, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        413,
+        *[386, 758],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        413,
+    )
+    ops.geomTransf("Linear", 414, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        414,
+        *[388, 762],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        414,
+    )
+    ops.geomTransf("Linear", 415, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        415,
+        *[389, 766],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        415,
+    )
+    ops.geomTransf("Linear", 416, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        416,
+        *[390, 770],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        416,
+    )
+    ops.geomTransf("Linear", 417, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        417,
+        *[391, 774],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        417,
+    )
+    ops.geomTransf("Linear", 418, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        418,
+        *[392, 778],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        418,
+    )
+    ops.geomTransf("Linear", 419, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        419,
+        *[393, 782],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        419,
+    )
+    ops.geomTransf("Linear", 420, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        420,
+        *[394, 786],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        420,
+    )
+    ops.geomTransf("Linear", 421, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        421,
+        *[395, 790],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        421,
+    )
+    ops.geomTransf("Linear", 422, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        422,
+        *[396, 794],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        422,
+    )
+    ops.geomTransf("Linear", 423, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        423,
+        *[397, 798],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        423,
+    )
+    ops.geomTransf("Linear", 424, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        424,
+        *[398, 802],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        424,
+    )
+    ops.geomTransf("Linear", 425, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        425,
+        *[399, 806],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        425,
+    )
+    ops.geomTransf("Linear", 426, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        426,
+        *[400, 810],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        426,
+    )
+    ops.geomTransf("Linear", 427, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        427,
+        *[401, 814],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        427,
+    )
+    ops.geomTransf("Linear", 428, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        428,
+        *[402, 818],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        428,
+    )
+    ops.geomTransf("Linear", 429, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        429,
+        *[403, 822],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        429,
+    )
+    ops.geomTransf("Linear", 430, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        430,
+        *[404, 826],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        430,
+    )
+    ops.geomTransf("Linear", 431, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        431,
+        *[406, 830],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        431,
+    )
+    ops.geomTransf("Linear", 432, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        432,
+        *[407, 834],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        432,
+    )
+    ops.geomTransf("Linear", 433, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        433,
+        *[408, 838],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        433,
+    )
+    ops.geomTransf("Linear", 434, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        434,
+        *[409, 842],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        434,
+    )
+    ops.geomTransf("Linear", 435, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        435,
+        *[410, 846],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        435,
+    )
+    ops.geomTransf("Linear", 436, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        436,
+        *[411, 850],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        436,
+    )
+    ops.geomTransf("Linear", 437, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        437,
+        *[412, 854],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        437,
+    )
+    ops.geomTransf("Linear", 438, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        438,
+        *[413, 858],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        438,
+    )
+    ops.geomTransf("Linear", 439, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        439,
+        *[414, 862],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        439,
+    )
+    ops.geomTransf("Linear", 440, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        440,
+        *[415, 866],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        440,
+    )
+    ops.geomTransf("Linear", 441, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        441,
+        *[416, 870],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        441,
+    )
+    ops.geomTransf("Linear", 442, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        442,
+        *[417, 874],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        442,
+    )
+    ops.geomTransf("Linear", 443, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        443,
+        *[418, 878],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        443,
+    )
+    ops.geomTransf("Linear", 444, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        444,
+        *[419, 882],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        444,
+    )
+    ops.geomTransf("Linear", 445, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        445,
+        *[420, 886],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        445,
+    )
+    ops.geomTransf("Linear", 446, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        446,
+        *[421, 890],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        446,
+    )
+    ops.geomTransf("Linear", 447, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        447,
+        *[422, 894],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        447,
+    )
+    ops.geomTransf("Linear", 448, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        448,
+        *[424, 898],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        448,
+    )
+    ops.geomTransf("Linear", 449, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        449,
+        *[425, 902],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        449,
+    )
+    ops.geomTransf("Linear", 450, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        450,
+        *[426, 906],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        450,
+    )
+    ops.geomTransf("Linear", 451, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        451,
+        *[427, 910],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        451,
+    )
+    ops.geomTransf("Linear", 452, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        452,
+        *[428, 914],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        452,
+    )
+    ops.geomTransf("Linear", 453, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        453,
+        *[429, 918],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        453,
+    )
+    ops.geomTransf("Linear", 454, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        454,
+        *[430, 922],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        454,
+    )
+    ops.geomTransf("Linear", 455, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        455,
+        *[431, 926],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        455,
+    )
+    ops.geomTransf("Linear", 456, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        456,
+        *[432, 930],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        456,
+    )
+    ops.geomTransf("Linear", 457, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        457,
+        *[433, 934],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        457,
+    )
+    ops.geomTransf("Linear", 458, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        458,
+        *[434, 938],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        458,
+    )
+    ops.geomTransf("Linear", 459, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        459,
+        *[435, 942],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        459,
+    )
+    ops.geomTransf("Linear", 460, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        460,
+        *[436, 946],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        460,
+    )
+    ops.geomTransf("Linear", 461, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        461,
+        *[437, 950],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        461,
+    )
+    ops.geomTransf("Linear", 462, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        462,
+        *[438, 954],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        462,
+    )
+    ops.geomTransf("Linear", 463, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        463,
+        *[439, 958],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        463,
+    )
+    ops.geomTransf("Linear", 464, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        464,
+        *[440, 962],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        464,
+    )
+    ops.geomTransf("Linear", 465, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        465,
+        *[442, 966],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        465,
+    )
+    ops.geomTransf("Linear", 466, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        466,
+        *[443, 970],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        466,
+    )
+    ops.geomTransf("Linear", 467, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        467,
+        *[444, 974],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        467,
+    )
+    ops.geomTransf("Linear", 468, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        468,
+        *[445, 978],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        468,
+    )
+    ops.geomTransf("Linear", 469, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        469,
+        *[446, 982],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        469,
+    )
+    ops.geomTransf("Linear", 470, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        470,
+        *[447, 986],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        470,
+    )
+    ops.geomTransf("Linear", 471, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        471,
+        *[448, 990],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        471,
+    )
+    ops.geomTransf("Linear", 472, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        472,
+        *[449, 994],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        472,
+    )
+    ops.geomTransf("Linear", 473, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        473,
+        *[450, 998],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        473,
+    )
+    ops.geomTransf("Linear", 474, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        474,
+        *[451, 1002],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        474,
+    )
+    ops.geomTransf("Linear", 475, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        475,
+        *[452, 1006],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        475,
+    )
+    ops.geomTransf("Linear", 476, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        476,
+        *[453, 1010],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        476,
+    )
+    ops.geomTransf("Linear", 477, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        477,
+        *[454, 1014],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        477,
+    )
+    ops.geomTransf("Linear", 478, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        478,
+        *[455, 1018],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        478,
+    )
+    ops.geomTransf("Linear", 479, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        479,
+        *[456, 1022],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        479,
+    )
+    ops.geomTransf("Linear", 480, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        480,
+        *[457, 1026],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        480,
+    )
+    ops.geomTransf("Linear", 481, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        481,
+        *[458, 1030],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        481,
+    )
+    ops.geomTransf("Linear", 482, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        482,
+        *[460, 1034],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        482,
+    )
+    ops.geomTransf("Linear", 483, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        483,
+        *[461, 1038],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        483,
+    )
+    ops.geomTransf("Linear", 484, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        484,
+        *[462, 1042],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        484,
+    )
+    ops.geomTransf("Linear", 485, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        485,
+        *[463, 1046],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        485,
+    )
+    ops.geomTransf("Linear", 486, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        486,
+        *[464, 1050],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        486,
+    )
+    ops.geomTransf("Linear", 487, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        487,
+        *[465, 1054],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        487,
+    )
+    ops.geomTransf("Linear", 488, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        488,
+        *[466, 1058],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        488,
+    )
+    ops.geomTransf("Linear", 489, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        489,
+        *[467, 1062],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        489,
+    )
+    ops.geomTransf("Linear", 490, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        490,
+        *[468, 1066],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        490,
+    )
+    ops.geomTransf("Linear", 491, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        491,
+        *[469, 1070],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        491,
+    )
+    ops.geomTransf("Linear", 492, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        492,
+        *[470, 1074],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        492,
+    )
+    ops.geomTransf("Linear", 493, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        493,
+        *[471, 1078],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        493,
+    )
+    ops.geomTransf("Linear", 494, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        494,
+        *[472, 1082],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        494,
+    )
+    ops.geomTransf("Linear", 495, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        495,
+        *[473, 1086],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        495,
+    )
+    ops.geomTransf("Linear", 496, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        496,
+        *[474, 1090],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        496,
+    )
+    ops.geomTransf("Linear", 497, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        497,
+        *[475, 1094],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        497,
+    )
+    ops.geomTransf("Linear", 498, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        498,
+        *[476, 1098],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        498,
+    )
+    ops.geomTransf("Linear", 499, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        499,
+        *[478, 1102],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        499,
+    )
+    ops.geomTransf("Linear", 500, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        500,
+        *[479, 1106],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        500,
+    )
+    ops.geomTransf("Linear", 501, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        501,
+        *[480, 1110],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        501,
+    )
+    ops.geomTransf("Linear", 502, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        502,
+        *[481, 1114],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        502,
+    )
+    ops.geomTransf("Linear", 503, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        503,
+        *[482, 1118],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        503,
+    )
+    ops.geomTransf("Linear", 504, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        504,
+        *[483, 1122],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        504,
+    )
+    ops.geomTransf("Linear", 505, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        505,
+        *[484, 1126],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        505,
+    )
+    ops.geomTransf("Linear", 506, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        506,
+        *[485, 1130],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        506,
+    )
+    ops.geomTransf("Linear", 507, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        507,
+        *[486, 1134],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        507,
+    )
+    ops.geomTransf("Linear", 508, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        508,
+        *[487, 1138],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        508,
+    )
+    ops.geomTransf("Linear", 509, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        509,
+        *[488, 1142],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        509,
+    )
+    ops.geomTransf("Linear", 510, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        510,
+        *[489, 1146],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        510,
+    )
+    ops.geomTransf("Linear", 511, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        511,
+        *[490, 1150],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        511,
+    )
+    ops.geomTransf("Linear", 512, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        512,
+        *[491, 1154],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        512,
+    )
+    ops.geomTransf("Linear", 513, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        513,
+        *[492, 1158],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        513,
+    )
+    ops.geomTransf("Linear", 514, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        514,
+        *[493, 1162],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        514,
+    )
+    ops.geomTransf("Linear", 515, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        515,
+        *[494, 1166],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        515,
+    )
+    ops.geomTransf("Linear", 516, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        516,
+        *[496, 1170],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        516,
+    )
+    ops.geomTransf("Linear", 517, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        517,
+        *[497, 1174],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        517,
+    )
+    ops.geomTransf("Linear", 518, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        518,
+        *[498, 1178],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        518,
+    )
+    ops.geomTransf("Linear", 519, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        519,
+        *[499, 1182],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        519,
+    )
+    ops.geomTransf("Linear", 520, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        520,
+        *[500, 1186],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        520,
+    )
+    ops.geomTransf("Linear", 521, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        521,
+        *[501, 1190],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        521,
+    )
+    ops.geomTransf("Linear", 522, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        522,
+        *[502, 1194],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        522,
+    )
+    ops.geomTransf("Linear", 523, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        523,
+        *[503, 1198],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        523,
+    )
+    ops.geomTransf("Linear", 524, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        524,
+        *[504, 1202],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        524,
+    )
+    ops.geomTransf("Linear", 525, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        525,
+        *[505, 1206],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        525,
+    )
+    ops.geomTransf("Linear", 526, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        526,
+        *[506, 1210],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        526,
+    )
+    ops.geomTransf("Linear", 527, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        527,
+        *[507, 1214],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        527,
+    )
+    ops.geomTransf("Linear", 528, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        528,
+        *[508, 1218],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        528,
+    )
+    ops.geomTransf("Linear", 529, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        529,
+        *[509, 1222],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        529,
+    )
+    ops.geomTransf("Linear", 530, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        530,
+        *[510, 1226],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        530,
+    )
+    ops.geomTransf("Linear", 531, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        531,
+        *[511, 1230],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        531,
+    )
+    ops.geomTransf("Linear", 532, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        532,
+        *[512, 1234],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        532,
+    )
+    ops.geomTransf("Linear", 533, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        533,
+        *[514, 1238],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        533,
+    )
+    ops.geomTransf("Linear", 534, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        534,
+        *[515, 1242],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        534,
+    )
+    ops.geomTransf("Linear", 535, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        535,
+        *[516, 1246],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        535,
+    )
+    ops.geomTransf("Linear", 536, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        536,
+        *[517, 1250],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        536,
+    )
+    ops.geomTransf("Linear", 537, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        537,
+        *[518, 1254],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        537,
+    )
+    ops.geomTransf("Linear", 538, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        538,
+        *[519, 1258],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        538,
+    )
+    ops.geomTransf("Linear", 539, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        539,
+        *[520, 1262],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        539,
+    )
+    ops.geomTransf("Linear", 540, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        540,
+        *[521, 1266],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        540,
+    )
+    ops.geomTransf("Linear", 541, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        541,
+        *[522, 1270],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        541,
+    )
+    ops.geomTransf("Linear", 542, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        542,
+        *[523, 1274],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        542,
+    )
+    ops.geomTransf("Linear", 543, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        543,
+        *[524, 1278],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        543,
+    )
+    ops.geomTransf("Linear", 544, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        544,
+        *[525, 1282],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        544,
+    )
+    ops.geomTransf("Linear", 545, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        545,
+        *[526, 1286],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        545,
+    )
+    ops.geomTransf("Linear", 546, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        546,
+        *[527, 1290],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        546,
+    )
+    ops.geomTransf("Linear", 547, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        547,
+        *[528, 1294],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        547,
+    )
+    ops.geomTransf("Linear", 548, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        548,
+        *[529, 1298],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        548,
+    )
+    ops.geomTransf("Linear", 549, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        549,
+        *[530, 1302],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        549,
+    )
+    ops.geomTransf("Linear", 550, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        686,
+        *[694, 695],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        550,
+    )
+    ops.geomTransf("Linear", 551, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        687,
+        *[695, 696],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        551,
+    )
+    ops.geomTransf("Linear", 552, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        688,
+        *[696, 697],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        552,
+    )
+    ops.geomTransf("Linear", 553, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        689,
+        *[697, 371],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        553,
+    )
+    ops.geomTransf("Linear", 554, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        690,
+        *[698, 699],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        554,
+    )
+    ops.geomTransf("Linear", 555, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        691,
+        *[699, 700],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        555,
+    )
+    ops.geomTransf("Linear", 556, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        692,
+        *[700, 701],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        556,
+    )
+    ops.geomTransf("Linear", 557, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        693,
+        *[701, 372],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        557,
+    )
+    ops.geomTransf("Linear", 558, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        694,
+        *[702, 703],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        558,
+    )
+    ops.geomTransf("Linear", 559, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        695,
+        *[703, 704],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        559,
+    )
+    ops.geomTransf("Linear", 560, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        696,
+        *[704, 705],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        560,
+    )
+    ops.geomTransf("Linear", 561, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        697,
+        *[705, 373],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        561,
+    )
+    ops.geomTransf("Linear", 562, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        698,
+        *[706, 707],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        562,
+    )
+    ops.geomTransf("Linear", 563, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        699,
+        *[707, 708],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        563,
+    )
+    ops.geomTransf("Linear", 564, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        700,
+        *[708, 709],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        564,
+    )
+    ops.geomTransf("Linear", 565, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        701,
+        *[709, 374],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        565,
+    )
+    ops.geomTransf("Linear", 566, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        702,
+        *[710, 711],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        566,
+    )
+    ops.geomTransf("Linear", 567, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        703,
+        *[711, 712],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        567,
+    )
+    ops.geomTransf("Linear", 568, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        704,
+        *[712, 713],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        568,
+    )
+    ops.geomTransf("Linear", 569, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        705,
+        *[713, 375],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        569,
+    )
+    ops.geomTransf("Linear", 570, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        706,
+        *[714, 715],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        570,
+    )
+    ops.geomTransf("Linear", 571, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        707,
+        *[715, 716],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        571,
+    )
+    ops.geomTransf("Linear", 572, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        708,
+        *[716, 717],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        572,
+    )
+    ops.geomTransf("Linear", 573, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        709,
+        *[717, 376],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        573,
+    )
+    ops.geomTransf("Linear", 574, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        710,
+        *[718, 719],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        574,
+    )
+    ops.geomTransf("Linear", 575, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        711,
+        *[719, 720],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        575,
+    )
+    ops.geomTransf("Linear", 576, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        712,
+        *[720, 721],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        576,
+    )
+    ops.geomTransf("Linear", 577, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        713,
+        *[721, 377],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        577,
+    )
+    ops.geomTransf("Linear", 578, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        714,
+        *[722, 723],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        578,
+    )
+    ops.geomTransf("Linear", 579, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        715,
+        *[723, 724],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        579,
+    )
+    ops.geomTransf("Linear", 580, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        716,
+        *[724, 725],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        580,
+    )
+    ops.geomTransf("Linear", 581, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        717,
+        *[725, 378],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        581,
+    )
+    ops.geomTransf("Linear", 582, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        718,
+        *[726, 727],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        582,
+    )
+    ops.geomTransf("Linear", 583, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        719,
+        *[727, 728],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        583,
+    )
+    ops.geomTransf("Linear", 584, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        720,
+        *[728, 729],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        584,
+    )
+    ops.geomTransf("Linear", 585, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        721,
+        *[729, 379],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        585,
+    )
+    ops.geomTransf("Linear", 586, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        722,
+        *[730, 731],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        586,
+    )
+    ops.geomTransf("Linear", 587, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        723,
+        *[731, 732],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        587,
+    )
+    ops.geomTransf("Linear", 588, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        724,
+        *[732, 733],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        588,
+    )
+    ops.geomTransf("Linear", 589, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        725,
+        *[733, 380],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        589,
+    )
+    ops.geomTransf("Linear", 590, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        726,
+        *[734, 735],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        590,
+    )
+    ops.geomTransf("Linear", 591, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        727,
+        *[735, 736],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        591,
+    )
+    ops.geomTransf("Linear", 592, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        728,
+        *[736, 737],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        592,
+    )
+    ops.geomTransf("Linear", 593, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        729,
+        *[737, 381],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        593,
+    )
+    ops.geomTransf("Linear", 594, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        730,
+        *[738, 739],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        594,
+    )
+    ops.geomTransf("Linear", 595, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        731,
+        *[739, 740],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        595,
+    )
+    ops.geomTransf("Linear", 596, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        732,
+        *[740, 741],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        596,
+    )
+    ops.geomTransf("Linear", 597, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        733,
+        *[741, 382],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        597,
+    )
+    ops.geomTransf("Linear", 598, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        734,
+        *[742, 743],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        598,
+    )
+    ops.geomTransf("Linear", 599, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        735,
+        *[743, 744],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        599,
+    )
+    ops.geomTransf("Linear", 600, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        736,
+        *[744, 745],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        600,
+    )
+    ops.geomTransf("Linear", 601, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        737,
+        *[745, 383],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        601,
+    )
+    ops.geomTransf("Linear", 602, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        738,
+        *[746, 747],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        602,
+    )
+    ops.geomTransf("Linear", 603, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        739,
+        *[747, 748],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        603,
+    )
+    ops.geomTransf("Linear", 604, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        740,
+        *[748, 749],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        604,
+    )
+    ops.geomTransf("Linear", 605, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        741,
+        *[749, 384],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        605,
+    )
+    ops.geomTransf("Linear", 606, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        742,
+        *[750, 751],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        606,
+    )
+    ops.geomTransf("Linear", 607, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        743,
+        *[751, 752],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        607,
+    )
+    ops.geomTransf("Linear", 608, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        744,
+        *[752, 753],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        608,
+    )
+    ops.geomTransf("Linear", 609, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        745,
+        *[753, 385],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        609,
+    )
+    ops.geomTransf("Linear", 610, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        746,
+        *[754, 755],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        610,
+    )
+    ops.geomTransf("Linear", 611, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        747,
+        *[755, 756],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        611,
+    )
+    ops.geomTransf("Linear", 612, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        748,
+        *[756, 757],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        612,
+    )
+    ops.geomTransf("Linear", 613, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        749,
+        *[757, 386],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        613,
+    )
+    ops.geomTransf("Linear", 614, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        750,
+        *[758, 759],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        614,
+    )
+    ops.geomTransf("Linear", 615, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        751,
+        *[759, 760],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        615,
+    )
+    ops.geomTransf("Linear", 616, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        752,
+        *[760, 761],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        616,
+    )
+    ops.geomTransf("Linear", 617, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        753,
+        *[761, 387],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        617,
+    )
+    ops.geomTransf("Linear", 618, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        754,
+        *[762, 763],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        618,
+    )
+    ops.geomTransf("Linear", 619, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        755,
+        *[763, 764],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        619,
+    )
+    ops.geomTransf("Linear", 620, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        756,
+        *[764, 765],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        620,
+    )
+    ops.geomTransf("Linear", 621, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        757,
+        *[765, 389],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        621,
+    )
+    ops.geomTransf("Linear", 622, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        758,
+        *[766, 767],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        622,
+    )
+    ops.geomTransf("Linear", 623, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        759,
+        *[767, 768],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        623,
+    )
+    ops.geomTransf("Linear", 624, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        760,
+        *[768, 769],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        624,
+    )
+    ops.geomTransf("Linear", 625, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        761,
+        *[769, 390],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        625,
+    )
+    ops.geomTransf("Linear", 626, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        762,
+        *[770, 771],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        626,
+    )
+    ops.geomTransf("Linear", 627, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        763,
+        *[771, 772],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        627,
+    )
+    ops.geomTransf("Linear", 628, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        764,
+        *[772, 773],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        628,
+    )
+    ops.geomTransf("Linear", 629, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        765,
+        *[773, 391],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        629,
+    )
+    ops.geomTransf("Linear", 630, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        766,
+        *[774, 775],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        630,
+    )
+    ops.geomTransf("Linear", 631, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        767,
+        *[775, 776],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        631,
+    )
+    ops.geomTransf("Linear", 632, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        768,
+        *[776, 777],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        632,
+    )
+    ops.geomTransf("Linear", 633, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        769,
+        *[777, 392],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        633,
+    )
+    ops.geomTransf("Linear", 634, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        770,
+        *[778, 779],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        634,
+    )
+    ops.geomTransf("Linear", 635, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        771,
+        *[779, 780],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        635,
+    )
+    ops.geomTransf("Linear", 636, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        772,
+        *[780, 781],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        636,
+    )
+    ops.geomTransf("Linear", 637, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        773,
+        *[781, 393],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        637,
+    )
+    ops.geomTransf("Linear", 638, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        774,
+        *[782, 783],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        638,
+    )
+    ops.geomTransf("Linear", 639, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        775,
+        *[783, 784],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        639,
+    )
+    ops.geomTransf("Linear", 640, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        776,
+        *[784, 785],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        640,
+    )
+    ops.geomTransf("Linear", 641, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        777,
+        *[785, 394],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        641,
+    )
+    ops.geomTransf("Linear", 642, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        778,
+        *[786, 787],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        642,
+    )
+    ops.geomTransf("Linear", 643, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        779,
+        *[787, 788],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        643,
+    )
+    ops.geomTransf("Linear", 644, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        780,
+        *[788, 789],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        644,
+    )
+    ops.geomTransf("Linear", 645, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        781,
+        *[789, 395],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        645,
+    )
+    ops.geomTransf("Linear", 646, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        782,
+        *[790, 791],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        646,
+    )
+    ops.geomTransf("Linear", 647, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        783,
+        *[791, 792],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        647,
+    )
+    ops.geomTransf("Linear", 648, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        784,
+        *[792, 793],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        648,
+    )
+    ops.geomTransf("Linear", 649, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        785,
+        *[793, 396],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        649,
+    )
+    ops.geomTransf("Linear", 650, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        786,
+        *[794, 795],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        650,
+    )
+    ops.geomTransf("Linear", 651, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        787,
+        *[795, 796],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        651,
+    )
+    ops.geomTransf("Linear", 652, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        788,
+        *[796, 797],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        652,
+    )
+    ops.geomTransf("Linear", 653, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        789,
+        *[797, 397],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        653,
+    )
+    ops.geomTransf("Linear", 654, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        790,
+        *[798, 799],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        654,
+    )
+    ops.geomTransf("Linear", 655, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        791,
+        *[799, 800],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        655,
+    )
+    ops.geomTransf("Linear", 656, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        792,
+        *[800, 801],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        656,
+    )
+    ops.geomTransf("Linear", 657, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        793,
+        *[801, 398],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        657,
+    )
+    ops.geomTransf("Linear", 658, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        794,
+        *[802, 803],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        658,
+    )
+    ops.geomTransf("Linear", 659, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        795,
+        *[803, 804],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        659,
+    )
+    ops.geomTransf("Linear", 660, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        796,
+        *[804, 805],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        660,
+    )
+    ops.geomTransf("Linear", 661, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        797,
+        *[805, 399],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        661,
+    )
+    ops.geomTransf("Linear", 662, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        798,
+        *[806, 807],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        662,
+    )
+    ops.geomTransf("Linear", 663, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        799,
+        *[807, 808],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        663,
+    )
+    ops.geomTransf("Linear", 664, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        800,
+        *[808, 809],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        664,
+    )
+    ops.geomTransf("Linear", 665, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        801,
+        *[809, 400],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        665,
+    )
+    ops.geomTransf("Linear", 666, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        802,
+        *[810, 811],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        666,
+    )
+    ops.geomTransf("Linear", 667, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        803,
+        *[811, 812],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        667,
+    )
+    ops.geomTransf("Linear", 668, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        804,
+        *[812, 813],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        668,
+    )
+    ops.geomTransf("Linear", 669, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        805,
+        *[813, 401],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        669,
+    )
+    ops.geomTransf("Linear", 670, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        806,
+        *[814, 815],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        670,
+    )
+    ops.geomTransf("Linear", 671, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        807,
+        *[815, 816],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        671,
+    )
+    ops.geomTransf("Linear", 672, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        808,
+        *[816, 817],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        672,
+    )
+    ops.geomTransf("Linear", 673, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        809,
+        *[817, 402],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        673,
+    )
+    ops.geomTransf("Linear", 674, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        810,
+        *[818, 819],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        674,
+    )
+    ops.geomTransf("Linear", 675, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        811,
+        *[819, 820],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        675,
+    )
+    ops.geomTransf("Linear", 676, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        812,
+        *[820, 821],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        676,
+    )
+    ops.geomTransf("Linear", 677, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        813,
+        *[821, 403],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        677,
+    )
+    ops.geomTransf("Linear", 678, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        814,
+        *[822, 823],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        678,
+    )
+    ops.geomTransf("Linear", 679, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        815,
+        *[823, 824],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        679,
+    )
+    ops.geomTransf("Linear", 680, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        816,
+        *[824, 825],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        680,
+    )
+    ops.geomTransf("Linear", 681, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        817,
+        *[825, 404],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        681,
+    )
+    ops.geomTransf("Linear", 682, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        818,
+        *[826, 827],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        682,
+    )
+    ops.geomTransf("Linear", 683, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        819,
+        *[827, 828],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        683,
+    )
+    ops.geomTransf("Linear", 684, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        820,
+        *[828, 829],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        684,
+    )
+    ops.geomTransf("Linear", 685, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        821,
+        *[829, 405],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        685,
+    )
+    ops.geomTransf("Linear", 686, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        822,
+        *[830, 831],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        686,
+    )
+    ops.geomTransf("Linear", 687, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        823,
+        *[831, 832],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        687,
+    )
+    ops.geomTransf("Linear", 688, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        824,
+        *[832, 833],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        688,
+    )
+    ops.geomTransf("Linear", 689, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        825,
+        *[833, 407],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        689,
+    )
+    ops.geomTransf("Linear", 690, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        826,
+        *[834, 835],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        690,
+    )
+    ops.geomTransf("Linear", 691, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        827,
+        *[835, 836],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        691,
+    )
+    ops.geomTransf("Linear", 692, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        828,
+        *[836, 837],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        692,
+    )
+    ops.geomTransf("Linear", 693, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        829,
+        *[837, 408],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        693,
+    )
+    ops.geomTransf("Linear", 694, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        830,
+        *[838, 839],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        694,
+    )
+    ops.geomTransf("Linear", 695, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        831,
+        *[839, 840],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        695,
+    )
+    ops.geomTransf("Linear", 696, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        832,
+        *[840, 841],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        696,
+    )
+    ops.geomTransf("Linear", 697, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        833,
+        *[841, 409],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        697,
+    )
+    ops.geomTransf("Linear", 698, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        834,
+        *[842, 843],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        698,
+    )
+    ops.geomTransf("Linear", 699, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        835,
+        *[843, 844],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        699,
+    )
+    ops.geomTransf("Linear", 700, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        836,
+        *[844, 845],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        700,
+    )
+    ops.geomTransf("Linear", 701, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        837,
+        *[845, 410],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        701,
+    )
+    ops.geomTransf("Linear", 702, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        838,
+        *[846, 847],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        702,
+    )
+    ops.geomTransf("Linear", 703, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        839,
+        *[847, 848],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        703,
+    )
+    ops.geomTransf("Linear", 704, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        840,
+        *[848, 849],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        704,
+    )
+    ops.geomTransf("Linear", 705, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        841,
+        *[849, 411],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        705,
+    )
+    ops.geomTransf("Linear", 706, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        842,
+        *[850, 851],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        706,
+    )
+    ops.geomTransf("Linear", 707, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        843,
+        *[851, 852],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        707,
+    )
+    ops.geomTransf("Linear", 708, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        844,
+        *[852, 853],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        708,
+    )
+    ops.geomTransf("Linear", 709, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        845,
+        *[853, 412],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        709,
+    )
+    ops.geomTransf("Linear", 710, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        846,
+        *[854, 855],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        710,
+    )
+    ops.geomTransf("Linear", 711, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        847,
+        *[855, 856],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        711,
+    )
+    ops.geomTransf("Linear", 712, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        848,
+        *[856, 857],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        712,
+    )
+    ops.geomTransf("Linear", 713, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        849,
+        *[857, 413],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        713,
+    )
+    ops.geomTransf("Linear", 714, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        850,
+        *[858, 859],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        714,
+    )
+    ops.geomTransf("Linear", 715, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        851,
+        *[859, 860],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        715,
+    )
+    ops.geomTransf("Linear", 716, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        852,
+        *[860, 861],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        716,
+    )
+    ops.geomTransf("Linear", 717, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        853,
+        *[861, 414],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        717,
+    )
+    ops.geomTransf("Linear", 718, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        854,
+        *[862, 863],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        718,
+    )
+    ops.geomTransf("Linear", 719, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        855,
+        *[863, 864],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        719,
+    )
+    ops.geomTransf("Linear", 720, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        856,
+        *[864, 865],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        720,
+    )
+    ops.geomTransf("Linear", 721, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        857,
+        *[865, 415],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        721,
+    )
+    ops.geomTransf("Linear", 722, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        858,
+        *[866, 867],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        722,
+    )
+    ops.geomTransf("Linear", 723, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        859,
+        *[867, 868],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        723,
+    )
+    ops.geomTransf("Linear", 724, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        860,
+        *[868, 869],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        724,
+    )
+    ops.geomTransf("Linear", 725, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        861,
+        *[869, 416],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        725,
+    )
+    ops.geomTransf("Linear", 726, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        862,
+        *[870, 871],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        726,
+    )
+    ops.geomTransf("Linear", 727, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        863,
+        *[871, 872],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        727,
+    )
+    ops.geomTransf("Linear", 728, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        864,
+        *[872, 873],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        728,
+    )
+    ops.geomTransf("Linear", 729, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        865,
+        *[873, 417],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        729,
+    )
+    ops.geomTransf("Linear", 730, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        866,
+        *[874, 875],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        730,
+    )
+    ops.geomTransf("Linear", 731, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        867,
+        *[875, 876],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        731,
+    )
+    ops.geomTransf("Linear", 732, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        868,
+        *[876, 877],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        732,
+    )
+    ops.geomTransf("Linear", 733, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        869,
+        *[877, 418],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        733,
+    )
+    ops.geomTransf("Linear", 734, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        870,
+        *[878, 879],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        734,
+    )
+    ops.geomTransf("Linear", 735, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        871,
+        *[879, 880],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        735,
+    )
+    ops.geomTransf("Linear", 736, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        872,
+        *[880, 881],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        736,
+    )
+    ops.geomTransf("Linear", 737, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        873,
+        *[881, 419],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        737,
+    )
+    ops.geomTransf("Linear", 738, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        874,
+        *[882, 883],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        738,
+    )
+    ops.geomTransf("Linear", 739, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        875,
+        *[883, 884],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        739,
+    )
+    ops.geomTransf("Linear", 740, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        876,
+        *[884, 885],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        740,
+    )
+    ops.geomTransf("Linear", 741, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        877,
+        *[885, 420],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        741,
+    )
+    ops.geomTransf("Linear", 742, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        878,
+        *[886, 887],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        742,
+    )
+    ops.geomTransf("Linear", 743, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        879,
+        *[887, 888],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        743,
+    )
+    ops.geomTransf("Linear", 744, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        880,
+        *[888, 889],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        744,
+    )
+    ops.geomTransf("Linear", 745, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        881,
+        *[889, 421],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        745,
+    )
+    ops.geomTransf("Linear", 746, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        882,
+        *[890, 891],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        746,
+    )
+    ops.geomTransf("Linear", 747, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        883,
+        *[891, 892],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        747,
+    )
+    ops.geomTransf("Linear", 748, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        884,
+        *[892, 893],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        748,
+    )
+    ops.geomTransf("Linear", 749, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        885,
+        *[893, 422],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        749,
+    )
+    ops.geomTransf("Linear", 750, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        886,
+        *[894, 895],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        750,
+    )
+    ops.geomTransf("Linear", 751, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        887,
+        *[895, 896],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        751,
+    )
+    ops.geomTransf("Linear", 752, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        888,
+        *[896, 897],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        752,
+    )
+    ops.geomTransf("Linear", 753, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        889,
+        *[897, 423],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        753,
+    )
+    ops.geomTransf("Linear", 754, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        890,
+        *[898, 899],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        754,
+    )
+    ops.geomTransf("Linear", 755, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        891,
+        *[899, 900],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        755,
+    )
+    ops.geomTransf("Linear", 756, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        892,
+        *[900, 901],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        756,
+    )
+    ops.geomTransf("Linear", 757, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        893,
+        *[901, 425],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        757,
+    )
+    ops.geomTransf("Linear", 758, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        894,
+        *[902, 903],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        758,
+    )
+    ops.geomTransf("Linear", 759, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        895,
+        *[903, 904],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        759,
+    )
+    ops.geomTransf("Linear", 760, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        896,
+        *[904, 905],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        760,
+    )
+    ops.geomTransf("Linear", 761, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        897,
+        *[905, 426],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        761,
+    )
+    ops.geomTransf("Linear", 762, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        898,
+        *[906, 907],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        762,
+    )
+    ops.geomTransf("Linear", 763, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        899,
+        *[907, 908],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        763,
+    )
+    ops.geomTransf("Linear", 764, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        900,
+        *[908, 909],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        764,
+    )
+    ops.geomTransf("Linear", 765, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        901,
+        *[909, 427],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        765,
+    )
+    ops.geomTransf("Linear", 766, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        902,
+        *[910, 911],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        766,
+    )
+    ops.geomTransf("Linear", 767, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        903,
+        *[911, 912],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        767,
+    )
+    ops.geomTransf("Linear", 768, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        904,
+        *[912, 913],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        768,
+    )
+    ops.geomTransf("Linear", 769, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        905,
+        *[913, 428],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        769,
+    )
+    ops.geomTransf("Linear", 770, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        906,
+        *[914, 915],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        770,
+    )
+    ops.geomTransf("Linear", 771, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        907,
+        *[915, 916],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        771,
+    )
+    ops.geomTransf("Linear", 772, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        908,
+        *[916, 917],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        772,
+    )
+    ops.geomTransf("Linear", 773, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        909,
+        *[917, 429],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        773,
+    )
+    ops.geomTransf("Linear", 774, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        910,
+        *[918, 919],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        774,
+    )
+    ops.geomTransf("Linear", 775, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        911,
+        *[919, 920],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        775,
+    )
+    ops.geomTransf("Linear", 776, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        912,
+        *[920, 921],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        776,
+    )
+    ops.geomTransf("Linear", 777, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        913,
+        *[921, 430],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        777,
+    )
+    ops.geomTransf("Linear", 778, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        914,
+        *[922, 923],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        778,
+    )
+    ops.geomTransf("Linear", 779, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        915,
+        *[923, 924],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        779,
+    )
+    ops.geomTransf("Linear", 780, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        916,
+        *[924, 925],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        780,
+    )
+    ops.geomTransf("Linear", 781, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        917,
+        *[925, 431],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        781,
+    )
+    ops.geomTransf("Linear", 782, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        918,
+        *[926, 927],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        782,
+    )
+    ops.geomTransf("Linear", 783, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        919,
+        *[927, 928],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        783,
+    )
+    ops.geomTransf("Linear", 784, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        920,
+        *[928, 929],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        784,
+    )
+    ops.geomTransf("Linear", 785, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        921,
+        *[929, 432],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        785,
+    )
+    ops.geomTransf("Linear", 786, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        922,
+        *[930, 931],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        786,
+    )
+    ops.geomTransf("Linear", 787, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        923,
+        *[931, 932],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        787,
+    )
+    ops.geomTransf("Linear", 788, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        924,
+        *[932, 933],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        788,
+    )
+    ops.geomTransf("Linear", 789, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        925,
+        *[933, 433],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        789,
+    )
+    ops.geomTransf("Linear", 790, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        926,
+        *[934, 935],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        790,
+    )
+    ops.geomTransf("Linear", 791, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        927,
+        *[935, 936],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        791,
+    )
+    ops.geomTransf("Linear", 792, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        928,
+        *[936, 937],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        792,
+    )
+    ops.geomTransf("Linear", 793, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        929,
+        *[937, 434],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        793,
+    )
+    ops.geomTransf("Linear", 794, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        930,
+        *[938, 939],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        794,
+    )
+    ops.geomTransf("Linear", 795, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        931,
+        *[939, 940],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        795,
+    )
+    ops.geomTransf("Linear", 796, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        932,
+        *[940, 941],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        796,
+    )
+    ops.geomTransf("Linear", 797, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        933,
+        *[941, 435],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        797,
+    )
+    ops.geomTransf("Linear", 798, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        934,
+        *[942, 943],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        798,
+    )
+    ops.geomTransf("Linear", 799, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        935,
+        *[943, 944],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        799,
+    )
+    ops.geomTransf("Linear", 800, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        936,
+        *[944, 945],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        800,
+    )
+    ops.geomTransf("Linear", 801, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        937,
+        *[945, 436],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        801,
+    )
+    ops.geomTransf("Linear", 802, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        938,
+        *[946, 947],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        802,
+    )
+    ops.geomTransf("Linear", 803, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        939,
+        *[947, 948],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        803,
+    )
+    ops.geomTransf("Linear", 804, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        940,
+        *[948, 949],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        804,
+    )
+    ops.geomTransf("Linear", 805, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        941,
+        *[949, 437],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        805,
+    )
+    ops.geomTransf("Linear", 806, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        942,
+        *[950, 951],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        806,
+    )
+    ops.geomTransf("Linear", 807, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        943,
+        *[951, 952],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        807,
+    )
+    ops.geomTransf("Linear", 808, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        944,
+        *[952, 953],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        808,
+    )
+    ops.geomTransf("Linear", 809, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        945,
+        *[953, 438],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        809,
+    )
+    ops.geomTransf("Linear", 810, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        946,
+        *[954, 955],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        810,
+    )
+    ops.geomTransf("Linear", 811, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        947,
+        *[955, 956],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        811,
+    )
+    ops.geomTransf("Linear", 812, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        948,
+        *[956, 957],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        812,
+    )
+    ops.geomTransf("Linear", 813, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        949,
+        *[957, 439],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        813,
+    )
+    ops.geomTransf("Linear", 814, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        950,
+        *[958, 959],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        814,
+    )
+    ops.geomTransf("Linear", 815, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        951,
+        *[959, 960],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        815,
+    )
+    ops.geomTransf("Linear", 816, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        952,
+        *[960, 961],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        816,
+    )
+    ops.geomTransf("Linear", 817, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        953,
+        *[961, 440],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        817,
+    )
+    ops.geomTransf("Linear", 818, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        954,
+        *[962, 963],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        818,
+    )
+    ops.geomTransf("Linear", 819, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        955,
+        *[963, 964],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        819,
+    )
+    ops.geomTransf("Linear", 820, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        956,
+        *[964, 965],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        820,
+    )
+    ops.geomTransf("Linear", 821, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        957,
+        *[965, 441],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        821,
+    )
+    ops.geomTransf("Linear", 822, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        958,
+        *[966, 967],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        822,
+    )
+    ops.geomTransf("Linear", 823, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        959,
+        *[967, 968],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        823,
+    )
+    ops.geomTransf("Linear", 824, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        960,
+        *[968, 969],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        824,
+    )
+    ops.geomTransf("Linear", 825, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        961,
+        *[969, 443],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        825,
+    )
+    ops.geomTransf("Linear", 826, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        962,
+        *[970, 971],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        826,
+    )
+    ops.geomTransf("Linear", 827, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        963,
+        *[971, 972],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        827,
+    )
+    ops.geomTransf("Linear", 828, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        964,
+        *[972, 973],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        828,
+    )
+    ops.geomTransf("Linear", 829, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        965,
+        *[973, 444],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        829,
+    )
+    ops.geomTransf("Linear", 830, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        966,
+        *[974, 975],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        830,
+    )
+    ops.geomTransf("Linear", 831, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        967,
+        *[975, 976],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        831,
+    )
+    ops.geomTransf("Linear", 832, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        968,
+        *[976, 977],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        832,
+    )
+    ops.geomTransf("Linear", 833, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        969,
+        *[977, 445],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        833,
+    )
+    ops.geomTransf("Linear", 834, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        970,
+        *[978, 979],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        834,
+    )
+    ops.geomTransf("Linear", 835, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        971,
+        *[979, 980],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        835,
+    )
+    ops.geomTransf("Linear", 836, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        972,
+        *[980, 981],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        836,
+    )
+    ops.geomTransf("Linear", 837, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        973,
+        *[981, 446],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        837,
+    )
+    ops.geomTransf("Linear", 838, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        974,
+        *[982, 983],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        838,
+    )
+    ops.geomTransf("Linear", 839, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        975,
+        *[983, 984],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        839,
+    )
+    ops.geomTransf("Linear", 840, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        976,
+        *[984, 985],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        840,
+    )
+    ops.geomTransf("Linear", 841, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        977,
+        *[985, 447],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        841,
+    )
+    ops.geomTransf("Linear", 842, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        978,
+        *[986, 987],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        842,
+    )
+    ops.geomTransf("Linear", 843, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        979,
+        *[987, 988],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        843,
+    )
+    ops.geomTransf("Linear", 844, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        980,
+        *[988, 989],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        844,
+    )
+    ops.geomTransf("Linear", 845, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        981,
+        *[989, 448],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        845,
+    )
+    ops.geomTransf("Linear", 846, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        982,
+        *[990, 991],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        846,
+    )
+    ops.geomTransf("Linear", 847, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        983,
+        *[991, 992],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        847,
+    )
+    ops.geomTransf("Linear", 848, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        984,
+        *[992, 993],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        848,
+    )
+    ops.geomTransf("Linear", 849, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        985,
+        *[993, 449],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        849,
+    )
+    ops.geomTransf("Linear", 850, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        986,
+        *[994, 995],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        850,
+    )
+    ops.geomTransf("Linear", 851, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        987,
+        *[995, 996],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        851,
+    )
+    ops.geomTransf("Linear", 852, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        988,
+        *[996, 997],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        852,
+    )
+    ops.geomTransf("Linear", 853, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        989,
+        *[997, 450],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        853,
+    )
+    ops.geomTransf("Linear", 854, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        990,
+        *[998, 999],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        854,
+    )
+    ops.geomTransf("Linear", 855, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        991,
+        *[999, 1000],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        855,
+    )
+    ops.geomTransf("Linear", 856, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        992,
+        *[1000, 1001],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        856,
+    )
+    ops.geomTransf("Linear", 857, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        993,
+        *[1001, 451],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        857,
+    )
+    ops.geomTransf("Linear", 858, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        994,
+        *[1002, 1003],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        858,
+    )
+    ops.geomTransf("Linear", 859, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        995,
+        *[1003, 1004],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        859,
+    )
+    ops.geomTransf("Linear", 860, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        996,
+        *[1004, 1005],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        860,
+    )
+    ops.geomTransf("Linear", 861, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        997,
+        *[1005, 452],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        861,
+    )
+    ops.geomTransf("Linear", 862, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        998,
+        *[1006, 1007],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        862,
+    )
+    ops.geomTransf("Linear", 863, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        999,
+        *[1007, 1008],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        863,
+    )
+    ops.geomTransf("Linear", 864, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1000,
+        *[1008, 1009],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        864,
+    )
+    ops.geomTransf("Linear", 865, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1001,
+        *[1009, 453],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        865,
+    )
+    ops.geomTransf("Linear", 866, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1002,
+        *[1010, 1011],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        866,
+    )
+    ops.geomTransf("Linear", 867, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1003,
+        *[1011, 1012],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        867,
+    )
+    ops.geomTransf("Linear", 868, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1004,
+        *[1012, 1013],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        868,
+    )
+    ops.geomTransf("Linear", 869, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1005,
+        *[1013, 454],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        869,
+    )
+    ops.geomTransf("Linear", 870, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1006,
+        *[1014, 1015],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        870,
+    )
+    ops.geomTransf("Linear", 871, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1007,
+        *[1015, 1016],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        871,
+    )
+    ops.geomTransf("Linear", 872, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1008,
+        *[1016, 1017],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        872,
+    )
+    ops.geomTransf("Linear", 873, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1009,
+        *[1017, 455],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        873,
+    )
+    ops.geomTransf("Linear", 874, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1010,
+        *[1018, 1019],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        874,
+    )
+    ops.geomTransf("Linear", 875, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1011,
+        *[1019, 1020],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        875,
+    )
+    ops.geomTransf("Linear", 876, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1012,
+        *[1020, 1021],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        876,
+    )
+    ops.geomTransf("Linear", 877, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1013,
+        *[1021, 456],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        877,
+    )
+    ops.geomTransf("Linear", 878, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1014,
+        *[1022, 1023],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        878,
+    )
+    ops.geomTransf("Linear", 879, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1015,
+        *[1023, 1024],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        879,
+    )
+    ops.geomTransf("Linear", 880, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1016,
+        *[1024, 1025],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        880,
+    )
+    ops.geomTransf("Linear", 881, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1017,
+        *[1025, 457],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        881,
+    )
+    ops.geomTransf("Linear", 882, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1018,
+        *[1026, 1027],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        882,
+    )
+    ops.geomTransf("Linear", 883, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1019,
+        *[1027, 1028],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        883,
+    )
+    ops.geomTransf("Linear", 884, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1020,
+        *[1028, 1029],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        884,
+    )
+    ops.geomTransf("Linear", 885, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1021,
+        *[1029, 458],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        885,
+    )
+    ops.geomTransf("Linear", 886, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1022,
+        *[1030, 1031],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        886,
+    )
+    ops.geomTransf("Linear", 887, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1023,
+        *[1031, 1032],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        887,
+    )
+    ops.geomTransf("Linear", 888, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1024,
+        *[1032, 1033],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        888,
+    )
+    ops.geomTransf("Linear", 889, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1025,
+        *[1033, 459],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        889,
+    )
+    ops.geomTransf("Linear", 890, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1026,
+        *[1034, 1035],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        890,
+    )
+    ops.geomTransf("Linear", 891, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1027,
+        *[1035, 1036],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        891,
+    )
+    ops.geomTransf("Linear", 892, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1028,
+        *[1036, 1037],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        892,
+    )
+    ops.geomTransf("Linear", 893, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1029,
+        *[1037, 461],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        893,
+    )
+    ops.geomTransf("Linear", 894, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1030,
+        *[1038, 1039],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        894,
+    )
+    ops.geomTransf("Linear", 895, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1031,
+        *[1039, 1040],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        895,
+    )
+    ops.geomTransf("Linear", 896, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1032,
+        *[1040, 1041],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        896,
+    )
+    ops.geomTransf("Linear", 897, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1033,
+        *[1041, 462],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        897,
+    )
+    ops.geomTransf("Linear", 898, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1034,
+        *[1042, 1043],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        898,
+    )
+    ops.geomTransf("Linear", 899, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1035,
+        *[1043, 1044],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        899,
+    )
+    ops.geomTransf("Linear", 900, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1036,
+        *[1044, 1045],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        900,
+    )
+    ops.geomTransf("Linear", 901, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1037,
+        *[1045, 463],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        901,
+    )
+    ops.geomTransf("Linear", 902, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1038,
+        *[1046, 1047],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        902,
+    )
+    ops.geomTransf("Linear", 903, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1039,
+        *[1047, 1048],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        903,
+    )
+    ops.geomTransf("Linear", 904, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1040,
+        *[1048, 1049],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        904,
+    )
+    ops.geomTransf("Linear", 905, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1041,
+        *[1049, 464],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        905,
+    )
+    ops.geomTransf("Linear", 906, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1042,
+        *[1050, 1051],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        906,
+    )
+    ops.geomTransf("Linear", 907, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1043,
+        *[1051, 1052],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        907,
+    )
+    ops.geomTransf("Linear", 908, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1044,
+        *[1052, 1053],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        908,
+    )
+    ops.geomTransf("Linear", 909, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1045,
+        *[1053, 465],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        909,
+    )
+    ops.geomTransf("Linear", 910, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1046,
+        *[1054, 1055],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        910,
+    )
+    ops.geomTransf("Linear", 911, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1047,
+        *[1055, 1056],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        911,
+    )
+    ops.geomTransf("Linear", 912, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1048,
+        *[1056, 1057],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        912,
+    )
+    ops.geomTransf("Linear", 913, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1049,
+        *[1057, 466],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        913,
+    )
+    ops.geomTransf("Linear", 914, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1050,
+        *[1058, 1059],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        914,
+    )
+    ops.geomTransf("Linear", 915, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1051,
+        *[1059, 1060],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        915,
+    )
+    ops.geomTransf("Linear", 916, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1052,
+        *[1060, 1061],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        916,
+    )
+    ops.geomTransf("Linear", 917, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1053,
+        *[1061, 467],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        917,
+    )
+    ops.geomTransf("Linear", 918, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1054,
+        *[1062, 1063],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        918,
+    )
+    ops.geomTransf("Linear", 919, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1055,
+        *[1063, 1064],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        919,
+    )
+    ops.geomTransf("Linear", 920, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1056,
+        *[1064, 1065],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        920,
+    )
+    ops.geomTransf("Linear", 921, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1057,
+        *[1065, 468],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        921,
+    )
+    ops.geomTransf("Linear", 922, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1058,
+        *[1066, 1067],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        922,
+    )
+    ops.geomTransf("Linear", 923, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1059,
+        *[1067, 1068],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        923,
+    )
+    ops.geomTransf("Linear", 924, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1060,
+        *[1068, 1069],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        924,
+    )
+    ops.geomTransf("Linear", 925, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1061,
+        *[1069, 469],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        925,
+    )
+    ops.geomTransf("Linear", 926, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1062,
+        *[1070, 1071],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        926,
+    )
+    ops.geomTransf("Linear", 927, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1063,
+        *[1071, 1072],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        927,
+    )
+    ops.geomTransf("Linear", 928, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1064,
+        *[1072, 1073],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        928,
+    )
+    ops.geomTransf("Linear", 929, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1065,
+        *[1073, 470],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        929,
+    )
+    ops.geomTransf("Linear", 930, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1066,
+        *[1074, 1075],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        930,
+    )
+    ops.geomTransf("Linear", 931, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1067,
+        *[1075, 1076],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        931,
+    )
+    ops.geomTransf("Linear", 932, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1068,
+        *[1076, 1077],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        932,
+    )
+    ops.geomTransf("Linear", 933, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1069,
+        *[1077, 471],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        933,
+    )
+    ops.geomTransf("Linear", 934, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1070,
+        *[1078, 1079],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        934,
+    )
+    ops.geomTransf("Linear", 935, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1071,
+        *[1079, 1080],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        935,
+    )
+    ops.geomTransf("Linear", 936, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1072,
+        *[1080, 1081],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        936,
+    )
+    ops.geomTransf("Linear", 937, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1073,
+        *[1081, 472],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        937,
+    )
+    ops.geomTransf("Linear", 938, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1074,
+        *[1082, 1083],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        938,
+    )
+    ops.geomTransf("Linear", 939, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1075,
+        *[1083, 1084],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        939,
+    )
+    ops.geomTransf("Linear", 940, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1076,
+        *[1084, 1085],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        940,
+    )
+    ops.geomTransf("Linear", 941, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1077,
+        *[1085, 473],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        941,
+    )
+    ops.geomTransf("Linear", 942, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1078,
+        *[1086, 1087],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        942,
+    )
+    ops.geomTransf("Linear", 943, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1079,
+        *[1087, 1088],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        943,
+    )
+    ops.geomTransf("Linear", 944, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1080,
+        *[1088, 1089],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        944,
+    )
+    ops.geomTransf("Linear", 945, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1081,
+        *[1089, 474],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        945,
+    )
+    ops.geomTransf("Linear", 946, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1082,
+        *[1090, 1091],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        946,
+    )
+    ops.geomTransf("Linear", 947, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1083,
+        *[1091, 1092],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        947,
+    )
+    ops.geomTransf("Linear", 948, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1084,
+        *[1092, 1093],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        948,
+    )
+    ops.geomTransf("Linear", 949, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1085,
+        *[1093, 475],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        949,
+    )
+    ops.geomTransf("Linear", 950, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1086,
+        *[1094, 1095],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        950,
+    )
+    ops.geomTransf("Linear", 951, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1087,
+        *[1095, 1096],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        951,
+    )
+    ops.geomTransf("Linear", 952, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1088,
+        *[1096, 1097],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        952,
+    )
+    ops.geomTransf("Linear", 953, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1089,
+        *[1097, 476],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        953,
+    )
+    ops.geomTransf("Linear", 954, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1090,
+        *[1098, 1099],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        954,
+    )
+    ops.geomTransf("Linear", 955, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1091,
+        *[1099, 1100],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        955,
+    )
+    ops.geomTransf("Linear", 956, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1092,
+        *[1100, 1101],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        956,
+    )
+    ops.geomTransf("Linear", 957, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1093,
+        *[1101, 477],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        957,
+    )
+    ops.geomTransf("Linear", 958, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1094,
+        *[1102, 1103],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        958,
+    )
+    ops.geomTransf("Linear", 959, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1095,
+        *[1103, 1104],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        959,
+    )
+    ops.geomTransf("Linear", 960, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1096,
+        *[1104, 1105],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        960,
+    )
+    ops.geomTransf("Linear", 961, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1097,
+        *[1105, 479],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        961,
+    )
+    ops.geomTransf("Linear", 962, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1098,
+        *[1106, 1107],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        962,
+    )
+    ops.geomTransf("Linear", 963, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1099,
+        *[1107, 1108],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        963,
+    )
+    ops.geomTransf("Linear", 964, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1100,
+        *[1108, 1109],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        964,
+    )
+    ops.geomTransf("Linear", 965, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1101,
+        *[1109, 480],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        965,
+    )
+    ops.geomTransf("Linear", 966, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1102,
+        *[1110, 1111],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        966,
+    )
+    ops.geomTransf("Linear", 967, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1103,
+        *[1111, 1112],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        967,
+    )
+    ops.geomTransf("Linear", 968, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1104,
+        *[1112, 1113],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        968,
+    )
+    ops.geomTransf("Linear", 969, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1105,
+        *[1113, 481],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        969,
+    )
+    ops.geomTransf("Linear", 970, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1106,
+        *[1114, 1115],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        970,
+    )
+    ops.geomTransf("Linear", 971, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1107,
+        *[1115, 1116],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        971,
+    )
+    ops.geomTransf("Linear", 972, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1108,
+        *[1116, 1117],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        972,
+    )
+    ops.geomTransf("Linear", 973, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1109,
+        *[1117, 482],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        973,
+    )
+    ops.geomTransf("Linear", 974, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1110,
+        *[1118, 1119],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        974,
+    )
+    ops.geomTransf("Linear", 975, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1111,
+        *[1119, 1120],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        975,
+    )
+    ops.geomTransf("Linear", 976, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1112,
+        *[1120, 1121],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        976,
+    )
+    ops.geomTransf("Linear", 977, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1113,
+        *[1121, 483],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        977,
+    )
+    ops.geomTransf("Linear", 978, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1114,
+        *[1122, 1123],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        978,
+    )
+    ops.geomTransf("Linear", 979, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1115,
+        *[1123, 1124],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        979,
+    )
+    ops.geomTransf("Linear", 980, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1116,
+        *[1124, 1125],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        980,
+    )
+    ops.geomTransf("Linear", 981, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1117,
+        *[1125, 484],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        981,
+    )
+    ops.geomTransf("Linear", 982, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1118,
+        *[1126, 1127],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        982,
+    )
+    ops.geomTransf("Linear", 983, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1119,
+        *[1127, 1128],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        983,
+    )
+    ops.geomTransf("Linear", 984, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1120,
+        *[1128, 1129],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        984,
+    )
+    ops.geomTransf("Linear", 985, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1121,
+        *[1129, 485],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        985,
+    )
+    ops.geomTransf("Linear", 986, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1122,
+        *[1130, 1131],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        986,
+    )
+    ops.geomTransf("Linear", 987, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1123,
+        *[1131, 1132],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        987,
+    )
+    ops.geomTransf("Linear", 988, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1124,
+        *[1132, 1133],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        988,
+    )
+    ops.geomTransf("Linear", 989, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1125,
+        *[1133, 486],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        989,
+    )
+    ops.geomTransf("Linear", 990, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1126,
+        *[1134, 1135],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        990,
+    )
+    ops.geomTransf("Linear", 991, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1127,
+        *[1135, 1136],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        991,
+    )
+    ops.geomTransf("Linear", 992, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1128,
+        *[1136, 1137],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        992,
+    )
+    ops.geomTransf("Linear", 993, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1129,
+        *[1137, 487],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        993,
+    )
+    ops.geomTransf("Linear", 994, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1130,
+        *[1138, 1139],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        994,
+    )
+    ops.geomTransf("Linear", 995, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1131,
+        *[1139, 1140],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        995,
+    )
+    ops.geomTransf("Linear", 996, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1132,
+        *[1140, 1141],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        996,
+    )
+    ops.geomTransf("Linear", 997, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1133,
+        *[1141, 488],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        997,
+    )
+    ops.geomTransf("Linear", 998, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1134,
+        *[1142, 1143],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        998,
+    )
+    ops.geomTransf("Linear", 999, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1135,
+        *[1143, 1144],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        999,
+    )
+    ops.geomTransf("Linear", 1000, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1136,
+        *[1144, 1145],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1000,
+    )
+    ops.geomTransf("Linear", 1001, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1137,
+        *[1145, 489],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1001,
+    )
+    ops.geomTransf("Linear", 1002, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1138,
+        *[1146, 1147],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1002,
+    )
+    ops.geomTransf("Linear", 1003, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1139,
+        *[1147, 1148],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1003,
+    )
+    ops.geomTransf("Linear", 1004, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1140,
+        *[1148, 1149],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1004,
+    )
+    ops.geomTransf("Linear", 1005, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1141,
+        *[1149, 490],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1005,
+    )
+    ops.geomTransf("Linear", 1006, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1142,
+        *[1150, 1151],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1006,
+    )
+    ops.geomTransf("Linear", 1007, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1143,
+        *[1151, 1152],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1007,
+    )
+    ops.geomTransf("Linear", 1008, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1144,
+        *[1152, 1153],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1008,
+    )
+    ops.geomTransf("Linear", 1009, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1145,
+        *[1153, 491],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1009,
+    )
+    ops.geomTransf("Linear", 1010, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1146,
+        *[1154, 1155],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1010,
+    )
+    ops.geomTransf("Linear", 1011, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1147,
+        *[1155, 1156],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1011,
+    )
+    ops.geomTransf("Linear", 1012, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1148,
+        *[1156, 1157],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1012,
+    )
+    ops.geomTransf("Linear", 1013, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1149,
+        *[1157, 492],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1013,
+    )
+    ops.geomTransf("Linear", 1014, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1150,
+        *[1158, 1159],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1014,
+    )
+    ops.geomTransf("Linear", 1015, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1151,
+        *[1159, 1160],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1015,
+    )
+    ops.geomTransf("Linear", 1016, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1152,
+        *[1160, 1161],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1016,
+    )
+    ops.geomTransf("Linear", 1017, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1153,
+        *[1161, 493],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1017,
+    )
+    ops.geomTransf("Linear", 1018, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1154,
+        *[1162, 1163],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1018,
+    )
+    ops.geomTransf("Linear", 1019, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1155,
+        *[1163, 1164],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1019,
+    )
+    ops.geomTransf("Linear", 1020, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1156,
+        *[1164, 1165],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1020,
+    )
+    ops.geomTransf("Linear", 1021, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1157,
+        *[1165, 494],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1021,
+    )
+    ops.geomTransf("Linear", 1022, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1158,
+        *[1166, 1167],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1022,
+    )
+    ops.geomTransf("Linear", 1023, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1159,
+        *[1167, 1168],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1023,
+    )
+    ops.geomTransf("Linear", 1024, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1160,
+        *[1168, 1169],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1024,
+    )
+    ops.geomTransf("Linear", 1025, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1161,
+        *[1169, 495],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1025,
+    )
+    ops.geomTransf("Linear", 1026, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1162,
+        *[1170, 1171],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1026,
+    )
+    ops.geomTransf("Linear", 1027, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1163,
+        *[1171, 1172],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1027,
+    )
+    ops.geomTransf("Linear", 1028, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1164,
+        *[1172, 1173],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1028,
+    )
+    ops.geomTransf("Linear", 1029, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1165,
+        *[1173, 497],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1029,
+    )
+    ops.geomTransf("Linear", 1030, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1166,
+        *[1174, 1175],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1030,
+    )
+    ops.geomTransf("Linear", 1031, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1167,
+        *[1175, 1176],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1031,
+    )
+    ops.geomTransf("Linear", 1032, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1168,
+        *[1176, 1177],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1032,
+    )
+    ops.geomTransf("Linear", 1033, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1169,
+        *[1177, 498],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1033,
+    )
+    ops.geomTransf("Linear", 1034, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1170,
+        *[1178, 1179],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1034,
+    )
+    ops.geomTransf("Linear", 1035, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1171,
+        *[1179, 1180],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1035,
+    )
+    ops.geomTransf("Linear", 1036, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1172,
+        *[1180, 1181],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1036,
+    )
+    ops.geomTransf("Linear", 1037, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1173,
+        *[1181, 499],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1037,
+    )
+    ops.geomTransf("Linear", 1038, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1174,
+        *[1182, 1183],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1038,
+    )
+    ops.geomTransf("Linear", 1039, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1175,
+        *[1183, 1184],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1039,
+    )
+    ops.geomTransf("Linear", 1040, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1176,
+        *[1184, 1185],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1040,
+    )
+    ops.geomTransf("Linear", 1041, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1177,
+        *[1185, 500],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1041,
+    )
+    ops.geomTransf("Linear", 1042, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1178,
+        *[1186, 1187],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1042,
+    )
+    ops.geomTransf("Linear", 1043, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1179,
+        *[1187, 1188],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1043,
+    )
+    ops.geomTransf("Linear", 1044, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1180,
+        *[1188, 1189],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1044,
+    )
+    ops.geomTransf("Linear", 1045, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1181,
+        *[1189, 501],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1045,
+    )
+    ops.geomTransf("Linear", 1046, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1182,
+        *[1190, 1191],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1046,
+    )
+    ops.geomTransf("Linear", 1047, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1183,
+        *[1191, 1192],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1047,
+    )
+    ops.geomTransf("Linear", 1048, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1184,
+        *[1192, 1193],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1048,
+    )
+    ops.geomTransf("Linear", 1049, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1185,
+        *[1193, 502],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1049,
+    )
+    ops.geomTransf("Linear", 1050, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1186,
+        *[1194, 1195],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1050,
+    )
+    ops.geomTransf("Linear", 1051, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1187,
+        *[1195, 1196],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1051,
+    )
+    ops.geomTransf("Linear", 1052, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1188,
+        *[1196, 1197],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1052,
+    )
+    ops.geomTransf("Linear", 1053, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1189,
+        *[1197, 503],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1053,
+    )
+    ops.geomTransf("Linear", 1054, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1190,
+        *[1198, 1199],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1054,
+    )
+    ops.geomTransf("Linear", 1055, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1191,
+        *[1199, 1200],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1055,
+    )
+    ops.geomTransf("Linear", 1056, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1192,
+        *[1200, 1201],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1056,
+    )
+    ops.geomTransf("Linear", 1057, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1193,
+        *[1201, 504],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1057,
+    )
+    ops.geomTransf("Linear", 1058, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1194,
+        *[1202, 1203],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1058,
+    )
+    ops.geomTransf("Linear", 1059, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1195,
+        *[1203, 1204],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1059,
+    )
+    ops.geomTransf("Linear", 1060, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1196,
+        *[1204, 1205],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1060,
+    )
+    ops.geomTransf("Linear", 1061, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1197,
+        *[1205, 505],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1061,
+    )
+    ops.geomTransf("Linear", 1062, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1198,
+        *[1206, 1207],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1062,
+    )
+    ops.geomTransf("Linear", 1063, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1199,
+        *[1207, 1208],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1063,
+    )
+    ops.geomTransf("Linear", 1064, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1200,
+        *[1208, 1209],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1064,
+    )
+    ops.geomTransf("Linear", 1065, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1201,
+        *[1209, 506],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1065,
+    )
+    ops.geomTransf("Linear", 1066, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1202,
+        *[1210, 1211],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1066,
+    )
+    ops.geomTransf("Linear", 1067, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1203,
+        *[1211, 1212],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1067,
+    )
+    ops.geomTransf("Linear", 1068, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1204,
+        *[1212, 1213],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1068,
+    )
+    ops.geomTransf("Linear", 1069, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1205,
+        *[1213, 507],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1069,
+    )
+    ops.geomTransf("Linear", 1070, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1206,
+        *[1214, 1215],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1070,
+    )
+    ops.geomTransf("Linear", 1071, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1207,
+        *[1215, 1216],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1071,
+    )
+    ops.geomTransf("Linear", 1072, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1208,
+        *[1216, 1217],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1072,
+    )
+    ops.geomTransf("Linear", 1073, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1209,
+        *[1217, 508],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1073,
+    )
+    ops.geomTransf("Linear", 1074, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1210,
+        *[1218, 1219],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1074,
+    )
+    ops.geomTransf("Linear", 1075, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1211,
+        *[1219, 1220],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1075,
+    )
+    ops.geomTransf("Linear", 1076, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1212,
+        *[1220, 1221],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1076,
+    )
+    ops.geomTransf("Linear", 1077, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1213,
+        *[1221, 509],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1077,
+    )
+    ops.geomTransf("Linear", 1078, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1214,
+        *[1222, 1223],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1078,
+    )
+    ops.geomTransf("Linear", 1079, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1215,
+        *[1223, 1224],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1079,
+    )
+    ops.geomTransf("Linear", 1080, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1216,
+        *[1224, 1225],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1080,
+    )
+    ops.geomTransf("Linear", 1081, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1217,
+        *[1225, 510],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1081,
+    )
+    ops.geomTransf("Linear", 1082, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1218,
+        *[1226, 1227],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1082,
+    )
+    ops.geomTransf("Linear", 1083, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1219,
+        *[1227, 1228],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1083,
+    )
+    ops.geomTransf("Linear", 1084, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1220,
+        *[1228, 1229],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1084,
+    )
+    ops.geomTransf("Linear", 1085, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1221,
+        *[1229, 511],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1085,
+    )
+    ops.geomTransf("Linear", 1086, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1222,
+        *[1230, 1231],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1086,
+    )
+    ops.geomTransf("Linear", 1087, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1223,
+        *[1231, 1232],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1087,
+    )
+    ops.geomTransf("Linear", 1088, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1224,
+        *[1232, 1233],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1088,
+    )
+    ops.geomTransf("Linear", 1089, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1225,
+        *[1233, 512],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1089,
+    )
+    ops.geomTransf("Linear", 1090, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1226,
+        *[1234, 1235],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1090,
+    )
+    ops.geomTransf("Linear", 1091, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1227,
+        *[1235, 1236],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1091,
+    )
+    ops.geomTransf("Linear", 1092, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1228,
+        *[1236, 1237],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1092,
+    )
+    ops.geomTransf("Linear", 1093, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1229,
+        *[1237, 513],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1093,
+    )
+    ops.geomTransf("Linear", 1094, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1230,
+        *[1238, 1239],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1094,
+    )
+    ops.geomTransf("Linear", 1095, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1231,
+        *[1239, 1240],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1095,
+    )
+    ops.geomTransf("Linear", 1096, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1232,
+        *[1240, 1241],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1096,
+    )
+    ops.geomTransf("Linear", 1097, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1233,
+        *[1241, 515],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1097,
+    )
+    ops.geomTransf("Linear", 1098, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1234,
+        *[1242, 1243],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1098,
+    )
+    ops.geomTransf("Linear", 1099, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1235,
+        *[1243, 1244],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1099,
+    )
+    ops.geomTransf("Linear", 1100, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1236,
+        *[1244, 1245],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1100,
+    )
+    ops.geomTransf("Linear", 1101, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1237,
+        *[1245, 516],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1101,
+    )
+    ops.geomTransf("Linear", 1102, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1238,
+        *[1246, 1247],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1102,
+    )
+    ops.geomTransf("Linear", 1103, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1239,
+        *[1247, 1248],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1103,
+    )
+    ops.geomTransf("Linear", 1104, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1240,
+        *[1248, 1249],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1104,
+    )
+    ops.geomTransf("Linear", 1105, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1241,
+        *[1249, 517],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1105,
+    )
+    ops.geomTransf("Linear", 1106, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1242,
+        *[1250, 1251],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1106,
+    )
+    ops.geomTransf("Linear", 1107, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1243,
+        *[1251, 1252],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1107,
+    )
+    ops.geomTransf("Linear", 1108, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1244,
+        *[1252, 1253],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1108,
+    )
+    ops.geomTransf("Linear", 1109, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1245,
+        *[1253, 518],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1109,
+    )
+    ops.geomTransf("Linear", 1110, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1246,
+        *[1254, 1255],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1110,
+    )
+    ops.geomTransf("Linear", 1111, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1247,
+        *[1255, 1256],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1111,
+    )
+    ops.geomTransf("Linear", 1112, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1248,
+        *[1256, 1257],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1112,
+    )
+    ops.geomTransf("Linear", 1113, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1249,
+        *[1257, 519],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1113,
+    )
+    ops.geomTransf("Linear", 1114, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1250,
+        *[1258, 1259],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1114,
+    )
+    ops.geomTransf("Linear", 1115, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1251,
+        *[1259, 1260],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1115,
+    )
+    ops.geomTransf("Linear", 1116, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1252,
+        *[1260, 1261],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1116,
+    )
+    ops.geomTransf("Linear", 1117, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1253,
+        *[1261, 520],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1117,
+    )
+    ops.geomTransf("Linear", 1118, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1254,
+        *[1262, 1263],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1118,
+    )
+    ops.geomTransf("Linear", 1119, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1255,
+        *[1263, 1264],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1119,
+    )
+    ops.geomTransf("Linear", 1120, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1256,
+        *[1264, 1265],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1120,
+    )
+    ops.geomTransf("Linear", 1121, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1257,
+        *[1265, 521],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1121,
+    )
+    ops.geomTransf("Linear", 1122, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1258,
+        *[1266, 1267],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1122,
+    )
+    ops.geomTransf("Linear", 1123, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1259,
+        *[1267, 1268],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1123,
+    )
+    ops.geomTransf("Linear", 1124, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1260,
+        *[1268, 1269],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1124,
+    )
+    ops.geomTransf("Linear", 1125, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1261,
+        *[1269, 522],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1125,
+    )
+    ops.geomTransf("Linear", 1126, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1262,
+        *[1270, 1271],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1126,
+    )
+    ops.geomTransf("Linear", 1127, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1263,
+        *[1271, 1272],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1127,
+    )
+    ops.geomTransf("Linear", 1128, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1264,
+        *[1272, 1273],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1128,
+    )
+    ops.geomTransf("Linear", 1129, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1265,
+        *[1273, 523],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1129,
+    )
+    ops.geomTransf("Linear", 1130, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1266,
+        *[1274, 1275],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1130,
+    )
+    ops.geomTransf("Linear", 1131, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1267,
+        *[1275, 1276],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1131,
+    )
+    ops.geomTransf("Linear", 1132, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1268,
+        *[1276, 1277],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1132,
+    )
+    ops.geomTransf("Linear", 1133, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1269,
+        *[1277, 524],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1133,
+    )
+    ops.geomTransf("Linear", 1134, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1270,
+        *[1278, 1279],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1134,
+    )
+    ops.geomTransf("Linear", 1135, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1271,
+        *[1279, 1280],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1135,
+    )
+    ops.geomTransf("Linear", 1136, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1272,
+        *[1280, 1281],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1136,
+    )
+    ops.geomTransf("Linear", 1137, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1273,
+        *[1281, 525],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1137,
+    )
+    ops.geomTransf("Linear", 1138, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1274,
+        *[1282, 1283],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1138,
+    )
+    ops.geomTransf("Linear", 1139, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1275,
+        *[1283, 1284],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1139,
+    )
+    ops.geomTransf("Linear", 1140, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1276,
+        *[1284, 1285],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1140,
+    )
+    ops.geomTransf("Linear", 1141, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1277,
+        *[1285, 526],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1141,
+    )
+    ops.geomTransf("Linear", 1142, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1278,
+        *[1286, 1287],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1142,
+    )
+    ops.geomTransf("Linear", 1143, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1279,
+        *[1287, 1288],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1143,
+    )
+    ops.geomTransf("Linear", 1144, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1280,
+        *[1288, 1289],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1144,
+    )
+    ops.geomTransf("Linear", 1145, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1281,
+        *[1289, 527],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1145,
+    )
+    ops.geomTransf("Linear", 1146, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1282,
+        *[1290, 1291],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1146,
+    )
+    ops.geomTransf("Linear", 1147, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1283,
+        *[1291, 1292],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1147,
+    )
+    ops.geomTransf("Linear", 1148, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1284,
+        *[1292, 1293],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1148,
+    )
+    ops.geomTransf("Linear", 1149, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1285,
+        *[1293, 528],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1149,
+    )
+    ops.geomTransf("Linear", 1150, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1286,
+        *[1294, 1295],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1150,
+    )
+    ops.geomTransf("Linear", 1151, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1287,
+        *[1295, 1296],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1151,
+    )
+    ops.geomTransf("Linear", 1152, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1288,
+        *[1296, 1297],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1152,
+    )
+    ops.geomTransf("Linear", 1153, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1289,
+        *[1297, 529],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1153,
+    )
+    ops.geomTransf("Linear", 1154, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1290,
+        *[1298, 1299],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1154,
+    )
+    ops.geomTransf("Linear", 1155, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1291,
+        *[1299, 1300],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1155,
+    )
+    ops.geomTransf("Linear", 1156, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1292,
+        *[1300, 1301],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1156,
+    )
+    ops.geomTransf("Linear", 1157, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1293,
+        *[1301, 530],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1157,
+    )
+    ops.geomTransf("Linear", 1158, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1294,
+        *[1302, 1303],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1158,
+    )
+    ops.geomTransf("Linear", 1159, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1295,
+        *[1303, 1304],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1159,
+    )
+    ops.geomTransf("Linear", 1160, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1296,
+        *[1304, 1305],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1160,
+    )
+    ops.geomTransf("Linear", 1161, *[0.0, 0.0, 1.0])
+    ops.element(
+        "elasticBeamColumn",
+        1297,
+        *[1305, 531],
+        SecProps[6].A,
+        MatProps[1].E,
+        MatProps[1].G,
+        SecProps[6].Ixx,
+        SecProps[6].Iyy,
+        SecProps[6].Izz,
+        1161,
+    )
 
     # Fix the node.
     ops.fix(1, *[1, 1, 1, 1, 1, 1])
@@ -3512,177 +16282,1794 @@ def ArchBridge():
     ops.fix(7, *[1, 1, 1, 1, 1, 1])
     ops.fix(8, *[1, 1, 1, 1, 1, 1])
 
-
     # ElasLink element.
-
 
     # Elastic Link element when fixed.
     # Rigid material.
 
-    ops.uniaxialMaterial('Elastic', 1, 100000000.0)
-    ops.element('twoNodeLink', 1298, *[154, 370], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1299, *[155, 371], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1300, *[156, 372], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1301, *[157, 373], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1302, *[158, 374], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1303, *[159, 375], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1304, *[160, 376], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1305, *[161, 377], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1306, *[162, 378], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1307, *[163, 379], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1308, *[164, 380], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1309, *[165, 381], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1310, *[166, 382], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1311, *[167, 383], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1312, *[168, 384], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1313, *[169, 385], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1314, *[170, 386], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1315, *[171, 387], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1316, *[172, 388], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1317, *[173, 389], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1318, *[174, 390], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1319, *[175, 391], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1320, *[176, 392], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1321, *[177, 393], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1322, *[178, 394], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1323, *[179, 395], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1324, *[180, 396], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1325, *[181, 397], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1326, *[182, 398], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1327, *[183, 399], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1328, *[184, 400], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1329, *[185, 401], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1330, *[186, 402], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1331, *[187, 403], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1332, *[188, 404], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1333, *[189, 405], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1334, *[208, 406], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1335, *[209, 407], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1336, *[210, 408], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1337, *[211, 409], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1338, *[212, 410], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1339, *[213, 411], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1340, *[214, 412], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1341, *[215, 413], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1342, *[216, 414], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1343, *[217, 415], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1344, *[218, 416], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1345, *[219, 417], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1346, *[220, 418], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1347, *[221, 419], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1348, *[222, 420], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1349, *[223, 421], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1350, *[224, 422], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1351, *[225, 423], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1352, *[226, 424], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1353, *[227, 425], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1354, *[228, 426], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1355, *[229, 427], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1356, *[230, 428], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1357, *[231, 429], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1358, *[232, 430], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1359, *[233, 431], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1360, *[234, 432], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1361, *[235, 433], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1362, *[236, 434], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1363, *[237, 435], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1364, *[238, 436], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1365, *[239, 437], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1366, *[240, 438], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1367, *[241, 439], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1368, *[242, 440], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1369, *[243, 441], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1370, *[244, 442], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1371, *[245, 443], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1372, *[246, 444], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1373, *[247, 445], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1374, *[248, 446], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1375, *[249, 447], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1376, *[250, 448], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1377, *[251, 449], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1378, *[252, 450], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1379, *[253, 451], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1380, *[254, 452], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1381, *[255, 453], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1382, *[256, 454], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1383, *[257, 455], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1384, *[258, 456], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1385, *[259, 457], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1386, *[260, 458], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1387, *[261, 459], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1388, *[262, 460], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1389, *[263, 461], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1390, *[264, 462], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1391, *[265, 463], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1392, *[266, 464], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1393, *[267, 465], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1394, *[268, 466], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1395, *[269, 467], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1396, *[270, 468], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1397, *[271, 469], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1398, *[272, 470], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1399, *[273, 471], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1400, *[274, 472], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1401, *[275, 473], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1402, *[276, 474], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1403, *[277, 475], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1404, *[278, 476], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1405, *[279, 477], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1406, *[280, 478], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1407, *[281, 479], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1408, *[282, 480], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1409, *[283, 481], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1410, *[284, 482], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1411, *[285, 483], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1412, *[286, 484], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1413, *[287, 485], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1414, *[288, 486], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1415, *[289, 487], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1416, *[290, 488], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1417, *[291, 489], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1418, *[292, 490], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1419, *[293, 491], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1420, *[294, 492], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1421, *[295, 493], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1422, *[296, 494], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1423, *[297, 495], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1424, *[316, 496], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1425, *[317, 497], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1426, *[318, 498], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1427, *[319, 499], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1428, *[320, 500], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1429, *[321, 501], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1430, *[322, 502], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1431, *[323, 503], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1432, *[324, 504], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1433, *[325, 505], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1434, *[326, 506], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1435, *[327, 507], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1436, *[328, 508], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1437, *[329, 509], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1438, *[330, 510], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1439, *[331, 511], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1440, *[332, 512], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1441, *[333, 513], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1442, *[334, 514], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1443, *[335, 515], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1444, *[336, 516], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1445, *[337, 517], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1446, *[338, 518], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1447, *[339, 519], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1448, *[340, 520], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1449, *[341, 521], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1450, *[342, 522], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1451, *[343, 523], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1452, *[344, 524], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1453, *[345, 525], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1454, *[346, 526], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1455, *[347, 527], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1456, *[348, 528], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1457, *[349, 529], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1458, *[350, 530], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-    ops.element('twoNodeLink', 1459, *[351, 531], '-mat', *[1, 1, 1, 1, 1, 1], '-dir', *[1, 2, 3, 4, 5, 6], '-orient', *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0])
-
+    ops.uniaxialMaterial("Elastic", 1, 100000000.0)
+    ops.element(
+        "twoNodeLink",
+        1298,
+        *[154, 370],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1299,
+        *[155, 371],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1300,
+        *[156, 372],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1301,
+        *[157, 373],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1302,
+        *[158, 374],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1303,
+        *[159, 375],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1304,
+        *[160, 376],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1305,
+        *[161, 377],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1306,
+        *[162, 378],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1307,
+        *[163, 379],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1308,
+        *[164, 380],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1309,
+        *[165, 381],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1310,
+        *[166, 382],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1311,
+        *[167, 383],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1312,
+        *[168, 384],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1313,
+        *[169, 385],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1314,
+        *[170, 386],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1315,
+        *[171, 387],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1316,
+        *[172, 388],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1317,
+        *[173, 389],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1318,
+        *[174, 390],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1319,
+        *[175, 391],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1320,
+        *[176, 392],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1321,
+        *[177, 393],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1322,
+        *[178, 394],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1323,
+        *[179, 395],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1324,
+        *[180, 396],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1325,
+        *[181, 397],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1326,
+        *[182, 398],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1327,
+        *[183, 399],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1328,
+        *[184, 400],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1329,
+        *[185, 401],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1330,
+        *[186, 402],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1331,
+        *[187, 403],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1332,
+        *[188, 404],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1333,
+        *[189, 405],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1334,
+        *[208, 406],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1335,
+        *[209, 407],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1336,
+        *[210, 408],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1337,
+        *[211, 409],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1338,
+        *[212, 410],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1339,
+        *[213, 411],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1340,
+        *[214, 412],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1341,
+        *[215, 413],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1342,
+        *[216, 414],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1343,
+        *[217, 415],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1344,
+        *[218, 416],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1345,
+        *[219, 417],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1346,
+        *[220, 418],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1347,
+        *[221, 419],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1348,
+        *[222, 420],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1349,
+        *[223, 421],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1350,
+        *[224, 422],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1351,
+        *[225, 423],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1352,
+        *[226, 424],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1353,
+        *[227, 425],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1354,
+        *[228, 426],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1355,
+        *[229, 427],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1356,
+        *[230, 428],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1357,
+        *[231, 429],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1358,
+        *[232, 430],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1359,
+        *[233, 431],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1360,
+        *[234, 432],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1361,
+        *[235, 433],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1362,
+        *[236, 434],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1363,
+        *[237, 435],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1364,
+        *[238, 436],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1365,
+        *[239, 437],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1366,
+        *[240, 438],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1367,
+        *[241, 439],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1368,
+        *[242, 440],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1369,
+        *[243, 441],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1370,
+        *[244, 442],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1371,
+        *[245, 443],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1372,
+        *[246, 444],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1373,
+        *[247, 445],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1374,
+        *[248, 446],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1375,
+        *[249, 447],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1376,
+        *[250, 448],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1377,
+        *[251, 449],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1378,
+        *[252, 450],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1379,
+        *[253, 451],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1380,
+        *[254, 452],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1381,
+        *[255, 453],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1382,
+        *[256, 454],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1383,
+        *[257, 455],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1384,
+        *[258, 456],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1385,
+        *[259, 457],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1386,
+        *[260, 458],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1387,
+        *[261, 459],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1388,
+        *[262, 460],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1389,
+        *[263, 461],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1390,
+        *[264, 462],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1391,
+        *[265, 463],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1392,
+        *[266, 464],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1393,
+        *[267, 465],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1394,
+        *[268, 466],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1395,
+        *[269, 467],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1396,
+        *[270, 468],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1397,
+        *[271, 469],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1398,
+        *[272, 470],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1399,
+        *[273, 471],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1400,
+        *[274, 472],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1401,
+        *[275, 473],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1402,
+        *[276, 474],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1403,
+        *[277, 475],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1404,
+        *[278, 476],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1405,
+        *[279, 477],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1406,
+        *[280, 478],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1407,
+        *[281, 479],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1408,
+        *[282, 480],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1409,
+        *[283, 481],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1410,
+        *[284, 482],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1411,
+        *[285, 483],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1412,
+        *[286, 484],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1413,
+        *[287, 485],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1414,
+        *[288, 486],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1415,
+        *[289, 487],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1416,
+        *[290, 488],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1417,
+        *[291, 489],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1418,
+        *[292, 490],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1419,
+        *[293, 491],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1420,
+        *[294, 492],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1421,
+        *[295, 493],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1422,
+        *[296, 494],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1423,
+        *[297, 495],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1424,
+        *[316, 496],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1425,
+        *[317, 497],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1426,
+        *[318, 498],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1427,
+        *[319, 499],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1428,
+        *[320, 500],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1429,
+        *[321, 501],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1430,
+        *[322, 502],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1431,
+        *[323, 503],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1432,
+        *[324, 504],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1433,
+        *[325, 505],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1434,
+        *[326, 506],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1435,
+        *[327, 507],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1436,
+        *[328, 508],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1437,
+        *[329, 509],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1438,
+        *[330, 510],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1439,
+        *[331, 511],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1440,
+        *[332, 512],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1441,
+        *[333, 513],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1442,
+        *[334, 514],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1443,
+        *[335, 515],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1444,
+        *[336, 516],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1445,
+        *[337, 517],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1446,
+        *[338, 518],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1447,
+        *[339, 519],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1448,
+        *[340, 520],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1449,
+        *[341, 521],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1450,
+        *[342, 522],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1451,
+        *[343, 523],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1452,
+        *[344, 524],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1453,
+        *[345, 525],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1454,
+        *[346, 526],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1455,
+        *[347, 527],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1456,
+        *[348, 528],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1457,
+        *[349, 529],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1458,
+        *[350, 530],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
+    ops.element(
+        "twoNodeLink",
+        1459,
+        *[351, 531],
+        "-mat",
+        *[1, 1, 1, 1, 1, 1],
+        "-dir",
+        *[1, 2, 3, 4, 5, 6],
+        "-orient",
+        *[0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+    )
 
     # Set the mass at a node.
     ops.mass(1, *[21.4766, 21.4766, 21.4766])

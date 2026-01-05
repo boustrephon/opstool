@@ -16,14 +16,12 @@
 
       .. div:: sd-font-weight-bold
          
-         Making structural simulation with OpenSees and OpenSeesPy effortless and straightforward
+         Making structural and geotechnical systems simulation with OpenSees and OpenSeesPy effortless and straightforward
 
       .. div:: sd-fs-5 sd-font-italic
 
          Welcome to the documentation for opstool, a thoughtfully crafted preprocessing and postprocessing package 
          designed for OpenSeesPy. 
-         This tool simplifies the creation, analysis, and visualization of structural models and results, 
-         greatly enhancing both the efficiency and user experience of OpenSeesPy.
 
       .. grid:: 1 1 2 2
          :gutter: 2 2 3 3
@@ -73,9 +71,77 @@
 
 ----------------
 
+
+Design Philosophy of opstool
+-------------------------------
+
+.. grid:: 2
+
+    .. grid-item-card:: Philosophy
+      
+         - OpenSeesPy as the core analysis and solution engine
+         - Modular, end-to-end workflow
+         - xarray-driven data organization
+         - Unified element-type classification
+         - Consistent response handling across elements
+         - Interchangeable visualization backends
+         - Minimal intrusion into user scripts
+
+    .. grid-item-card::  Architecture diagram of the opstool package
+
+         .. figure:: _static/opstool-architecture.png
+            :width: 400px
+            :align: center
+
+``opstool`` is a modular, data-oriented framework built on ``OpenSeesPy`` (It can also be a version compiled by yourself) to support the complete structural analysis workflow, including *pre-processing, analysis, post-processing, and visualization.*
+
+*OpenSeesPy is used strictly as the analysis and solution engine*, while opstool focuses on structuring and managing analysis data. 
+Simulation results are organized using xarray-based labeled N-dimensional arrays, enabling clear, consistent handling of time-dependent and high-dimensional responses.
+
+A key design choice is that most OpenSees element types are systematically classified (e.g., nodal, truss, frame, shell, plane, and solid elements). 
+This classification allows responses from different element formulations to be stored, queried, and visualized in a unified manner, independent of the underlying element implementation.
+
+By separating numerical solving from data organization and visualization, opstool enhances usability and extensibility while preserving the flexibility of script-based OpenSeesPy modeling.
+
 .. note::
 
    **For v1.0.20 and earlier document versions**  See `https://opstool.readthedocs.io/en/v1.0.20/ <https://opstool.readthedocs.io/en/v1.0.20/>`_.
+
+
+Citing opstool
+---------------
+
+If you find ``opstool`` useful in your research or projects, please consider citing the following publication:
+
+.. grid:: 2
+
+    .. grid-item-card::
+
+         .. _cards-clickable:
+
+         .. card:: :octicon:`project-roadmap;1.5em;sd-mr-1 fill-primary` OPSTOOL Publication
+            :link: https://www.sciencedirect.com/science/article/pii/S2352711025000937
+
+            Yexiang Yan and Yazhou Xie. *"opstool: A Python library for OpenSeesPy analysis automation, streamlined pre-and post-processing, and enhanced data visualization."* SoftwareX 30 (2025): 102126. DOI: `https://doi.org/10.1016/j.softx.2025.102126 <https://www.sciencedirect.com/science/article/pii/S2352711025000937>`_.
+
+
+    .. grid-item-card::  Bibtex entry
+
+         .. code-block:: bibtex
+
+            @article{YAN2025102126,
+               title = {opstool: A Python library for OpenSeesPy analysis automation, streamlined pre- and post-processing, and enhanced data visualization},
+               author = {Yexiang Yan and Yazhou Xie},
+               journal = {SoftwareX},
+               volume = {30},
+               pages = {102126},
+               year = {2025},
+               issn = {2352-7110},
+               doi = {https://doi.org/10.1016/j.softx.2025.102126},
+               }
+
+Features Overview
+-------------------
 
 .. grid:: 1 1 2 2
    :gutter: 2
@@ -115,37 +181,23 @@
       - :octicon:`checkbox;1.0em;sd-mr-1 fill-primary` Moment-Curvature Analysis of Sections
       - :octicon:`checkbox;1.0em;sd-mr-1 fill-primary` Linar Buckling Analysis
 
-----------------
+---------------------------------------------------
 
-Citing OPSTOOL
----------------
+Why Choose opstool?
+--------------------
 
-.. _cards-clickable:
+- **Efficiency**: Streamlines complex workflows, reducing time spent on repetitive tasks.
+- **Flexibility**: Provides nearly identical interfaces for different visualization engines.
+- **Accessibility**: Makes advanced structural analysis tools like OpenSeesPy more approachable to users of all levels.
 
-OPSTOOL was published in
-
-.. card:: :octicon:`project-roadmap;1.5em;sd-mr-1 fill-primary` OPSTOOL Publication
-    :link: https://www.sciencedirect.com/science/article/pii/S2352711025000937
-
-    Yexiang Yan and Yazhou Xie. *"opstool: A Python library for OpenSeesPy analysis automation, streamlined pre-and post-processing, and enhanced data visualization."* SoftwareX 30 (2025): 102126. DOI: `https://doi.org/10.1016/j.softx.2025.102126 <https://www.sciencedirect.com/science/article/pii/S2352711025000937>`_.
-
-
-If you used OPSTOOL in your scientific publication, we would very appreciated if you include the adequate citation:
+``opstool`` is actively evolving, with continuous additions of new features planned for the future.
+With ``opstool``, you can focus on what matters most: 
+understanding and solving your structural engineering challenges. 
+Whether you are building models, visualizing results, or interpreting data, 
+``opstool`` is your go-to solution for OpenSeesPy workflows.
 
 
-  Bibtex entry::
-
-    @article{YAN2025102126,
-      title = {opstool: A Python library for OpenSeesPy analysis automation, streamlined pre- and post-processing, and enhanced data visualization},
-      author = {Yexiang Yan and Yazhou Xie},
-      journal = {SoftwareX},
-      volume = {30},
-      pages = {102126},
-      year = {2025},
-      issn = {2352-7110},
-      doi = {https://doi.org/10.1016/j.softx.2025.102126},
-      }
-
+                                                                                                       
 Contents
 --------
 
@@ -162,15 +214,15 @@ Contents
    :caption: User Guide
 
    src/pre/index
-   src/post/index
-   auto_examples/vis-guide/index
+   src/post/index.rst
+   _sphinx_gallery_examples/vis-guide/index
    src/analysis/index
 
 .. toctree::
    :maxdepth: 1
    :caption: Examples
 
-   auto_examples/examples/index
+   _sphinx_gallery_examples/examples/index
 
 
 .. toctree::
@@ -187,24 +239,12 @@ Contents
    :maxdepth: 1
    :caption: Theory Reference
 
-   src/theory/index.rst
+   src/theory/index.rst        
 
+Acknowledgements
+-----------------
+I sincerely thank `EOS <https://www.eurasianopensees.com/>`_ for the *Honorable Mention* in *Pre/Post-processing & Implementations* at the *1st EOS OpenSees Research and Innovation Awards*.
 
+`🎉 Announcing the Winners of the 1st EOS OpenSees Research and Innovation Awards! 🎉 <https://www.linkedin.com/feed/update/urn:li:activity:7398770387381219328/>`_
 
-Why Choose opstool?
---------------------
-
-- **Efficiency**: Streamlines complex workflows, reducing time spent on repetitive tasks.
-- **Flexibility**: Provides nearly identical interfaces for different visualization engines.
-- **Accessibility**: Makes advanced structural analysis tools like OpenSeesPy more approachable to users of all levels.
-
-``opstool`` is actively evolving, with continuous additions of new features planned for the future.
-With ``opstool``, you can focus on what matters most: 
-understanding and solving your structural engineering challenges. 
-Whether you are building models, visualizing results, or interpreting data, 
-``opstool`` is your go-to solution for OpenSeesPy workflows.
-
-                                                                                                       
-                                                                                                                  
-
-:octicon:`copilot;1.25em;sd-mr-1 fill-primary` This document theme is adapted from `sphinx-needs <https://github.com/useblocks/sphinx-needs/>`__ with modifications. We sincerely thank the original author(s) for their contribution.`
+.. :octicon:`copilot;1.25em;sd-mr-1 fill-primary` This document theme is adapted from `sphinx-needs <https://github.com/useblocks/sphinx-needs/>`__ with modifications. We sincerely thank the original author(s) for their contribution.`

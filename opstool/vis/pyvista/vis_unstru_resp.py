@@ -4,15 +4,14 @@ from typing import Optional, Union
 import numpy as np
 import pyvista as pv
 
-from ...post import loadODB
 from .._plot_unstru_resp_base import PlotUnstruResponseBase
 from .plot_resp_base import PlotResponsePyvistaBase
 from .plot_utils import PLOT_ARGS, _plot_unstru_cmap, _update_point_label_actor
 
 
 class PlotUnstruResponse(PlotUnstruResponseBase, PlotResponsePyvistaBase):
-    def __init__(self, model_info_steps, resp_step, model_update, nodal_resp_steps=None):
-        super().__init__(model_info_steps, resp_step, model_update, nodal_resp_steps=nodal_resp_steps)
+    def __init__(self, odb_tag: Union[int, str], lazy_load: bool = False):
+        super().__init__(odb_tag, lazy_load=lazy_load)
 
     def _make_title(self, scalars, step, time):
         if self.resp_type.lower() in ["stressmeasures", "stressmeasuresatnodes"]:
@@ -39,20 +38,21 @@ class PlotUnstruResponse(PlotUnstruResponseBase, PlotResponsePyvistaBase):
             "time": time,
         }
         lines = [
-            f"* {info['title']} Responses",
-            f"* {info['resp_type']}",
-            f"* {info['dof']} (DOF)",
-            f"{info['min']:.3E} (min)",
-            f"{info['max']:.3E} (max)",
             f"{info['step']} (step)",
             f"{info['time']:.3f} (time)",
+            f"{info['min']:.3E} (min)",
+            f"{info['max']:.3E} (max)",
+            "",
+            f"{info['title']} Responses",
+            f"{info['resp_type']}",
+            f"{info['dof']} (DOF)",
         ]
-        if self.unit_symbol:
-            info["unit"] = self.unit_symbol
-            lines.insert(3, f"{info['unit']} (unit)")
         if self.fiber_point and "Sec" not in resp_type and self.ele_type.lower() == "shell":
             info["fiber_point"] = self.fiber_point
-            lines.insert(3, f"* {info['fiber_point']} (Fiber)")
+            lines.append(f"{info['fiber_point']} (Fiber)")
+        if self.unit_symbol:
+            info["unit"] = self.unit_symbol
+            lines.append(f"{info['unit']} (unit)")
 
         max_len = max(len(line) for line in lines)
         padded_lines = [line.rjust(max_len) for line in lines]
@@ -139,6 +139,7 @@ class PlotUnstruResponse(PlotUnstruResponseBase, PlotResponsePyvistaBase):
                 max_min_label_grid = plotter.add_point_labels(
                     ps,
                     labels,
+                    show_points=False,
                     point_size=self.pargs.point_size + 10,
                     font_size=self.pargs.font_size + 5,
                     shape_color="#c0fb2d",
@@ -402,6 +403,7 @@ def plot_unstruct_responses(
     cpos: str = "iso",
     show_model: bool = True,
     show_max_min: bool = True,
+    lazy_load: bool = False,
 ) -> pv.Plotter:
     """Visualizing unstructured element (Shell, Plane, Brick) Response.
 
@@ -519,6 +521,12 @@ def plot_unstruct_responses(
         Whether to plot the all model or not.
     show_max_min: bool, default: True
         Whether to show the maximum and minimum response value labels.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -533,15 +541,13 @@ def plot_unstruct_responses(
     `Plotter.export_html <https://docs.pyvista.org/api/plotting/_autosummary/pyvista.plotter.export_html#pyvista.Plotter.export_html>`_.
     to export this plotter as an interactive scene to an HTML file.
     """
-    model_info_steps, model_update, resp_step = loadODB(odb_tag, resp_type=ele_type)
-    _, _, node_resp_steps = loadODB(odb_tag, resp_type="Nodal", verbose=False)
     plotter = pv.Plotter(
         notebook=PLOT_ARGS.notebook,
         line_smoothing=PLOT_ARGS.line_smoothing,
         polygon_smoothing=PLOT_ARGS.polygon_smoothing,
         off_screen=PLOT_ARGS.off_screen,
     )
-    plotbase = PlotUnstruResponse(model_info_steps, resp_step, model_update, nodal_resp_steps=node_resp_steps)
+    plotbase = PlotUnstruResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.refactor_resp_step(
         ele_tags=ele_tags, ele_type=ele_type, resp_type=resp_type, component=resp_dof, fiber_point=shell_fiber_loc
@@ -604,6 +610,7 @@ def plot_unstruct_responses_animation(
     cpos: str = "iso",
     show_model: bool = True,
     show_max_min: bool = True,
+    lazy_load: bool = False,
 ) -> pv.Plotter:
     """Unstructured element (Shell, Plane, Brick) response animation.
 
@@ -720,6 +727,12 @@ def plot_unstruct_responses_animation(
         Whether to plot the all model or not.
     show_max_min: bool, default: True
         Whether to show the maximum and minimum response value labels.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -736,15 +749,13 @@ def plot_unstruct_responses_animation(
     """
     if savefig is None:
         savefig = f"{ele_type.capitalize()}RespAnimation.gif"
-    model_info_steps, model_update, resp_step = loadODB(odb_tag, resp_type=ele_type)
-    _, _, node_resp_steps = loadODB(odb_tag, resp_type="Nodal", verbose=False)
     plotter = pv.Plotter(
         notebook=PLOT_ARGS.notebook,
         line_smoothing=PLOT_ARGS.line_smoothing,
         polygon_smoothing=PLOT_ARGS.polygon_smoothing,
         off_screen=off_screen,
     )
-    plotbase = PlotUnstruResponse(model_info_steps, resp_step, model_update, nodal_resp_steps=node_resp_steps)
+    plotbase = PlotUnstruResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.refactor_resp_step(
         ele_tags=ele_tags, ele_type=ele_type, resp_type=resp_type, component=resp_dof, fiber_point=shell_fiber_loc
@@ -780,6 +791,7 @@ def get_unstruct_responses_dataset(
     resp_dof: str = "MXX",
     shell_fiber_loc: Optional[Union[str, int]] = "top",
     defo_scale: Union[float, int, bool] = 0.0,
+    lazy_load: bool = False,
 ) -> pv.UnstructuredGrid:
     """Get unstructured element (Shell, Plane, Brick) Dataset (Pyvista).
     Data Model in PyVista can be found at `PyVista Data Model <https://docs.pyvista.org/user-guide/data_model>`_.
@@ -860,6 +872,12 @@ def get_unstruct_responses_dataset(
         If set to False or 0.0, the deformed shape will not be scaled (original deformation).
         If set to True or "auto", the deformed shape will be scaled by the default scale (i.e., 1/20 of the maximum model dimensions).
         If set to a float or int, it will scale the deformed shape by that factor.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -869,9 +887,7 @@ def get_unstruct_responses_dataset(
 
         Data Model in PyVista can be found at `PyVista Data Model <https://docs.pyvista.org/user-guide/data_model>`_.
     """
-    model_info_steps, model_update, resp_step = loadODB(odb_tag, resp_type=ele_type)
-    _, _, node_resp_steps = loadODB(odb_tag, resp_type="Nodal", verbose=False)
-    plotbase = PlotUnstruResponse(model_info_steps, resp_step, model_update, nodal_resp_steps=node_resp_steps)
+    plotbase = PlotUnstruResponse(odb_tag, lazy_load=lazy_load)
     plotbase.refactor_resp_step(
         ele_tags=ele_tags, ele_type=ele_type, resp_type=resp_type, component=resp_dof, fiber_point=shell_fiber_loc
     )

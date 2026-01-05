@@ -1,4 +1,6 @@
-import openseespy.opensees as ops
+from .._util_funcs import get_opensees_module
+
+ops = get_opensees_module()
 
 
 def Frame3D2():

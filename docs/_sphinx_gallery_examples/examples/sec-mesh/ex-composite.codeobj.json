@@ -1,0 +1,640 @@
+{
+ "Ec": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "Es": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "Nuc": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "Nus": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "SEC_MESH": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh"
+  }
+ ],
+ "SEC_MESH.add_patch_group": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.add_patch_group"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.add_patch_group"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.add_patch_group"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.add_patch_group"
+  }
+ ],
+ "SEC_MESH.add_rebar_line": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.add_rebar_line"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.add_rebar_line"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.add_rebar_line"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.add_rebar_line"
+  }
+ ],
+ "SEC_MESH.centring": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.centring"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.centring"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.centring"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.centring"
+  }
+ ],
+ "SEC_MESH.get_frame_props": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.get_frame_props"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.get_frame_props"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.get_frame_props"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.get_frame_props"
+  }
+ ],
+ "SEC_MESH.get_sec_props": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.get_sec_props"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.get_sec_props"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.get_sec_props"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.get_sec_props"
+  }
+ ],
+ "SEC_MESH.mesh": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.mesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.mesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.mesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.mesh"
+  }
+ ],
+ "SEC_MESH.set_mesh_color": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.set_mesh_color"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.set_mesh_color"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.set_mesh_color"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.set_mesh_color"
+  }
+ ],
+ "SEC_MESH.set_mesh_size": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.set_mesh_size"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.set_mesh_size"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.set_mesh_size"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.set_mesh_size"
+  }
+ ],
+ "SEC_MESH.set_ops_mat_tag": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.set_ops_mat_tag"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.set_ops_mat_tag"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.set_ops_mat_tag"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.set_ops_mat_tag"
+  }
+ ],
+ "SEC_MESH.view": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.view"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh.view"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh.view"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh.view"
+  }
+ ],
+ "bone_geo": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry"
+  }
+ ],
+ "bonelines": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "conc_mat": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Material"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Material"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Material"
+  }
+ ],
+ "core_geo": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry"
+  }
+ ],
+ "cover_geo": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.geometry",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Geometry"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Geometry"
+  }
+ ],
+ "coverlines": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "frame_props": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "opst.pre.section.FiberSecMesh": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre.section.sec_mesh",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool.pre",
+   "module_short": "opstool.pre",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "opstool",
+   "module_short": "opstool",
+   "name": "FiberSecMesh"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "FiberSecMesh"
+  }
+ ],
+ "opst.pre.section.create_material": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "create_material"
+  }
+ ],
+ "opst.pre.section.create_polygon_patch": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "create_polygon_patch"
+  }
+ ],
+ "opst.pre.section.offset": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "opstool.pre.section",
+   "module_short": "opstool.pre.section",
+   "name": "offset"
+  }
+ ],
+ "outlines": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "pho_c": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "pho_s": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "float"
+  }
+ ],
+ "props": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "rebar_lines1": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "list"
+  }
+ ],
+ "steel_mat": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Material"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties.pre",
+   "module_short": "sectionproperties.pre",
+   "name": "Material"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "sectionproperties",
+   "module_short": "sectionproperties",
+   "name": "Material"
+  }
+ ]
+}

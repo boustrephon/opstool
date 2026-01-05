@@ -280,7 +280,7 @@ class UnitSystem:
 
     def _get_cache(self):
         """安全地获取缓存字典，避免递归调用"""
-        return object.__getattribute__(self, '_cache')
+        return object.__getattribute__(self, "_cache")
 
     def __getattr__(self, expr: str):
         cache = self._get_cache()

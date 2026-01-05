@@ -60,37 +60,53 @@ class _PLOT_ARGS_TYPES2(TypedDict, total=False):
     cmap_model: list | None | str  # or str for named colorscale, default is None
 
 
-PLOT_ARGS = SimpleNamespace(
-    point_size=3.0,
-    line_width=5.0,
-    theme="plotly",
-    scale_factor=1 / 15,
-    show_mesh_edges=True,
-    mesh_edge_color="black",
-    mesh_edge_width=1.0,
-    mesh_opacity=1.0,
-    font_size=15,
-    title_font_size=18,
-    font_family="Arial, sans-serif",
-    window_size=(None, None),
+PLOT_ARGS_DEFAULT = {
+    "point_size": 3.0,
+    "line_width": 5.0,
+    "theme": "plotly",
+    "scale_factor": 1 / 15,
+    "show_mesh_edges": True,
+    "mesh_edge_color": "black",
+    "mesh_edge_width": 1.0,
+    "mesh_opacity": 1.0,
+    "font_size": 15,
+    "title_font_size": 18,
+    "font_family": "Arial, sans-serif",
+    "window_size": (None, None),
     # ------------------------------
-    color_point="#580f41",
-    color_frame="#0652ff",
-    color_beam="#0652ff",
-    color_truss="#FF8C00",
-    color_link="#39FF14",
-    color_shell="#76b852",
-    color_plane="#00FFFF",
-    color_brick="#FF4500",
-    color_tet="#FFFF33",
-    color_joint="#7FFF00",
-    color_contact="#ff9408",
-    color_pfem="#8080FF",
-    color_constraint="#FF1493",
-    color_bc="#15b01a",
-    cmap=default_cmap,  # "plasma",
-    cmap_model=None,
-)
+    "color_point": "#580f41",
+    "color_frame": "#0652ff",
+    "color_beam": "#0652ff",
+    "color_truss": "#FF8C00",
+    "color_link": "#39FF14",
+    "color_shell": "#76b852",
+    "color_plane": "#00FFFF",
+    "color_brick": "#FF4500",
+    "color_tet": "#FFFF33",
+    "color_joint": "#7FFF00",
+    "color_contact": "#ff9408",
+    "color_pfem": "#8080FF",
+    "color_constraint": "#FF1493",
+    "color_bc": "#15b01a",
+    "cmap": default_cmap,  # "plasma",
+    "cmap_model": None,
+}
+
+PLOT_ARGS = SimpleNamespace()
+for key, value in PLOT_ARGS_DEFAULT.items():
+    setattr(PLOT_ARGS, key, value)
+
+
+def reset_plot_props():
+    """
+    Reset ploting properties to default values.
+
+    Returns
+    -------
+    None
+    """
+    for key, value in PLOT_ARGS_DEFAULT.items():
+        setattr(PLOT_ARGS, key, value)
 
 
 def set_plot_props(**kwargs: Unpack[_PLOT_ARGS_TYPES1]):

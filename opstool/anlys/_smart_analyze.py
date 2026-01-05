@@ -10,7 +10,9 @@ from rich.console import Console
 from tqdm import tqdm
 from typing_extensions import Literal, Unpack
 
-from ..utils import get_random_color, on_notebook
+from ..utils import get_opensees_module, get_random_color, on_notebook
+
+ops = get_opensees_module()
 
 LOG_FILE = ".SmartAnalyze-OpenSees.log"
 ON_NOTEBOOK = on_notebook()

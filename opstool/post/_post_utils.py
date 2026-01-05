@@ -65,12 +65,12 @@ class Beam3DDispInterpolator:
         self.ez = np.asarray(self.ez, dtype=float)
 
         if self.node_coords.ndim != 2 or self.node_coords.shape[1] != 3:
-            raise ValueError("node_coords must have shape (nNodes, 3).")
+            raise ValueError("node_coords must have shape (nNodes, 3).")  # noqa: TRY003
         if self.conn.ndim != 2 or self.conn.shape[1] != 2:
-            raise ValueError("conn must have shape (nEles, 2).")
+            raise ValueError("conn must have shape (nEles, 2).")  # noqa: TRY003
         nEles = self.conn.shape[0]
         if self.ex.shape != (nEles, 3) or self.ey.shape != (nEles, 3) or self.ez.shape != (nEles, 3):
-            raise ValueError("ex/ey/ez must have shape (nEles, 3).")
+            raise ValueError("ex/ey/ez must have shape (nEles, 3).")  # noqa: TRY003
 
         self._grid_cache = {}
         self._build_geometry_cache()
@@ -99,9 +99,9 @@ class Beam3DDispInterpolator:
         """
         g = np.asarray(nodal_global, dtype=float)
         if g.shape[-1] < 6:
-            raise ValueError("nodal_global last dim must be >= 6.")
+            raise ValueError("nodal_global last dim must be >= 6.")  # noqa: TRY003
         if g.shape[-2] != self.node_coords.shape[0]:
-            raise ValueError("nodal_global must have nNodes matching node_coords.")
+            raise ValueError("nodal_global must have nNodes matching node_coords.")  # noqa: TRY003
 
         ni = self._conn0[:, 0]
         nj = self._conn0[:, 1]
@@ -113,7 +113,7 @@ class Beam3DDispInterpolator:
             di_g = np.nan_to_num(di_g, nan=0.0)
             dj_g = np.nan_to_num(dj_g, nan=0.0)
         elif nan_policy != "propagate":
-            raise ValueError("nan_policy must be 'ignore' or 'propagate'.")
+            raise ValueError("nan_policy must be 'ignore' or 'propagate'.")  # noqa: TRY003
 
         invalid = self._invalid_axes  # (nEles,)
         if not np.any(invalid):
@@ -162,13 +162,13 @@ class Beam3DDispInterpolator:
         """
         el = np.asarray(end_local, dtype=float)
         if el.shape[-1] != 12:
-            raise ValueError("end_local last dim must be 12.")
+            raise ValueError("end_local last dim must be 12.")  # noqa: TRY003
         if el.shape[-2] != self.conn.shape[0]:
-            raise ValueError("end_local must have nEles matching conn.")
+            raise ValueError("end_local must have nEles matching conn.")  # noqa: TRY003
         if npts_per_ele < 2:
-            raise ValueError("npts_per_ele must be >= 2.")
+            raise ValueError("npts_per_ele must be >= 2.")  # noqa: TRY003
         if nan_policy not in ("ignore", "propagate"):
-            raise ValueError("nan_policy must be 'ignore' or 'propagate'.")
+            raise ValueError("nan_policy must be 'ignore' or 'propagate'.")  # noqa: TRY003
 
         nEles = self.conn.shape[0]
         m = int(npts_per_ele)
@@ -293,7 +293,7 @@ class Beam3DDispInterpolator:
         dX = Xj - Xi
         L = np.linalg.norm(dX, axis=1)
         if np.any(L <= 0):
-            raise ValueError("Found zero-length element(s).")
+            raise ValueError("Found zero-length element(s).")  # noqa: TRY003
 
         self._Xi = Xi
         self._dX = dX
@@ -516,7 +516,9 @@ class Beam3DDispInterpolator:
         return out
 
 
+# -------------------------------------------------------------------------------------------
 # -- Functions for estimating and generating chunk sizes for xarray/DataTree variables --#
+# -------------------------------------------------------------------------------------------
 def _estimate_chunk_size(shape, dtype, target_mb=10.0):
     """Estimate balanced chunk sizes aiming ~target_mb per chunk."""
     itemsize = np.dtype(dtype).itemsize or 1
@@ -620,6 +622,296 @@ def generate_chunk_encoding_for_datatree(datatree, target_chunk_mb=10.0, include
             encoding[node_path] = group_encoding
 
     return encoding
+
+
+# ------------------------------------------------------------------------------
+# DIMENSIONS AND ATTRIBUTES UTILITIES
+# ------------------------------------------------------------------------------
+_NODAL_RESP_HELPS = {
+    "resp_type": ["disp", "vel", "accel", "reaction", "reactionIncInertia", "rayleighForces", "pressure"],
+    "resp_dim": {
+        "disp": ["time", "nodeTags", "DOFs"],
+        "vel": ["time", "nodeTags", "DOFs"],
+        "accel": ["time", "nodeTags", "DOFs"],
+        "reaction": ["time", "nodeTags", "DOFs"],
+        "reactionIncInertia": ["time", "nodeTags", "DOFs"],
+        "rayleighForces": ["time", "nodeTags", "DOFs"],
+        "pressure": ["time", "nodeTags"],
+    },
+    "resp_dof": {
+        "disp": ["UX", "UY", "UZ", "RX", "RY", "RZ"],
+        "vel": ["UX", "UY", "UZ", "RX", "RY", "RZ"],
+        "accel": ["UX", "UY", "UZ", "RX", "RY", "RZ"],
+        "reaction": ["UX", "UY", "UZ", "RX", "RY", "RZ"],
+        "reactionIncInertia": ["UX", "UY", "UZ", "RX", "RY", "RZ"],
+        "rayleighForces": ["UX", "UY", "UZ", "RX", "RY", "RZ"],
+        "pressure": None,
+    },
+}
+
+_FRAME_ELE_RESP_HELPS = {
+    "resp_type": [
+        "localForces",
+        "basicForces",
+        "basicDeformations",
+        "plasticDeformation",
+        "sectionForces",
+        "sectionDeformations",
+        "sectionLocs",
+    ],
+    "resp_dim": {
+        "localForces": ["time", "eleTags", "localDofs"],
+        "basicForces": ["time", "eleTags", "basicDofs"],
+        "basicDeformations": ["time", "eleTags", "basicDofs"],
+        "plasticDeformation": ["time", "eleTags", "basicDofs"],
+        "sectionForces": ["time", "eleTags", "secPoints", "secDofs"],
+        "sectionDeformations": ["time", "eleTags", "secPoints", "secDofs"],
+        "sectionLocs": ["time", "eleTags", "secPoints", "locs"],
+    },
+    "resp_dof": {
+        "localForces": ["FX1", "FY1", "FZ1", "MX1", "MY1", "MZ1", "FX2", "FY2", "FZ2", "MX2", "MY2", "MZ2"],
+        "basicForces": ["N", "MZ1", "MZ2", "MY1", "MY2", "T"],
+        "basicDeformations": ["N", "MZ1", "MZ2", "MY1", "MY2", "T"],
+        "plasticDeformation": ["N", "MZ1", "MZ2", "MY1", "MY2", "T"],
+        "sectionForces": ["N", "MZ", "VY", "MY", "VZ", "T"],
+        "sectionDeformations": ["N", "MZ", "VY", "MY", "VZ", "T"],
+        "sectionLocs": ["alpha", "X", "Y", "Z"],
+    },
+}
+
+_TRUSS_ELE_RESP_HELPS = {
+    "resp_type": ["axialForce", "axialDefo", "Stress", "Strain"],
+    "resp_dim": {
+        "axialForce": ["time", "eleTags"],
+        "axialDefo": ["time", "eleTags"],
+        "Stress": ["time", "eleTags"],
+        "Strain": ["time", "eleTags"],
+    },
+    "resp_dof": {
+        "axialForce": None,
+        "axialDefo": None,
+        "Stress": None,
+        "Strain": None,
+    },
+}
+
+_FIBER_SEC_RESP_HELPS = {
+    "resp_type": ["Stresses", "Strains", "secForce", "secDefo"],
+    "resp_dim": {
+        "Stresses": ["time", "eleTags", "secPoints", "fiberPoints"],
+        "Strains": ["time", "eleTags", "secPoints", "fiberPoints"],
+        "secForce": ["time", "eleTags", "secPoints", "DOFs"],
+        "secDefo": ["time", "eleTags", "secPoints", "DOFs"],
+    },
+    "resp_dof": {
+        "Stresses": None,
+        "Strains": None,
+        "secForce": ["P", "Mz", "My", "T"],
+        "secDefo": ["P", "Mz", "My", "T"],
+    },
+}
+
+_PLANE_RESPS_HELP = {
+    "resp_type": [
+        "Stresses",
+        "Strains",
+        "StressesAtNodes",
+        "StressAtNodesErr",
+        "StrainsAtNodes",
+        "StrainsAtNodesErr",
+        "PorePressureAtNodes",
+    ],
+    "resp_dim": {
+        "Stresses": ["time", "eleTags", "GaussPoints", "stressDOFs"],
+        "Strains": ["time", "eleTags", "GaussPoints", "strainDOFs"],
+        "StressesAtNodes": ["time", "nodeTags", "stressDOFs"],
+        "StressAtNodesErr": ["time", "nodeTags", "stressDOFs"],
+        "StrainsAtNodes": ["time", "nodeTags", "strainDOFs"],
+        "StrainsAtNodesErr": ["time", "nodeTags", "strainDOFs"],
+        "PorePressureAtNodes": ["time", "nodeTags"],
+    },
+    "resp_dof": {
+        "Stresses": ["sigma11", "sigma22", "sigma12", "sigma33"],
+        "Strains": ["eps11", "eps22", "eps12"],
+        "StressesAtNodes": ["sigma11", "sigma22", "sigma12", "sigma33"],
+        "StressAtNodesErr": ["sigma11", "sigma22", "sigma12", "sigma33"],
+        "StrainsAtNodes": ["eps11", "eps22", "eps12"],
+        "StrainsAtNodesErr": ["eps11", "eps22", "eps12"],
+        "PorePressureAtNodes": None,
+    },
+}
+
+_SOLID_RESPS_HELP = {
+    "resp_type": [
+        "Stresses",
+        "Strains",
+        "StressesAtNodes",
+        "StressAtNodesErr",
+        "StrainsAtNodes",
+        "StrainsAtNodesErr",
+        "PorePressureAtNodes",
+    ],
+    "resp_dim": {
+        "Stresses": ["time", "eleTags", "GaussPoints", "stressDOFs"],
+        "Strains": ["time", "eleTags", "GaussPoints", "strainDOFs"],
+        "StressesAtNodes": ["time", "nodeTags", "stressDOFs"],
+        "StressAtNodesErr": ["time", "nodeTags", "stressDOFs"],
+        "StrainsAtNodes": ["time", "nodeTags", "strainDOFs"],
+        "StrainsAtNodesErr": ["time", "nodeTags", "strainDOFs"],
+        "PorePressureAtNodes": ["time", "nodeTags"],
+    },
+    "resp_dof": {
+        "Stresses": ["sigma11", "sigma22", "sigma33", "sigma12", "sigma23"],
+        "Strains": ["eps11", "eps22", "eps33", "eps12", "eps23", "eps13"],
+        "StressesAtNodes": ["sigma11", "sigma22", "sigma33", "sigma12", "sigma23"],
+        "StressAtNodesErr": ["sigma11", "sigma22", "sigma33", "sigma12", "sigma23"],
+        "StrainsAtNodes": ["eps11", "eps22", "eps33", "eps12", "eps23", "eps13"],
+        "StrainsAtNodesErr": ["eps11", "eps22", "eps33", "eps12", "eps23", "eps13"],
+        "PorePressureAtNodes": None,
+    },
+}
+
+_SHELL_RESPS_HELP = {
+    "resp_type": [
+        "sectionForces",
+        "sectionDeformations",
+        "Stresses",
+        "Strains",
+        "sectionForcesAtNodes",
+        "sectionDeformationsAtNodes",
+        "StressesAtNodes",
+        "StrainsAtNodes",
+    ],
+    "resp_dim": {
+        "sectionForces": ["time", "eleTags", "GaussPoints", "secDOFs"],
+        "sectionDeformations": ["time", "eleTags", "GaussPoints", "secDOFs"],
+        "Stresses": ["time", "eleTags", "GaussPoints", "fiberPoints", "stressDOFs"],
+        "Strains": ["time", "eleTags", "GaussPoints", "fiberPoints", "stressDOFs"],
+        "sectionForcesAtNodes": ["time", "nodeTags", "secDOFs"],
+        "sectionDeformationsAtNodes": ["time", "nodeTags", "secDOFs"],
+        "StressesAtNodes": ["time", "nodeTags", "fiberPoints", "stressDOFs"],
+        "StrainsAtNodes": ["time", "nodeTags", "fiberPoints", "stressDOFs"],
+    },
+    "resp_dof": {
+        "sectionForces": ["FXX", "FYY", "FXY", "MXX", "MYY", "MXY", "VXZ", "VYZ"],
+        "sectionDeformations": ["FXX", "FYY", "FXY", "MXX", "MYY", "MXY", "VXZ", "VYZ"],
+        "Stresses": ["sigma11", "sigma22", "sigma12", "sigma23", "sigma13"],
+        "Strains": ["sigma11", "sigma22", "sigma12", "sigma23", "sigma13"],
+        "sectionForcesAtNodes": ["FXX", "FYY", "FXY", "MXX", "MYY", "MXY", "VXZ", "VYZ"],
+        "sectionDeformationsAtNodes": ["FXX", "FYY", "FXY", "MXX", "MYY", "MXY", "VXZ", "VYZ"],
+        "StressesAtNodes": ["sigma11", "sigma22", "sigma12", "sigma23", "sigma13"],
+        "StrainsAtNodes": ["sigma11", "sigma22", "sigma12", "sigma23", "sigma13"],
+    },
+}
+
+_LINK_RESPS_HELP = {
+    "resp_type": ["basicDeformation", "basicForce"],
+    "resp_dim": {
+        "basicDeformation": ["time", "eleTags", "DOFs"],
+        "basicForce": ["time", "eleTags", "DOFs"],
+    },
+    "resp_dof": {
+        "basicDeformation": ["UX", "UY", "UZ", "RX", "RY", "RZ"],
+        "basicForce": ["UX", "UY", "UZ", "RX", "RY", "RZ"],
+    },
+}
+
+_CONTACT_RESPS_HELP = {
+    "resp_type": ["globalForces", "localForces", "localDisp", "slips"],
+    "resp_dim": {
+        "globalForces": ["time", "eleTags", "globalDOFs"],
+        "localForces": ["time", "eleTags", "localDOFs"],
+        "localDisp": ["time", "eleTags", "localDOFs"],
+        "slips": ["time", "eleTags", "slipDOFs"],
+    },
+    "resp_dof": {
+        "globalForces": ["Px", "Py", "Pz"],
+        "localForces": ["N", "Tx", "Ty"],
+        "localDisp": ["N", "Tx", "Ty"],
+        "slips": ["Tx", "Ty"],
+    },
+}
+
+_ELE_RESP_HELPS = {
+    "frame": _FRAME_ELE_RESP_HELPS,
+    "truss": _TRUSS_ELE_RESP_HELPS,
+    "fibersection": _FIBER_SEC_RESP_HELPS,
+    "plane": _PLANE_RESPS_HELP,
+    "solid": _SOLID_RESPS_HELP,
+    "shell": _SHELL_RESPS_HELP,
+    "link": _LINK_RESPS_HELP,
+    "contact": _CONTACT_RESPS_HELP,
+}
+
+
+def get_nodal_responses_info(print_help: bool = True) -> dict:
+    """Get nodal response types, dimensions, and DOFs.
+
+    Added in opstool v1.0.25.
+
+    Parameters
+    ----------
+    print_help : bool, optional
+        print help info, by default True
+
+    Returns
+    -------
+    dict
+        A dictionary containing response types, dimensions, and DOFs.
+    """
+    if print_help:
+        print("Nodal Responses:")
+        print("Available Response Types (resp_type):")
+        for resp_type in _NODAL_RESP_HELPS["resp_type"]:
+            print(f"  - {resp_type}")
+            dims = _NODAL_RESP_HELPS["resp_dim"].get(resp_type, [])
+            dofs = _NODAL_RESP_HELPS["resp_dof"].get(resp_type, [])
+            print(f"    resp_dim: {dims}")
+            print(f"    resp_dof: {dofs}")
+        print()
+    return _NODAL_RESP_HELPS
+
+
+def get_element_responses_info(
+    ele_type: Literal["Frame", "Truss", "FiberSection", "Plane", "Solid", "Shell", "Link", "Contact"],
+    print_help: bool = True,
+) -> dict:
+    """
+    Return a dictionary of response types, dimensions, and DOFs
+    for the given element type.
+
+    Added in opstool v1.0.25.
+
+    Parameters
+    ----------
+    ele_type : str
+        The type of element (e.g., "frame", "truss", "fibersection", "plane", "solid", "shell", "link", "contact").
+    print_help : bool, optional
+        If True, prints the available response types and their dimensions/DOFs. Default is True.
+
+    Returns
+    -------
+    dict
+        A dictionary containing response types, dimensions, and DOFs for the specified element type.
+    """
+    element_type = ele_type.lower()
+
+    data = _ELE_RESP_HELPS.get(element_type)
+    if data is None:
+        raise ValueError(f"Unsupported element type: {ele_type}. Supported types are: {list(_ELE_RESP_HELPS.keys())}")  # noqa: TRY003
+
+    if print_help:
+        print(f"ele_type: {ele_type}")
+        print("Available Response Types (resp_type):")
+        for resp_type in data["resp_type"]:
+            print(f"  - {resp_type}")
+            dims = data["resp_dim"].get(resp_type, [])
+            dofs = data["resp_dof"].get(resp_type, [])
+            print(f"    resp_dim: {dims}")
+            print(f"    resp_dof: {dofs}")
+        print()
+
+    return data
 
 
 # -- End of opstool/post/_post_utils.py --#

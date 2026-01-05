@@ -1,9 +1,10 @@
 from collections import defaultdict
 
 import numpy as np
-import openseespy.opensees as ops
 
-from opstool.utils import OPS_ELE_CLASSTAG2TYPE, OPS_ELE_TAGS
+from ..utils import OPS_ELE_CLASSTAG2TYPE, OPS_ELE_TAGS, get_opensees_module
+
+ops = get_opensees_module()
 
 # from pyvista import CellType
 

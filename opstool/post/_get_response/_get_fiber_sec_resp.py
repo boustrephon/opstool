@@ -1,13 +1,19 @@
+from __future__ import annotations
+
 import warnings
-from typing import ClassVar, Optional, Union
+from typing import ClassVar
 
 import numpy as np
-import openseespy.opensees as ops
 import xarray as xr
 
 from opstool.utils import OPS_ELE_TAGS
 
-from ._response_base import ResponseBase, _expand_to_uniform_array
+from ...utils import get_opensees_module
+from ._response_base import ResponseBase, expand_to_uniform_array
+
+ops = get_opensees_module()
+
+RESP_NAME = "FiberSectionResponses"
 
 ELE_CLASS_TAGS = OPS_ELE_TAGS.Truss + OPS_ELE_TAGS.Beam + OPS_ELE_TAGS.Link
 
@@ -82,58 +88,40 @@ class FiberSecData:
         return cls.ELE_SEC_HISTORY
 
 
-def _set_fiber_sec_data(fiber_ele_tags: Optional[Union[str, list, tuple]] = None):
+def _set_fiber_sec_data(fiber_ele_tags: str | list | tuple | None = None):
     FiberSecData.add_data(fiber_ele_tags)
 
 
 class FiberSecRespStepData(ResponseBase):
     def __init__(
         self,
-        fiber_ele_tags: Optional[Union[str, list, tuple]] = None,
-        dtype: Optional[dict] = None,
-        model_update: bool = False,
+        fiber_ele_tags: str | list | tuple | None = None,
+        **kwargs,
     ):
+        self.kwargs = kwargs
+        super().__init__(**kwargs)
+        self.resp_name = RESP_NAME
+        self.resp_types = ["Stresses", "Strains", "secForce", "secDefo"]
+
         _set_fiber_sec_data(fiber_ele_tags)
         self.ELE_SEC_KEYS = FiberSecData.get_ele_sec_keys().copy()
-        self.resp_names = ["Stresses", "Strains", "secForce", "secDefo"]
-        self.resp_steps = None
-        self.resp_steps_list = []  # for model update
-        self.resp_steps_dict = {}  # for non-update
         self.fiber_geo_data_list = []
         self.fiber_geo_data = None
-        self.times = []
-        self.step_track = 0
-        self.model_update = model_update
-
-        self.dtype = {"int": np.int32, "float": np.float32}
-        if isinstance(dtype, dict):
-            self.dtype.update(dtype)
 
         self.secPoints = None
         self.fiberPoints = None
         self.DOFs = ["P", "Mz", "My", "T"]
 
-        self.initialize()
-
-    def initialize(self):
-        self.resp_steps = None
-        self.resp_steps_list = []
-        for name in self.resp_names:
-            self.resp_steps_dict[name] = []
-        self.add_data_one_step()
-        self.step_track = 0
-        self.times = [0.0]
-
         if self.ELE_SEC_KEYS != {}:
             self.fiber_geo_data_list.append(self._get_fiber_geo_data(self.ELE_SEC_KEYS))
+        self.add_resp_data_one_step()
 
-    def reset(self):
-        self.initialize()
-
-    def add_data_one_step(self):
+    def add_resp_data_one_step(self):
         if self.model_update:
             added_ele_sec = FiberSecData.update_data()
             ELE_SEC_KEYS = FiberSecData.get_ele_sec_keys()
+            if added_ele_sec != {}:
+                self.fiber_geo_data_list.append(self._get_fiber_geo_data(added_ele_sec))
             stress, strain, defo, force = _get_fiber_sec_resp(ELE_SEC_KEYS, dtype=self.dtype)
             data_vars = {
                 "Stresses": (["eleTags", "secPoints", "fiberPoints"], stress),
@@ -154,22 +142,19 @@ class FiberSecRespStepData(ResponseBase):
                     "DOFs": self.DOFs,
                 },
             )
-            self.resp_steps_list.append(ds)
-            if added_ele_sec != {}:
-                self.fiber_geo_data_list.append(self._get_fiber_geo_data(added_ele_sec))
+            self.resp_step_data_list.append(ds)
         else:
             stress, strain, defo, force = _get_fiber_sec_resp(self.ELE_SEC_KEYS, dtype=self.dtype)
-            self.resp_steps_dict["Stresses"].append(stress)
-            self.resp_steps_dict["Strains"].append(strain)
-            self.resp_steps_dict["secForce"].append(force)
-            self.resp_steps_dict["secDefo"].append(defo)
+            self.resp_step_data_dict["Stresses"].append(stress)
+            self.resp_step_data_dict["Strains"].append(strain)
+            self.resp_step_data_dict["secForce"].append(force)
+            self.resp_step_data_dict["secDefo"].append(defo)
 
             if self.secPoints is None:
                 self.secPoints = np.arange(stress.shape[1]) + 1
                 self.fiberPoints = np.arange(stress.shape[2]) + 1
 
-        self.step_track += 1
-        self.times.append(ops.getTime())
+        self.move_one_step(time_value=ops.getTime())
 
     def _get_fiber_geo_data(self, ELE_SEC_KEYS):
         all_ys, all_zs, all_mats, all_areas = [], [], [], []
@@ -186,14 +171,14 @@ class FiberSecRespStepData(ResponseBase):
                     mats.append(fiber_data[:, 3])
                 else:
                     mats.append(np.full(fiber_data.shape[0], np.nan))
-            all_ys.append(_expand_to_uniform_array(ys))
-            all_zs.append(_expand_to_uniform_array(zs))
-            all_areas.append(_expand_to_uniform_array(areas))
-            all_mats.append(_expand_to_uniform_array(mats))
-        all_ys = _expand_to_uniform_array(all_ys)
-        all_zs = _expand_to_uniform_array(all_zs)
-        all_areas = _expand_to_uniform_array(all_areas)
-        all_mats = _expand_to_uniform_array(all_mats)
+            all_ys.append(expand_to_uniform_array(ys))
+            all_zs.append(expand_to_uniform_array(zs))
+            all_areas.append(expand_to_uniform_array(areas))
+            all_mats.append(expand_to_uniform_array(mats))
+        all_ys = expand_to_uniform_array(all_ys)
+        all_zs = expand_to_uniform_array(all_zs)
+        all_areas = expand_to_uniform_array(all_areas)
+        all_mats = expand_to_uniform_array(all_mats)
         sec_points = np.arange(all_ys.shape[1]) + 1
         fiber_points = np.arange(all_ys.shape[2]) + 1
         data_vars_geo = {
@@ -212,20 +197,25 @@ class FiberSecRespStepData(ResponseBase):
         )
         return ds_geo
 
-    def _to_xarray(self):
+    def reset_resp_step_data(self):
+        super().reset_resp_step_data()
+        self.fiber_geo_data_list = []
+        self.fiber_geo_data = None
+
+    def add_resp_data_to_dataset(self):
+
         self.times = np.array(self.times, dtype=self.dtype["float"])
         if self.model_update:
-            self.resp_steps = xr.concat(self.resp_steps_list, dim="time", join="outer")
-            self.resp_steps.coords["time"] = self.times
-            self.fiber_geo_data = xr.concat(self.fiber_geo_data_list, dim="eleTags", join="outer")
+            self.resp_step_data = xr.concat(self.resp_step_data_list, dim="time", join="outer")
+            self.resp_step_data.coords["time"] = self.times
         else:
             data_vars = {
-                "Stresses": (("time", "eleTags", "secPoints", "fiberPoints"), self.resp_steps_dict["Stresses"]),
-                "Strains": (("time", "eleTags", "secPoints", "fiberPoints"), self.resp_steps_dict["Strains"]),
-                "secDefo": (("time", "eleTags", "secPoints", "DOFs"), self.resp_steps_dict["secDefo"]),
-                "secForce": (("time", "eleTags", "secPoints", "DOFs"), self.resp_steps_dict["secForce"]),
+                "Stresses": (("time", "eleTags", "secPoints", "fiberPoints"), self.resp_step_data_dict["Stresses"]),
+                "Strains": (("time", "eleTags", "secPoints", "fiberPoints"), self.resp_step_data_dict["Strains"]),
+                "secDefo": (("time", "eleTags", "secPoints", "DOFs"), self.resp_step_data_dict["secDefo"]),
+                "secForce": (("time", "eleTags", "secPoints", "DOFs"), self.resp_step_data_dict["secForce"]),
             }
-            self.resp_steps = xr.Dataset(
+            self.resp_step_data = xr.Dataset(
                 data_vars=data_vars,
                 coords={
                     "time": self.times,
@@ -237,70 +227,144 @@ class FiberSecRespStepData(ResponseBase):
             )
             self.fiber_geo_data = self.fiber_geo_data_list[0]
 
-        for key, values in self.fiber_geo_data.data_vars.items():
-            self.resp_steps[key] = values
-
-    def get_data(self):
-        if self.resp_steps is None:
-            self._to_xarray()
-        return self.resp_steps
-
-    def update_data(self, data):
-        self.resp_steps = data
-
-    def get_track(self):
-        return self.step_track
-
-    def add_to_datatree(self, dt: xr.DataTree):
-        resp_steps = self.get_data()
-        dt["/FiberSectionResponses"] = resp_steps
-        return dt
-
-    @staticmethod
-    def read_datatree(dt: xr.DataTree, unit_factors: Optional[dict] = None):
-        resp_steps = dt["/FiberSectionResponses"].to_dataset()
-        if unit_factors is not None:
-            resp_steps = FiberSecRespStepData._unit_transform(resp_steps, unit_factors)
-        return resp_steps
-
-    @staticmethod
-    def _unit_transform(resp_steps, unit_factors):
-        force_factor = unit_factors["force"]
-        moment_factor = unit_factors["moment"]
-        curvature_factor = unit_factors["curvature"]
-        disp_factor = unit_factors["disp"]
-        stress_factor = unit_factors["stress"]
-
-        # ---------------------------------------------------------
-        resp_steps["Stresses"] *= stress_factor
-        # ---------------------------------------------------------
-        resp_steps["secForce"].loc[{"DOFs": ["P"]}] *= force_factor
-        resp_steps["secForce"].loc[{"DOFs": ["Mz", "My", "T"]}] *= moment_factor
-        resp_steps["secDefo"].loc[{"DOFs": ["Mz", "My", "T"]}] *= curvature_factor
-        # --------------------------------------------------------
-        resp_steps["ys"] *= disp_factor
-        resp_steps["zs"] *= disp_factor
-        resp_steps["areas"] *= disp_factor**2
-
-        return resp_steps
+        # merge fiber geo data
+        if len(self.fiber_geo_data_list) == 1:
+            self.fiber_geo_data = self.fiber_geo_data_list[0]
+        elif len(self.fiber_geo_data_list) > 1:
+            self.fiber_geo_data = xr.concat(self.fiber_geo_data_list, dim="eleTags", join="outer")
+        else:
+            self.fiber_geo_data = None
+        if self.fiber_geo_data is not None:
+            for key, values in self.fiber_geo_data.data_vars.items():
+                self.resp_step_data[key] = values
 
     @staticmethod
     def read_response(
-        dt: xr.DataTree, resp_type: Optional[str] = None, ele_tags=None, unit_factors: Optional[dict] = None
-    ):
-        ds = FiberSecRespStepData.read_datatree(dt, unit_factors=unit_factors)
-        if resp_type is None:
-            if ele_tags is None:
-                return ds
-            else:
-                return ds.sel(eleTags=ele_tags)
-        else:
-            if resp_type not in list(ds.keys()):
-                raise ValueError(f"resp_type {resp_type} not found in {list(ds.keys())}")  # noqa: TRY003
-            if ele_tags is not None:
-                return ds[resp_type].sel(eleTags=ele_tags)
-            else:
-                return ds[resp_type]
+        dt: xr.DataTree | list[xr.DataTree],
+        resp_type: str | None = None,
+        ele_tags=None,
+        unit_factors: dict | None = None,
+        lazy: bool = True,
+    ) -> xr.Dataset | xr.DataArray:
+        dts = dt if isinstance(dt, (list, tuple)) else [dt]
+        if not dts:
+            return xr.Dataset()
+
+        def _is_special_only(ds: xr.Dataset) -> bool:
+            dvs = set(ds.data_vars)
+            return bool(dvs) and dvs.issubset({"ys", "zs", "areas", "matTags"})
+
+        dss: list[xr.Dataset] = []
+        for t in dts:
+            if RESP_NAME not in t:
+                continue
+            node = t[f"/{RESP_NAME}"]
+            ds = node.ds
+            if ds is None:
+                continue
+
+            # preselect variable(s)
+            if resp_type is not None:
+                if resp_type not in ds.data_vars:
+                    continue
+                ds = ds[[resp_type]]
+
+            # early eleTags selection
+            ds = FiberSecRespStepData._select_ele_tags(ds, ele_tags=ele_tags)
+
+            # avoid lazy-concat instability if requested
+            if not lazy:
+                ds = ds.load()
+
+            dss.append(ds)
+
+        if not dss:
+            return xr.Dataset()
+
+        # choose concat dim
+        concat_dim = "eleTags" if (len(dss) > 1 and all(_is_special_only(_ds) for _ds in dss)) else "time"
+
+        ds = dss[0] if len(dss) == 1 else xr.concat(dss, dim=concat_dim, join="outer", fill_value=np.nan)
+
+        resp_steps = _unit_transform(ds, unit_factors=unit_factors)
+
+        if resp_type is not None and resp_type in resp_steps:
+            return resp_steps[resp_type]
+        return resp_steps
+
+
+def _unit_transform(ds: xr.Dataset, unit_factors: dict | None) -> xr.Dataset:
+    if not unit_factors:
+        return ds
+
+    # factors: default = 1.0 (no scaling)
+    ff = float(unit_factors.get("force", 1.0))
+    mf = float(unit_factors.get("moment", 1.0))
+    cf = float(unit_factors.get("curvature", 1.0))
+    df = float(unit_factors.get("disp", 1.0))
+    sf = float(unit_factors.get("stress", 1.0))
+
+    def scale_by_labels(
+        da: xr.DataArray,
+        dim: str,
+        labels: list[str],
+        fac: float,
+    ) -> xr.DataArray:
+        if fac == 1.0:
+            return da
+        c = da.coords.get(dim, None)
+        if c is None:
+            return da
+        m = c.isin(labels)  # missing labels are simply False -> safe
+        return da.where(~m, da * fac)
+
+    def maybe_update(out: dict, name: str, da: xr.DataArray):
+        out[name] = da
+
+    updates: dict[str, xr.DataArray] = {}
+
+    # ---- simple vars (existence-safe) ----
+    if "Stresses" in ds.data_vars and sf != 1.0:
+        maybe_update(updates, "Stresses", ds["Stresses"] * sf)
+
+    if "ys" in ds.data_vars and df != 1.0:
+        maybe_update(updates, "ys", ds["ys"] * df)
+
+    if "zs" in ds.data_vars and df != 1.0:
+        maybe_update(updates, "zs", ds["zs"] * df)
+
+    if "areas" in ds.data_vars and df != 1.0:
+        maybe_update(updates, "areas", ds["areas"] * (df**2))
+
+    # ---- secForce / secDefo (existence + coord-dim safe) ----
+    # choose coord dim name: prefer "DOFs", else try common alternatives
+    def pick_dim(da: xr.DataArray, preferred: str = "DOFs") -> str | None:
+        if preferred in da.coords:
+            return preferred
+        for cand in ("secDOFs", "secDofs", "dofs", "components"):
+            if cand in da.coords:
+                return cand
+        return None
+
+    if "secForce" in ds.data_vars:
+        da = ds["secForce"]
+        dim = pick_dim(da)
+        if dim is not None:
+            da = scale_by_labels(da, dim, ["P"], ff)
+            da = scale_by_labels(da, dim, ["Mz", "My", "T"], mf)
+        # if no coord dim, leave unchanged (can't selectively scale)
+        if da is not ds["secForce"]:
+            maybe_update(updates, "secForce", da)
+
+    if "secDefo" in ds.data_vars:
+        da = ds["secDefo"]
+        dim = pick_dim(da)
+        if dim is not None:
+            da2 = scale_by_labels(da, dim, ["Mz", "My", "T"], cf)
+            if da2 is not da:
+                maybe_update(updates, "secDefo", da2)
+
+    return ds.assign(**updates) if updates else ds
 
 
 def _get_fiber_sec_resp(ele_secs: dict, dtype: dict):
@@ -321,10 +385,10 @@ def _get_fiber_sec_resp(ele_secs: dict, dtype: dict):
             fiber_data = _get_fiber_sec_data(ele_tag, i + 1, dtype=dtype)
             stress.append(fiber_data[:, -2])
             strain.append(fiber_data[:, -1])
-        all_stress.append(_expand_to_uniform_array(stress))
-        all_strains.append(_expand_to_uniform_array(strain))
-    all_stress = _expand_to_uniform_array(all_stress, dtype=dtype["float"])
-    all_strains = _expand_to_uniform_array(all_strains, dtype=dtype["float"])
+        all_stress.append(expand_to_uniform_array(stress))
+        all_strains.append(expand_to_uniform_array(strain))
+    all_stress = expand_to_uniform_array(all_stress, dtype=dtype["float"])
+    all_strains = expand_to_uniform_array(all_strains, dtype=dtype["float"])
 
     if len(all_stress) == 0:
         all_stress = np.array([[[np.nan]]], dtype=dtype["float"])
@@ -356,8 +420,8 @@ def _get_fiber_sec_resp(ele_secs: dict, dtype: dict):
             force.append(defo_forces[4:])
         all_defo.append(np.array(defo))
         all_force.append(np.array(force))
-    all_defo = _expand_to_uniform_array(all_defo, dtype=dtype["float"])
-    all_force = _expand_to_uniform_array(all_force, dtype=dtype["float"])
+    all_defo = expand_to_uniform_array(all_defo, dtype=dtype["float"])
+    all_force = expand_to_uniform_array(all_force, dtype=dtype["float"])
     if len(all_defo) == 0:
         all_defo = np.array([[[np.nan] * 4]], dtype=dtype["float"])
     if len(all_force) == 0:
@@ -365,7 +429,7 @@ def _get_fiber_sec_resp(ele_secs: dict, dtype: dict):
     return all_stress, all_strains, all_defo, all_force
 
 
-def _get_fiber_sec_data(ele_tag: int, sec_num: int = 1, dtype: Optional[dict] = None):
+def _get_fiber_sec_data(ele_tag: int, sec_num: int = 1, dtype: dict | None = None):
     """Get the fiber sec data for a beam element.
 
     Parameters

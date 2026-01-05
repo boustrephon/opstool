@@ -2,8 +2,11 @@ from typing import Optional, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
-import openseespy.opensees as ops
 from matplotlib.collections import PatchCollection
+
+from ...utils import get_opensees_module
+
+ops = get_opensees_module()
 
 
 def vis_fiber_sec_real(
@@ -58,11 +61,10 @@ def vis_fiber_sec_real(
     if aspect_ratio >= 3:
         aspect_ratio = 3
     figsize = (8, 8) if aspect_ratio < 1 else (6, 6 * aspect_ratio)
-    
+
     if ax is None:
         with plt.style.context("fivethirtyeight"):
             fig, ax = plt.subplots(figsize=figsize)
-
 
     with plt.style.context("fivethirtyeight"):
         patches = [plt.Circle((yloc, zloc), np.sqrt(area / np.pi)) for yloc, zloc, area in zip(ylocs, zlocs, areas)]
@@ -98,7 +100,7 @@ def vis_fiber_sec_real(
                 ]
                 coll_rebar = PatchCollection(patches_rebar, color=color, alpha=1)
                 ax.add_collection(coll_rebar)
-        
+
         if aspect_ratio == 1:
             ax.set_aspect("equal")
         ax.set_xlim(ymin * 1.5, ymax * 1.5)
@@ -108,4 +110,3 @@ def vis_fiber_sec_real(
         ax.autoscale()
         plt.xticks(fontsize=12)
         plt.yticks(fontsize=12)
-

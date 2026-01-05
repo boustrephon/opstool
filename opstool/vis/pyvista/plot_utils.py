@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from types import SimpleNamespace
 from typing import Optional, TypedDict
 
@@ -33,17 +35,17 @@ class _PLOT_ARGS_TYPES1(TypedDict, total=False):
     line_width: float
     theme: str
     window_size: tuple[int, int]
-    render_points_as_spheres: bool
-    render_lines_as_tubes: bool
+    render_points_as_spheres: bool | None
+    render_lines_as_tubes: bool | None
     anti_aliasing: str
     msaa_multi_samples: int
-    smooth_shading: Optional[bool]
-    lighting: Optional[bool]
+    smooth_shading: bool | None
+    lighting: bool | None
     line_smoothing: bool
     polygon_smoothing: bool
-    notebook: bool
+    notebook: bool | None
     jupyter_backend: str
-    font_family: Optional[str]
+    font_family: str | None
     scale_factor: float
     show_mesh_edges: bool
     mesh_edge_color: str
@@ -80,53 +82,69 @@ class _PLOT_ARGS_TYPES2(TypedDict, total=False):
     ele_label: str | list[int]
 
 
-PLOT_ARGS = SimpleNamespace(
-    point_size=1.0,
-    line_width=2.0,
-    theme="default",
-    window_size=(1024, 768),
-    render_points_as_spheres=True,
-    render_lines_as_tubes=True,
-    anti_aliasing="msaa",
-    msaa_multi_samples=16,
-    smooth_shading=None,
-    lighting=None,
-    line_smoothing=True,
-    polygon_smoothing=True,
-    notebook=False,
-    jupyter_backend="trame",
-    font_family=None,
-    scale_factor=1 / 15,
-    show_mesh_edges=True,
-    mesh_edge_color="black",
-    mesh_edge_width=1.0,
-    mesh_opacity=1.0,
-    font_size=15,
-    title_font_size=18,
-    off_screen=pv.OFF_SCREEN,
-    scalar_bar_kargs=_scalar_bar_kargs,
+PLOT_ARGS_DEFAULT = {
+    "point_size": 1.0,
+    "line_width": 2.0,
+    "theme": "default",
+    "window_size": (1024, 768),
+    "render_points_as_spheres": True,
+    "render_lines_as_tubes": True,
+    "anti_aliasing": "msaa",
+    "msaa_multi_samples": 16,
+    "smooth_shading": None,
+    "lighting": None,
+    "line_smoothing": True,
+    "polygon_smoothing": True,
+    "notebook": False,
+    "jupyter_backend": "trame",
+    "font_family": None,
+    "scale_factor": 1 / 15,
+    "show_mesh_edges": True,
+    "mesh_edge_color": "black",
+    "mesh_edge_width": 1.0,
+    "mesh_opacity": 1.0,
+    "font_size": 15,
+    "title_font_size": 18,
+    "off_screen": pv.OFF_SCREEN,
+    "scalar_bar_kargs": _scalar_bar_kargs,
     # --------------------------
-    color_point="#FF0055",
-    color_frame="#0652ff",
-    color_beam="#0652ff",
-    color_truss="#FF8C00",
-    color_link="#39FF14",
-    color_shell="#769958",
-    color_plane="#00FFFF",
-    color_brick="#FF4500",
-    color_tet="#FFFF33",
-    color_joint="#7FFF00",
-    color_contact="#ff9408",
-    color_pfem="#8080FF",
-    color_constraint="#FF1493",
-    color_bc="#15b01a",
-    cmap="jet",
-    cmap_model=None,
-    n_colors=256,
-    color_map="jet",
-    color_nodal_label="#048243",
-    color_ele_label="#650021",
-)
+    "color_point": "#FF0055",
+    "color_frame": "#0652ff",
+    "color_beam": "#0652ff",
+    "color_truss": "#FF8C00",
+    "color_link": "#39FF14",
+    "color_shell": "#769958",
+    "color_plane": "#00FFFF",
+    "color_brick": "#FF4500",
+    "color_tet": "#FFFF33",
+    "color_joint": "#7FFF00",
+    "color_contact": "#ff9408",
+    "color_pfem": "#8080FF",
+    "color_constraint": "#FF1493",
+    "color_bc": "#15b01a",
+    "cmap": "jet",
+    "cmap_model": None,
+    "n_colors": 256,
+    "color_map": "jet",
+    "color_nodal_label": "#048243",
+    "color_ele_label": "#650021",
+}
+
+PLOT_ARGS = SimpleNamespace()
+for key, value in PLOT_ARGS_DEFAULT.items():
+    setattr(PLOT_ARGS, key, value)
+
+
+def reset_plot_props() -> None:
+    """
+    Reset ploting properties to default values.
+
+    Returns
+    -------
+    None
+    """
+    for key, value in PLOT_ARGS_DEFAULT.items():
+        setattr(PLOT_ARGS, key, value)
 
 
 def set_plot_props(**kwargs: Unpack[_PLOT_ARGS_TYPES1]) -> None:

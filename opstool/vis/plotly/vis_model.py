@@ -606,13 +606,13 @@ class PlotModelBase(PlotResponsePlotlyBase):
     def update_fig(self, plotter: list, show_outline: bool = False):
         self.FIGURE.add_traces(plotter)
         if not self.show_zaxis:
-            scene = self._get_plotly_dim_scene(mode="2d", show_outline=show_outline)
+            scene = self._get_plotly_dim_scene(mode="2d", show_outline=show_outline, pad_ratio=0.15)
         else:
-            scene = self._get_plotly_dim_scene(mode="3d", show_outline=show_outline)
+            scene = self._get_plotly_dim_scene(mode="3d", show_outline=show_outline, pad_ratio=0.15)
         txt = f"<b>{PKG_NAME}</b>:: Num. Node: <b>{len(self.nodal_tags)}</b> Num. Ele: <b>{len(self.ele_tags)}</b>"
         self.FIGURE.update_layout(
             template=self.pargs.theme,
-            autosize=True,
+            autosize=False,
             showlegend=False,
             scene=scene,
             title={

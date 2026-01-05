@@ -1,11 +1,12 @@
 import numpy as np
 
+from ..post import get_element_responses
 from ._plot_resp_base import PlotResponseBase
 
 
 class PlotTrussResponseBase(PlotResponseBase):
-    def __init__(self, model_info_steps, truss_resp_step, model_update):
-        super().__init__(model_info_steps, truss_resp_step, model_update)
+    def __init__(self, odb_tag, lazy_load=True):
+        super().__init__(odb_tag, lazy_load=lazy_load)
 
     def _get_truss_data(self, step):
         return self._get_model_da("TrussData", step)
@@ -24,6 +25,12 @@ class PlotTrussResponseBase(PlotResponseBase):
                 f"Not supported response type {resp_type}!Valid options are: axialForce, axialDefo, Stress, Strain."
             )
         self.resp_type = resp_type
+
+        # set response data
+        resp_data = get_element_responses(
+            self.odb_tag, ele_type="Truss", resp_type=self.resp_type, lazy_load=self.lazy_load, print_info=False
+        )
+        self.set_resp_step_data(resp_data)
 
     def _make_truss_info(self, ele_tags, step):
         pos = self._get_node_da(step).to_numpy()
@@ -50,12 +57,12 @@ class PlotTrussResponseBase(PlotResponseBase):
         if self.ModelUpdate or ele_tags is not None:
             for i in range(self.num_steps):
                 truss_tags, _, _ = self._make_truss_info(ele_tags, i)
-                da = self._get_resp_da(i, self.resp_type)
+                da = self._get_resp_da(i)
                 da = da.sel(eleTags=truss_tags)
                 resps.append(da)
         else:
             for i in range(self.num_steps):
-                da = self._get_resp_da(i, self.resp_type)
+                da = self._get_resp_da(i)
                 resps.append(da)
         self.resp_step = resps  # update
 

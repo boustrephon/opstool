@@ -1,10 +1,11 @@
 from typing import Union
 
 import numpy as np
-import openseespy.opensees as ops
 import xarray as xr
 
-from ..utils import suppress_ops_print
+from ..utils import get_opensees_module, suppress_ops_print
+
+ops = get_opensees_module()
 
 
 def get_node_mass() -> dict:

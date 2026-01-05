@@ -3,7 +3,6 @@ from typing import Optional, Union
 import numpy as np
 import plotly.graph_objs as go
 
-from ...post import loadODB
 from ...utils import gram_schmidt
 from .._plot_truss_resp_base import PlotTrussResponseBase
 from .plot_resp_base import PlotResponsePlotlyBase
@@ -11,8 +10,8 @@ from .plot_utils import _plot_lines, _plot_points_cmap, _plot_unstru_cmap
 
 
 class PlotTrussResponse(PlotTrussResponseBase, PlotResponsePlotlyBase):
-    def __init__(self, model_info_steps, truss_resp_step, model_update):
-        super().__init__(model_info_steps, truss_resp_step, model_update)
+    def __init__(self, odb_tag, lazy_load=True):
+        super().__init__(odb_tag, lazy_load=lazy_load)
 
         title = f"{self.PKG_NAME} :: Truss Responses 3D Viewer</b><br><br>"
         self.title = {"text": title, "font": {"size": self.pargs.title_font_size}}
@@ -345,6 +344,7 @@ def plot_truss_responses(
     bc_scale: float = 1.0,
     show_mp_constraint: bool = False,
     show_model: bool = False,
+    lazy_load: bool = False,
 ) -> go.Figure:
     """Visualizing Truss Response.
 
@@ -405,6 +405,12 @@ def plot_truss_responses(
     show_model: bool, default: False
         Whether to plot the all model or not.
         Set to False can improve the performance of the visualization.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -413,8 +419,7 @@ def plot_truss_responses(
         You can also use `fig.write_html("path/to/file.html")` to save as an HTML file, see
         `Interactive HTML Export in Python <https://plotly.com/python/interactive-html-export/>`_
     """
-    model_info_steps, model_update, truss_resp_step = loadODB(odb_tag, resp_type="Truss")
-    plotbase = PlotTrussResponse(model_info_steps, truss_resp_step, model_update)
+    plotbase = PlotTrussResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.refactor_resp_step(resp_type=resp_type, ele_tags=ele_tags)
     if slides:
@@ -466,6 +471,7 @@ def plot_truss_responses_animation(
     bc_scale: float = 1.0,
     show_mp_constraint: bool = False,
     show_model: bool = False,
+    lazy_load: bool = False,
 ) -> go.Figure:
     """Truss response animation.
 
@@ -521,6 +527,12 @@ def plot_truss_responses_animation(
     show_model: bool, default: False
         Whether to plot the all model or not.
         Set to False can improve the performance of the visualization.
+    lazy_load: bool, default: False
+        Whether to lazily load the response data.
+        If True, the response data will be loaded on demand when needed for plotting.
+        This can save memory when dealing with large datasets.
+        If False, all response data will be loaded into memory at once.
+        If you encounter memory issues, consider setting this parameter to True, elsewise, set it to False for plotting in safety.
 
     Returns
     -------
@@ -529,8 +541,7 @@ def plot_truss_responses_animation(
         You can also use `fig.write_html("path/to/file.html")` to save as an HTML file, see
         `Interactive HTML Export in Python <https://plotly.com/python/interactive-html-export/>`_
     """
-    model_info_steps, model_update, truss_resp_step = loadODB(odb_tag, resp_type="Truss")
-    plotbase = PlotTrussResponse(model_info_steps, truss_resp_step, model_update)
+    plotbase = PlotTrussResponse(odb_tag, lazy_load=lazy_load)
     plotbase.set_unit(symbol=unit_symbol, factor=unit_factor)
     plotbase.refactor_resp_step(resp_type=resp_type, ele_tags=ele_tags)
     plotbase.plot_anim(
