@@ -2029,6 +2029,7 @@ class FiberSecMesh:
         cbar : matplotlib.colorbar.Colorbar
             The colorbar of the section response.
         """
+        points = points[np.all(np.isfinite(points), axis=1)] # skip all nan
         resp_fiber, resp_rebar = self._reshape_resp(points, response)
 
         # Determine the set of material tags to be visualized
