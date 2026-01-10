@@ -1,4 +1,3 @@
-from functools import partial
 from typing import Optional, Union
 
 import numpy as np
@@ -138,7 +137,8 @@ class PlotEigenBase(PlotResponsePyvistaBase):
             plotter.subplot(idxi, idxj)
             subplots = True
         else:
-            plotter.clear_actors()
+            self.clear_plotter(plotter)
+            # plotter.clear_actors()
             subplots = False
         step = round(idx) - 1
         eigen_points, scalars, alpha_ = self._get_eigen_points(step, alpha)
@@ -214,13 +214,19 @@ class PlotEigenBase(PlotResponsePyvistaBase):
         for i, idx in enumerate(range(modei, modej + 1)):
             idxi = int(np.ceil((i + 1) / shape[1]) - 1)
             idxj = int(i - idxi * shape[1])
-            self._create_mesh(plotter, idx, idxi, idxj, **kargs)
+            self._create_mesh(idx=idx, plotter=plotter, idxi=idxi, idxj=idxj, **kargs)
         if link_views:
             plotter.link_views()
 
     def plot_slides(self, plotter, modei, modej, **kargs):
+        def slider_callback(value):
+            self._create_mesh(plotter=plotter, idx=value, **kargs)
+
         plotter.add_slider_widget(
-            partial(self._create_mesh, plotter, **kargs), [modei, modej], value=modei, **self.slider_widget_args
+            slider_callback,
+            [modei, modej],
+            value=modei,
+            **self.slider_widget_args,
         )
 
     def plot_anim(
@@ -276,7 +282,12 @@ class PlotEigenBase(PlotResponsePyvistaBase):
 
 class PlotBucklingBase(PlotEigenBase):
     def __init__(self, model_info, eigen_values, eigen_vectors, interp_eigenvectors=None):
-        super().__init__(model_info, eigen_values, eigen_vectors, interp_eigenvectors=interp_eigenvectors)
+        super().__init__(
+            model_info,
+            eigen_values,
+            eigen_vectors,
+            interp_eigenvectors=interp_eigenvectors,
+        )
 
     def _make_eigen_txt(self, step):
         fi = self.ModalProps.isel(modeTags=step)
@@ -367,11 +378,20 @@ def plot_eigen(
         resave = odb_tag is None
         odb_tag = "Auto" if odb_tag is None else odb_tag
         modalProps, eigenvectors, interp_eigenvectors, MODEL_INFO = load_eigen_data(
-            odb_tag=odb_tag, mode_tag=mode_tags[-1], solver=solver, resave=resave, interpolate_beam=interpolate_beam
+            odb_tag=odb_tag,
+            mode_tag=mode_tags[-1],
+            solver=solver,
+            resave=resave,
+            interpolate_beam=interpolate_beam,
         )
         if not interpolate_beam:
             interp_eigenvectors = None
-        plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors, interp_eigenvectors=interp_eigenvectors)
+        plotbase = PlotEigenBase(
+            MODEL_INFO,
+            modalProps,
+            eigenvectors,
+            interp_eigenvectors=interp_eigenvectors,
+        )
     elif mode.lower() == "buckling":
         modalProps, eigenvectors, MODEL_INFO = load_linear_buckling_data(odb_tag=odb_tag)
         plotbase = PlotBucklingBase(MODEL_INFO, modalProps, eigenvectors)
@@ -488,11 +508,20 @@ def plot_eigen_animation(
     if mode.lower() == "eigen":
         resave = odb_tag is None
         modalProps, eigenvectors, interp_eigenvectors, MODEL_INFO = load_eigen_data(
-            odb_tag=odb_tag, mode_tag=mode_tag, solver=solver, resave=resave, interpolate_beam=interpolate_beam
+            odb_tag=odb_tag,
+            mode_tag=mode_tag,
+            solver=solver,
+            resave=resave,
+            interpolate_beam=interpolate_beam,
         )
         if not interpolate_beam:
             interp_eigenvectors = None
-        plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors, interp_eigenvectors=interp_eigenvectors)
+        plotbase = PlotEigenBase(
+            MODEL_INFO,
+            modalProps,
+            eigenvectors,
+            interp_eigenvectors=interp_eigenvectors,
+        )
     elif mode.lower() == "buckling":
         modalProps, eigenvectors, MODEL_INFO = load_linear_buckling_data(odb_tag=odb_tag)
         plotbase = PlotBucklingBase(MODEL_INFO, modalProps, eigenvectors)
