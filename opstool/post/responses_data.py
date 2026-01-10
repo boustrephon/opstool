@@ -838,7 +838,23 @@ def loadODB(
 
 def get_model_data(
     odb_tag: int | str | None = None,
-    data_type: Literal["Nodal", "Frame", "Beam", "Link", "Truss", "Shell", "Plane", "Brick", "Solid"] | None = "Nodal",
+    data_type: Literal[
+        "Nodal",
+        "Frame",
+        "Beam",
+        "Link",
+        "Truss",
+        "Shell",
+        "Plane",
+        "Brick",
+        "Solid",
+        "Contact",
+        "FixedNode",
+        "NodalLoad",
+        "FrameLoad",
+        "MPConstraint",
+    ]
+    | None = "Nodal",
     from_responses: bool = False,
     lazy_load: bool = False,
     print_info: bool = True,
@@ -849,9 +865,9 @@ def get_model_data(
     ----------
     odb_tag: Union[int, str], default: one
         Tag of output databases (ODB) to be read.
-    data_type: Literal["Nodal", "Frame", "Beam", "Link", "Truss", "Shell", "Plane", "Brick", "Solid"], default: Nodal
+    data_type: Literal["Nodal", "Frame", "Beam", "Link", "Truss", "Shell", "Plane", "Brick", "Solid", "Contact", "FixedNode", "NodalLoad", "FrameLoad", "MPConstraint"], default: Nodal
         Type of data to be read.
-        Optional: "Nodal", "Frame", "Link", "Truss", "Shell", "Plane", "Brick".
+        Optional: "Nodal", "Frame", "Link", "Truss", "Shell", "Plane", "Brick", "Contact", "FixedNode", "NodalLoad", "FrameLoad", "MPConstraint".
 
         ... Note::
             For element data, the cells represent the index of the nodes in "Nodal" data.
@@ -896,6 +912,16 @@ def get_model_data(
             data_type = "PlaneData"
         elif data_type.lower() in ["brick", "solid"]:
             data_type = "BrickData"
+        elif data_type.lower() == "contact":
+            data_type = "ContactData"
+        elif data_type.lower() == "fixednode":
+            data_type = "FixedNodalData"
+        elif data_type.lower() == "nodalload":
+            data_type = "NodalLoadData"
+        elif data_type.lower() in ["frameload", "beamload"]:
+            data_type = "FrameLoadData"
+        elif data_type.lower() == "mpconstraint":
+            data_type = "MPConstraintData"
         else:
             raise ValueError(f"Data type {data_type} not found.")  # noqa: TRY003
 
