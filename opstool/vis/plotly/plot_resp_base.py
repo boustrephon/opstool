@@ -25,8 +25,12 @@ class PlotResponsePlotlyBase(PlotResponseBase):
         return f'<span style="color:{color}; font-weight:{weight}">{txt}</span>'
 
     @staticmethod
-    def _get_plotly_unstru_data(points, unstru_cell_types, unstru_cells, scalars=None, scalars_by_element=False):
-        grid = _VTKElementTriangulator(points, scalars=scalars, scalars_by_element=scalars_by_element)
+    def _get_plotly_unstru_data(
+        points, unstru_cell_types, unstru_cells, scalars=None, scalars_by_element=False
+    ):
+        grid = _VTKElementTriangulator(
+            points, scalars=scalars, scalars_by_element=scalars_by_element
+        )
         for cell_type, cell in zip(unstru_cell_types, unstru_cells):
             grid.add_cell(cell_type, cell)
         return grid.get_results()
@@ -77,8 +81,12 @@ class PlotResponsePlotlyBase(PlotResponseBase):
     def _plot_all_mesh(self, plotter, color="#738595", step=0):
         pos = self._get_node_da(step).to_numpy()
         line_cells, _ = self._get_line_cells(self._get_line_da(step, enforce=True))
-        _, unstru_cell_types, unstru_cells = self._get_unstru_cells(self._get_unstru_da(step))
-        output = self._get_plotly_unstru_data(pos, unstru_cell_types, unstru_cells, scalars=None)
+        _, unstru_cell_types, unstru_cells = self._get_unstru_cells(
+            self._get_unstru_da(step)
+        )
+        output = self._get_plotly_unstru_data(
+            pos, unstru_cell_types, unstru_cells, scalars=None
+        )
         face_line_points = output[1]
         line_points, _ = self._get_plotly_line_data(pos, line_cells, scalars=None)
         _plot_all_mesh(plotter, line_points, face_line_points, color=color, width=1.5)
@@ -94,10 +102,15 @@ class PlotResponsePlotlyBase(PlotResponseBase):
             txt["text"] = self.title["text"] + txt["text"]
             step = {
                 "method": "update",
-                "args": [{"visible": [False] * len(self.FIGURE.data)}, {"title": txt}],  # layout attribute
+                "args": [
+                    {"visible": [False] * len(self.FIGURE.data)},
+                    {"title": txt},
+                ],  # layout attribute
                 "label": str(i),
             }
-            step["args"][0]["visible"][idx_cum : idx_cum + ndatas[i]] = [True] * ndatas[i]
+            step["args"][0]["visible"][idx_cum : idx_cum + ndatas[i]] = [True] * ndatas[
+                i
+            ]
             # Toggle i'th trace to "visible"
             steps.append(step)
             idx_cum += ndatas[i]
@@ -117,11 +130,16 @@ class PlotResponsePlotlyBase(PlotResponseBase):
                 "cmin": clim[0],
                 "cmax": clim[1],
                 "showscale": showscale,
-                "colorbar": {"tickfont": {"size": self.pargs.font_size - 2}, "title": txt},
+                "colorbar": {
+                    "tickfont": {"size": self.pargs.font_size - 2},
+                    "title": txt,
+                },
             }
         self.FIGURE.update_layout(sliders=sliders, **coloraxiss)
 
-    def _update_antimate_layout(self, duration, cbar_title="", is_response_step=True, showscale=True):
+    def _update_antimate_layout(
+        self, duration, cbar_title="", is_response_step=True, showscale=True
+    ):
         if is_response_step:
             # Layout
             for i in range(len(self.FIGURE.frames)):
@@ -133,7 +151,10 @@ class PlotResponsePlotlyBase(PlotResponseBase):
                 "cmin": self.clim[0],
                 "cmax": self.clim[1],
                 "showscale": showscale,
-                "colorbar": {"tickfont": {"size": self.pargs.font_size - 2}, "title": cbar_title},
+                "colorbar": {
+                    "tickfont": {"size": self.pargs.font_size - 2},
+                    "title": cbar_title,
+                },
             }
             self.FIGURE.update_layout(**coloraxiss)
 
@@ -185,7 +206,7 @@ class PlotResponsePlotlyBase(PlotResponseBase):
             scene = self._get_plotly_dim_scene(mode="3d", show_outline=show_outline)
         self.FIGURE.update_layout(
             template=self.pargs.theme,
-            autosize=False,
+            autosize=True,
             showlegend=False,
             scene=scene,
             width=self.pargs.window_size[0],
@@ -210,9 +231,19 @@ class PlotResponsePlotlyBase(PlotResponseBase):
         xmax, ymax, zmax = upper
         # --------------------------------------------------------------
         if show_outline:
-            off_axis = {"showgrid": True, "zeroline": True, "visible": True, "autorange": False}
+            off_axis = {
+                "showgrid": True,
+                "zeroline": True,
+                "visible": True,
+                "autorange": False,
+            }
         else:
-            off_axis = {"showgrid": False, "zeroline": False, "visible": False, "autorange": False}
+            off_axis = {
+                "showgrid": False,
+                "zeroline": False,
+                "visible": False,
+                "autorange": False,
+            }
         if mode.lower() == "3d":
             eye = {
                 "x": -max_range * 2,
@@ -229,8 +260,16 @@ class PlotResponsePlotlyBase(PlotResponseBase):
             }
         elif mode.lower() == "2d":
             if show_outline:
-                xaxis = {"showbackground": False, "autorange": False, "range": [xmin, xmax]}
-                yaxis = {"showbackground": False, "autorange": False, "range": [ymin, ymax]}
+                xaxis = {
+                    "showbackground": False,
+                    "autorange": False,
+                    "range": [xmin, xmax],
+                }
+                yaxis = {
+                    "showbackground": False,
+                    "autorange": False,
+                    "range": [ymin, ymax],
+                }
                 zaxis = {
                     "showbackground": True,
                     "showticklabels": False,
@@ -370,9 +409,13 @@ def _make_lines_arrows(
         secs += cen
         for j in range(len(secs) - 1):
             ijk.append([len(points) + j, len(points) + j + 1, len(points) + len(secs)])
-            ijk.append([len(points) + j, len(points) + j + 1, len(points) + len(secs) + 1])
+            ijk.append(
+                [len(points) + j, len(points) + j + 1, len(points) + len(secs) + 1]
+            )
         ijk.append([len(points) + len(secs) - 1, len(points), len(points) + len(secs)])
-        ijk.append([len(points) + len(secs) - 1, len(points), len(points) + len(secs) + 1])
+        ijk.append(
+            [len(points) + len(secs) - 1, len(points), len(points) + len(secs) + 1]
+        )
         points.extend(np.vstack([secs, cen, tips]))
         labels.extend([hovers[i]] * (len(secs) + 2))
     points = np.array(points)
@@ -405,32 +448,38 @@ def _get_bc_points_3d(fixed_coords, fixed_dofs, s):
     for coord, dof in zip(fixed_coords, fixed_dofs):
         x, y, z = coord
         if dof[0] == "1":
-            points.extend([
-                [x, y - s / 2, z - s / 2],
-                [x, y + s / 2, z - s / 2],
-                [x, y + s / 2, z + s / 2],
-                [x, y - s / 2, z + s / 2],
-                [x, y - s / 2, z - s / 2],
-                [np.nan, np.nan, np.nan],
-            ])
+            points.extend(
+                [
+                    [x, y - s / 2, z - s / 2],
+                    [x, y + s / 2, z - s / 2],
+                    [x, y + s / 2, z + s / 2],
+                    [x, y - s / 2, z + s / 2],
+                    [x, y - s / 2, z - s / 2],
+                    [np.nan, np.nan, np.nan],
+                ]
+            )
         if dof[1] == "1":
-            points.extend([
-                [x - s / 2, y, z - s / 2],
-                [x + s / 2, y, z - s / 2],
-                [x + s / 2, y, z + s / 2],
-                [x - s / 2, y, z + s / 2],
-                [x - s / 2, y, z - s / 2],
-                [np.nan, np.nan, np.nan],
-            ])
+            points.extend(
+                [
+                    [x - s / 2, y, z - s / 2],
+                    [x + s / 2, y, z - s / 2],
+                    [x + s / 2, y, z + s / 2],
+                    [x - s / 2, y, z + s / 2],
+                    [x - s / 2, y, z - s / 2],
+                    [np.nan, np.nan, np.nan],
+                ]
+            )
         if dof[2] == "1":
-            points.extend([
-                [x - s / 2, y - s / 2, z],
-                [x + s / 2, y - s / 2, z],
-                [x + s / 2, y + s / 2, z],
-                [x - s / 2, y + s / 2, z],
-                [x - s / 2, y - s / 2, z],
-                [np.nan, np.nan, np.nan],
-            ])
+            points.extend(
+                [
+                    [x - s / 2, y - s / 2, z],
+                    [x + s / 2, y - s / 2, z],
+                    [x + s / 2, y + s / 2, z],
+                    [x - s / 2, y + s / 2, z],
+                    [x - s / 2, y - s / 2, z],
+                    [np.nan, np.nan, np.nan],
+                ]
+            )
     return np.array(points)
 
 
@@ -441,22 +490,26 @@ def _get_bc_points_2d(fixed_coords, fixed_dofs, s):
         x, y, z = coord
         if dof[2] == "1":
             y -= s / 2
-            points.extend([
-                [x - s / 2, y - s / 2, z],
-                [x + s / 2, y - s / 2, z],
-                [x + s / 2, y + s / 2, z],
-                [x - s / 2, y + s / 2, z],
-                [x - s / 2, y - s / 2, z],
-                [np.nan, np.nan, np.nan],
-            ])
+            points.extend(
+                [
+                    [x - s / 2, y - s / 2, z],
+                    [x + s / 2, y - s / 2, z],
+                    [x + s / 2, y + s / 2, z],
+                    [x - s / 2, y + s / 2, z],
+                    [x - s / 2, y - s / 2, z],
+                    [np.nan, np.nan, np.nan],
+                ]
+            )
         elif dof[0] == "1" and dof[1] == "1":
-            points.extend([
-                [x - s * 0.5, y - s, z],
-                [x + s * 0.5, y - s, z],
-                [x, y, z],
-                [x - s * 0.5, y - s, z],
-                [np.nan, np.nan, np.nan],
-            ])
+            points.extend(
+                [
+                    [x - s * 0.5, y - s, z],
+                    [x + s * 0.5, y - s, z],
+                    [x, y, z],
+                    [x - s * 0.5, y - s, z],
+                    [np.nan, np.nan, np.nan],
+                ]
+            )
         else:
             angles = np.linspace(0, 2 * np.pi, 21)
             coords = np.zeros((len(angles), 3))

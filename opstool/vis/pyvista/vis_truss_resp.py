@@ -117,7 +117,8 @@ class PlotTrussResponse(PlotTrussResponseBase, PlotResponsePyvistaBase):
             step, alpha, ele_tags
         )
         #  ---------------------------------
-        plotter.clear_actors()  # !!!!!!
+        # plotter.clear_actors()  # !!!!!!
+        self.clear_plotter(plotter)
         if plot_all_mesh:
             self._plot_all_mesh(plotter, color="gray", step=step)
         line_grid = _plot_lines(

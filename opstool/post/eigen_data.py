@@ -264,6 +264,7 @@ def load_eigen_data(
     mode_tag: int = 1,
     solver: str = "-genBandArpack",
     resave: bool = True,
+    interpolate_beam: bool = True,
 ):
     """Get the eigenvalue data from the saved file."""
     RESULTS_DIR = CONFIGS.get_output_dir()
@@ -277,7 +278,7 @@ def load_eigen_data(
     if not os.path.exists(filename):
         resave = True
     if resave:
-        save_eigen_data(odb_tag=odb_tag, mode_tag=mode_tag, solver=solver)
+        save_eigen_data(odb_tag=odb_tag, mode_tag=mode_tag, solver=solver, interpolate_beam=interpolate_beam)
     else:
         color = get_random_color()
         CONSOLE.print(f"{PKG_PREFIX} Loading eigen data from [bold {color}]{filename}[/] ...")

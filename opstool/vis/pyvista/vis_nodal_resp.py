@@ -102,7 +102,8 @@ class PlotNodalResponse(PlotNodalResponseBase, PlotResponsePyvistaBase):
         node_no_deform_coords = np.array(self._get_node_da(step))
         node_defo_coords, scalars = self._get_mesh_data(step, alpha)
         # ----------------------------------------------------------------------------------------------
-        plotter.clear_actors()  # ! clear
+        # plotter.clear_actors()  # ! clear
+        self.clear_plotter(plotter)
         point_grid, line_grid, solid_grid = _plot_all_mesh_cmap(
             plotter,
             node_defo_coords,

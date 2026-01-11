@@ -195,7 +195,8 @@ class PlotFrameResponse(PlotFrameResponseBase, PlotResponsePyvistaBase):
             beam_node_coords, beam_cells, sec_locs, resp, resp_scale, axis_data, show_values
         )
         #  ---------------------------------
-        plotter.clear_actors()  # !!!!!!
+        # plotter.clear_actors()  # !!!!!!
+        self.clear_plotter(plotter)
         if plot_all_mesh:
             self._plot_all_mesh(plotter, color="gray", step=step)
         line_grid = _plot_lines(

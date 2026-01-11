@@ -8,7 +8,12 @@ from matplotlib.colors import to_hex
 
 from ...post import load_model_data
 from ...utils import CONFIGS, get_bounds, gram_schmidt
-from .plot_resp_base import PlotResponsePlotlyBase, _make_lines_arrows, _plot_bc, _plot_mp_constraint
+from .plot_resp_base import (
+    PlotResponsePlotlyBase,
+    _make_lines_arrows,
+    _plot_bc,
+    _plot_mp_constraint,
+)
 from .plot_utils import (
     PLOT_ARGS,
     _get_ele_color,
@@ -36,7 +41,9 @@ class PlotModelBase(PlotResponsePlotlyBase):
             self.points = self.nodal_data.to_numpy()
             self.ndims = self.nodal_data.attrs["ndims"]
             self.show_zaxis = not np.max(self.ndims) <= 2
-            self.bounds, self.min_bound_size, self.max_bound_size = get_bounds(self.points)
+            self.bounds, self.min_bound_size, self.max_bound_size = get_bounds(
+                self.points
+            )
         else:
             raise ValueError("Model have no nodal data!")  # noqa: TRY003
         # -------------------------------------------------------------
@@ -64,7 +71,9 @@ class PlotModelBase(PlotResponsePlotlyBase):
         self.line_cells, self.line_tags = self._get_line_cells(self.line_data)
         # -------------------------------------------------------------
         self.unstru_data = model_info.get("UnstructuralData", [])
-        self.unstru_tags, self.unstru_cell_types, self.unstru_cells = self._get_unstru_cells(self.unstru_data)
+        self.unstru_tags, self.unstru_cell_types, self.unstru_cells = (
+            self._get_unstru_cells(self.unstru_data)
+        )
 
     def plot_model_one_color(
         self,
@@ -80,7 +89,9 @@ class PlotModelBase(PlotResponsePlotlyBase):
                 face_veci,
                 face_vecj,
                 face_veck,
-            ) = self._get_plotly_unstru_data(self.points, self.unstru_cell_types, self.unstru_cells)
+            ) = self._get_plotly_unstru_data(
+                self.points, self.unstru_cell_types, self.unstru_cells
+            )
             _plot_unstru(
                 plotter,
                 pos=face_points,
@@ -98,7 +109,9 @@ class PlotModelBase(PlotResponsePlotlyBase):
                 hoverinfo="skip",
             )
         if len(self.line_data) > 0:
-            line_points, line_mid_points = self._get_plotly_line_data(self.points, self.line_cells)
+            line_points, line_mid_points = self._get_plotly_line_data(
+                self.points, self.line_cells
+            )
             _plot_lines(
                 plotter,
                 pos=line_points,
@@ -147,7 +160,9 @@ class PlotModelBase(PlotResponsePlotlyBase):
             for i, name in enumerate(self.ele_types):
                 cell = np.array(self.ele_data_types[name][:, :-1], dtype=int)
                 if cell[0, 0] == 2:
-                    line_points, line_mid_points = self._get_plotly_line_data(self.points, cell)
+                    line_points, line_mid_points = self._get_plotly_line_data(
+                        self.points, cell
+                    )
                     _plot_lines(
                         plotter,
                         pos=line_points,
@@ -260,7 +275,9 @@ class PlotModelBase(PlotResponsePlotlyBase):
             else:
                 xaxis = np.array(coord2 - coord1)
                 global_z = [0.0, 0.0, 1.0]
-                cos_angle = xaxis.dot(global_z) / (np.linalg.norm(xaxis) * np.linalg.norm(global_z))
+                cos_angle = xaxis.dot(global_z) / (
+                    np.linalg.norm(xaxis) * np.linalg.norm(global_z)
+                )
                 if np.abs(1 - cos_angle**2) < 1e-10:
                     yaxis = np.cross([-1.0, 0.0, 0.0], xaxis)
                 else:
@@ -270,14 +287,16 @@ class PlotModelBase(PlotResponsePlotlyBase):
                 idx = len(points_nonzero)
                 for i in range(5):
                     cells_nonzero.extend([2, idx + i, idx + i + 1])
-                points_nonzero.extend([
-                    coord1 + 0.25 * length * xaxis,
-                    coord1 + 0.25 * length * xaxis + 0.25 * length * yaxis,
-                    coord1 + 0.5 * length * xaxis - 0.25 * length * yaxis,
-                    coord1 + 0.5 * length * xaxis + 0.25 * length * yaxis,
-                    coord1 + 0.75 * length * xaxis - 0.25 * length * yaxis,
-                    coord1 + 0.75 * length * xaxis,
-                ])
+                points_nonzero.extend(
+                    [
+                        coord1 + 0.25 * length * xaxis,
+                        coord1 + 0.25 * length * xaxis + 0.25 * length * yaxis,
+                        coord1 + 0.5 * length * xaxis - 0.25 * length * yaxis,
+                        coord1 + 0.5 * length * xaxis + 0.25 * length * yaxis,
+                        coord1 + 0.75 * length * xaxis - 0.25 * length * yaxis,
+                        coord1 + 0.75 * length * xaxis,
+                    ]
+                )
         # plot
         if len(points_zero) > 0:
             points_zero = np.array(points_zero)
@@ -286,7 +305,10 @@ class PlotModelBase(PlotResponsePlotlyBase):
                     x=points_zero[:, 0],
                     y=points_zero[:, 1],
                     z=points_zero[:, 2],
-                    marker={"size": self.pargs.point_size * 2, "color": self.pargs.color_link},
+                    marker={
+                        "size": self.pargs.point_size * 2,
+                        "color": self.pargs.color_link,
+                    },
                     mode="markers",
                     hoverinfo="skip",
                 )
@@ -301,7 +323,10 @@ class PlotModelBase(PlotResponsePlotlyBase):
                     x=x,
                     y=y,
                     z=z,
-                    line={"color": self.pargs.color_link, "width": self.pargs.line_width / 2},
+                    line={
+                        "color": self.pargs.color_link,
+                        "width": self.pargs.line_width / 2,
+                    },
                     mode="lines",
                     connectgaps=False,
                     hoverinfo="skip",
@@ -360,7 +385,9 @@ class PlotModelBase(PlotResponsePlotlyBase):
             )
 
         else:
-            warnings.warn("Model has no frame elements when show_local_crd=True!", stacklevel=2)
+            warnings.warn(
+                "Model has no frame elements when show_local_crd=True!", stacklevel=2
+            )
 
     def plot_link_local_axes(self, plotter: list, alpha: float = 1.0):
         if len(self.link_data) == 0:
@@ -606,13 +633,17 @@ class PlotModelBase(PlotResponsePlotlyBase):
     def update_fig(self, plotter: list, show_outline: bool = False):
         self.FIGURE.add_traces(plotter)
         if not self.show_zaxis:
-            scene = self._get_plotly_dim_scene(mode="2d", show_outline=show_outline, pad_ratio=0.15)
+            scene = self._get_plotly_dim_scene(
+                mode="2d", show_outline=show_outline, pad_ratio=0.15
+            )
         else:
-            scene = self._get_plotly_dim_scene(mode="3d", show_outline=show_outline, pad_ratio=0.15)
+            scene = self._get_plotly_dim_scene(
+                mode="3d", show_outline=show_outline, pad_ratio=0.15
+            )
         txt = f"<b>{PKG_NAME}</b>:: Num. Node: <b>{len(self.nodal_tags)}</b> Num. Ele: <b>{len(self.ele_tags)}</b>"
         self.FIGURE.update_layout(
             template=self.pargs.theme,
-            autosize=False,
+            autosize=True,
             showlegend=False,
             scene=scene,
             title={

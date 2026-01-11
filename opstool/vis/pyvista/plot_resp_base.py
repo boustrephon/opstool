@@ -26,6 +26,17 @@ class PlotResponsePyvistaBase(PlotResponseBase):
 
         pv.set_plot_theme(PLOT_ARGS.theme)
 
+    def clear_plotter(self, plotter: pv.Plotter):
+        actors_map = plotter.actors
+        actors = []
+        for key in actors_map:
+            if "vtkslider" not in key.lower():
+                actors.append(key)
+        if len(actors) > 0:
+            plotter.remove_actor(actors)
+        plotter.scalar_bars.clear()
+        # plotter.remove_scalar_bar()
+
     def _plot_outline(self, plotter: pv.Plotter):
         plotter.show_bounds(
             grid=False,

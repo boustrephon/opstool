@@ -387,6 +387,7 @@ def plot_eigen(
     show_mp_constraint: bool = False,
     solver: str = "-genBandArpack",
     mode: str = "eigen",
+    interpolate_beam: bool = True,
 ) -> go.Figure:
     """Modal visualization.
 
@@ -423,6 +424,9 @@ def plot_eigen(
         If "eigen", it will plot the eigenvalues and eigenvectors.
         If "buckling", it will plot the buckling factors and modes.
         Added in v0.1.15.
+    interpolate_beam: bool, default: True
+        Whether to interpolate beam elements for better visualization.
+        Only applicable for eigenvalue analysis.
 
     Returns
     -------
@@ -438,8 +442,10 @@ def plot_eigen(
         resave = odb_tag is None
         odb_tag = "Auto" if odb_tag is None else odb_tag
         modalProps, eigenvectors, interp_eigenvectors, MODEL_INFO = load_eigen_data(
-            odb_tag=odb_tag, mode_tag=mode_tags[-1], solver=solver, resave=resave
+            odb_tag=odb_tag, mode_tag=mode_tags[-1], solver=solver, resave=resave, interpolate_beam=interpolate_beam
         )
+        if not interpolate_beam:
+            interp_eigenvectors = None
         plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors, interp_eigenvectors=interp_eigenvectors)
     elif mode.lower() == "buckling":
         modalProps, eigenvectors, MODEL_INFO = load_linear_buckling_data(odb_tag=odb_tag)
@@ -488,6 +494,7 @@ def plot_eigen_animation(
     bc_scale: float = 1.0,
     show_mp_constraint: bool = False,
     mode: str = "eigen",
+    interpolate_beam: bool = True,
 ) -> go.Figure:
     """Modal animation visualization.
 
@@ -525,6 +532,9 @@ def plot_eigen_animation(
         If "eigen", it will plot the eigenvalues and eigenvectors.
         If "buckling", it will plot the buckling factors and modes.
         Added in v0.1.15.
+    interpolate_beam: bool, default: True
+        Whether to interpolate beam elements for better visualization.
+        Only applicable for eigenvalue analysis.
 
     Returns
     -------
@@ -536,8 +546,10 @@ def plot_eigen_animation(
     if mode.lower() == "eigen":
         resave = odb_tag is None
         modalProps, eigenvectors, interp_eigenvectors, MODEL_INFO = load_eigen_data(
-            odb_tag=odb_tag, mode_tag=mode_tag, solver=solver, resave=resave
+            odb_tag=odb_tag, mode_tag=mode_tag, solver=solver, resave=resave, interpolate_beam=interpolate_beam
         )
+        if not interpolate_beam:
+            interp_eigenvectors = None
         plotbase = PlotEigenBase(MODEL_INFO, modalProps, eigenvectors, interp_eigenvectors=interp_eigenvectors)
     elif mode.lower() == "buckling":
         modalProps, eigenvectors, MODEL_INFO = load_linear_buckling_data(odb_tag=odb_tag)

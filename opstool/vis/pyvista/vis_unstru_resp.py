@@ -93,7 +93,8 @@ class PlotUnstruResponse(PlotUnstruResponseBase, PlotResponsePyvistaBase):
         node_no_deform_coords = np.array(self._get_node_da(step))
         pos, cells, cell_types, scalars = self._get_mesh_data(step, ele_tags, defo_scale)
         #  ---------------------------------
-        plotter.clear_actors()  # !!!!!!
+        # plotter.clear_actors()  # !!!!!!
+        self.clear_plotter(plotter)
         if plot_all_mesh:
             self._plot_all_mesh(plotter, color="gray", step=step)
         resp_plot = _plot_unstru_cmap(
