@@ -444,7 +444,7 @@ plotter = opsvis.plot_nodal_responses_animation(
     resp_type="disp",
     resp_dof=["UX", "UY"],
     framerate=200,  # Frames per second
-    savefig="NodalRespAnimation.gif",  # or mp4
+    savefig="NodalRespAnimation.gif",  # or mp4 (recommended, rapid and high-quality)
     defo_scale=10.0,
     interpolate_beam_disp=True,
 )

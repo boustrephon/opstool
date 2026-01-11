@@ -33,6 +33,23 @@ The `utils <https://github.com/yexiang92/opstool/tree/master/examples/postproces
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="Original example by Laura Eads, Stanford University, see here">
+
+.. only:: html
+
+  .. image:: /_sphinx_gallery_examples/examples/postprocessing/images/thumb/sphx_glr_ex-MRF-2Story-Concentrated-PanelZone_thumb.png
+    :alt:
+
+  :ref:`sphx_glr__sphinx_gallery_examples_examples_postprocessing_ex-MRF-2Story-Concentrated-PanelZone.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Pushover and Dynamic Analyses of 2-Story Moment Frame with Panel Zones and RBS</div>
+    </div>
+
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="See PressureDependMultiYield-Example 6 example for more details.">
 
 .. only:: html
@@ -212,6 +229,7 @@ The `utils <https://github.com/yexiang92/opstool/tree/master/examples/postproces
    :hidden:
 
    /_sphinx_gallery_examples/examples/postprocessing/ex-2DFrame-Pushover
+   /_sphinx_gallery_examples/examples/postprocessing/ex-MRF-2Story-Concentrated-PanelZone
    /_sphinx_gallery_examples/examples/postprocessing/ex-PressureDependMultiYield-6
    /_sphinx_gallery_examples/examples/postprocessing/ex-cantilever-roll-up
    /_sphinx_gallery_examples/examples/postprocessing/ex-double-layer-shallow-dome

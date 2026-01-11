@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**02:17.126** total execution time for 2 files **from _sphinx_gallery_examples\quick-start**:
+**01:59.743** total execution time for 2 files **from _sphinx_gallery_examples\quick-start**:
 
 .. container::
 
@@ -33,8 +33,8 @@ Computation times
      - Time
      - Mem (MB)
    * - :ref:`sphx_glr__sphinx_gallery_examples_quick-start_ex-frame2D.py` (``ex-frame2D.py``)
-     - 02:09.919
+     - 01:59.743
      - 0.0
    * - :ref:`sphx_glr__sphinx_gallery_examples_quick-start_ex-quick-plot-model.py` (``ex-quick-plot-model.py``)
-     - 00:07.207
+     - 00:00.000
      - 0.0

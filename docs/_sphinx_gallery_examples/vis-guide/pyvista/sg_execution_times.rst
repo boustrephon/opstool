@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**00:30.114** total execution time for 8 files **from _sphinx_gallery_examples\vis-guide\pyvista**:
+**00:03.339** total execution time for 8 files **from _sphinx_gallery_examples\vis-guide\pyvista**:
 
 .. container::
 
@@ -32,27 +32,27 @@ Computation times
    * - Example
      - Time
      - Mem (MB)
-   * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-08-brick-resp-pyvista.py` (``ex-08-brick-resp-pyvista.py``)
-     - 00:08.520
-     - 0.0
-   * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-03-nodal-resp-pyvista.py` (``ex-03-nodal-resp-pyvista.py``)
-     - 00:05.405
-     - 0.0
-   * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-04-frame-resp-pyvista.py` (``ex-04-frame-resp-pyvista.py``)
-     - 00:03.186
-     - 0.0
-   * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-06-shell-resp-pyvista.py` (``ex-06-shell-resp-pyvista.py``)
-     - 00:03.173
-     - 0.0
    * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-02-eigen-pyvista.py` (``ex-02-eigen-pyvista.py``)
-     - 00:02.955
-     - 0.0
-   * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-05-truss-resp-pyvista.py` (``ex-05-truss-resp-pyvista.py``)
-     - 00:02.590
-     - 0.0
-   * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-07-plane-resp-pyvista.py` (``ex-07-plane-resp-pyvista.py``)
-     - 00:02.531
+     - 00:03.339
      - 0.0
    * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-01-model-pyvista.py` (``ex-01-model-pyvista.py``)
-     - 00:01.753
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-03-nodal-resp-pyvista.py` (``ex-03-nodal-resp-pyvista.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-04-frame-resp-pyvista.py` (``ex-04-frame-resp-pyvista.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-05-truss-resp-pyvista.py` (``ex-05-truss-resp-pyvista.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-06-shell-resp-pyvista.py` (``ex-06-shell-resp-pyvista.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-07-plane-resp-pyvista.py` (``ex-07-plane-resp-pyvista.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr__sphinx_gallery_examples_vis-guide_pyvista_ex-08-brick-resp-pyvista.py` (``ex-08-brick-resp-pyvista.py``)
+     - 00:00.000
      - 0.0

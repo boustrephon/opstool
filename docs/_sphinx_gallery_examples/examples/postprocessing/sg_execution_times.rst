@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**01:14.350** total execution time for 11 files **from _sphinx_gallery_examples\examples\postprocessing**:
+**00:33.318** total execution time for 12 files **from _sphinx_gallery_examples\examples\postprocessing**:
 
 .. container::
 
@@ -32,8 +32,8 @@ Computation times
    * - Example
      - Time
      - Mem (MB)
-   * - :ref:`sphx_glr__sphinx_gallery_examples_examples_postprocessing_ex-nonlinear-frame-transient.py` (``ex-nonlinear-frame-transient.py``)
-     - 01:14.350
+   * - :ref:`sphx_glr__sphinx_gallery_examples_examples_postprocessing_ex-MRF-2Story-Concentrated-PanelZone.py` (``ex-MRF-2Story-Concentrated-PanelZone.py``)
+     - 00:33.318
      - 0.0
    * - :ref:`sphx_glr__sphinx_gallery_examples_examples_postprocessing_ex-2DFrame-Pushover.py` (``ex-2DFrame-Pushover.py``)
      - 00:00.000
@@ -57,6 +57,9 @@ Computation times
      - 00:00.000
      - 0.0
    * - :ref:`sphx_glr__sphinx_gallery_examples_examples_postprocessing_ex-fsi-gu.py` (``ex-fsi-gu.py``)
+     - 00:00.000
+     - 0.0
+   * - :ref:`sphx_glr__sphinx_gallery_examples_examples_postprocessing_ex-nonlinear-frame-transient.py` (``ex-nonlinear-frame-transient.py``)
      - 00:00.000
      - 0.0
    * - :ref:`sphx_glr__sphinx_gallery_examples_examples_postprocessing_ex-sensitivity2.py` (``ex-sensitivity2.py``)

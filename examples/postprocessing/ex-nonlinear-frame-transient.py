@@ -362,7 +362,7 @@ fig
 # %%
 fig = opstool.vis.pyvista.plot_nodal_responses(
     odb_tag=1,
-    slides=False,
+    slides=False,  # plot for the step with maximum absolute response
     resp_type="disp",
     resp_dof=["UX", "UY", "UZ"],
     defo_scale=5,
