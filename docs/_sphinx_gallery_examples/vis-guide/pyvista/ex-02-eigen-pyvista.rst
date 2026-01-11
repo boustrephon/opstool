@@ -147,7 +147,7 @@ In actual use, ``notebook=False`` should be used. This is just for the convenien
 
 .. code-block:: Python
 
-    opsvis.set_plot_props(point_size=0, line_width=3, cmap="coolwarm", notebook=True)
+    opsvis.set_plot_props(point_size=0, line_width=3, cmap="coolwarm")
 
 
 
@@ -214,7 +214,6 @@ For detailed parameters and customization options, please refer to the :func:`op
  .. code-block:: none
 
     OPSTOOL™ ::  Loading eigen data from G:\opstool\docs\.opstool.output/EigenData-1.zarr ...
-    Widget(value='<iframe src="http://localhost:64039/index.html?ui=P_0x2a388910740_0&reconnect=auto" class="pyvista" style="width: 99%; height: 600px; border: 1px solid rgb(221,221,221);"></iframe>')
 
 
 
@@ -273,7 +272,6 @@ When ``subplots`` set to `False`, displays the mode shapes as a slideshow, trans
  .. code-block:: none
 
     OPSTOOL™ ::  Loading eigen data from G:\opstool\docs\.opstool.output/EigenData-1.zarr ...
-    Widget(value='<iframe src="http://localhost:64039/index.html?ui=P_0x2a398a26fc0_0&reconnect=auto" class="pyvista" style="width: 99%; height: 600px; border: 1px solid rgb(221,221,221);"></iframe>')
 
 
 
@@ -317,7 +315,7 @@ The following example demonstrates how to animate Mode 1:
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 2.955 seconds)
+   **Total running time of the script:** (0 minutes 3.339 seconds)
 
 
 .. _sphx_glr_download__sphinx_gallery_examples_vis-guide_pyvista_ex-02-eigen-pyvista.py:

@@ -57,7 +57,7 @@ opst.post.save_eigen_data(odb_tag=1, mode_tag=10)
 #    This flexibility allows for detailed and customized visualization of the modal data, making it easier to analyze structural behavior.
 #
 # In actual use, ``notebook=False`` should be used. This is just for the convenience of generating documents.
-opsvis.set_plot_props(point_size=0, line_width=3, cmap="coolwarm", notebook=True)
+opsvis.set_plot_props(point_size=0, line_width=3, cmap="coolwarm")
 
 # %%
 # .. Note::
