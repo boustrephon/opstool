@@ -3,9 +3,7 @@ from contextlib import contextmanager
 from typing import Optional, TypedDict, Union
 
 import numpy as np
-import warnings
 from rich import print as rprint
-from rich.console import Console
 from tqdm import tqdm
 from typing_extensions import Literal, Unpack
 
@@ -25,15 +23,20 @@ def suppress_ops_print(verbose=False):
     #     ops.logFile(LOG_FILE)
     yield
 
-console = Console()
-def rich_showwarning(message, category, filename, lineno, file=None, line=None):
-    console.print(
-        f"[bold yellow]⚠️ [/bold yellow] "
-        f"[bold yellow]{category.__name__}:[/bold yellow] "
-        f"[bold yellow]{message}[/bold yellow] "
-        f"[dim]({filename}:{lineno})[/dim]"
-    )
-warnings.showwarning = rich_showwarning
+
+# console = Console()
+
+
+# def rich_showwarning(message, category, filename, lineno, file=None, line=None):
+#     console.print(
+#         f"[bold yellow]⚠️ [/bold yellow] "
+#         f"[bold yellow]{category.__name__}:[/bold yellow] "
+#         f"[bold yellow]{message}[/bold yellow] "
+#         f"[dim]({filename}:{lineno})[/dim]"
+#     )
+
+
+# warnings.showwarning = rich_showwarning
 
 
 class _kargs_types(TypedDict, total=False):
@@ -397,123 +400,43 @@ class SmartAnalyze:
             self._set_progress_bar(npts)
         return list(range(1, npts + 1))
 
-    # def static_split(self, targets: Union[list, tuple, np.ndarray], maxStep: Optional[float] = None):
-    #     """
-    #     Returns a sequence of substeps for static analysis.
-
-    #     Parameters
-    #     ----------
-    #     targets : list, tuple, or np.ndarray
-    #         Target displacements. First element should be ≥ 0.
-    #     maxStep : float, optional
-    #         Maximum step size. If None, uses difference between first two targets.
-
-    #     Returns
-    #     -------
-    #     segs : list of float
-    #         Sequence of substeps to reach each target displacement.
-    #     """
-    #     targets = np.atleast_1d(targets).astype(float)
-    #     if targets.ndim != 1:
-    #         raise ValueError("targets must be 1D!")  # noqa: TRY003
-    #     if len(targets) == 1 and maxStep is None:
-    #         raise ValueError("When only one target is given, maxStep must be specified!")  # noqa: TRY003
-    #     if targets[0] != 0.0:
-    #         targets = np.insert(targets, 0, 0.0)
-    #     if maxStep is None:
-    #         maxStep = targets[1] - targets[0]
-
-    #     segs = []
-    #     for start, end in zip(targets[:-1], targets[1:]):
-    #         delta = end - start
-    #         if abs(delta) < self.eps:
-    #             continue
-    #         direction = np.sign(delta)
-    #         num_steps = int(abs(delta) // maxStep)
-    #         remainder = abs(delta) - num_steps * maxStep
-    #         segs.extend([direction * maxStep] * num_steps)
-    #         if remainder > self.eps:
-    #             segs.append(direction * remainder)
-
-    #     self.current_args["npts"] = len(segs)
-    #     if not self.debug_mode and self.progress is None:
-    #         self._set_progress_bar(len(segs))
-    #     return segs
-
-    def static_split(
-        self,
-        targets: Union[int, float, list, tuple, np.ndarray],
-        maxStep: Optional[float] = None,
-        start: float = 0.0,
-    ) -> list[float]:
+    def static_split(self, targets: Union[list, tuple, np.ndarray, float], maxStep: Optional[float] = None):
         """
         Returns a sequence of substeps for static analysis.
 
         Parameters
         ----------
         targets : list, tuple, or np.ndarray
-            Target displacements (relative to the starting point).
+            Target displacements sequence.
+            If only one target is given, it is [0, target].
+            If multiple targets are given, the segmentation is done between each pair of targets by maxStep.
+            The first target is not necessarily zero.
+
         maxStep : float, optional
-            Maximum step size. If None, uses the difference between the first two points.
-        start : float, default 0.0
-            Starting displacement of the load path. The returned substeps will begin from
-            this value and progress towards the provided targets.
+            Maximum step size. If None, uses difference between first two targets.
 
         Returns
         -------
         segs : list of float
-            Sequence of incremental substeps (Δu) that, when cumulatively summed starting
-            from `start`, reach each target displacement.
-
-        Notes
-        -----
-        When ``start != 0.0``, analysis starts from a non-zero displacement.
-        Ensure that the necessary pre-analysis steps have been performed to reach this initial state.
+            Sequence of substeps to reach each target displacement.
         """
-
         targets = np.atleast_1d(targets).astype(float)
         if targets.ndim != 1:
-            raise ValueError("targets must be 1D!")
-
-        if len(targets) == 0:
-            raise ValueError("targets must contain at least one value!")
-
-        # Issue warning if starting from non-zero displacement
-        if start != 0.0:
-            warnings.warn(
-                f"Analysis starts from a non-zero displacement (start={start:.6g}). "
-                f"Ensure that the necessary pre-analysis steps have been performed to reach this initial state.",
-                UserWarning,
-            )
-
-        # Build the full displacement sequence
-        if np.isclose(targets[0], start, atol=self.eps):
-            full_targets = targets
-        else:
-            full_targets = np.insert(targets, 0, start)
-
-        # Determine default maxStep if not provided
+            raise ValueError("targets must be 1D!")  # noqa: TRY003
+        if len(targets) == 1:
+            targets = np.array([0.0, targets[0]])
         if maxStep is None:
-            if len(full_targets) < 2:
-                raise ValueError(
-                    "When only one target is given and maxStep is None, "
-                    "at least two points are needed to infer a step size."
-                )
-            maxStep = abs(full_targets[1] - full_targets[0])
-            if maxStep < self.eps:
-                raise ValueError("Inferred maxStep is effectively zero.")
+            maxStep = targets[1] - targets[0]
 
-        segs: list[float] = []
-        for current, next_disp in zip(full_targets[:-1], full_targets[1:]):
-            delta = next_disp - current
+        segs = []
+        for start, end in zip(targets[:-1], targets[1:]):
+            delta = end - start
             if abs(delta) < self.eps:
                 continue
-
             direction = np.sign(delta)
-            num_full_steps = int(abs(delta) // maxStep)
-            remainder = abs(delta) - num_full_steps * maxStep
-
-            segs.extend([direction * maxStep] * num_full_steps)
+            num_steps = int(abs(delta) // maxStep)
+            remainder = abs(delta) - num_steps * maxStep
+            segs.extend([direction * maxStep] * num_steps)
             if remainder > self.eps:
                 segs.append(direction * remainder)
 
@@ -521,6 +444,88 @@ class SmartAnalyze:
         if not self.debug_mode and self.progress is None:
             self._set_progress_bar(len(segs))
         return segs
+
+    # def static_split(
+    #     self,
+    #     targets: Union[int, float, list, tuple, np.ndarray],
+    #     maxStep: Optional[float] = None,
+    #     start: float = 0.0,
+    # ) -> list[float]:
+    #     """
+    #     Returns a sequence of substeps for static analysis.
+
+    #     Parameters
+    #     ----------
+    #     targets : list, tuple, or np.ndarray
+    #         Target displacements (relative to the starting point).
+    #     maxStep : float, optional
+    #         Maximum step size. If None, uses the difference between the first two points.
+    #     start : float, default 0.0
+    #         Starting displacement of the load path. The returned substeps will begin from
+    #         this value and progress towards the provided targets.
+
+    #     Returns
+    #     -------
+    #     segs : list of float
+    #         Sequence of incremental substeps (Δu) that, when cumulatively summed starting
+    #         from `start`, reach each target displacement.
+
+    #     Notes
+    #     -----
+    #     When ``start != 0.0``, analysis starts from a non-zero displacement.
+    #     Ensure that the necessary pre-analysis steps have been performed to reach this initial state.
+    #     """
+
+    #     targets = np.atleast_1d(targets).astype(float)
+    #     if targets.ndim != 1:
+    #         raise ValueError("targets must be 1D!")
+
+    #     if len(targets) == 0:
+    #         raise ValueError("targets must contain at least one value!")
+
+    #     # Issue warning if starting from non-zero displacement
+    #     if start != 0.0:
+    #         warnings.warn(
+    #             f"Analysis starts from a non-zero displacement (start={start:.6g}). "
+    #             f"Ensure that the necessary pre-analysis steps have been performed to reach this initial state.",
+    #             UserWarning,
+    #         )
+
+    #     # Build the full displacement sequence
+    #     if np.isclose(targets[0], start, atol=self.eps):
+    #         full_targets = targets
+    #     else:
+    #         full_targets = np.insert(targets, 0, start)
+
+    #     # Determine default maxStep if not provided
+    #     if maxStep is None:
+    #         if len(full_targets) < 2:
+    #             raise ValueError(
+    #                 "When only one target is given and maxStep is None, "
+    #                 "at least two points are needed to infer a step size."
+    #             )
+    #         maxStep = abs(full_targets[1] - full_targets[0])
+    #         if maxStep < self.eps:
+    #             raise ValueError("Inferred maxStep is effectively zero.")
+
+    #     segs: list[float] = []
+    #     for current, next_disp in zip(full_targets[:-1], full_targets[1:]):
+    #         delta = next_disp - current
+    #         if abs(delta) < self.eps:
+    #             continue
+
+    #         direction = np.sign(delta)
+    #         num_full_steps = int(abs(delta) // maxStep)
+    #         remainder = abs(delta) - num_full_steps * maxStep
+
+    #         segs.extend([direction * maxStep] * num_full_steps)
+    #         if remainder > self.eps:
+    #             segs.append(direction * remainder)
+
+    #     self.current_args["npts"] = len(segs)
+    #     if not self.debug_mode and self.progress is None:
+    #         self._set_progress_bar(len(segs))
+    #     return segs
 
     def _get_time(self):
         return time.time() - self.current_args["startTime"]
