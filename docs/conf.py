@@ -51,7 +51,7 @@ os.environ["PYTHONPATH"] = ":".join((str(this_dir), os.environ.get("PYTHONPATH",
 sys.path.append(str(this_dir))
 
 project = "opstool"
-copyright = "2025, Yexiang Yan"
+copyright = "2026, Yexiang Yan"
 author = "Yexiang Yan"
 version = release = __version__
 

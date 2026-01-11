@@ -1407,8 +1407,8 @@ ops.wipeAnalysis()
 ops.constraints("Plain")
 ops.numberer("RCM")
 ops.system("UmfPack")
-ops.test("NormDispIncr", 1.0e-8, 10)
-ops.algorithm("Newton")
+# ops.test("NormDispIncr", 1.0e-8, 10)
+# ops.algorithm("Newton")
 ops.integrator("Newmark", 0.5, 0.25)
 ops.analysis("Transient")
 
@@ -1418,6 +1418,8 @@ NumSteps = len(gm_data)
 
 smart_analysis = opst.anlys.SmartAnalyze(
     analysis_type="Transient",
+    testTol=1.0e-10,
+    testType="EnergyIncr",
     testIterTimes=100,
     tryAddTestTimes=True,  # add test times to the analysis
     testIterTimesMore=[250, 500, 1000],

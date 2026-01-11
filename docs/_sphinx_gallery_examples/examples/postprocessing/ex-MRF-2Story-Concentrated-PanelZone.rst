@@ -1546,13 +1546,13 @@ Pushover analysis loop and ODB recording
  .. code-block:: none
 
     >>> ✳️ OPSTOOL::SmartAnalyze:: Setting algorithm to  KrylovNewton ...
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 15.432 %. Time consumption: 0.727 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 30.864 %. Time consumption: 1.427 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 46.296 %. Time consumption: 2.137 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 61.728 %. Time consumption: 2.833 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 77.160 %. Time consumption: 3.529 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 92.593 %. Time consumption: 4.226 s.
-    >>> 🎉 OPSTOOL::SmartAnalyze:: Successfully finished! Time consumption: 4.558 s. 🎉
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 15.432 %. Time consumption: 0.921 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 30.864 %. Time consumption: 1.612 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 46.296 %. Time consumption: 2.307 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 61.728 %. Time consumption: 2.992 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 77.160 %. Time consumption: 3.686 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 92.593 %. Time consumption: 4.374 s.
+    >>> 🎉 OPSTOOL::SmartAnalyze:: Successfully finished! Time consumption: 4.702 s. 🎉
     OPSTOOL™ ::  All responses data with _odb_tag = pushover saved in 
     G:\opstool\docs\.opstool.output\RespStepData-pushover.odb!
     Pushover complete
@@ -1993,14 +1993,21 @@ Transient analysis setup
     ops.constraints("Plain")
     ops.numberer("RCM")
     ops.system("UmfPack")
-    ops.test("NormDispIncr", 1.0e-8, 10)
-    ops.algorithm("Newton")
+    # ops.test("NormDispIncr", 1.0e-8, 10)
+    # ops.algorithm("Newton")
     ops.integrator("Newmark", 0.5, 0.25)
     ops.analysis("Transient")
 
 
 
 
+
+.. rst-class:: sphx-glr-script-out
+
+ .. code-block:: none
+
+    WARNING analysis Transient - no Algorithm yet specified, 
+     NewtonRaphson default will be used
 
 
 
@@ -2009,7 +2016,7 @@ Transient analysis setup
 
 Dynamic analysis loop and ODB recording
 
-.. GENERATED FROM PYTHON SOURCE LINES 1417-1441
+.. GENERATED FROM PYTHON SOURCE LINES 1417-1443
 
 .. code-block:: Python
 
@@ -2017,6 +2024,8 @@ Dynamic analysis loop and ODB recording
 
     smart_analysis = opst.anlys.SmartAnalyze(
         analysis_type="Transient",
+        testTol=1.0e-10,
+        testType="EnergyIncr",
         testIterTimes=100,
         tryAddTestTimes=True,  # add test times to the analysis
         testIterTimesMore=[250, 500, 1000],
@@ -2046,14 +2055,14 @@ Dynamic analysis loop and ODB recording
  .. code-block:: none
 
     >>> ✳️ OPSTOOL::SmartAnalyze:: Setting algorithm to  KrylovNewton ...
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 4.008 %. Time consumption: 0.735 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 8.016 %. Time consumption: 1.448 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 12.024 %. Time consumption: 2.161 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 16.032 %. Time consumption: 2.877 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 20.040 %. Time consumption: 3.607 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 24.048 %. Time consumption: 4.329 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 28.056 %. Time consumption: 5.063 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 32.064 %. Time consumption: 5.782 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 4.008 %. Time consumption: 0.846 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 8.016 %. Time consumption: 1.575 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 12.024 %. Time consumption: 2.292 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 16.032 %. Time consumption: 3.059 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 20.040 %. Time consumption: 3.766 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 24.048 %. Time consumption: 4.489 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 28.056 %. Time consumption: 5.223 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 32.064 %. Time consumption: 5.942 s.
     WARNING: CTestEnergyIncr::test() - failed to converge 
     after: 100 iterations
      current EnergyIncr: 7041.12 (max: 1e-10)       Norm deltaX: 10.5354, Norm deltaR: 63939.7
@@ -2089,8 +2098,8 @@ Dynamic analysis loop and ODB recording
     size 0.005
     >>> ✳️ OPSTOOL::SmartAnalyze:: Current total step size 0.01, completed sub-step size 0.01, remaining sub-step 
     size 0.0
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 36.072 %. Time consumption: 6.572 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 40.080 %. Time consumption: 7.408 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 36.072 %. Time consumption: 6.726 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 40.080 %. Time consumption: 7.529 s.
     WARNING: CTestEnergyIncr::test() - failed to converge 
     after: 100 iterations
      current EnergyIncr: 162.991 (max: 1e-10)       Norm deltaX: 0.344198, Norm deltaR: 24868.6
@@ -2111,8 +2120,8 @@ Dynamic analysis loop and ODB recording
     size 0.005
     >>> ✳️ OPSTOOL::SmartAnalyze:: Current total step size 0.01, completed sub-step size 0.01, remaining sub-step 
     size 0.0
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 44.088 %. Time consumption: 8.191 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 48.096 %. Time consumption: 8.922 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 44.088 %. Time consumption: 8.307 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 48.096 %. Time consumption: 9.046 s.
     WARNING: CTestEnergyIncr::test() - failed to converge 
     after: 100 iterations
      current EnergyIncr: 7827.97 (max: 1e-10)       Norm deltaX: 15.8857, Norm deltaR: 52609.1
@@ -2134,7 +2143,7 @@ Dynamic analysis loop and ODB recording
     remaining sub-step size 0.0075
     >>> ✳️ OPSTOOL::SmartAnalyze:: Current total step size 0.01, completed sub-step size 0.01, remaining sub-step 
     size 0.0
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 52.104 %. Time consumption: 9.697 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 52.104 %. Time consumption: 9.817 s.
     WARNING: CTestEnergyIncr::test() - failed to converge 
     after: 100 iterations
      current EnergyIncr: 149.331 (max: 1e-10)       Norm deltaX: 0.0944207, Norm deltaR: 33654.4
@@ -2167,7 +2176,7 @@ Dynamic analysis loop and ODB recording
     size 0.005
     >>> ✳️ OPSTOOL::SmartAnalyze:: Current total step size 0.01, completed sub-step size 0.01, remaining sub-step 
     size 0.0
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 56.112 %. Time consumption: 10.668 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 56.112 %. Time consumption: 10.797 s.
     WARNING: CTestEnergyIncr::test() - failed to converge 
     after: 100 iterations
      current EnergyIncr: 2286.71 (max: 1e-10)       Norm deltaX: 5.55223, Norm deltaR: 39416.5
@@ -2189,7 +2198,7 @@ Dynamic analysis loop and ODB recording
     remaining sub-step size 0.0075
     >>> ✳️ OPSTOOL::SmartAnalyze:: Current total step size 0.01, completed sub-step size 0.01, remaining sub-step 
     size 0.0
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 60.120 %. Time consumption: 11.422 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 60.120 %. Time consumption: 11.558 s.
     WARNING: CTestEnergyIncr::test() - failed to converge 
     after: 100 iterations
      current EnergyIncr: 5591.2 (max: 1e-10)        Norm deltaX: 69.0487, Norm deltaR: 248512
@@ -2204,7 +2213,7 @@ Dynamic analysis loop and ODB recording
     size 0.005
     >>> ✳️ OPSTOOL::SmartAnalyze:: Current total step size 0.01, completed sub-step size 0.01, remaining sub-step 
     size 0.0
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 64.128 %. Time consumption: 12.164 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 64.128 %. Time consumption: 12.315 s.
     WARNING: CTestEnergyIncr::test() - failed to converge 
     after: 100 iterations
      current EnergyIncr: 15005 (max: 1e-10)         Norm deltaX: 287.667, Norm deltaR: 76612.8
@@ -2219,7 +2228,7 @@ Dynamic analysis loop and ODB recording
     size 0.005
     >>> ✳️ OPSTOOL::SmartAnalyze:: Current total step size 0.01, completed sub-step size 0.01, remaining sub-step 
     size 0.0
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 68.136 %. Time consumption: 12.918 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 68.136 %. Time consumption: 13.063 s.
     WARNING: CTestEnergyIncr::test() - failed to converge 
     after: 100 iterations
      current EnergyIncr: 130.737 (max: 1e-10)       Norm deltaX: 0.0938715, Norm deltaR: 29636.3
@@ -2252,7 +2261,7 @@ Dynamic analysis loop and ODB recording
     size 0.005
     >>> ✳️ OPSTOOL::SmartAnalyze:: Current total step size 0.01, completed sub-step size 0.01, remaining sub-step 
     size 0.0
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 72.144 %. Time consumption: 13.891 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 72.144 %. Time consumption: 14.047 s.
     WARNING: CTestEnergyIncr::test() - failed to converge 
     after: 100 iterations
      current EnergyIncr: 119.805 (max: 1e-10)       Norm deltaX: 0.0935683, Norm deltaR: 27246
@@ -2285,8 +2294,8 @@ Dynamic analysis loop and ODB recording
     size 0.005
     >>> ✳️ OPSTOOL::SmartAnalyze:: Current total step size 0.01, completed sub-step size 0.01, remaining sub-step 
     size 0.0
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 76.152 %. Time consumption: 14.856 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 80.160 %. Time consumption: 15.567 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 76.152 %. Time consumption: 15.011 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 80.160 %. Time consumption: 15.753 s.
     WARNING: CTestEnergyIncr::test() - failed to converge 
     after: 100 iterations
      current EnergyIncr: 1643.44 (max: 1e-10)       Norm deltaX: 5.28483, Norm deltaR: 45599.6
@@ -2308,9 +2317,9 @@ Dynamic analysis loop and ODB recording
     remaining sub-step size 0.0075
     >>> ✳️ OPSTOOL::SmartAnalyze:: Current total step size 0.01, completed sub-step size 0.01, remaining sub-step 
     size 0.0
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 84.168 %. Time consumption: 16.328 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 88.176 %. Time consumption: 17.063 s.
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 92.184 %. Time consumption: 17.781 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 84.168 %. Time consumption: 16.521 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 88.176 %. Time consumption: 17.248 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 92.184 %. Time consumption: 17.976 s.
     WARNING: CTestEnergyIncr::test() - failed to converge 
     after: 100 iterations
      current EnergyIncr: 3906.84 (max: 1e-10)       Norm deltaX: 7.5742, Norm deltaR: 43145.6
@@ -2346,7 +2355,7 @@ Dynamic analysis loop and ODB recording
     size 0.005
     >>> ✳️ OPSTOOL::SmartAnalyze:: Current total step size 0.01, completed sub-step size 0.01, remaining sub-step 
     size 0.0
-    >>> ✅ OPSTOOL::SmartAnalyze:: progress 96.192 %. Time consumption: 18.574 s.
+    >>> ✅ OPSTOOL::SmartAnalyze:: progress 96.192 %. Time consumption: 18.754 s.
     WARNING: CTestEnergyIncr::test() - failed to converge 
     after: 100 iterations
      current EnergyIncr: 12521.6 (max: 1e-10)       Norm deltaX: 140.215, Norm deltaR: 50911.8
@@ -2361,7 +2370,7 @@ Dynamic analysis loop and ODB recording
     size 0.005
     >>> ✳️ OPSTOOL::SmartAnalyze:: Current total step size 0.01, completed sub-step size 0.01, remaining sub-step 
     size 0.0
-    >>> 🎉 OPSTOOL::SmartAnalyze:: Successfully finished! Time consumption: 19.282 s. 🎉
+    >>> 🎉 OPSTOOL::SmartAnalyze:: Successfully finished! Time consumption: 19.463 s. 🎉
     OPSTOOL™ ::  All responses data with _odb_tag = dynamic saved in 
     G:\opstool\docs\.opstool.output\RespStepData-dynamic.odb!
     Dynamic analysis complete
@@ -2369,16 +2378,16 @@ Dynamic analysis loop and ODB recording
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 1442-1444
+.. GENERATED FROM PYTHON SOURCE LINES 1444-1446
 
 Seismic analysis postprocessing
 ------------------------------------------------------------
 
-.. GENERATED FROM PYTHON SOURCE LINES 1446-1447
+.. GENERATED FROM PYTHON SOURCE LINES 1448-1449
 
 plot disp
 
-.. GENERATED FROM PYTHON SOURCE LINES 1447-1455
+.. GENERATED FROM PYTHON SOURCE LINES 1449-1457
 
 .. code-block:: Python
 
@@ -2430,7 +2439,7 @@ plot disp
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 1456-1466
+.. GENERATED FROM PYTHON SOURCE LINES 1458-1468
 
 .. code-block:: Python
 
@@ -2451,7 +2460,7 @@ plot disp
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 1467-1471
+.. GENERATED FROM PYTHON SOURCE LINES 1469-1473
 
 .. code-block:: Python
 
@@ -2473,7 +2482,7 @@ plot disp
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 1472-1480
+.. GENERATED FROM PYTHON SOURCE LINES 1474-1482
 
 .. code-block:: Python
 
@@ -2497,7 +2506,7 @@ plot disp
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 1481-1491
+.. GENERATED FROM PYTHON SOURCE LINES 1483-1493
 
 .. code-block:: Python
 
@@ -2532,7 +2541,7 @@ plot disp
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 33.318 seconds)
+   **Total running time of the script:** (0 minutes 35.923 seconds)
 
 
 .. _sphx_glr_download__sphinx_gallery_examples_examples_postprocessing_ex-MRF-2Story-Concentrated-PanelZone.py:
